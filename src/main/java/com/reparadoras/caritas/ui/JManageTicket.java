@@ -111,7 +111,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		
 		createGUIComponents();
 		initComponents();
-		filterTicket();
+		onFilterTicket(true);
 		addListeners();
 	}
 	
@@ -144,10 +144,18 @@ public class JManageTicket extends AbstractJInternalFrame {
 		
 		getBtnFilterTicket().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				filterTicket();
+				onFilterTicket(false);
+			}
+		});
+		
+		this.getBtnSaveTicket().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onSaveTicket();
 			}
 		});
 	}
+	
+
 	
 	public void initCbPeople(){
 		
@@ -619,7 +627,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	}
 	
-	public void filterTicket(){
+	public void onFilterTicket(boolean create){
 		People filterPeople = (People)this.getJComboBoxPeople().getSelectedItem();
 		
 		Ticket ticket = ticketDAO.findTicket(filterPeople);
@@ -631,9 +639,38 @@ public class JManageTicket extends AbstractJInternalFrame {
 		else{
 			Ticket ticketNewReset = new Ticket();
 			ticketNewReset.setPeople(filterPeople);
-			JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
-			ticketDAO.insert(ticketNewReset);
+			
+			if (create){
+				JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda. Se va a crear un nuevo registro de Vales");
+				ticketDAO.insert(ticketNewReset);
+				onFilterTicket(false);
+			}
+			else{
+				JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+			}
+			
 		}
+	
+	}
+	
+	public void onSaveTicket(){
+		
+		
+		int row = this.getJTableTicketsPeople().getSelectedRow();
+		if (row!=-1){
+			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(row);
+			ticketDAO.update(ticket);
+			onFilterTicket(false);
+			JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
+			
+			
+
+			
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "Seleccione un registro");
+			return;
+	    }
 	
 	}
 	

@@ -33,6 +33,20 @@ public int insert(Ticket ticket){
      return id;
  }
 
+public int update(Ticket ticket){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         id = session.update("Ticket.update", ticket);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("update("+ticket+") --> "+ticket.getId());
+     return id;
+ }
+
 
 
 public  List<Ticket> findAll(){

@@ -55,26 +55,45 @@
                T.POINTSOCTOBER,
                T.POINTSNOVEMBER,
                T.POINTSDECEMBER
-        FROM C_PEOPLE PE lEFT OUTER JOIN C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
+        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
         WHERE
         PE.IDPEOPLE = #{idPeople}
-        
-
-        
-        
-        
+      
     </select>
 	
 	<insert id="insert" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_TICKET 
         	(IDPEOPLE, POINTSJANUARY, POINTSFEBRUARY, POINTSMARCH, POINTSAPRIL, POINTSMAY, POINTSJUNE, POINTSJULY, POINTSAUGUST,
         	POINTSSEPTEMBER, POINTSOCTOBER, POINTSNOVEMBER, POINTSDECEMBER) 
-        VALUES (#{idPeople},
+        VALUES (#{people.idPeople},
         #{pointsJanuary}, #{pointsFebruary}, 
         #{pointsMarch}, #{pointsApril}, 
         #{pointsMay}, #{pointsJune}, 
         #{pointsJuly}, #{pointsAugust},
         #{pointsSeptember}, #{pointsOctober},
-        #{pointsNovember}, #{pointsDecember});
+        #{pointsNovember}, #{pointsDecember})
     </insert>
+    
+ 
+    
+    <update id="update" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
+        
+        UPDATE C_TICKET SET
+        POINTSJANUARY = #{pointsJanuary},
+        POINTSFEBRUARY = #{pointsFebruary},
+        POINTSMARCH = #{pointsMarch},
+        POINTSAPRIL = #{pointsApril},
+        POINTSMAY = #{pointsMay},
+        POINTSJUNE = #{pointsJune},
+        POINTSJULY = #{pointsJuly},
+        POINTSAUGUST = #{pointsAugust},
+        POINTSSEPTEMBER = #{pointsSeptember},
+        POINTSOCTOBER = #{pointsOctober},
+        POINTSNOVEMBER = #{pointsNovember},
+        POINTSDECEMBER = #{pointsDecember}
+        WHERE IDPEOPLE = #{people.idPeople}
+        
+    </update>
+    
+    
 </mapper>
