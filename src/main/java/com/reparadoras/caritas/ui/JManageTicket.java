@@ -662,10 +662,6 @@ public class JManageTicket extends AbstractJInternalFrame {
 			ticketDAO.update(ticket);
 			onFilterTicket(false);
 			JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
-			
-			
-
-			
 		}
 		else{
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");

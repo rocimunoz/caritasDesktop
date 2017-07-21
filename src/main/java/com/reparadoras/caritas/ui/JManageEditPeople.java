@@ -10,6 +10,8 @@ import com.reparadoras.caritas.ui.components.JWindowParams;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
@@ -23,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 
@@ -35,6 +38,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JPanel jPanelPersonalData;
 	private JLabel jLblName;
 	private JLabel jLblDni;
+	private JLabel jLblActive;
 	
 	private JPanel jPanelActions;
 	private JButton jBtnAccept;
@@ -48,6 +52,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	
 	private People selectedPeople;
+	
 
 	public JManageEditPeople(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, People people)
 			throws Exception {
@@ -81,6 +86,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJTextFieldDni(), getGridJTextFieldDni());
 		getJPanelPersonalData().add(getComboBox(), getGridComboBoxSex());
 		getJPanelPersonalData().add(getJLblSex(), this.getGridJLabelSex());
+		getJPanelPersonalData().add(getJLabelActive(), getGridJLabelActive());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
 
@@ -214,6 +220,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridBagConstraintsJPaneContentPane() {
 		
 		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.weightx = 1.0;
+		gbc_panel.weighty = 1.0;
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 0;
@@ -229,6 +237,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (jPanelPersonalData == null) {
 			jPanelPersonalData = new JPanel();
 			jPanelPersonalData.setBorder(new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
 			
 			
 			
@@ -241,11 +250,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJPanelPersonalData() {
 
 		GridBagConstraints gbc_jPanelPersonalData = new GridBagConstraints();
-		gbc_jPanelPersonalData.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelPersonalData.weighty = 1.0;
-		gbc_jPanelPersonalData.weightx = 1.0;
-		gbc_jPanelPersonalData.fill = GridBagConstraints.BOTH;
-		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTHWEST;
+		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTH;
+		gbc_jPanelPersonalData.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jPanelPersonalData.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelPersonalData.gridx = 0;
 		gbc_jPanelPersonalData.gridy = 0;
 
@@ -265,6 +273,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jLblName == null) {
 			jLblName = new JLabel("Nombre");
+			jLblName.setPreferredSize(new Dimension(50,25));
 		}
 
 		return jLblName;
@@ -272,6 +281,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelName() {
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.anchor = GridBagConstraints.WEST;
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
 		gbc_lblName.gridx = 0;
 		gbc_lblName.gridy = 0;
@@ -293,6 +303,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJTextFieldName() {
 
 		GridBagConstraints gbc_txfName = new GridBagConstraints();
+		gbc_txfName.weightx = 1.0;
 		gbc_txfName.insets = new Insets(0, 0, 5, 5);
 		gbc_txfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfName.gridx = 1;
@@ -306,6 +317,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jLblSurname == null) {
 			jLblSurname = new JLabel("Apellidos");
+			jLblSurname.setMinimumSize(new Dimension(20, 14));
+			jLblSurname.setMaximumSize(new Dimension(20, 14));
+			
 		}
 
 		return jLblSurname;
@@ -313,6 +327,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelSurname() {
 		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
+		gbc_lblSurname.anchor = GridBagConstraints.WEST;
 		gbc_lblSurname.insets = new Insets(0, 0, 5, 5);
 		gbc_lblSurname.gridx = 0;
 		gbc_lblSurname.gridy = 1;
@@ -334,6 +349,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJTextFieldSurname() {
 
 		GridBagConstraints gbc_txfSurname = new GridBagConstraints();
+		gbc_txfSurname.weightx = 1.0;
 		gbc_txfSurname.insets = new Insets(0, 0, 5, 5);
 		gbc_txfSurname.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfSurname.gridx = 1;
@@ -355,7 +371,6 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJLabelDni() {
 
 		GridBagConstraints gbc_lblDni = new GridBagConstraints();
-		gbc_lblDni.anchor = GridBagConstraints.EAST;
 		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
 		gbc_lblDni.gridx = 2;
 		gbc_lblDni.gridy = 0;
@@ -379,6 +394,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJTextFieldDni() {
 
 		GridBagConstraints gbc_txfDni = new GridBagConstraints();
+		gbc_txfDni.weightx = 1.0;
 		gbc_txfDni.insets = new Insets(0, 0, 5, 0);
 		gbc_txfDni.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfDni.gridx = 3;
@@ -398,7 +414,6 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJLabelSex() {
 
 		GridBagConstraints gbc_jLblSex = new GridBagConstraints();
-		gbc_jLblSex.anchor = GridBagConstraints.WEST;
 		gbc_jLblSex.insets = new Insets(0, 0, 5, 5);
 		gbc_jLblSex.gridx = 2;
 		gbc_jLblSex.gridy = 1;
@@ -418,6 +433,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 private  GridBagConstraints getGridComboBoxSex() {
 		
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.weightx = 1.0;
 		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox.gridx = 3;
@@ -425,6 +441,26 @@ private  GridBagConstraints getGridComboBoxSex() {
 		
 		return gbc_comboBox;
 	}
+
+private JLabel getJLabelActive() {
+
+	if (jLblActive == null) {
+		jLblActive = new JLabel("Activo");
+		
+	}
+
+	return jLblActive;
+}
+
+private GridBagConstraints getGridJLabelActive() {
+	GridBagConstraints gbc_lblActive = new GridBagConstraints();
+	gbc_lblActive.anchor = GridBagConstraints.WEST;
+	gbc_lblActive.insets = new Insets(0, 0, 5, 5);
+	gbc_lblActive.gridx = 0;
+	gbc_lblActive.gridy = 2;
+	
+			return gbc_lblActive;
+}
 	
 	/*  FUNCIONES PANEL ACCIONES*/
 	
@@ -493,6 +529,7 @@ private  GridBagConstraints getGridComboBoxSex() {
 		return gbc_btnCancel;
 	}
 
+	
 	
 	
 }

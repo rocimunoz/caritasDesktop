@@ -78,21 +78,22 @@
     
     <update id="update" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
         
-        UPDATE C_TICKET SET
-        POINTSJANUARY = #{pointsJanuary},
-        POINTSFEBRUARY = #{pointsFebruary},
-        POINTSMARCH = #{pointsMarch},
-        POINTSAPRIL = #{pointsApril},
-        POINTSMAY = #{pointsMay},
-        POINTSJUNE = #{pointsJune},
-        POINTSJULY = #{pointsJuly},
-        POINTSAUGUST = #{pointsAugust},
-        POINTSSEPTEMBER = #{pointsSeptember},
-        POINTSOCTOBER = #{pointsOctober},
-        POINTSNOVEMBER = #{pointsNovember},
-        POINTSDECEMBER = #{pointsDecember}
+        UPDATE C_TICKET <set>
+        <if test="pointsJanuary != null">pointsJanuary = #{pointsJanuary},</if>
+        <if test="pointsFebruary != null">pointsFebruary = #{pointsFebruary},</if>
+        <if test="pointsMarch != null">  pointsMarch = #{pointsMarch},</if>
+        <if test="pointsApril != null">pointsApril = #{pointsApril},</if>
+        <if test="pointsMay != null">pointsMay = #{pointsMay},</if>
+        <if test="pointsJune != null">pointsJune = #{pointsJune},</if>
+        <if test="pointsJuly != null">pointsJuly = #{pointsJuly},</if>
+        <if test="pointsAugust != null">pointsAugust = #{pointsAugust},</if>
+        <if test="pointsSeptember != null">pointsSeptember = #{pointsSeptember},</if>
+        <if test="pointsOctober != null">pointsOctober = #{pointsOctober},</if>
+        <if test="pointsNovember != null">pointsNovember = #{pointsNovember},</if>
+        <if test="pointsDecember != null">pointsDecember = #{pointsDecember},</if>
+        </set>
         WHERE IDPEOPLE = #{people.idPeople}
-        
+    
     </update>
     
     
