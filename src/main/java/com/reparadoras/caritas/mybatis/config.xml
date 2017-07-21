@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+<configuration>
+    <typeAliases>
+        <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
+        <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
+        <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>        
+    </typeAliases>
+ 
+    <environments default="development">
+        <environment id="development">
+          <transactionManager type="JDBC"/>
+            <!--  connecting to Local MySql -->
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/caritas"/>
+                <property name="username" value="caritas"/>
+                <property name="password" value="caritas"/>
+            </dataSource>
+       </environment>
+    </environments>
+    <mappers>
+       <mapper resource="com/reparadoras/caritas/mybatis/mapper/People.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Program.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Ticket.xml"/>
+    
+    </mappers>
+</configuration>

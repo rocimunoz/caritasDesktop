@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Program">
+
+    <resultMap id="ProgramResult" type="Program">
+        <result property="idProgram" column="idProgram"/>
+        <association property="people" resultMap="PeopleResult"/>        
+        
+       
+    </resultMap>
+    
+     <resultMap id="PeopleResult" type="People">
+        <result property="idPeople" column="idPeople"/>
+        <result property="name" column="name"/>  
+        <result property="surname" column="surname"/>  
+        <result property="dni" column="dni"/>  
+        <result property="sex" column="sex"/>   
+        <result property="active" column="active"/>
+        <!--<result property="date_born" column="date_born"/>
+        <result property="origin_country" column="origin_country"/>
+        <result property="civil_state" column="civil_state"/>-->
+		
+    </resultMap>
+    
+    <select id="findProgramById" parameterType="int" resultMap="ProgramResult">
+        SELECT PE.IDPEOPLE, 
+               PE.NAME, 
+               PR.IDPROGRAM 
+        FROM C_PEOPLE PE, C_PROGRAM PR
+        WHERE PR.IDPEOPLE = PE.IDPEOPLE
+        AND PE.IDPEOPLE = #{idPeople}
+    </select>
+ 	
+</mapper>

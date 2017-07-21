@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Ticket">
+    <resultMap id="TicketResult" type="Ticket">
+        <result property="idTicket" column="idTicket"/>
+        <result property="pointsJanuary" column="pointsJanuary"/>  
+        <result property="pointsFebruary" column="pointsFebruary"/>  
+        <result property="pointsMarch" column="pointsMarch"/>  
+        <result property="pointsApril" column="pointsApril"/>  
+        <result property="pointsMay" column="pointsMay"/>  
+        <result property="pointsJune" column="pointsJune"/>  
+        <result property="pointsJuly" column="pointsJuly"/>  
+        <result property="pointsAugust" column="pointsAugust"/>  
+        <result property="pointsSeptember" column="pointsSeptember"/>  
+        <result property="pointsOctober" column="pointsOctober"/>  
+        <result property="pointsNovember" column="pointsNovember"/>  
+        <result property="pointsDecember" column="pointsDecember"/>  
+        <result property="dateJanuary" column="dateJanuary"/>  
+        <result property="dateFebruary" column="dateFebruary"/>  
+        <result property="dateMarch" column="dateMarch"/>  
+        <result property="dateApril" column="dateApril"/>  
+        <result property="dateMay" column="dateMay"/>  
+        <result property="dateJune" column="dateJune"/>  
+        <result property="dateJuly" column="dateJuly"/>  
+        <result property="dateAugust" column="dateAugust"/>  
+        <result property="dateSeptember" column="dateSeptember"/>  
+        <result property="dateOctober" column="dateOctober"/>  
+        <result property="dateNovember" column="dateNovember"/>  
+        <result property="dateDecember" column="dateDecember"/>  
+        <association property="people" resultMap="PeopleResult"/>  
+      
+    </resultMap>
+    
+     <resultMap id="PeopleResult" type="People">
+     <id property="idPeople" column="idPeople"/>
+        <result property="name" column="name"/>  
+       
+    </resultMap>
+ 
+   <select id="findTicket" parameterType="People" resultMap="TicketResult">
+        SELECT PE.IDPEOPLE, 
+               PE.NAME, 
+               T.POINTSJANUARY,
+               T.POINTSFEBRUARY,
+               T.POINTSMARCH,
+               T.POINTSAPRIL,
+               T.POINTSMAY,
+               T.POINTSJUNE,
+               T.POINTSJULY,
+               T.POINTSAUGUST,
+               T.POINTSSEPTEMBER,
+               T.POINTSOCTOBER,
+               T.POINTSNOVEMBER,
+               T.POINTSDECEMBER
+        FROM C_PEOPLE PE lEFT OUTER JOIN C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
+        WHERE
+        PE.IDPEOPLE = #{idPeople}
+        
+
+        
+        
+        
+    </select>
+	
+	<insert id="insert" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_TICKET 
+        	(IDPEOPLE, POINTSJANUARY, POINTSFEBRUARY, POINTSMARCH, POINTSAPRIL, POINTSMAY, POINTSJUNE, POINTSJULY, POINTSAUGUST,
+        	POINTSSEPTEMBER, POINTSOCTOBER, POINTSNOVEMBER, POINTSDECEMBER) 
+        VALUES (#{idPeople},
+        #{pointsJanuary}, #{pointsFebruary}, 
+        #{pointsMarch}, #{pointsApril}, 
+        #{pointsMay}, #{pointsJune}, 
+        #{pointsJuly}, #{pointsAugust},
+        #{pointsSeptember}, #{pointsOctober},
+        #{pointsNovember}, #{pointsDecember});
+    </insert>
+</mapper>

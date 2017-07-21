@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="People">
+
+	
+
+    <resultMap id="PeopleResult" type="People">
+        <result property="idPeople" column="idPeople"/>
+        <result property="name" column="name"/>  
+        <result property="surname" column="surname"/>  
+        <result property="dni" column="dni"/>  
+        <result property="sex" column="sex"/>   
+        <result property="active" column="active"/>
+        <!--<result property="date_born" column="date_born"/>
+        <result property="origin_country" column="origin_country"/>
+        <result property="civil_state" column="civil_state"/>-->
+		
+    </resultMap>
+ 
+    <select id="findAll" resultMap="PeopleResult">
+        SELECT * FROM C_PEOPLE;
+    </select>
+    
+ 	
+    
+    <select id="findPeople" parameterType="People" resultMap="PeopleResult">
+       SELECT * 
+				FROM C_PEOPLE
+				<where>
+					<if test="name!=null and !name.equals('')">
+						name = #{name}
+					</if>
+					<if test="dni!=null">
+					AND	dni = #{dni}
+					</if>
+					<if test="active!=null">
+					AND	active = #{active}
+					</if>
+				</where>
+    </select>
+    
+    <delete id="delete" parameterType="int">
+    	DELETE FROM C_PEOPLE WHERE id = #{idPeople}
+    </delete>
+    
+    
+    
+ 	<insert id="insert" parameterType="People" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_PEOPLE (name, surname, dni, sex) VALUES (#{name},#{surname}, #{dni}, #{sex});
+    </insert>
+    
+    <update id="update" parameterType="People">
+        UPDATE persons
+        SET name = #{name}
+        WHERE id = #{id} 
+  	</update>
+ 
+	
+</mapper>
