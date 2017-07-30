@@ -33,5 +33,9 @@
         WHERE PR.IDPEOPLE = PE.IDPEOPLE
         AND PE.IDPEOPLE = #{idPeople}
     </select>
+    
+     <delete id="delete" parameterType="People">
+    	DELETE FROM C_PROGRAM WHERE idPeople = #{idPeople}
+    </delete>
  	
 </mapper>

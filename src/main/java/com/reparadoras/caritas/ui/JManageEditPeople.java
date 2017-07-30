@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
+import java.awt.Font;
 
 @SuppressWarnings("serial")
 
@@ -66,6 +67,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		this.setClosable(true);
 		this.setMaximizable(true);
 		this.setResizable(true);
+		this.setSize(800, 300);
 		this.setTitle(title);
 		
 		this.selectedPeople = people;
@@ -117,6 +119,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 				
 				//Cerrar Transaccion
 				onCloseWindow();
+				
 				
 				
 				
@@ -175,6 +178,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
 			this.getJTextFieldSurname().setText(this.selectedPeople.getSurname());
+			this.getJckActive().setSelected(this.selectedPeople.isActive());
+			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
 			
 		}
 		
@@ -183,11 +188,18 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private void onUpdatePeople(){
 		try{
 		
+		this.selectedPeople.setDni(this.getJTextFieldDni().getText());
+		this.selectedPeople.setName(this.getJTextFieldName().getText());
+		this.selectedPeople.setSurname(this.getJTextFieldSurname().getText());
+		this.selectedPeople.setSex((String) this.getComboBox().getSelectedItem());
+		if (this.getJckActive().isSelected()){
+			this.selectedPeople.setActive(true);
+		}
+		else{
+			this.selectedPeople.setActive(false);
+		}
 		
-		
-			
-			//save people
-			//peopleDAO.update(people);
+			peopleDAO.update(selectedPeople);
 		}catch(Exception e){
 		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -230,7 +242,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jPanelContentPane == null) {
 			jPanelContentPane = new JPanel();
-			jPanelContentPane.setBorder(new TitledBorder(null, "titulo", TitledBorder.LEADING, TitledBorder.TOP, null, null));	
+			jPanelContentPane.setBorder(null);	
 		}
 		return jPanelContentPane;		
 }
@@ -297,7 +309,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jLblName == null) {
 			jLblName = new JLabel("Nombre");
-			jLblName.setPreferredSize(new Dimension(50,25));
+			jLblName.setFont(new Font("Verdana", Font.PLAIN, 14));
+			jLblName.setPreferredSize(new Dimension(80, 25));
 		}
 
 		return jLblName;
@@ -341,6 +354,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jLblSurname == null) {
 			jLblSurname = new JLabel("Apellidos");
+			jLblSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblSurname.setMinimumSize(new Dimension(20, 14));
 			jLblSurname.setMaximumSize(new Dimension(20, 14));
 			
@@ -351,8 +365,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelSurname() {
 		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
+		gbc_lblSurname.weightx = 1.0;
 		gbc_lblSurname.anchor = GridBagConstraints.WEST;
-		gbc_lblSurname.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSurname.insets = new Insets(0, 15, 5, 5);
 		gbc_lblSurname.gridx = 2;
 		gbc_lblSurname.gridy = 0;
 		
@@ -387,6 +402,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jLblDni == null) {
 			jLblDni = new JLabel("Dni");
+			jLblDni.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 
 		return jLblDni;
@@ -432,6 +448,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JLabel getJLblSex() {
 		if (jLblSex == null) {
 			jLblSex = new JLabel("Sexo");
+			jLblSex.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jLblSex;
 	}
@@ -439,7 +456,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJLabelSex() {
 
 		GridBagConstraints gbc_jLblSex = new GridBagConstraints();
-		gbc_jLblSex.insets = new Insets(0, 0, 5, 5);
+		gbc_jLblSex.anchor = GridBagConstraints.WEST;
+		gbc_jLblSex.weightx = 1.0;
+		gbc_jLblSex.insets = new Insets(0, 15, 5, 5);
 		gbc_jLblSex.gridx = 2;
 		gbc_jLblSex.gridy = 1;
 		
@@ -472,6 +491,7 @@ private  GridBagConstraints getGridComboBoxSex() {
 private JCheckBox getJckActive() {
 	if (jckActive == null) {
 		jckActive = new JCheckBox("Activo");
+		jckActive.setFont(new Font("Verdana", Font.PLAIN, 14));
 	}
 	return jckActive;
 }

@@ -43,7 +43,7 @@
     </select>
     
     <delete id="delete" parameterType="int">
-    	DELETE FROM C_PEOPLE WHERE id = #{idPeople}
+    	DELETE FROM C_PEOPLE WHERE idPeople = #{idPeople}
     </delete>
     
     
@@ -61,7 +61,7 @@
           <if test="active != null">active = #{active},</if>
           <if test="sex != null">sex = #{sex},</if>
           </set>
-        WHERE id = #{id} 
+        WHERE idPeople = #{idPeople} 
   	</update>
  
 	

@@ -25,7 +25,7 @@ public class People implements Serializable{
     
     private Date dateBorn;
     
-    private char sex;
+    private String sex;
     
     private boolean active;
     
@@ -80,11 +80,13 @@ public class People implements Serializable{
 		this.dateBorn = dateBorn;
 	}
 
-	public char getSex() {
+	
+
+	public String getSex() {
 		return sex;
 	}
 
-	public void setSex(char sex) {
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
 

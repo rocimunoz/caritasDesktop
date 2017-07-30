@@ -47,6 +47,20 @@ public int update(Ticket ticket){
      return id;
  }
 
+public int delete(People people){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Ticket.delete", people);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
 
 
 public  List<Ticket> findAll(){

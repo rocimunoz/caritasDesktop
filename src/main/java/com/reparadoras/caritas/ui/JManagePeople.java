@@ -23,6 +23,7 @@ import javax.swing.event.InternalFrameEvent;
 
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
+import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
@@ -82,6 +83,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
+	private TicketDAO ticketDAO;
 	
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
@@ -99,6 +101,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 		createGUIComponents();
 		initComponents();
@@ -619,6 +622,18 @@ public class JManagePeople extends AbstractJInternalFrame {
 		
 			int rowIndex = this.getJTablePeople().getSelectedRow();
 			if (rowIndex!=-1){
+				
+				if (JOptionPane.showConfirmDialog(null, "Se eliminará la persona seleccionada, sus vales y su programa de atención primaria. ¿Está seguro?", "WARNING",
+				        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
+					
+					if (selectedPeople!=null){
+						ticketDAO.delete(selectedPeople);
+						programDAO.delete(selectedPeople);
+						peopleDAO.delete(selectedPeople.getIdPeople());	
+					}
+				} 
+				
 				People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
 				if (selectedPeople!=null){
 					peopleDAO.delete(selectedPeople.getIdPeople());	

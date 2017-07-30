@@ -18,6 +18,21 @@ public PeopleDAO(SqlSessionFactory sqlSessionFactory){
     this.sqlSessionFactory = sqlSessionFactory;
 }
 
+public int update(People person){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+    	 session.update("People.update", person);
+         id = session.insert("People.update", person);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("update("+person+") --> "+person.getIdPeople());
+     return id;
+ }
+
 public int insert(People person){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();

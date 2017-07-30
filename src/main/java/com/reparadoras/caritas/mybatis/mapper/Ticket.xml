@@ -152,5 +152,9 @@
     
     </update>
     
+     <delete id="delete" parameterType="People">
+    	DELETE FROM C_TICKET WHERE idPeople = #{idPeople}
+    </delete>
+    
     
 </mapper>
