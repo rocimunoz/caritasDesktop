@@ -49,12 +49,18 @@
     
     
  	<insert id="insert" parameterType="People" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_PEOPLE (name, surname, dni, sex) VALUES (#{name},#{surname}, #{dni}, #{sex});
+        INSERT INTO C_PEOPLE (name, surname, dni, sex, active) VALUES (#{name},#{surname}, #{dni}, #{sex}, 1);
     </insert>
     
     <update id="update" parameterType="People">
-        UPDATE persons
-        SET name = #{name}
+        UPDATE C_PEOPLE
+        <set>
+          <if test="name != null">name = #{name},</if>
+          <if test="surname != null">surname = #{surname},</if>
+          <if test="dni != null">dni = #{dni},</if>
+          <if test="active != null">active = #{active},</if>
+          <if test="sex != null">sex = #{sex},</if>
+          </set>
         WHERE id = #{id} 
   	</update>
  

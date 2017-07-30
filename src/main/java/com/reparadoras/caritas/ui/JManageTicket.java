@@ -124,6 +124,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 		this.setMaximizable(true);
 		this.setResizable(true);
 		this.setTitle(title);
+		this.setVisible(true);
+		this.pack();
 		
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -166,6 +168,10 @@ public class JManageTicket extends AbstractJInternalFrame {
 		}
 		else{
 			List<People> listPeople = peopleDAO.findAll();
+			People allPeople = new People();
+			allPeople.setName("TODOS");
+		    allPeople.setIdPeople(-1);
+			listPeople.add(0, allPeople);
 			for (People p : listPeople) {
 				this.getJComboBoxPeople().addItem(p);
 			}
@@ -630,26 +636,34 @@ public class JManageTicket extends AbstractJInternalFrame {
 	public void onFilterTicket(boolean create){
 		People filterPeople = (People)this.getJComboBoxPeople().getSelectedItem();
 		
-		Ticket ticket = ticketDAO.findTicket(filterPeople);
-		if (ticket!=null){
-			this.getTicketsPeopleTableModel().clearTableModelData();
-			this.getTicketsPeopleTableModel().addRow(ticket);
-			
-		}
-		else{
-			Ticket ticketNewReset = new Ticket();
-			ticketNewReset.setPeople(filterPeople);
-			
-			if (create){
-				JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda. Se va a crear un nuevo registro de Vales");
-				ticketDAO.insert(ticketNewReset);
-				onFilterTicket(false);
+		if (filterPeople.getIdPeople()!=-1){
+			Ticket ticket = ticketDAO.findTicket(filterPeople);
+			if (ticket!=null){
+				this.getTicketsPeopleTableModel().clearTableModelData();
+				this.getTicketsPeopleTableModel().addRow(ticket);
+				
 			}
 			else{
-				JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+				Ticket ticketNewReset = new Ticket();
+				ticketNewReset.setPeople(filterPeople);
+				
+				if (create){
+					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda. Se va a crear un nuevo registro de Vales");
+					ticketDAO.insert(ticketNewReset);
+					onFilterTicket(false);
+				}
+				else{
+					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+				}
+				
 			}
-			
 		}
+		else{
+			List<Ticket> listTickets = ticketDAO.findAll();
+			this.getTicketsPeopleTableModel().clearTableModelData();
+			this.getTicketsPeopleTableModel().addRows(listTickets);
+		}
+		
 	
 	}
 	

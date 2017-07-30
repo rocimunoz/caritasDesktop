@@ -26,6 +26,7 @@ import java.beans.PropertyVetoException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
 
@@ -49,9 +50,12 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JLabel jLblSex;
 	private PeopleDAO peopleDAO;
 	
+	private int executingMode;
+	
 
 	
 	private People selectedPeople;
+	private JCheckBox jckActive;
 	
 
 	public JManageEditPeople(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, People people)
@@ -65,6 +69,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		this.setTitle(title);
 		
 		this.selectedPeople = people;
+		this.executingMode = executingMode;
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		
@@ -85,8 +90,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelPersonalData().add(getJTextFieldDni(), getGridJTextFieldDni());
 		getJPanelPersonalData().add(getComboBox(), getGridComboBoxSex());
-		getJPanelPersonalData().add(getJLblSex(), this.getGridJLabelSex());
-		getJPanelPersonalData().add(getJLabelActive(), getGridJLabelActive());
+		getJPanelPersonalData().add(getJLblSex(), getGridJLabelSex());
+		
+		getJPanelPersonalData().add(getJckActive(), getGridJCheckActive());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
 
@@ -99,12 +105,20 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		getJButtonAccept().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
 				//Abrir transaccion
-				onCreatePeople();
+				if (executingMode == JWindowParams.IMODE_UPDATE){
+					onUpdatePeople();
+				}
+				else if (executingMode == JWindowParams.IMODE_INSERT){
+					onCreatePeople();
+				}
+				
 				//Cerrar Transaccion
 				onCloseWindow();
 				
-				//filtrar resultados
+				
 				
 			}
 		});
@@ -146,7 +160,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJButtonCancel().setText("Salir");
 		}
 		else{
-			//Deshabilito campos
+			//Habilito campos
 			this.getJTextFieldDni().setEnabled(true);
 			this.getJTextFieldName().setEnabled(true);
 			this.getJTextFieldSurname().setEnabled(true);
@@ -162,6 +176,20 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
 			this.getJTextFieldSurname().setText(this.selectedPeople.getSurname());
 			
+		}
+		
+	}
+	
+	private void onUpdatePeople(){
+		try{
+		
+		
+		
+			
+			//save people
+			//peopleDAO.update(people);
+		}catch(Exception e){
+		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}
@@ -237,11 +265,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (jPanelPersonalData == null) {
 			jPanelPersonalData = new JPanel();
 			jPanelPersonalData.setBorder(new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
-			
-			
-			
-					
+				
 		}
 
 		return jPanelPersonalData;
@@ -329,8 +353,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
 		gbc_lblSurname.anchor = GridBagConstraints.WEST;
 		gbc_lblSurname.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSurname.gridx = 0;
-		gbc_lblSurname.gridy = 1;
+		gbc_lblSurname.gridx = 2;
+		gbc_lblSurname.gridy = 0;
 		
 				return gbc_lblSurname;
 	}
@@ -350,10 +374,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_txfSurname = new GridBagConstraints();
 		gbc_txfSurname.weightx = 1.0;
-		gbc_txfSurname.insets = new Insets(0, 0, 5, 5);
+		gbc_txfSurname.insets = new Insets(0, 0, 5, 0);
 		gbc_txfSurname.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txfSurname.gridx = 1;
-		gbc_txfSurname.gridy = 1;
+		gbc_txfSurname.gridx = 3;
+		gbc_txfSurname.gridy = 0;
 		
 		return gbc_txfSurname;
 		
@@ -371,9 +395,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJLabelDni() {
 
 		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.anchor = GridBagConstraints.WEST;
 		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
-		gbc_lblDni.gridx = 2;
-		gbc_lblDni.gridy = 0;
+		gbc_lblDni.gridx = 0;
+		gbc_lblDni.gridy = 1;
 		
 		
 
@@ -395,10 +420,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_txfDni = new GridBagConstraints();
 		gbc_txfDni.weightx = 1.0;
-		gbc_txfDni.insets = new Insets(0, 0, 5, 0);
+		gbc_txfDni.insets = new Insets(0, 0, 5, 5);
 		gbc_txfDni.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txfDni.gridx = 3;
-		gbc_txfDni.gridy = 0;
+		gbc_txfDni.gridx = 1;
+		gbc_txfDni.gridy = 1;
 		
 		return gbc_txfDni;
 		
@@ -442,24 +467,22 @@ private  GridBagConstraints getGridComboBoxSex() {
 		return gbc_comboBox;
 	}
 
-private JLabel getJLabelActive() {
 
-	if (jLblActive == null) {
-		jLblActive = new JLabel("Activo");
-		
+
+private JCheckBox getJckActive() {
+	if (jckActive == null) {
+		jckActive = new JCheckBox("Activo");
 	}
-
-	return jLblActive;
+	return jckActive;
 }
 
-private GridBagConstraints getGridJLabelActive() {
-	GridBagConstraints gbc_lblActive = new GridBagConstraints();
-	gbc_lblActive.anchor = GridBagConstraints.WEST;
-	gbc_lblActive.insets = new Insets(0, 0, 5, 5);
-	gbc_lblActive.gridx = 0;
-	gbc_lblActive.gridy = 2;
-	
-			return gbc_lblActive;
+private GridBagConstraints getGridJCheckActive() {
+	GridBagConstraints gbcCheckActive = new GridBagConstraints();
+	gbcCheckActive.anchor = GridBagConstraints.WEST;
+	gbcCheckActive.insets = new Insets(0, 0, 5, 5);
+	gbcCheckActive.gridx = 0;
+	gbcCheckActive.gridy = 2;
+	return gbcCheckActive;
 }
 	
 	/*  FUNCIONES PANEL ACCIONES*/
@@ -529,6 +552,7 @@ private GridBagConstraints getGridJLabelActive() {
 		return gbc_btnCancel;
 	}
 
+	
 	
 	
 	

@@ -54,10 +54,54 @@
                T.POINTSSEPTEMBER,
                T.POINTSOCTOBER,
                T.POINTSNOVEMBER,
-               T.POINTSDECEMBER
+               T.POINTSDECEMBER,
+               T.DATEJANUARY,
+               T.DATEFEBRUARY,
+               T.DATEMARCH,
+               T.DATEAPRIL,
+               T.DATEMAY,
+               T.DATEJUNE,
+               T.DATEJULY,
+               T.DATEAUGUST,
+               T.DATESEPTEMBER,
+               T.DATEOCTOBER,
+               T.DATENOVEMBER,
+               T.DATEDECEMBER
         FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
         WHERE
         PE.IDPEOPLE = #{idPeople}
+      
+    </select>
+    
+    <select id="findAll"  resultMap="TicketResult">
+        SELECT PE.IDPEOPLE, 
+               PE.NAME, 
+               T.POINTSJANUARY,
+               T.POINTSFEBRUARY,
+               T.POINTSMARCH,
+               T.POINTSAPRIL,
+               T.POINTSMAY,
+               T.POINTSJUNE,
+               T.POINTSJULY,
+               T.POINTSAUGUST,
+               T.POINTSSEPTEMBER,
+               T.POINTSOCTOBER,
+               T.POINTSNOVEMBER,
+               T.POINTSDECEMBER,
+               T.DATEJANUARY,
+               T.DATEFEBRUARY,
+               T.DATEMARCH,
+               T.DATEAPRIL,
+               T.DATEMAY,
+               T.DATEJUNE,
+               T.DATEJULY,
+               T.DATEAUGUST,
+               T.DATESEPTEMBER,
+               T.DATEOCTOBER,
+               T.DATENOVEMBER,
+               T.DATEDECEMBER
+        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
+        AND PE.ACTIVE = 1;
       
     </select>
 	
@@ -79,17 +123,29 @@
     <update id="update" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
         
         UPDATE C_TICKET <set>
+        <if test="dateJanuary != null">dateJanuary = #{dateJanuary},</if>
         <if test="pointsJanuary != null">pointsJanuary = #{pointsJanuary},</if>
+       <if test="dateFebruary != null">dateFebruary = #{dateFebruary},</if>
         <if test="pointsFebruary != null">pointsFebruary = #{pointsFebruary},</if>
+        <if test="dateMarch != null">dateMarch = #{dateMarch},</if>
         <if test="pointsMarch != null">  pointsMarch = #{pointsMarch},</if>
+        <if test="dateApril != null">dateApril = #{dateApril},</if>
         <if test="pointsApril != null">pointsApril = #{pointsApril},</if>
+        <if test="dateMay != null">dateMay = #{dateMay},</if>
         <if test="pointsMay != null">pointsMay = #{pointsMay},</if>
+        <if test="dateJune != null">dateJune = #{dateJune},</if>
         <if test="pointsJune != null">pointsJune = #{pointsJune},</if>
+        <if test="dateJuly != null">dateJuly = #{dateJuly},</if>
         <if test="pointsJuly != null">pointsJuly = #{pointsJuly},</if>
+        <if test="dateAugust != null">dateAugust = #{dateAugust},</if>
         <if test="pointsAugust != null">pointsAugust = #{pointsAugust},</if>
+        <if test="dateSeptember != null">dateSeptember = #{dateSeptember},</if>
         <if test="pointsSeptember != null">pointsSeptember = #{pointsSeptember},</if>
+        <if test="dateOctober != null">dateOctober = #{dateOctober},</if>
         <if test="pointsOctober != null">pointsOctober = #{pointsOctober},</if>
+        <if test="dateNovember != null">dateNovember = #{dateNovember},</if>
         <if test="pointsNovember != null">pointsNovember = #{pointsNovember},</if>
+        <if test="dateDecember != null">dateDecember = #{dateDecember},</if>
         <if test="pointsDecember != null">pointsDecember = #{pointsDecember},</if>
         </set>
         WHERE IDPEOPLE = #{people.idPeople}
