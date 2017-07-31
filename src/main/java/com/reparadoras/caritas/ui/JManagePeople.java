@@ -154,7 +154,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getBtnProgramPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				onManageProgramPeople();
+				onManageProgramPeople(JWindowParams.IMODE_UPDATE, "Programa Atención Primaria");
 			}
 		});
 		
@@ -683,7 +683,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	}
 	
-	public void onManageProgramPeople(){
+	public void onManageProgramPeople(int openMode, String title){
+		JManageProgram jManageProgram = null;
 		int row = getJTablePeople().getSelectedRow();
 		if (row!=-1){
 			People people = getPeopleTableModel().getDomainObject(row);
@@ -692,7 +693,21 @@ public class JManagePeople extends AbstractJInternalFrame {
 				//No hay programa
 				int reply = JOptionPane.showConfirmDialog(null, "Esta persona no tiene programa de atención primaria. ¿Quieres crearlo ahora?", title, JOptionPane.YES_NO_OPTION);
 		        if (reply == JOptionPane.YES_OPTION) {
-		           //Abrir ventana programa para crear
+		           
+		        	try {
+		        		//Abrir ventana programa para crear
+			        	jManageProgram = new JManageProgram(this, true, openMode, title, people);	
+			        	this.desktop.add(jManageProgram);
+						jManageProgram.setMaximum(true);
+						jManageProgram.setMaximizable(true);
+			        	jManageProgram.setVisible(true);
+			        	jManageProgram.moveToFront();
+			        	jManageProgram.show();
+					} catch (PropertyVetoException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        	
 		        }
 		        else {
 		           //Abrir ventana programa con filtro 
