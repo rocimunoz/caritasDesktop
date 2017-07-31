@@ -47,6 +47,29 @@
 </dependency>
 
 <dependency>
+				<groupId>com.itextpdf</groupId>
+				<artifactId>itextpdf</artifactId>
+				
+			</dependency>
+
+			<dependency>
+				<groupId>com.itextpdf</groupId>
+				<artifactId>itext-pdfa</artifactId>
+				
+			</dependency>
+
+			<dependency>
+				<groupId>com.itextpdf</groupId>
+				<artifactId>itext-xtra</artifactId>
+				
+			</dependency>
+
+			<dependency>
+				<groupId>com.itextpdf.tool</groupId>
+				<artifactId>xmlworker</artifactId>
+			</dependency>
+
+<dependency>
     <groupId>dom4j</groupId>
     <artifactId>dom4j</artifactId>
     <version>1.6.1</version>
