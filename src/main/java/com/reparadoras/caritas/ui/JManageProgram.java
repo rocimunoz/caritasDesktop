@@ -250,15 +250,30 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelHouse().add(getJLabelNumberFamilies(), getGridJLabelNumberFamilies());
 		getJPanelHouse().add(getJComboNumberFamilies(), getGridJComboNumberFamilies());
 		getJPanelHouse().add(getJLabelOtherInfo(), getGridJLabelOtherInfo());
-		getJPanelHouse().add(getJTextAreaOtherInfo(), getGridJTextAreaOtherInfo());
+		
+		JScrollPane scrollJTextArea = new JScrollPane (getJTextAreaOtherInfo(), 
+				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+		getJPanelHouse().add(scrollJTextArea, getGridJTextAreaOtherInfo());
 	
 		
 	}
 	
 	public void initComponents(){
 		this.getCkActive().setSelected(true);
+		initCombos();
 	}
 	
+	
+public void initCombos(){
+		
+		for (int i =1; i<11;i++){
+		this.getJComboNumberFamilies().addItem(i);
+		this.getJComboNumberPeople().addItem(i);
+		this.getJComboNumberRooms().addItem(i);
+		}
+		
+	}
 	
 	/* FUNCIONES DEL GETCONTENTPANE */
 
@@ -511,6 +526,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelTypeHouse() {
 		GridBagConstraints gbc_lblTypeHouse = new GridBagConstraints();
+		gbc_lblTypeHouse.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblTypeHouse.anchor = GridBagConstraints.WEST;
 		gbc_lblTypeHouse.insets = new Insets(10, 20, 0, 5);
 		gbc_lblTypeHouse.gridx = 0;
@@ -550,6 +566,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelRegHolding() {
 		GridBagConstraints gbc_lblRegHolding = new GridBagConstraints();
+		gbc_lblRegHolding.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblRegHolding.anchor = GridBagConstraints.WEST;
 		gbc_lblRegHolding.insets = new Insets(10, 20, 0, 5);
 		gbc_lblRegHolding.gridx = 2;
@@ -589,6 +606,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJLabelNumberRooms() {
 		GridBagConstraints gbc_lblNumberRooms = new GridBagConstraints();
+		gbc_lblNumberRooms.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblNumberRooms.anchor = GridBagConstraints.WEST;
 		gbc_lblNumberRooms.insets = new Insets(10, 20, 0, 5);
 		gbc_lblNumberRooms.gridx = 0;
@@ -608,6 +626,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJComboNumberRooms() {
 		GridBagConstraints gbc_cbNumberRooms = new GridBagConstraints();
+		gbc_cbNumberRooms.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbNumberRooms.weightx = 1.0;
 		gbc_cbNumberRooms.anchor = GridBagConstraints.WEST;
 		gbc_cbNumberRooms.insets = new Insets(10, 20, 0, 5);
@@ -627,6 +646,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJLabelNumberPeople() {
 		GridBagConstraints gbc_lblNumberPeople = new GridBagConstraints();
+		gbc_lblNumberPeople.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblNumberPeople.anchor = GridBagConstraints.WEST;
 		gbc_lblNumberPeople.insets = new Insets(10, 20, 0, 5);
 		gbc_lblNumberPeople.gridx = 2;
@@ -645,6 +665,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJComboNumberPeople() {
 		GridBagConstraints gbc_cbNumberPeople = new GridBagConstraints();
+		gbc_cbNumberPeople.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbNumberPeople.weightx = 1.0;
 		gbc_cbNumberPeople.anchor = GridBagConstraints.WEST;
 		gbc_cbNumberPeople.insets = new Insets(10, 20, 0, 5);
@@ -664,6 +685,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJLabelNumberFamilies() {
 		GridBagConstraints gbc_lblNumberFamilies = new GridBagConstraints();
+		gbc_lblNumberFamilies.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblNumberFamilies.anchor = GridBagConstraints.WEST;
 		gbc_lblNumberFamilies.insets = new Insets(10, 20, 0, 5);
 		gbc_lblNumberFamilies.gridx = 0;
@@ -682,6 +704,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJComboNumberFamilies() {
 		GridBagConstraints gbc_cbNumberFamilies = new GridBagConstraints();
+		gbc_cbNumberFamilies.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbNumberFamilies.weightx = 1.0;
 		gbc_cbNumberFamilies.anchor = GridBagConstraints.WEST;
 		gbc_cbNumberFamilies.insets = new Insets(10, 20, 0, 5);
@@ -701,6 +724,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJLabelOtherInfo() {
 		GridBagConstraints gbc_lblOtherInfo = new GridBagConstraints();
+		gbc_lblOtherInfo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblOtherInfo.anchor = GridBagConstraints.WEST;
 		gbc_lblOtherInfo.insets = new Insets(10, 20, 0, 5);
 		gbc_lblOtherInfo.gridx = 0;
@@ -708,15 +732,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return gbc_lblOtherInfo;
 	}
 	
+	
+	
 	private JTextArea getJTextAreaOtherInfo() {
-
+		
 		if ( taOtherInfo== null) {
 			taOtherInfo = new JTextArea();
+			taOtherInfo.setRows(5);
 			taOtherInfo.setBorder(new LineBorder(new Color(0, 0, 0)));
 			taOtherInfo.setWrapStyleWord(true);
 			taOtherInfo.setLineWrap(true);
-			taOtherInfo.setRows(5);
-			taOtherInfo.setColumns(60);
 			
 		}
 		return taOtherInfo;
@@ -724,11 +749,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	private GridBagConstraints getGridJTextAreaOtherInfo() {
 		GridBagConstraints gbc_taOtherInfo = new GridBagConstraints();
+		gbc_taOtherInfo.gridwidth = 4;
+		gbc_taOtherInfo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_taOtherInfo.weightx = 1.0;
 		gbc_taOtherInfo.anchor = GridBagConstraints.WEST;
 		gbc_taOtherInfo.insets = new Insets(10, 20, 0, 5);
-		gbc_taOtherInfo.gridx = 1;
-		gbc_taOtherInfo.gridy = 3;
+		gbc_taOtherInfo.gridx = 0;
+		gbc_taOtherInfo.gridy = 4;
 		return gbc_taOtherInfo;
 	}
 	
@@ -1078,7 +1105,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private GridBagLayout getGridLayoutHouse() {
 		GridBagLayout gbl_LayoutHouse = new GridBagLayout();
 		gbl_LayoutHouse.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0};
-		gbl_LayoutHouse.rowWeights = new double[] { };
+		gbl_LayoutHouse.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0};
 
 		return gbl_LayoutHouse;
 	}
