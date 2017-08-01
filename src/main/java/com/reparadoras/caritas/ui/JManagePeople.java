@@ -699,7 +699,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 			        	jManageProgram = new JManageProgram(this, true, openMode, title, people);	
 			        	this.desktop.add(jManageProgram);
 						jManageProgram.setMaximum(true);
-						jManageProgram.setMaximizable(true);
+						jManageProgram.setMaximizable(false);
 			        	jManageProgram.setVisible(true);
 			        	jManageProgram.moveToFront();
 			        	jManageProgram.show();

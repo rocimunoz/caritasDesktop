@@ -137,8 +137,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		this.moveToFront();
 		this.setClosable(true);
-		this.setMaximizable(true);
-		this.setResizable(true);
+		this.setMaximizable(false);
+		this.setResizable(false);
 		this.setTitle(title);
 		
 		//this.people = people;
