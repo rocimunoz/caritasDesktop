@@ -20,6 +20,8 @@ import java.awt.GridLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -30,8 +32,11 @@ import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
+import com.reparadoras.caritas.ui.components.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.JWindowParams;
 import com.reparadoras.caritas.ui.components.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.RelativesTableModel;
+import com.reparadoras.caritas.ui.components.TicketsPeopleTableModel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -82,49 +87,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	
 	private JTabbedPane jtabPane1;
-	private JPanel jPanelFamily;
-	private JPanel jPanelAddress;
-	private JPanel jPanelHouse;
 	
-	/*VIEW ADDRESS*/
-	private JLabel lblTown;
-	private JTextField tfTown;
-	private JLabel lblStreet;
-	private JTextField tfStreet;
-	private JLabel lblGate;
-	private JTextField tfGate;
-	private JLabel lblFloor;
-	private JTextField tfFloor;
-	private JLabel lblTelephone;
-	private JTextField tfTelephone;
-	private JLabel lblTelephoneContact;
-	private JTextField tfTelephoneContact;
-	private JLabel lblDateCensus;
-	private JXDatePicker datePickerCensus;
-	private JLabel lblPlace;
-	private JTextField tfPlace;
-	
-	/*VIEW HOUSE*/
-	private JLabel lblTypeHouse;
-	private JTextField tfTypeHouse;
-	private JLabel lblRegHolding;
-	private JTextField tfRegHolding;
-	private JLabel lblNumberRooms;
-	private JComboBox cbNumberRooms;
-	private JLabel lblNumberPeople;
-	private JComboBox cbNumberPeople;
-	private JLabel lblNumberFamilies;
-	private JComboBox cbNumberFamilies;
-	private JLabel lblOtherInfo;
-	private JTextArea taOtherInfo;
-	
-	
-	
-	
-	
-	
-	
-
 	
 	/**
 	 * @wbp.parser.constructor
@@ -208,72 +171,40 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		
 		getJPanelContent().add(getJtabPane1(), getGridJTabPane());
-		getJtabPane1().add("Direccion", getJPanelAddress());
-		getJtabPane1().add("Vivienda", getJPanelHouse());
+		getJtabPane1().add("Direccion", new JPanelAddress());
+		getJtabPane1().add("Vivienda", new JPanelHome());
+		getJtabPane1().add("Familia", new JPanelFamily());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
 		
 		getJtabPane1().setBackgroundAt(0, Color.WHITE);
 		
-		getJPanelAddress().setLayout(getGridLayoutAddress());
-		getJPanelHouse().setLayout(getGridLayoutHouse());
 		
 		
-		//getJtabPane1().add("Familia", getJPanelFamily());
-		//Añado elementos del Tab Direccion
-		getJPanelAddress().add(getJLabelTown(), getGridJLabelTown());
-		getJPanelAddress().add(getJTextFieldTown(), getGridJTextFieldTown());
-		getJPanelAddress().add(getJLabelStreet(), getGridJLabelStreet());
-		getJPanelAddress().add(getJTextFieldStreet(), getGridJTextFieldStreet());
-		getJPanelAddress().add(getJLabelGate(), getGridJLabelGate());
-		getJPanelAddress().add(getJTextFieldGate(), getGridJTextFieldGate());
-		getJPanelAddress().add(getJLabelFloor(), getGridJLabelFloor());
-		getJPanelAddress().add(getJTextFieldFloor(), getGridJTextFieldFloor());
-		getJPanelAddress().add(getJLabelTelephone(), getGridJLabelTelephone());
-		getJPanelAddress().add(getJTextFieldTelephone(), getGridJTextFieldTelephone());
-		getJPanelAddress().add(getJLabelTelephoneContact(), getGridJLabelTelephoneContact());
-		getJPanelAddress().add(getJTextFieldTelephoneContact(), getGridJTextFieldTelephoneContact());
-		getJPanelAddress().add(getJLabelDatePickerCensus(), this.getGridLblDatePickerCensus());
-		getJPanelAddress().add(this.getJXDatePickerCensus(), this.getGridJXDatePickerCensus());
-		getJPanelAddress().add(this.getJLabelPlace(), this.getGridJLabelPlace());
-		getJPanelAddress().add(this.getJTextFieldPlace(), this.getGridJTextFieldPlace());
 		
-		//Añado elementos del Tab Vivienda
-		getJPanelHouse().add(getJLabelTypeHouse(), getGridJLabelTypeHouse());
-		getJPanelHouse().add(getJTextFieldTypeHouse(), getGridJTextFieldTypeHouse());
-		getJPanelHouse().add(getJLabelRegHolding(), getGridJLabelRegHolding());
-		getJPanelHouse().add(getJTextFieldRegHolding(), getGridJTextFieldRegHolding());
-		getJPanelHouse().add(getJLabelNumberRooms(), getGridJLabelNumberRooms());
-		getJPanelHouse().add(getJComboNumberRooms(), getGridJComboNumberRooms());
-		getJPanelHouse().add(getJLabelNumberPeople(), getGridJLabelNumberPeople());
-		getJPanelHouse().add(getJComboNumberPeople(), getGridJComboNumberPeople());
-		getJPanelHouse().add(getJLabelNumberFamilies(), getGridJLabelNumberFamilies());
-		getJPanelHouse().add(getJComboNumberFamilies(), getGridJComboNumberFamilies());
-		getJPanelHouse().add(getJLabelOtherInfo(), getGridJLabelOtherInfo());
 		
-		JScrollPane scrollJTextArea = new JScrollPane (getJTextAreaOtherInfo(), 
-				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-		getJPanelHouse().add(scrollJTextArea, getGridJTextAreaOtherInfo());
+		
+		
+		
+		
+		
 	
+		
+		
+		
+		
+		
+		
 		
 	}
 	
 	public void initComponents(){
 		this.getCkActive().setSelected(true);
-		initCombos();
+		
 	}
 	
 	
-public void initCombos(){
-		
-		for (int i =1; i<11;i++){
-		this.getJComboNumberFamilies().addItem(i);
-		this.getJComboNumberPeople().addItem(i);
-		this.getJComboNumberRooms().addItem(i);
-		}
-		
-	}
+
 	
 	/* FUNCIONES DEL GETCONTENTPANE */
 
@@ -495,620 +426,17 @@ public void initCombos(){
 	}
 	
 	
-	/* FAMILIA */
-	private JPanel getJPanelFamily() {
-		if (jPanelFamily == null) {
-			jPanelFamily = new JPanel();
-			jPanelFamily.setBorder(new LineBorder(new Color(0, 0, 0)));
-			
-		}
-		return jPanelFamily;
-
-	}
 	
-	/* VIVIENDA*/
-	private JPanel getJPanelHouse() {
-		if (jPanelHouse == null) {
-			jPanelHouse = new JPanel();
-		}
-		return jPanelHouse;
-
-	}
-	
-	private JLabel getJLabelTypeHouse() {
-
-		if (lblTypeHouse == null) {
-			lblTypeHouse = new JLabel("Tipo:  ");
-			lblTypeHouse.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblTypeHouse;
-	}
-
-	private GridBagConstraints getGridJLabelTypeHouse() {
-		GridBagConstraints gbc_lblTypeHouse = new GridBagConstraints();
-		gbc_lblTypeHouse.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblTypeHouse.anchor = GridBagConstraints.WEST;
-		gbc_lblTypeHouse.insets = new Insets(10, 20, 0, 5);
-		gbc_lblTypeHouse.gridx = 0;
-		gbc_lblTypeHouse.gridy = 0;
-
-		return gbc_lblTypeHouse;
-	}
-	
-	private JTextField getJTextFieldTypeHouse() {
-		if (tfTypeHouse == null) {
-			tfTypeHouse = new JTextField();
-			tfTypeHouse.setColumns(10);
-		}
-		return tfTypeHouse;
-	}
-
-	private GridBagConstraints getGridJTextFieldTypeHouse() {
-		GridBagConstraints gbc_tfTypeHouse = new GridBagConstraints();
-		gbc_tfTypeHouse.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfTypeHouse.weightx = 1.0;
-		gbc_tfTypeHouse.anchor = GridBagConstraints.NORTH;
-		gbc_tfTypeHouse.insets = new Insets(10, 0, 5, 5);
-		gbc_tfTypeHouse.gridx = 1;
-		gbc_tfTypeHouse.gridy = 0;
-
-		return gbc_tfTypeHouse;
-	}
-	
-	private JLabel getJLabelRegHolding() {
-
-		if (lblRegHolding == null) {
-			lblRegHolding = new JLabel("Régimen tenencia:  ");
-			lblRegHolding.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblRegHolding;
-	}
-
-	private GridBagConstraints getGridJLabelRegHolding() {
-		GridBagConstraints gbc_lblRegHolding = new GridBagConstraints();
-		gbc_lblRegHolding.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblRegHolding.anchor = GridBagConstraints.WEST;
-		gbc_lblRegHolding.insets = new Insets(10, 20, 0, 5);
-		gbc_lblRegHolding.gridx = 2;
-		gbc_lblRegHolding.gridy = 0;
-
-		return gbc_lblRegHolding;
-	}
-	
-	private JTextField getJTextFieldRegHolding() {
-		if (tfRegHolding == null) {
-			tfRegHolding = new JTextField();
-			tfRegHolding.setColumns(10);
-		}
-		return tfRegHolding;
-	}
-
-	private GridBagConstraints getGridJTextFieldRegHolding() {
-		GridBagConstraints gbc_tfTypeRegHolding = new GridBagConstraints();
-		gbc_tfTypeRegHolding.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfTypeRegHolding.weightx = 1.0;
-		gbc_tfTypeRegHolding.anchor = GridBagConstraints.NORTH;
-		gbc_tfTypeRegHolding.insets = new Insets(10, 0, 5, 5);
-		gbc_tfTypeRegHolding.gridx = 3;
-		gbc_tfTypeRegHolding.gridy = 0;
-
-		return gbc_tfTypeRegHolding;
-	}
-	
-	private JLabel getJLabelNumberRooms() {
-
-		if (lblNumberRooms == null) {
-			lblNumberRooms = new JLabel("Número Habitaciones:  ");
-			lblNumberRooms.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblNumberRooms;
-	}
-	
-	private GridBagConstraints getGridJLabelNumberRooms() {
-		GridBagConstraints gbc_lblNumberRooms = new GridBagConstraints();
-		gbc_lblNumberRooms.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNumberRooms.anchor = GridBagConstraints.WEST;
-		gbc_lblNumberRooms.insets = new Insets(10, 20, 0, 5);
-		gbc_lblNumberRooms.gridx = 0;
-		gbc_lblNumberRooms.gridy = 1;
-		return gbc_lblNumberRooms;
-	}
-	/*DIRECCION */
-	
-	private JComboBox<Integer> getJComboNumberRooms() {
-
-		if ( cbNumberRooms== null) {
-			cbNumberRooms = new JComboBox<Integer>();
-			
-		}
-		return cbNumberRooms;
-	}
-	
-	private GridBagConstraints getGridJComboNumberRooms() {
-		GridBagConstraints gbc_cbNumberRooms = new GridBagConstraints();
-		gbc_cbNumberRooms.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbNumberRooms.weightx = 1.0;
-		gbc_cbNumberRooms.anchor = GridBagConstraints.WEST;
-		gbc_cbNumberRooms.insets = new Insets(10, 20, 0, 5);
-		gbc_cbNumberRooms.gridx = 1;
-		gbc_cbNumberRooms.gridy = 1;
-		return gbc_cbNumberRooms;
-	}
-	
-	private JLabel getJLabelNumberPeople() {
-
-		if (lblNumberPeople == null) {
-			lblNumberPeople = new JLabel("Número Personas que residen:  ");
-			lblNumberPeople.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblNumberPeople;
-	}
-	
-	private GridBagConstraints getGridJLabelNumberPeople() {
-		GridBagConstraints gbc_lblNumberPeople = new GridBagConstraints();
-		gbc_lblNumberPeople.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNumberPeople.anchor = GridBagConstraints.WEST;
-		gbc_lblNumberPeople.insets = new Insets(10, 20, 0, 5);
-		gbc_lblNumberPeople.gridx = 2;
-		gbc_lblNumberPeople.gridy = 1;
-		return gbc_lblNumberPeople;
-	}
-	
-	private JComboBox<Integer> getJComboNumberPeople() {
-
-		if ( cbNumberPeople== null) {
-			cbNumberPeople = new JComboBox<Integer>();
-			
-		}
-		return cbNumberPeople;
-	}
-	
-	private GridBagConstraints getGridJComboNumberPeople() {
-		GridBagConstraints gbc_cbNumberPeople = new GridBagConstraints();
-		gbc_cbNumberPeople.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbNumberPeople.weightx = 1.0;
-		gbc_cbNumberPeople.anchor = GridBagConstraints.WEST;
-		gbc_cbNumberPeople.insets = new Insets(10, 20, 0, 5);
-		gbc_cbNumberPeople.gridx = 3;
-		gbc_cbNumberPeople.gridy = 1;
-		return gbc_cbNumberPeople;
-	}
-	
-	private JLabel getJLabelNumberFamilies() {
-
-		if (lblNumberFamilies == null) {
-			lblNumberFamilies = new JLabel("Número Familias nucleares:  ");
-			lblNumberFamilies.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblNumberFamilies;
-	}
-	
-	private GridBagConstraints getGridJLabelNumberFamilies() {
-		GridBagConstraints gbc_lblNumberFamilies = new GridBagConstraints();
-		gbc_lblNumberFamilies.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNumberFamilies.anchor = GridBagConstraints.WEST;
-		gbc_lblNumberFamilies.insets = new Insets(10, 20, 0, 5);
-		gbc_lblNumberFamilies.gridx = 0;
-		gbc_lblNumberFamilies.gridy = 2;
-		return gbc_lblNumberFamilies;
-	}
-	
-	private JComboBox<Integer> getJComboNumberFamilies() {
-
-		if ( cbNumberFamilies== null) {
-			cbNumberFamilies = new JComboBox<Integer>();
-			
-		}
-		return cbNumberFamilies;
-	}
-	
-	private GridBagConstraints getGridJComboNumberFamilies() {
-		GridBagConstraints gbc_cbNumberFamilies = new GridBagConstraints();
-		gbc_cbNumberFamilies.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbNumberFamilies.weightx = 1.0;
-		gbc_cbNumberFamilies.anchor = GridBagConstraints.WEST;
-		gbc_cbNumberFamilies.insets = new Insets(10, 20, 0, 5);
-		gbc_cbNumberFamilies.gridx = 1;
-		gbc_cbNumberFamilies.gridy = 2;
-		return gbc_cbNumberFamilies;
-	}
-	
-	private JLabel getJLabelOtherInfo() {
-
-		if (lblOtherInfo == null) {
-			lblOtherInfo = new JLabel("Otros datos:  ");
-			lblOtherInfo.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblOtherInfo;
-	}
-	
-	private GridBagConstraints getGridJLabelOtherInfo() {
-		GridBagConstraints gbc_lblOtherInfo = new GridBagConstraints();
-		gbc_lblOtherInfo.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblOtherInfo.anchor = GridBagConstraints.WEST;
-		gbc_lblOtherInfo.insets = new Insets(10, 20, 0, 5);
-		gbc_lblOtherInfo.gridx = 0;
-		gbc_lblOtherInfo.gridy = 3;
-		return gbc_lblOtherInfo;
-	}
-	
-	
-	
-	private JTextArea getJTextAreaOtherInfo() {
-		
-		if ( taOtherInfo== null) {
-			taOtherInfo = new JTextArea();
-			taOtherInfo.setRows(5);
-			taOtherInfo.setBorder(new LineBorder(new Color(0, 0, 0)));
-			taOtherInfo.setWrapStyleWord(true);
-			taOtherInfo.setLineWrap(true);
-			
-		}
-		return taOtherInfo;
-	}
-	
-	private GridBagConstraints getGridJTextAreaOtherInfo() {
-		GridBagConstraints gbc_taOtherInfo = new GridBagConstraints();
-		gbc_taOtherInfo.gridwidth = 4;
-		gbc_taOtherInfo.fill = GridBagConstraints.HORIZONTAL;
-		gbc_taOtherInfo.weightx = 1.0;
-		gbc_taOtherInfo.anchor = GridBagConstraints.WEST;
-		gbc_taOtherInfo.insets = new Insets(10, 20, 0, 5);
-		gbc_taOtherInfo.gridx = 0;
-		gbc_taOtherInfo.gridy = 4;
-		return gbc_taOtherInfo;
-	}
 	
 	/*DIRECCION */
 	
 	
 	
-	private JPanel getJPanelAddress() {
-		if (jPanelAddress == null) {
-			jPanelAddress = new JPanel();
-			jPanelAddress.setAlignmentX(Component.LEFT_ALIGNMENT);
-			
-		}
-		return jPanelAddress;
-	}
 	
 	
 	
-	private JLabel getJLabelTown() {
-
-		if (lblTown == null) {
-			lblTown = new JLabel("Municipio:  ");
-			lblTown.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblTown;
-	}
-
-	private GridBagConstraints getGridJLabelTown() {
-		GridBagConstraints gbc_lblTown = new GridBagConstraints();
-		gbc_lblTown.anchor = GridBagConstraints.WEST;
-		gbc_lblTown.insets = new Insets(10, 20, 0, 5);
-		gbc_lblTown.gridx = 0;
-		gbc_lblTown.gridy = 0;
-
-		return gbc_lblTown;
-	}
 	
-	private JTextField getJTextFieldTown() {
-		if (tfTown == null) {
-			tfTown = new JTextField();
-			tfTown.setColumns(10);
-		}
-		return tfTown;
-	}
 	
-	private GridBagConstraints getGridJTextFieldTown() {
-
-		GridBagConstraints gbc_tfTown = new GridBagConstraints();
-		gbc_tfTown.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfTown.weightx = 1.0;
-		gbc_tfTown.anchor = GridBagConstraints.NORTH;
-		gbc_tfTown.insets = new Insets(10, 0, 5, 5);
-		gbc_tfTown.gridx = 1;
-		gbc_tfTown.gridy = 0;
-
-		return gbc_tfTown;
-	}
-	
-	private JLabel getJLabelStreet() {
-
-		if (lblStreet == null) {
-			lblStreet = new JLabel("Calle:  ");
-			lblStreet.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblStreet;
-	}
-
-	private GridBagConstraints getGridJLabelStreet() {
-		GridBagConstraints gbc_lblStreet = new GridBagConstraints();
-		gbc_lblStreet.anchor = GridBagConstraints.WEST;
-		gbc_lblStreet.insets = new Insets(10, 5, 0, 5);
-		gbc_lblStreet.gridx = 2;
-		gbc_lblStreet.gridy = 0;
-
-		return gbc_lblStreet;
-	}
-	
-	private JTextField getJTextFieldStreet() {
-		if (tfStreet == null) {
-			tfStreet = new JTextField();
-			tfStreet.setColumns(10);
-		}
-		return tfStreet;
-	}
-	
-	private GridBagConstraints getGridJTextFieldStreet() {
-
-		GridBagConstraints gbc_tfStreet = new GridBagConstraints();
-		gbc_tfStreet.weightx = 1.0;
-		gbc_tfStreet.anchor = GridBagConstraints.NORTH;
-		gbc_tfStreet.insets = new Insets(10, 0, 5, 20);
-		gbc_tfStreet.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfStreet.gridx = 3;
-		gbc_tfStreet.gridy = 0;
-
-		return gbc_tfStreet;
-	}
-	
-	private JLabel getJLabelGate() {
-
-		if (lblGate == null) {
-			lblGate = new JLabel("Portal:  ");
-			lblGate.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblGate;
-	}
-	
-	private GridBagConstraints getGridJLabelGate() {
-		GridBagConstraints gbc_lblGate = new GridBagConstraints();
-		gbc_lblGate.anchor = GridBagConstraints.WEST;
-		gbc_lblGate.insets = new Insets(10, 20, 0, 5);
-		gbc_lblGate.gridx = 0;
-		gbc_lblGate.gridy = 1;
-
-		return gbc_lblGate;
-	}
-	
-	private JTextField getJTextFieldGate() {
-		if (tfGate == null) {
-			tfGate = new JTextField();
-			tfGate.setColumns(10);
-		}
-		return tfGate;
-	}
-	
-	private GridBagConstraints getGridJTextFieldGate() {
-
-		GridBagConstraints gbc_tfGate = new GridBagConstraints();
-		gbc_tfGate.weightx = 1.0;
-		gbc_tfGate.anchor = GridBagConstraints.NORTH;
-		gbc_tfGate.insets = new Insets(10, 0, 5, 5);
-		gbc_tfGate.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfGate.gridx = 1;
-		gbc_tfGate.gridy = 1;
-
-		return gbc_tfGate;
-	}
-	
-	private JLabel getJLabelFloor() {
-
-		if (lblFloor == null) {
-			lblFloor = new JLabel("Piso y mano:  ");
-			lblFloor.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblFloor;
-	}
-	
-	private GridBagConstraints getGridJLabelFloor() {
-		GridBagConstraints gbc_lblFloor = new GridBagConstraints();
-		gbc_lblFloor.anchor = GridBagConstraints.WEST;
-		gbc_lblFloor.insets = new Insets(10, 5, 0, 5);
-		gbc_lblFloor.gridx = 2;
-		gbc_lblFloor.gridy = 1;
-
-		return gbc_lblFloor;
-	}
-	
-	private JTextField getJTextFieldFloor() {
-		if (tfFloor == null) {
-			tfFloor = new JTextField();
-			tfFloor.setColumns(10);
-		}
-		return tfFloor;
-	}
-	
-	private GridBagConstraints getGridJTextFieldFloor() {
-
-		GridBagConstraints gbc_tfFloor = new GridBagConstraints();
-		gbc_tfFloor.weightx = 1.0;
-		gbc_tfFloor.anchor = GridBagConstraints.NORTH;
-		gbc_tfFloor.insets = new Insets(10, 0, 5, 20);
-		gbc_tfFloor.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfFloor.gridx = 3;
-		gbc_tfFloor.gridy = 1;
-
-		return gbc_tfFloor;
-	}
-	
-	private JLabel getJLabelTelephone() {
-
-		if (lblTelephone == null) {
-			lblTelephone = new JLabel("Tfno Domicilio:  ");
-			lblTelephone.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblTelephone;
-	}
-	
-	private GridBagConstraints getGridJLabelTelephone() {
-		GridBagConstraints gbc_lblTelephone = new GridBagConstraints();
-		gbc_lblTelephone.anchor = GridBagConstraints.WEST;
-		gbc_lblTelephone.insets = new Insets(10, 20, 0, 5);
-		gbc_lblTelephone.gridx = 0;
-		gbc_lblTelephone.gridy = 2;
-
-		return gbc_lblTelephone;
-	}
-	
-	private JTextField getJTextFieldTelephone() {
-		if (tfTelephone == null) {
-			tfTelephone = new JTextField();
-			tfTelephone.setColumns(10);
-		}
-		return tfTelephone;
-	}
-	
-	private GridBagConstraints getGridJTextFieldTelephone() {
-
-		GridBagConstraints gbc_tfTelephone = new GridBagConstraints();
-		gbc_tfTelephone.weightx = 1.0;
-		gbc_tfTelephone.anchor = GridBagConstraints.NORTH;
-		gbc_tfTelephone.insets = new Insets(10, 0, 5, 5);
-		gbc_tfTelephone.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfTelephone.gridx = 1;
-		gbc_tfTelephone.gridy = 2;
-
-		return gbc_tfTelephone;
-	}
-	
-	private JLabel getJLabelTelephoneContact() {
-
-		if (lblTelephoneContact == null) {
-			lblTelephoneContact = new JLabel("Tfno Contacto:  ");
-			lblTelephoneContact.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblTelephoneContact;
-	}
-	
-	private GridBagConstraints getGridJLabelTelephoneContact() {
-		GridBagConstraints gbc_lblTelephoneContact = new GridBagConstraints();
-		gbc_lblTelephoneContact.anchor = GridBagConstraints.WEST;
-		gbc_lblTelephoneContact.insets = new Insets(10, 5, 0, 5);
-		gbc_lblTelephoneContact.gridx = 2;
-		gbc_lblTelephoneContact.gridy = 2;
-
-		return gbc_lblTelephoneContact;
-	}
-	
-	private JTextField getJTextFieldTelephoneContact() {
-		if (tfTelephoneContact == null) {
-			tfTelephoneContact = new JTextField();
-			tfTelephoneContact.setColumns(10);
-		}
-		return tfTelephoneContact;
-	}
-	
-	private GridBagConstraints getGridJTextFieldTelephoneContact() {
-
-		GridBagConstraints gbc_tfTelephoneContact = new GridBagConstraints();
-		gbc_tfTelephoneContact.weightx = 1.0;
-		gbc_tfTelephoneContact.anchor = GridBagConstraints.NORTH;
-		gbc_tfTelephoneContact.insets = new Insets(10, 0, 5, 20);
-		gbc_tfTelephoneContact.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfTelephoneContact.gridx = 3;
-		gbc_tfTelephoneContact.gridy = 2;
-
-		return gbc_tfTelephoneContact;
-	}
-	
-	private JLabel getJLabelDatePickerCensus() {
-
-		if (lblDateCensus == null) {
-			lblDateCensus = new JLabel("Fecha Padrón:  ");
-			lblDateCensus.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblDateCensus;
-	}
-	
-	private GridBagConstraints getGridLblDatePickerCensus() {
-		GridBagConstraints gbc_datePickerCensus = new GridBagConstraints();
-		gbc_datePickerCensus.anchor = GridBagConstraints.WEST;
-		gbc_datePickerCensus.insets = new Insets(10, 20, 0, 5);
-		gbc_datePickerCensus.gridx = 0;
-		gbc_datePickerCensus.gridy = 3;
-
-		return gbc_datePickerCensus;
-	}
-	
-	private JXDatePicker getJXDatePickerCensus() {
-		if (datePickerCensus == null) {
-			datePickerCensus = new JXDatePicker();
-			
-		}
-		return datePickerCensus;
-	}
-	
-	private GridBagConstraints getGridJXDatePickerCensus() {
-
-		GridBagConstraints gbc_datePickerCensus = new GridBagConstraints();
-		gbc_datePickerCensus.weightx = 1.0;
-		gbc_datePickerCensus.anchor = GridBagConstraints.NORTH;
-		gbc_datePickerCensus.insets = new Insets(10, 0, 5, 20);
-		gbc_datePickerCensus.fill = GridBagConstraints.HORIZONTAL;
-		gbc_datePickerCensus.gridx = 1;
-		gbc_datePickerCensus.gridy = 3;
-
-		return gbc_datePickerCensus;
-	}
-	
-	private JLabel getJLabelPlace() {
-
-		if (lblPlace == null) {
-			lblPlace = new JLabel("Lugar:  ");
-			lblPlace.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblPlace;
-	}
-	
-	private GridBagConstraints getGridJLabelPlace() {
-		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
-		gbc_lblPlace.anchor = GridBagConstraints.WEST;
-		gbc_lblPlace.insets = new Insets(10, 5, 0, 5);
-		gbc_lblPlace.gridx = 2;
-		gbc_lblPlace.gridy = 3;
-
-		return gbc_lblPlace;
-	}
-	
-	private JTextField getJTextFieldPlace() {
-		if (tfPlace == null) {
-			tfPlace = new JTextField();
-			tfPlace.setColumns(10);
-		}
-		return tfPlace;
-	}
-	
-	private GridBagConstraints getGridJTextFieldPlace() {
-
-		GridBagConstraints gbc_tfPlace = new GridBagConstraints();
-		gbc_tfPlace.weightx = 1.0;
-		gbc_tfPlace.anchor = GridBagConstraints.NORTH;
-		gbc_tfPlace.insets = new Insets(10, 0, 5, 20);
-		gbc_tfPlace.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfPlace.gridx = 3;
-		gbc_tfPlace.gridy = 3;
-
-		return gbc_tfPlace;
-	}
-	
-	private GridBagLayout getGridLayoutAddress() {
-		GridBagLayout gbl_LaoutAddress = new GridBagLayout();
-		gbl_LaoutAddress.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0};
-		gbl_LaoutAddress.rowWeights = new double[] { };
-
-		return gbl_LaoutAddress;
-	}
-	
-	private GridBagLayout getGridLayoutHouse() {
-		GridBagLayout gbl_LayoutHouse = new GridBagLayout();
-		gbl_LayoutHouse.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0};
-		gbl_LayoutHouse.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0};
-
-		return gbl_LayoutHouse;
-	}
 	
 	
 	

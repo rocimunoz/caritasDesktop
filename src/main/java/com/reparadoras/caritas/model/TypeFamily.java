@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-public class FamilyType{
+public class TypeFamily{
 
 
     private int id;

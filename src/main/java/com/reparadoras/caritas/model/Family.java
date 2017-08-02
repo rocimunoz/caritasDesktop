@@ -7,42 +7,39 @@ package com.reparadoras.caritas.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 
 
 public class Family implements Serializable{
-/*
-     @Id @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "id")
-    private int id;
- 
-     @OneToOne(fetch=FetchType.LAZY,optional=false)
-     @JoinColumn(name="id_home")
-     private Home home;
-     
-    @OneToMany(mappedBy="family" )
-    private List<People> listPeople;
 
-	public int getId() {
-		return id;
+	
+	private Set<Relative> relatives;
+	private TypeFamily typeFamily;
+	private String otherInfo;
+	public Set<Relative> getRelatives() {
+		return relatives;
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setRelatives(Set<Relative> relatives) {
+		this.relatives = relatives;
 	}
-
-	public List<People> getListPeople() {
-		return listPeople;
+	public TypeFamily getTypeFamily() {
+		return typeFamily;
 	}
-
-	public void setListPeople(List<People> listPeople) {
-		this.listPeople = listPeople;
+	public void setTypeFamily(TypeFamily typeFamily) {
+		this.typeFamily = typeFamily;
 	}
-
-   */
-    
+	public String getOtherInfo() {
+		return otherInfo;
+	}
+	public void setOtherInfo(String otherInfo) {
+		this.otherInfo = otherInfo;
+	}
+	
+	
+	
     
    
     

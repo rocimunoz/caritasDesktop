@@ -16,6 +16,8 @@ public class People implements Serializable{
  
   
     private Family family;
+    private Home home;
+    
     
     private String name;
     
@@ -103,14 +105,15 @@ public class People implements Serializable{
 		return this.name;
 	}
 
-	/*
-	public Program getProgram() {
-		return program;
+	public Home getHome() {
+		return home;
 	}
 
-	public void setProgram(Program program) {
-		this.program = program;
-	}*/
+	public void setHome(Home home) {
+		this.home = home;
+	}
+
+	
 	
 	
 

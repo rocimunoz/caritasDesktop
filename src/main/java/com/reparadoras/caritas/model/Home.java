@@ -7,109 +7,85 @@ package com.reparadoras.caritas.model;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+
 
 
 
 public class Home implements Serializable{
 
 	
-	/*
-     @Id @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "id")
-    private int id;
-     
-     @OneToOne(fetch=FetchType.LAZY,optional=false)
-     @JoinColumn(name="id_address")
-     private Address address;
-     
-     @Column(name = "type_home", nullable = false)
-     private String type;  //TODO: preguntar si enumerado
-     
-     @Column(name = "home_rule")
-     private String homeRule; //TODO: preguntar si enumerado
-     
-     @Column(name = "number_rooms")
-     private int numberRooms;
-     
-     @Column(name = "number_people")
-     private int numberPeople;
-     
-     @Column(name = "number_families")
-     private int numberFamilies;
-     
-     @Column(name = "others")
-     private String others;
+private static final long serialVersionUID = 1L;
+	
+private String typeHouse;
+private String regHolding;
+private int numberRooms;
+private int numberPeople;
+private int numberFamilies;
+private String otherInfo;
 
-	public int getId() {
-		return id;
-	}
+private Address address;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+public String getTypeHouse() {
+	return typeHouse;
+}
 
-	public Address getAddress() {
-		return address;
-	}
+public void setTypeHouse(String typeHouse) {
+	this.typeHouse = typeHouse;
+}
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+public String getRegHolding() {
+	return regHolding;
+}
 
-	public String getType() {
-		return type;
-	}
+public void setRegHolding(String regHolding) {
+	this.regHolding = regHolding;
+}
 
-	public void setType(String type) {
-		this.type = type;
-	}
+public int getNumberRooms() {
+	return numberRooms;
+}
 
-	public String getHomeRule() {
-		return homeRule;
-	}
+public void setNumberRooms(int numberRooms) {
+	this.numberRooms = numberRooms;
+}
 
-	public void setHomeRule(String homeRule) {
-		this.homeRule = homeRule;
-	}
+public int getNumberPeople() {
+	return numberPeople;
+}
 
-	public int getNumberRooms() {
-		return numberRooms;
-	}
+public void setNumberPeople(int numberPeople) {
+	this.numberPeople = numberPeople;
+}
 
-	public void setNumberRooms(int numberRooms) {
-		this.numberRooms = numberRooms;
-	}
+public int getNumberFamilies() {
+	return numberFamilies;
+}
 
-	public int getNumberPeople() {
-		return numberPeople;
-	}
+public void setNumberFamilies(int numberFamilies) {
+	this.numberFamilies = numberFamilies;
+}
 
-	public void setNumberPeople(int numberPeople) {
-		this.numberPeople = numberPeople;
-	}
+public String getOtherInfo() {
+	return otherInfo;
+}
 
-	public int getNumberFamilies() {
-		return numberFamilies;
-	}
+public void setOtherInfo(String otherInfo) {
+	this.otherInfo = otherInfo;
+}
 
-	public void setNumberFamilies(int numberFamilies) {
-		this.numberFamilies = numberFamilies;
-	}
+public Address getAddress() {
+	return address;
+}
 
-	public String getOthers() {
-		return others;
-	}
+public void setAddress(Address address) {
+	this.address = address;
+}
 
-	public void setOthers(String others) {
-		this.others = others;
-	}
-     */
 
    
     
     
-     
+
      
  
     

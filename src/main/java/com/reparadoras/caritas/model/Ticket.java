@@ -62,18 +62,7 @@ public class Ticket implements Serializable
     }
 
 
-    public People getPeople()
-    {
-
-	return people;
-    }
-
-
-    public void setPeople(People people)
-    {
-
-	this.people = people;
-    }
+   
 
 
     public int getPointsJanuary()
@@ -376,6 +365,18 @@ public class Ticket implements Serializable
 	public void setDateDecember(Date dateDecember) {
 		this.dateDecember = dateDecember;
 	}
+
+
+	public People getPeople() {
+		return people;
+	}
+
+
+	public void setPeople(People people) {
+		this.people = people;
+	}
+	
+	
     
     
 
