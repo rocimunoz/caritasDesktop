@@ -35,6 +35,7 @@ import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.JWindowParams;
 import com.reparadoras.caritas.ui.components.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.ProgramTableModel;
 import com.reparadoras.caritas.ui.components.RelativesTableModel;
 import com.reparadoras.caritas.ui.components.TicketsPeopleTableModel;
 
@@ -78,10 +79,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JPanel jPanelContent = null;
-	private PeopleTableModel peopleTableModel = null;
+	private ProgramTableModel programTableModel = null;
 	private JLabel lblDni;
 	private JTextField tfDni;
 	private JCheckBox ckActive;
+	private JPanel jPanelGrid;
+	private JTable tableProgram = null;
+	private JScrollPane scrollPaneJTable = null;
+	
 	
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
@@ -130,19 +135,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 
-		filterPeople();
 		
 		addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
                 // do something  
-            	filterPeople();
             	System.out.println("evento internal frame");
             }
         });
 	
 		getJButtonSearch().addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				filterPeople();
+				
 			}
 		});
 
@@ -154,6 +157,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void createGUIComponents(){
 		getContentPane().setLayout(getGridContentPane());
 		getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
+		getContentPane().add(getJPanelGrid(), this.getGridJPanelGrid());
 
 		// Añado elementos del JPanelFilter
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
@@ -165,6 +169,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 
+		//Añado elementos del JPanelGrid
+		
 		// Añado elementos del JPanelContent
 		getContentPane().add(getJPanelContent(), getGridJPanelContent());
 		getJPanelContent().setLayout(getGridLayoutJPanelContent());
@@ -179,22 +185,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		getJtabPane1().setBackgroundAt(0, Color.WHITE);
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	
-		
-		
-		
-		
-		
-		
 		
 	}
 	
@@ -233,7 +224,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JPanel getJPanelFilter() {
 		if (jPanelFilter == null) {
 			jPanelFilter = new JPanel();
-			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Personas",
+			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Programa Atención Primaria",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
 			
 		
@@ -371,6 +362,83 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return gbc_btnSearchPeople;
 	}
 
+	
+	/* FUNCIONES DEL PANEL DEL GRID */
+
+	private GridBagLayout getGridLayoutJPanelGrid() {
+
+		GridBagLayout gbl_jPanelGrid = new GridBagLayout();
+		gbl_jPanelGrid.columnWeights = new double[] { 0.0, 0.0, 0.0 };
+		gbl_jPanelGrid.rowWeights = new double[] { 0.0, 0.0 };
+
+		return gbl_jPanelGrid;
+	}
+
+	private JPanel getJPanelGrid() {
+		if (jPanelGrid == null) {
+			jPanelGrid = new JPanel();
+			jPanelGrid.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Listado Programa Atención Primaria",
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+		}
+
+		return jPanelGrid;
+	}
+
+	private GridBagConstraints getGridJPanelGrid() {
+		GridBagConstraints gbc_jPanelGrid = new GridBagConstraints();
+		gbc_jPanelGrid.weightx = 1.0;
+		gbc_jPanelGrid.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelGrid.fill = GridBagConstraints.BOTH;
+		gbc_jPanelGrid.gridx = 0;
+		gbc_jPanelGrid.gridy = 1;
+
+		return gbc_jPanelGrid;
+	}
+	
+	private JScrollPane getScrollPaneTable(){
+		if (scrollPaneJTable == null){
+			scrollPaneJTable = new JScrollPane(getJTableProgram());
+			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
+		}
+		
+		return scrollPaneJTable;
+	}
+	
+	private GridBagConstraints getGridJPanelScrollTable(){
+		
+		GridBagConstraints gbc_jPanelScroll = new GridBagConstraints();
+		gbc_jPanelScroll.weighty = 1.0;
+		gbc_jPanelScroll.weightx = 1.0;
+		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
+		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
+		gbc_jPanelScroll.gridx = 0;
+		gbc_jPanelScroll.gridy = 0;
+		
+		return gbc_jPanelScroll; 
+	}
+	
+	private JTable getJTableProgram(){
+		if (tableProgram == null){
+			
+			tableProgram = new JTable(getProgramTableModel());
+			tableProgram.setAutoCreateRowSorter(true);
+			tableProgram.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		}
+		
+		return tableProgram;
+	}
+	
+	private ProgramTableModel getProgramTableModel(){
+		
+		if (programTableModel == null){
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha"};
+			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
+		}
+		
+		return programTableModel;
+	}
+	
+	
 	/* FUNCIONES DEL PANEL DE CONTENIDO */
 
 	private JPanel getJPanelContent() {
@@ -392,7 +460,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		gbc_jPanelContent.fill = GridBagConstraints.BOTH;
 		gbc_jPanelContent.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelContent.gridx = 0;
-		gbc_jPanelContent.gridy = 1;
+		gbc_jPanelContent.gridy = 2;
 
 		return gbc_jPanelContent;
 	}
@@ -428,71 +496,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	
 	
-	/*DIRECCION */
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-	
-	private PeopleTableModel getPeopleTableModel(){
-		
-		if (peopleTableModel == null){
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos"};
-			peopleTableModel = new PeopleTableModel(Arrays.asList(columnIdentifiers));
-		}
-		
-		return peopleTableModel;
-	}
-	
 	
 
 	
 	/* EVENTOS */
 
-	public void filterPeople(){
-		String filterDni = this.getJTextFieldDni().getText();
-		String filterName = this.getJTextFieldName().getText();
-		boolean filterActive = this.getCkActive().isSelected();
-		People filterPeople = new People();
-		if (filterDni!=null && !filterDni.equals("")){
-			filterPeople.setDni(filterDni);
-		}
-		if (filterName!=null && !filterName.equals("")){
-			filterPeople.setName(filterName);
-		}
-		
-			filterPeople.setActive(filterActive);
-				
-		List<People> listPeople = peopleDAO.findPeople(filterPeople);
-		if (listPeople!=null && !listPeople.isEmpty()){
-			this.getPeopleTableModel().clearTableModelData();
-			this.getPeopleTableModel().addRows(listPeople);
-			
-		}
-		else{
-			JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
-		}
 	
-	}
-	
-	
-	public Program getProgramPeople(People people){
-		
-		Program program = programDAO.findProgramById(people);
-		return program;
-		
-		
-	}
 	
 	public void createProgramPeople(People people){
 		
