@@ -21,6 +21,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
 import com.reparadoras.caritas.ui.components.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.RelativesTableModel;
 
 public class JPanelFamily extends JPanel{
@@ -47,7 +48,7 @@ public class JPanelFamily extends JPanel{
 		getJPanelTableFamily().setLayout(getGridLayoutJPanelTable());
 		getJPanelTypeFamily().setLayout(getGridLayoutJPanelTypeFamily());
 		
-getJPanelTableFamily().add(getScrollPaneTable(), getGridJPanelScrollTable());
+		getJPanelTableFamily().add(getScrollPaneTable(), getGridJPanelScrollTable());
 		
 		getJPanelTypeFamily().add(getLabelFamilyOtherInfo(), getGridJLabelFamilyOtherInfo());
 		getJPanelTypeFamily().add(getJTextAreaFamilyOtherInfo(), getGridJTextAreaFamilyOtherInfo());
@@ -207,19 +208,10 @@ getJPanelTableFamily().add(getScrollPaneTable(), getGridJPanelScrollTable());
 	
 	private JTable getJTableRelatives(){
 		if (tableRelatives == null){
-			TableModel tableModel = getRelativesTableModel();
-			tableRelatives = new JTable(tableModel){
-
-				protected JTableHeader createDefaultTableHeader() {
-			          return new GroupableTableHeader(columnModel);
-			      }
-			};
 			
+			tableRelatives = new JTable(getRelativesTableModel());
 			tableRelatives.setAutoCreateRowSorter(true);
 			tableRelatives.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			tableRelatives.setShowGrid(true);
-			tableRelatives.setShowVerticalLines(true);
-			
 		}
 		
 		return tableRelatives;
@@ -228,12 +220,16 @@ getJPanelTableFamily().add(getScrollPaneTable(), getGridJPanelScrollTable());
 private RelativesTableModel getRelativesTableModel(){
 		
 		if (relativesTableModel == null){
-			Object[] columnIdentifiers = new Object[] { "Parentesco", "Apellidos", "Nombre", "F.Nacimiento", "Situación"};
+			Object[] columnIdentifiers = new Object[] { "Parentesco", "Apellidos", "Nombre", "Fecha Nacimiento", "Situacion"};
 			relativesTableModel = new RelativesTableModel(Arrays.asList(columnIdentifiers));
-			}
+		}
 		
 		return relativesTableModel;
 	}
+	
+	
+	
+
 	
 	
 	

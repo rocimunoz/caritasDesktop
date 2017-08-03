@@ -30,6 +30,7 @@ import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.GroupableTableHeader;
@@ -76,7 +77,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	private JTextField tfName;
+	private JComboBox<People> cbPeople;
 	private JButton btnSearchPeople = null;
 	private JPanel jPanelContent = null;
 	private ProgramTableModel programTableModel = null;
@@ -92,6 +93,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	
 	private JTabbedPane jtabPane1;
+	
+	private People people = null;
 	
 	
 	/**
@@ -109,7 +112,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.setResizable(false);
 		this.setTitle(title);
 		
-		//this.people = people;
+		this.people = people;
+		onFilterProgram(true);
 		
 		
 		
@@ -166,10 +170,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
+		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 
 		//Añado elementos del JPanelGrid
+		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
+		getJPanelGrid().add(this.getScrollPaneTable(), this.getGridJPanelScrollTable());
+		
 		
 		// Añado elementos del JPanelContent
 		getContentPane().add(getJPanelContent(), getGridJPanelContent());
@@ -191,6 +198,27 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	public void initComponents(){
 		this.getCkActive().setSelected(true);
+		initCbPeople();
+		
+	}
+	
+public void initCbPeople(){
+		
+		
+		if (this.people!=null){
+			this.getJComboBoxPeople().addItem(this.people);
+			this.getJComboBoxPeople().setSelectedItem(this.people);
+		}
+		else{
+			List<People> listPeople = peopleDAO.findAll();
+			People allPeople = new People();
+			allPeople.setName("TODOS");
+		    allPeople.setIdPeople(-1);
+			listPeople.add(0, allPeople);
+			for (People p : listPeople) {
+				this.getJComboBoxPeople().addItem(p);
+			}
+		}
 		
 	}
 	
@@ -263,13 +291,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JTextField getJTextFieldName() {
-		if (tfName == null) {
-			tfName = new JTextField();
-			tfName.setColumns(10);
+	private JComboBox<People> getJComboBoxPeople() {
+		if (cbPeople == null) {
+			cbPeople = new JComboBox<People>();
+			
 		}
 
-		return tfName;
+		return cbPeople;
 
 	}
 	
@@ -501,10 +529,41 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	/* EVENTOS */
 
-	
-	
-	public void createProgramPeople(People people){
+	public void onFilterProgram(boolean create){
+		People filterPeople = (People)this.getJComboBoxPeople().getSelectedItem();
 		
+		if (filterPeople.getIdPeople()!=-1){
+			Program program = programDAO.findProgram(filterPeople);
+			if (program!=null){
+				this.getProgramTableModel().clearTableModelData();
+				this.getProgramTableModel().addRow(program);
+				
+			}
+			else{
+				Program programNewReset = new Program();
+				programNewReset.setPeople(filterPeople);
+				
+				if (create){
+					int dialogResult = JOptionPane.showConfirmDialog(this, "No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");
+					if (dialogResult == JOptionPane.YES_OPTION){
+						programDAO.insert(programNewReset);
+						onFilterProgram(false);
+					}
+					
+				}
+				else{
+					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+				}
+				
+			}
+		}
+		else{
+			List<Program> listPrograms = programDAO.findAll();
+			this.getProgramTableModel().clearTableModelData();
+			this.getProgramTableModel().addRows(listPrograms);
+		}
+		
+	
 	}
 	
 	

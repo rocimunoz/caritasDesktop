@@ -26,6 +26,7 @@ import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
@@ -688,14 +689,12 @@ public class JManagePeople extends AbstractJInternalFrame {
 		int row = getJTablePeople().getSelectedRow();
 		if (row!=-1){
 			People people = getPeopleTableModel().getDomainObject(row);
-			Program program = getProgramPeople(people);
-			if (program == null){
-				//No hay programa
-				int reply = JOptionPane.showConfirmDialog(null, "Esta persona no tiene programa de atención primaria. ¿Quieres crearlo ahora?", title, JOptionPane.YES_NO_OPTION);
-		        if (reply == JOptionPane.YES_OPTION) {
+			
+			if (people!= null){
+			
 		           
 		        	try {
-		        		//Abrir ventana programa para crear
+		        	
 			        	jManageProgram = new JManageProgram(this, true, openMode, title, people);	
 			        	this.desktop.add(jManageProgram);
 						jManageProgram.setMaximum(true);
@@ -712,7 +711,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		        else {
 		           //Abrir ventana programa con filtro 
 		        }	
-			}
+			
 		}
 		else{
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");
@@ -720,48 +719,51 @@ public class JManagePeople extends AbstractJInternalFrame {
 	    }
 	}
 	
-	public Program getProgramPeople(People people){
-		
-		Program program = programDAO.findProgramById(people);
-		return program;
-		
-		
-	}
 	
-	public void createProgramPeople(People people){
-		
-	}
+	
+
+	
+	
 	
 	public void onManageTicketPeople(){
 		JManageTicket jManageTicket = null;
 		int row = getJTablePeople().getSelectedRow();
 		if (row!=-1){
 			
-			try {
-				People people = getPeopleTableModel().getDomainObject(row);
-				jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, people);	
-				this.desktop.add(jManageTicket);
-				jManageTicket.setMaximum(true);
-				jManageTicket.setMaximizable(true);
-				jManageTicket.setVisible(true);
-				jManageTicket.moveToFront();
-				jManageTicket.show();
-			} 
+			People people = getPeopleTableModel().getDomainObject(row);
 			
-			catch (PropertyVetoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (people!=null){
+			
+			           
+			        	try {
+			        	
+			        		jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, people);	
+							this.desktop.add(jManageTicket);
+							jManageTicket.setMaximum(true);
+							jManageTicket.setMaximizable(true);
+							jManageTicket.setVisible(true);
+							jManageTicket.moveToFront();
+							jManageTicket.show();
+						} catch (PropertyVetoException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			
+			
 			}
-			
-		}
 		else{
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");
 			return;
-	    }
+		}
+				  }
 		
 		
 	}
-	
+		
 	
 	
 }
+	
+	
+	
+

@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Ticket;
 
 public class ProgramDAO {
 
@@ -20,12 +21,12 @@ public ProgramDAO(SqlSessionFactory sqlSessionFactory){
 }
 
 
-public  Program findProgramById(People people){
+public  Program findProgram(People people){
 	Program program = null;
     SqlSession session = sqlSessionFactory.openSession();
 
     try {
-        program = session.selectOne("Program.findProgramById", people);
+        program = session.selectOne("Program.findProgram", people);
     } finally {
         session.close();
     }
@@ -33,6 +34,20 @@ public  Program findProgramById(People people){
     return program;
 
 }
+
+public int insert(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         id = session.insert("Program.insert", program);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("insert("+program+") --> "+program.getId());
+     return id;
+ }
 
 public int delete(People people){
     int id = -1;
@@ -47,6 +62,20 @@ public int delete(People people){
      System.out.println("delete("+id+") --> ");
      return id;
  }
+
+public  List<Program> findAll(){
+	List<Program> list = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+        list = session.selectList("Program.findAll");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAll() --> "+list);
+    return list;
+
+}
 
 
 

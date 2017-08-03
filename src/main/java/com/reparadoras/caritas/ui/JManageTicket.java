@@ -648,9 +648,12 @@ public class JManageTicket extends AbstractJInternalFrame {
 				ticketNewReset.setPeople(filterPeople);
 				
 				if (create){
-					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda. Se va a crear un nuevo registro de Vales");
-					ticketDAO.insert(ticketNewReset);
-					onFilterTicket(false);
+					int dialogResult = JOptionPane.showConfirmDialog(this, "No existen registros para los datos de búsqueda. Se va a crear un nuevo registro. ¿Está de acuerdo?");
+					if (dialogResult == JOptionPane.YES_OPTION){
+						ticketDAO.insert(ticketNewReset);
+						onFilterTicket(false);
+					}
+					
 				}
 				else{
 					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
