@@ -167,10 +167,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	public void createGUIComponents(){
 		getContentPane().setLayout(getGridContentPane());
+		
 		getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
+		//getContentPane().add(getJPanelActions(), this.getGridJPanelActions());
 		getContentPane().add(getJPanelGrid(), this.getGridJPanelGrid());
-		getContentPane().add(getJPanelActions(), this.getGridJPanelActions());
-
+		
 		// Añado elementos del JPanelFilter
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
@@ -180,12 +181,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
-		getJPanelActions().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+		
+		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		getJPanelActions().add(getJButtonSave());
 		getJPanelActions().add(getJButtonExit());
 		
 		//Añado elementos del JPanelGrid
 		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
+		getJPanelGrid().add(getJPanelActions(), this.getGridJPanelActions());
 		getJPanelGrid().add(this.getScrollPaneTable(), this.getGridJPanelScrollTable());
 		
 		
@@ -276,7 +279,7 @@ public void initCbPeople(){
 		GridBagConstraints gbc_jPanelFilter = new GridBagConstraints();
 		gbc_jPanelFilter.weightx = 1.0;
 		gbc_jPanelFilter.insets = new Insets(0, 0, 5, 0);
-		gbc_jPanelFilter.fill = GridBagConstraints.BOTH;
+		gbc_jPanelFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jPanelFilter.gridx = 0;
 		gbc_jPanelFilter.gridy = 0;
 
@@ -409,8 +412,7 @@ public void initCbPeople(){
 	private JPanel getJPanelActions() {
 		if (jPanelActions == null) {
 			jPanelActions = new JPanel();
-			jPanelActions.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Barra Herramientas",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+			jPanelActions.setBorder(null);
 		}
 
 		return jPanelActions;
@@ -422,7 +424,7 @@ public void initCbPeople(){
 		gbc_jPanelGrid.weightx = 1.0;
 		gbc_jPanelGrid.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelGrid.gridx = 0;
-		gbc_jPanelGrid.gridy = 1;
+		gbc_jPanelGrid.gridy = 0;
 
 		return gbc_jPanelGrid;
 	}
@@ -478,7 +480,7 @@ public void initCbPeople(){
 		gbc_jPanelGrid.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelGrid.fill = GridBagConstraints.BOTH;
 		gbc_jPanelGrid.gridx = 0;
-		gbc_jPanelGrid.gridy = 2;
+		gbc_jPanelGrid.gridy = 1;
 
 		return gbc_jPanelGrid;
 	}
@@ -500,7 +502,7 @@ public void initCbPeople(){
 		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
 		gbc_jPanelScroll.gridx = 0;
-		gbc_jPanelScroll.gridy = 0;
+		gbc_jPanelScroll.gridy = 1;
 		
 		return gbc_jPanelScroll; 
 	}
@@ -548,7 +550,7 @@ public void initCbPeople(){
 		gbc_jPanelContent.fill = GridBagConstraints.BOTH;
 		gbc_jPanelContent.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelContent.gridx = 0;
-		gbc_jPanelContent.gridy = 3;
+		gbc_jPanelContent.gridy = 2;
 
 		return gbc_jPanelContent;
 	}
