@@ -15,20 +15,15 @@
      <resultMap id="PeopleResult" type="People">
         <result property="idPeople" column="idPeople"/>
         <result property="name" column="name"/>  
-        <result property="surname" column="surname"/>  
         <result property="dni" column="dni"/>  
-        <result property="sex" column="sex"/>   
         <result property="active" column="active"/>
-        <!--<result property="date_born" column="date_born"/>
-        <result property="origin_country" column="origin_country"/>
-        <result property="civil_state" column="civil_state"/>-->
 		
     </resultMap>
     
-    <select id="findProgramById" parameterType="int" resultMap="ProgramResult">
-        SELECT PE.IDPEOPLE, 
+    <select id="findProgram" parameterType="int" resultMap="ProgramResult">
+        SELECT PE.DNI, 
                PE.NAME, 
-               PR.IDPROGRAM 
+               PR.DATEGBD
         FROM C_PEOPLE PE, C_PROGRAM PR
         WHERE PR.IDPEOPLE = PE.IDPEOPLE
         AND PE.IDPEOPLE = #{idPeople}
@@ -37,5 +32,13 @@
      <delete id="delete" parameterType="People">
     	DELETE FROM C_PROGRAM WHERE idPeople = #{idPeople}
     </delete>
+    
+    
+    <insert id="insert" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_PROGRAM 
+        	(IDPEOPLE, DATEGBD) 
+        VALUES (#{people.idPeople},
+        #{dateGBD})
+    </insert>
  	
 </mapper>

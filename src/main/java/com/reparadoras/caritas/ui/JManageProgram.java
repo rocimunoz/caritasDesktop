@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -84,6 +85,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JLabel lblDni;
 	private JTextField tfDni;
 	private JCheckBox ckActive;
+	private JPanel jPanelActions = null;
+	private JButton btnSave = null;
+	private JButton btnExit = null;
 	private JPanel jPanelGrid;
 	private JTable tableProgram = null;
 	private JScrollPane scrollPaneJTable = null;
@@ -113,12 +117,15 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.setTitle(title);
 		
 		this.people = people;
-		onFilterProgram(true);
 		
+		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 		
 		createGUIComponents();
 		initComponents();
+		
+		onFilterProgram(true);
 		
 	}
 
@@ -162,6 +169,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getContentPane().setLayout(getGridContentPane());
 		getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
 		getContentPane().add(getJPanelGrid(), this.getGridJPanelGrid());
+		getContentPane().add(getJPanelActions(), this.getGridJPanelActions());
 
 		// Añado elementos del JPanelFilter
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
@@ -172,7 +180,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
-
+		getJPanelActions().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+		getJPanelActions().add(getJButtonSave());
+		getJPanelActions().add(getJButtonExit());
+		
 		//Añado elementos del JPanelGrid
 		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
 		getJPanelGrid().add(this.getScrollPaneTable(), this.getGridJPanelScrollTable());
@@ -391,13 +402,61 @@ public void initCbPeople(){
 	}
 
 	
+	/* FUNCIONES DEL PANEL DE ACCIONES*/
+	
+	
+
+	private JPanel getJPanelActions() {
+		if (jPanelActions == null) {
+			jPanelActions = new JPanel();
+			jPanelActions.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Barra Herramientas",
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+		}
+
+		return jPanelActions;
+	}
+	
+	private GridBagConstraints getGridJPanelActions() {
+		GridBagConstraints gbc_jPanelGrid = new GridBagConstraints();
+		gbc_jPanelGrid.anchor = GridBagConstraints.WEST;
+		gbc_jPanelGrid.weightx = 1.0;
+		gbc_jPanelGrid.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelGrid.gridx = 0;
+		gbc_jPanelGrid.gridy = 1;
+
+		return gbc_jPanelGrid;
+	}
+	
+	private JButton getJButtonSave() {
+		if (btnSave == null) {
+			btnSave = new JButton("Guardar");
+			btnSave.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-save.png")));
+		}
+
+		return btnSave;
+	}
+
+	
+	
+	private JButton getJButtonExit() {
+		if (btnExit == null) {
+			btnExit = new JButton("Salir");
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+		}
+
+		return btnExit;
+	}
+
+	
+
+	
 	/* FUNCIONES DEL PANEL DEL GRID */
 
 	private GridBagLayout getGridLayoutJPanelGrid() {
 
 		GridBagLayout gbl_jPanelGrid = new GridBagLayout();
-		gbl_jPanelGrid.columnWeights = new double[] { 0.0, 0.0, 0.0 };
-		gbl_jPanelGrid.rowWeights = new double[] { 0.0, 0.0 };
+		gbl_jPanelGrid.columnWeights = new double[] { 0.0 };
+		gbl_jPanelGrid.rowWeights = new double[] { 0.0 };
 
 		return gbl_jPanelGrid;
 	}
@@ -414,11 +473,12 @@ public void initCbPeople(){
 
 	private GridBagConstraints getGridJPanelGrid() {
 		GridBagConstraints gbc_jPanelGrid = new GridBagConstraints();
+		gbc_jPanelGrid.weighty = 1.0;
 		gbc_jPanelGrid.weightx = 1.0;
 		gbc_jPanelGrid.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelGrid.fill = GridBagConstraints.BOTH;
 		gbc_jPanelGrid.gridx = 0;
-		gbc_jPanelGrid.gridy = 1;
+		gbc_jPanelGrid.gridy = 2;
 
 		return gbc_jPanelGrid;
 	}
@@ -488,7 +548,7 @@ public void initCbPeople(){
 		gbc_jPanelContent.fill = GridBagConstraints.BOTH;
 		gbc_jPanelContent.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelContent.gridx = 0;
-		gbc_jPanelContent.gridy = 2;
+		gbc_jPanelContent.gridy = 3;
 
 		return gbc_jPanelContent;
 	}
@@ -542,10 +602,12 @@ public void initCbPeople(){
 			else{
 				Program programNewReset = new Program();
 				programNewReset.setPeople(filterPeople);
+				programNewReset.setDateGBD(new Date());
 				
 				if (create){
 					int dialogResult = JOptionPane.showConfirmDialog(this, "No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");
 					if (dialogResult == JOptionPane.YES_OPTION){
+						
 						programDAO.insert(programNewReset);
 						onFilterProgram(false);
 					}

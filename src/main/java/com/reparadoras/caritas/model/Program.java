@@ -15,14 +15,19 @@ public class Program implements Serializable{
     private int id;
     
     private People people;
+    private Date dateGBD;
     
-    public int getId() {
-        return id;
-    }
+    
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public People getPeople() {
 		return people;
@@ -31,6 +36,16 @@ public class Program implements Serializable{
 	public void setPeople(People people) {
 		this.people = people;
 	}
+
+	public Date getDateGBD() {
+		return dateGBD;
+	}
+
+	public void setDateGBD(Date dateGBD) {
+		this.dateGBD = dateGBD;
+	}
+	
+	
     
     
 
