@@ -249,8 +249,6 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	
 	private GridBagLayout getGridLayoutJPaneContentPane() {
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 0 };
-		gbl_panel.rowHeights = new int[] { 0, 0 };
 		gbl_panel.columnWeights = new double[] { 1.0 };
 		gbl_panel.rowWeights = new double[] { 0.0, 1.0 };
 		
@@ -286,9 +284,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJPanelPersonalData() {
 
 		GridBagConstraints gbc_jPanelPersonalData = new GridBagConstraints();
+		gbc_jPanelPersonalData.weightx = 1.0;
 		gbc_jPanelPersonalData.weighty = 1.0;
 		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTH;
-		gbc_jPanelPersonalData.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jPanelPersonalData.fill = GridBagConstraints.BOTH;
 		gbc_jPanelPersonalData.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelPersonalData.gridx = 0;
 		gbc_jPanelPersonalData.gridy = 0;
@@ -298,10 +297,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	private GridBagLayout getGridLayoutJPanelPersonalData() {
 		GridBagLayout gbl_jPanelPersonalData = new GridBagLayout();
-		gbl_jPanelPersonalData.columnWidths = new int[] { 0 };
-		gbl_jPanelPersonalData.rowHeights = new int[] { 0, 0, 0, 0 };
 		gbl_jPanelPersonalData.columnWeights = new double[] { 1.0, 1.0, 0.0, 1.0 };
-		gbl_jPanelPersonalData.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+		gbl_jPanelPersonalData.rowWeights = new double[] { 0.0, 0.0, 0.0 };
 		return gbl_jPanelPersonalData;
 	}
 
@@ -319,7 +316,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJLabelName() {
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.anchor = GridBagConstraints.WEST;
-		gbc_lblName.insets = new Insets(0, 0, 5, 5);
+		gbc_lblName.insets = new Insets(0, 20, 5, 5);
 		gbc_lblName.gridx = 0;
 		gbc_lblName.gridy = 0;
 		
@@ -365,7 +362,6 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelSurname() {
 		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
-		gbc_lblSurname.weightx = 1.0;
 		gbc_lblSurname.anchor = GridBagConstraints.WEST;
 		gbc_lblSurname.insets = new Insets(0, 15, 5, 5);
 		gbc_lblSurname.gridx = 2;
@@ -412,7 +408,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_lblDni = new GridBagConstraints();
 		gbc_lblDni.anchor = GridBagConstraints.WEST;
-		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDni.insets = new Insets(0, 20, 5, 5);
 		gbc_lblDni.gridx = 0;
 		gbc_lblDni.gridy = 1;
 		
@@ -499,7 +495,7 @@ private JCheckBox getJckActive() {
 private GridBagConstraints getGridJCheckActive() {
 	GridBagConstraints gbcCheckActive = new GridBagConstraints();
 	gbcCheckActive.anchor = GridBagConstraints.WEST;
-	gbcCheckActive.insets = new Insets(0, 0, 5, 5);
+	gbcCheckActive.insets = new Insets(0, 15, 5, 5);
 	gbcCheckActive.gridx = 0;
 	gbcCheckActive.gridy = 2;
 	return gbcCheckActive;
@@ -529,8 +525,6 @@ private GridBagConstraints getGridJCheckActive() {
 	
 	private GridBagLayout getGridLayoutJPanelActions() {
 		GridBagLayout gbl_jPanelActions = new GridBagLayout();
-		gbl_jPanelActions.columnWidths = new int[] { 0 };
-		gbl_jPanelActions.rowHeights = new int[] { 0 };
 		gbl_jPanelActions.columnWeights = new double[] { 0.0, 0.0, 0.0 };
 		gbl_jPanelActions.rowWeights = new double[] { 0.0 };
 		
