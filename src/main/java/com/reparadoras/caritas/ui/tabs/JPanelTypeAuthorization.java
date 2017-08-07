@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import javax.swing.BoxLayout;
@@ -25,6 +27,8 @@ import javax.swing.table.TableModel;
 import com.reparadoras.caritas.ui.components.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.RelativesTableModel;
 import java.awt.GridLayout;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class JPanelTypeAuthorization extends JPanel{
 	
@@ -44,10 +48,46 @@ public class JPanelTypeAuthorization extends JPanel{
 		
 		createGUIPanel();
 		
+		addListeners();
+		
 	
 	}
 	
+	private void addListeners(){
+		
+		getJRadioSARegular().addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				JRadioButton radio = (JRadioButton) e.getSource();
+				if (radio.isSelected()){
+					getJRadioResidence().setEnabled(true);
+					getJRadioResidenceWork().setEnabled(true);
+					getJRadioTourism().setEnabled(true);
+					getJRadioStudy().setEnabled(true);
+					getJRadioRefugee().setEnabled(true);
+				}
+				else{
+					getJRadioResidence().setEnabled(false);
+					getJRadioResidence().setSelected(false);
+					getJRadioResidenceWork().setEnabled(false);
+					getJRadioResidenceWork().setSelected(false);
 
+					getJRadioTourism().setEnabled(false);
+					getJRadioTourism().setSelected(false);
+					getJRadioStudy().setEnabled(false);
+					getJRadioStudy().setSelected(false);
+					
+					getJRadioRefugee().setEnabled(false);
+					getJRadioRefugee().setSelected(false);
+					
+				}
+			}
+		});
+		
+		
+		
+		
+		
+	}
 	
 	private void createGUIPanel(){
 		
@@ -83,6 +123,21 @@ public class JPanelTypeAuthorization extends JPanel{
 			jPanelRadioButton.add(getJRadioUndocumented());
 			jPanelRadioButton.add(getJRadioSAIrregular());
 			
+			ButtonGroup groupL2 = new ButtonGroup();
+			groupL2.add(getJRadioResidence());
+			groupL2.add(getJRadioResidenceWork());
+			groupL2.add(getJRadioStudy());
+			groupL2.add(getJRadioTourism());
+			groupL2.add(getJRadioRefugee());
+			
+			ButtonGroup groupL1 = new ButtonGroup();
+			groupL1.add(getJRadioSARegular());
+			groupL1.add(getJRadioUndocumented());
+			groupL1.add(getJRadioSAIrregular());
+			
+			
+			
+			
 			
 		}
 		return jPanelRadioButton;
@@ -103,6 +158,7 @@ public class JPanelTypeAuthorization extends JPanel{
 	private JRadioButton getJRadioSARegular() {
 		if (jRadioSARegular == null) {
 			jRadioSARegular = new JRadioButton("Situación Administrativa Regular");
+			
 			jRadioSARegular.setMargin(new Insets(20, 20, 2, 20));
 			jRadioSARegular.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
