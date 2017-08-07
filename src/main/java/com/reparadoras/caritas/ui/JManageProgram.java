@@ -575,7 +575,7 @@ public void initCbPeople(){
 		gbc_jTabPane.weighty = 1.0;
 		gbc_jTabPane.weightx = 1.0;
 		gbc_jTabPane.anchor = GridBagConstraints.NORTH;
-		gbc_jTabPane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jTabPane.fill = GridBagConstraints.BOTH;
 		gbc_jTabPane.insets = new Insets(0, 0, 5, 0);
 		gbc_jTabPane.gridx = 0;
 		gbc_jTabPane.gridy = 0;
