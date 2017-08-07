@@ -40,6 +40,10 @@ import com.reparadoras.caritas.ui.components.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.ProgramTableModel;
 import com.reparadoras.caritas.ui.components.RelativesTableModel;
 import com.reparadoras.caritas.ui.components.TicketsPeopleTableModel;
+import com.reparadoras.caritas.ui.tabs.JPanelAddress;
+import com.reparadoras.caritas.ui.tabs.JPanelFamily;
+import com.reparadoras.caritas.ui.tabs.JPanelHome;
+import com.reparadoras.caritas.ui.tabs.JPanelTypeAuthorization;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -201,6 +205,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("Direccion", new JPanelAddress());
 		getJtabPane1().add("Vivienda", new JPanelHome());
 		getJtabPane1().add("Familia", new JPanelFamily());
+		getJtabPane1().add("Tipo Autorización", new JPanelTypeAuthorization());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
 		

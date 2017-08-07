@@ -1,4 +1,4 @@
-package com.reparadoras.caritas.ui;
+package com.reparadoras.caritas.ui.tabs;
 
 import java.awt.Color;
 import java.awt.Font;
