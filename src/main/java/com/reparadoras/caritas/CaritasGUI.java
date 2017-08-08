@@ -17,6 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 
 import com.reparadoras.caritas.ui.JImportPeople;
+import com.reparadoras.caritas.ui.JMainWindow;
 import com.reparadoras.caritas.ui.JManagePeople;
 import com.reparadoras.caritas.ui.JManageTicket;
 
@@ -85,6 +86,18 @@ public class CaritasGUI  extends JFrame{
         JLabel l = new JLabel(icon);
         jDesktopPane.add(l, new Integer(Integer.MIN_VALUE));
         getContentPane().add(jDesktopPane);
+        
+        try {
+        	JMainWindow jMainWindow = new JMainWindow(jDesktopPane);
+        	jDesktopPane.add(jMainWindow);
+        	
+        	jMainWindow.setMaximum(true);
+        	//jMainWindow.setMaximizable(true);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
       
         
         
