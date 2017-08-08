@@ -5,9 +5,11 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Arrays;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,10 +25,11 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
+import java.awt.Dimension;
 
 public class JPanelAddress extends JPanel{
 	
-	
+	private JPanel jPanelAddress;
 	/*VIEW ADDRESS*/
 	private JLabel lblTown;
 	private JTextField tfTown;
@@ -53,30 +56,52 @@ public class JPanelAddress extends JPanel{
 	}
 	
 	private void createGUIPanel(){
-		
+	
 		this.setLayout(getGridLayoutAddress());
 		
-				this.add(getJLabelTown(), getGridJLabelTown());
-				this.add(getJTextFieldTown(), getGridJTextFieldTown());
-				this.add(getJLabelStreet(), getGridJLabelStreet());
-				this.add(getJTextFieldStreet(), getGridJTextFieldStreet());
-				this.add(getJLabelGate(), getGridJLabelGate());
-				this.add(getJTextFieldGate(), getGridJTextFieldGate());
-				this.add(getJLabelFloor(), getGridJLabelFloor());
-				this.add(getJTextFieldFloor(), getGridJTextFieldFloor());
-				this.add(getJLabelTelephone(), getGridJLabelTelephone());
-				this.add(getJTextFieldTelephone(), getGridJTextFieldTelephone());
-				this.add(getJLabelTelephoneContact(), getGridJLabelTelephoneContact());
-				this.add(getJTextFieldTelephoneContact(), getGridJTextFieldTelephoneContact());
-				this.add(getJLabelDatePickerCensus(), this.getGridLblDatePickerCensus());
-				this.add(this.getJXDatePickerCensus(), this.getGridJXDatePickerCensus());
-				this.add(this.getJLabelPlace(), this.getGridJLabelPlace());
-				this.add(this.getJTextFieldPlace(), this.getGridJTextFieldPlace());
+		//Añado elementos del Tab Vivienda
+				getJPanelAddress().setLayout(getGridLayoutPanelAddress());
+				this.add(getJPanelAddress(), getGridJPanelAddress());
+		
+				getJPanelAddress().add(getJLabelTown(), getGridJLabelTown());
+				getJPanelAddress().add(getJTextFieldTown(), getGridJTextFieldTown());
+				getJPanelAddress().add(getJLabelStreet(), getGridJLabelStreet());
+				getJPanelAddress().add(getJTextFieldStreet(), getGridJTextFieldStreet());
+				getJPanelAddress().add(getJLabelGate(), getGridJLabelGate());
+				getJPanelAddress().add(getJTextFieldGate(), getGridJTextFieldGate());
+				getJPanelAddress().add(getJLabelFloor(), getGridJLabelFloor());
+				getJPanelAddress().add(getJTextFieldFloor(), getGridJTextFieldFloor());
+				getJPanelAddress().add(getJLabelTelephone(), getGridJLabelTelephone());
+				getJPanelAddress().add(getJTextFieldTelephone(), getGridJTextFieldTelephone());
+				getJPanelAddress().add(getJLabelTelephoneContact(), getGridJLabelTelephoneContact());
+				getJPanelAddress().add(getJTextFieldTelephoneContact(), getGridJTextFieldTelephoneContact());
+				getJPanelAddress().add(getJLabelDatePickerCensus(), this.getGridLblDatePickerCensus());
+				getJPanelAddress().add(this.getJXDatePickerCensus(), this.getGridJXDatePickerCensus());
+				getJPanelAddress().add(this.getJLabelPlace(), this.getGridJLabelPlace());
+				getJPanelAddress().add(this.getJTextFieldPlace(), this.getGridJTextFieldPlace());
 	
 	}
 	
 	
+	private JPanel getJPanelAddress() {
+		if (jPanelAddress == null) {
+			jPanelAddress = new JPanel();
+		}
+		return jPanelAddress;
+	}
 	
+	private GridBagConstraints getGridJPanelAddress() {
+		GridBagConstraints gbc_jPanelRadio = new GridBagConstraints();
+		gbc_jPanelRadio.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jPanelRadio.weighty = 1.0;
+		gbc_jPanelRadio.anchor = GridBagConstraints.NORTHWEST;
+		gbc_jPanelRadio.weightx = 1.0;
+		gbc_jPanelRadio.insets = new Insets(0, 10, 5, 0);
+		gbc_jPanelRadio.gridx = 0;
+		gbc_jPanelRadio.gridy = 0;
+
+		return gbc_jPanelRadio;
+	}
 	
 	
 	
@@ -402,7 +427,15 @@ public class JPanelAddress extends JPanel{
 	
 	private GridBagLayout getGridLayoutAddress() {
 		GridBagLayout gbl_LaoutAddress = new GridBagLayout();
-		gbl_LaoutAddress.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0};
+		gbl_LaoutAddress.columnWeights = new double[] { 0.0};
+		gbl_LaoutAddress.rowWeights = new double[] { };
+
+		return gbl_LaoutAddress;
+	}
+	
+	private GridBagLayout getGridLayoutPanelAddress() {
+		GridBagLayout gbl_LaoutAddress = new GridBagLayout();
+		gbl_LaoutAddress.columnWeights = new double[] { 0.0};
 		gbl_LaoutAddress.rowWeights = new double[] { };
 
 		return gbl_LaoutAddress;

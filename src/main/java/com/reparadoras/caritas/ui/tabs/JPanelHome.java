@@ -24,6 +24,7 @@ import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
 public class JPanelHome extends JPanel{
 	
+	private JPanel jPanelHome;
 	/*VIEW HOUSE*/
 	private JLabel lblTypeHouse;
 	private JTextField tfTypeHouse;
@@ -63,23 +64,26 @@ public void initCombos(){
 		
 		this.setLayout(getGridLayoutHouse());
 		
+		getJPanelHome().setLayout(getGridLayoutPanelHome());
+		this.add(getJPanelHome(), getGridJPanelHome());
+		
 		//Añado elementos del Tab Vivienda
-		this.add(getJLabelTypeHouse(), getGridJLabelTypeHouse());
-		this.add(getJTextFieldTypeHouse(), getGridJTextFieldTypeHouse());
-		this.add(getJLabelRegHolding(), getGridJLabelRegHolding());
-		this.add(getJTextFieldRegHolding(), getGridJTextFieldRegHolding());
-		this.add(getJLabelNumberRooms(), getGridJLabelNumberRooms());
-		this.add(getJComboNumberRooms(), getGridJComboNumberRooms());
-		this.add(getJLabelNumberPeople(), getGridJLabelNumberPeople());
-		this.add(getJComboNumberPeople(), getGridJComboNumberPeople());
-		this.add(getJLabelNumberFamilies(), getGridJLabelNumberFamilies());
-		this.add(getJComboNumberFamilies(), getGridJComboNumberFamilies());
-		this.add(getJLabelOtherInfo(), getGridJLabelOtherInfo());
+		getJPanelHome().add(getJLabelTypeHouse(), getGridJLabelTypeHouse());
+		getJPanelHome().add(getJTextFieldTypeHouse(), getGridJTextFieldTypeHouse());
+		getJPanelHome().add(getJLabelRegHolding(), getGridJLabelRegHolding());
+		getJPanelHome().add(getJTextFieldRegHolding(), getGridJTextFieldRegHolding());
+		getJPanelHome().add(getJLabelNumberRooms(), getGridJLabelNumberRooms());
+		getJPanelHome().add(getJComboNumberRooms(), getGridJComboNumberRooms());
+		getJPanelHome().add(getJLabelNumberPeople(), getGridJLabelNumberPeople());
+		getJPanelHome().add(getJComboNumberPeople(), getGridJComboNumberPeople());
+		getJPanelHome().add(getJLabelNumberFamilies(), getGridJLabelNumberFamilies());
+		getJPanelHome().add(getJComboNumberFamilies(), getGridJComboNumberFamilies());
+		getJPanelHome().add(getJLabelOtherInfo(), getGridJLabelOtherInfo());
 				
 				JScrollPane scrollJTextArea = new JScrollPane (getJTextAreaOtherInfo(), 
 						   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-				this.add(scrollJTextArea, getGridJTextAreaOtherInfo());
+				getJPanelHome().add(scrollJTextArea, getGridJTextAreaOtherInfo());
 		
 	}
 	
@@ -90,7 +94,34 @@ public void initCombos(){
 
 		return gbl_LayoutHouse;
 	}
+	private GridBagLayout getGridLayoutPanelHome() {
+		GridBagLayout gbl_LaoutHome = new GridBagLayout();
+		gbl_LaoutHome.columnWeights = new double[] { 0.0};
+		gbl_LaoutHome.rowWeights = new double[] { };
+
+		return gbl_LaoutHome;
+	}
+
 	
+	private JPanel getJPanelHome() {
+		if (jPanelHome == null) {
+			jPanelHome = new JPanel();
+		}
+		return jPanelHome;
+	}
+	
+	private GridBagConstraints getGridJPanelHome() {
+		GridBagConstraints gbc_jPanelHome = new GridBagConstraints();
+		gbc_jPanelHome.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jPanelHome.weighty = 1.0;
+		gbc_jPanelHome.anchor = GridBagConstraints.NORTHWEST;
+		gbc_jPanelHome.weightx = 1.0;
+		gbc_jPanelHome.insets = new Insets(0, 10, 5, 0);
+		gbc_jPanelHome.gridx = 0;
+		gbc_jPanelHome.gridy = 0;
+
+		return gbc_jPanelHome;
+	}
 	
 	private JLabel getJLabelTypeHouse() {
 
