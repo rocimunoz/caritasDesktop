@@ -21,6 +21,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import com.reparadoras.caritas.ui.components.table.ExpensesTableModel;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.IncomesTableModel;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
@@ -38,7 +39,12 @@ public class JPanelEconomicSituation extends JPanel{
 	private JPanel jPanelTableIncome;
 	private IncomesTableModel incomesTableModel = null;
 	private JTable tableIncomes = null;
-	private JScrollPane scrollPaneJTable = null;
+	private JScrollPane scrollPaneJTableIncomes = null;
+	
+	private JPanel jPanelTableExpense;
+	private ExpensesTableModel expensesTableModel = null;
+	private JTable tableExpenses = null;
+	private JScrollPane scrollPaneJTableExpenses = null;
 	
 	public JPanelEconomicSituation() {
 		
@@ -51,9 +57,14 @@ public class JPanelEconomicSituation extends JPanel{
 		
 		this.setLayout(getGridLayoutFamily());
 		getJPanelTableIncome().setLayout(getGridLayoutJPanelTableIncome());
+		getJPanelTableExpense().setLayout(getGridLayoutJPanelTableExpense());
 		
 		getJPanelTableIncome().add(getScrollPaneTableIncome(), getGridJPanelScrollTableIncome());
+		
+		getJPanelTableExpense().add(getScrollPaneTableExpense(), getGridJPanelScrollTableExpense());
+		
 		this.add(getJPanelTableIncome(), getGridJPanelTableIncome());
+		this.add(getJPanelTableExpense(), getGridJPanelTableExpense());
 		
 		
 	}
@@ -64,12 +75,12 @@ public class JPanelEconomicSituation extends JPanel{
 	private GridBagLayout getGridLayoutFamily() {
 		GridBagLayout gbl_LayoutFamily = new GridBagLayout();
 		gbl_LayoutFamily.columnWeights = new double[] { 0.0};
-		gbl_LayoutFamily.rowWeights = new double[] { 0.0};
+		gbl_LayoutFamily.rowWeights = new double[] { 0.0, 0.0};
 
 		return gbl_LayoutFamily;
 	}
 	
-	
+	/*INGRESOS*/
 	private GridBagLayout getGridLayoutJPanelTableIncome() {
 
 		GridBagLayout gbl_jPanelTableIncome = new GridBagLayout();
@@ -103,12 +114,12 @@ public class JPanelEconomicSituation extends JPanel{
 	
 	
 	private JScrollPane getScrollPaneTableIncome(){
-		if (scrollPaneJTable == null){
-			scrollPaneJTable = new JScrollPane(getJTableIncomes());
-			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
+		if (scrollPaneJTableIncomes == null){
+			scrollPaneJTableIncomes = new JScrollPane(getJTableIncomes());
+			scrollPaneJTableIncomes.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
 		}
 		
-		return scrollPaneJTable;
+		return scrollPaneJTableIncomes;
 	}
 	
 	private GridBagConstraints getGridJPanelScrollTableIncome(){
@@ -125,9 +136,6 @@ public class JPanelEconomicSituation extends JPanel{
 	}
 	
 	
-	
-	
-	
 	private JTable getJTableIncomes(){
 		if (tableIncomes == null){
 			
@@ -139,7 +147,7 @@ public class JPanelEconomicSituation extends JPanel{
 		return tableIncomes;
 	}
 	
-private IncomesTableModel getIncomesTableModel(){
+    private IncomesTableModel getIncomesTableModel(){
 		
 		if (incomesTableModel == null){
 			Object[] columnIdentifiers = new Object[] { "Persona", "Concepto", "Cantidad", "Fecha Fin"};
@@ -150,5 +158,80 @@ private IncomesTableModel getIncomesTableModel(){
 	}
 	
 	
+    
+    /*GASTOS*/
+    
+	private GridBagLayout getGridLayoutJPanelTableExpense() {
+
+		GridBagLayout gbl_jPanelTableExpense = new GridBagLayout();
+		gbl_jPanelTableExpense.columnWeights = new double[] { 0.0 };
+		gbl_jPanelTableExpense.rowWeights = new double[] { 0.0 };
+
+		return gbl_jPanelTableExpense;
+	}
+
+	private JPanel getJPanelTableExpense() {
+		if (jPanelTableExpense == null) {
+			jPanelTableExpense = new JPanel();
+			jPanelTableExpense.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Gastos", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+		}
+
+		return jPanelTableExpense;
+	}
+
+	private GridBagConstraints getGridJPanelTableExpense() {
+		GridBagConstraints gbc_jPanelTableExpense = new GridBagConstraints();
+		gbc_jPanelTableExpense.weighty = 1.0;
+		gbc_jPanelTableExpense.weightx = 1.0;
+		gbc_jPanelTableExpense.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelTableExpense.fill = GridBagConstraints.BOTH;
+		gbc_jPanelTableExpense.gridx = 0;
+		gbc_jPanelTableExpense.gridy = 1;
+
+		return gbc_jPanelTableExpense;
+	}
+	
+	private JScrollPane getScrollPaneTableExpense(){
+		if (scrollPaneJTableExpenses == null){
+			scrollPaneJTableExpenses = new JScrollPane(getJTableExpenses());
+			scrollPaneJTableExpenses.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
+		}
+		
+		return scrollPaneJTableExpenses;
+	}
+	
+	private GridBagConstraints getGridJPanelScrollTableExpense(){
+		
+		GridBagConstraints gbc_jPanelScrollExpense = new GridBagConstraints();
+		gbc_jPanelScrollExpense.weighty = 1.0;
+		gbc_jPanelScrollExpense.weightx = 1.0;
+		gbc_jPanelScrollExpense.fill = GridBagConstraints.BOTH;
+		gbc_jPanelScrollExpense.anchor = GridBagConstraints.WEST;
+		gbc_jPanelScrollExpense.gridx = 0;
+		gbc_jPanelScrollExpense.gridy = 0;
+		
+		return gbc_jPanelScrollExpense; 
+	}
+	
+	private JTable getJTableExpenses(){
+		if (tableExpenses == null){
+			
+			tableExpenses = new JTable(getExpensesTableModel());
+			tableExpenses.setAutoCreateRowSorter(true);
+			tableExpenses.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		}
+		
+		return tableExpenses;
+	}
+	
+private ExpensesTableModel getExpensesTableModel(){
+		
+		if (expensesTableModel == null){
+			Object[] columnIdentifiers = new Object[] { "Concepto", "Cantidad", "Periodicidad", "Fecha Fin"};
+			expensesTableModel = new ExpensesTableModel(Arrays.asList(columnIdentifiers));
+		}
+		
+		return expensesTableModel;
+	}
 	
 }
