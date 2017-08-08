@@ -12,6 +12,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,6 +25,12 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import com.reparadoras.caritas.model.People;
+import com.reparadoras.caritas.model.Relative;
+import com.reparadoras.caritas.ui.JManageEditPeople;
+import com.reparadoras.caritas.ui.JManageEditRelative;
+import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
+import com.reparadoras.caritas.ui.components.JWindowParams;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
@@ -34,6 +41,8 @@ import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class JPanelFamily extends JPanel{
 	
@@ -86,6 +95,30 @@ public class JPanelFamily extends JPanel{
 		getJPanelActionsRelative().add(getBtnAddRelative());
 		getJPanelActionsRelative().add(getBtnEditRelative());
 		getJPanelActionsRelative().add(getBtnDeleteRelative());
+		
+		
+		getBtnAddRelative().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//openEditRelative(JWindowParams.IMODE_INSERT, "Nuevo Pariente");
+				
+			}
+		});
+
+		
+
+		getBtnEditRelative().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//openEditRelative(JWindowParams.IMODE_UPDATE, "Edicion Pariente");
+				
+			}
+		});
+
+		getBtnDeleteRelative().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//onDeletePeople();
+				
+			}
+		});
 		
 		
 	}
@@ -371,6 +404,10 @@ private GridBagConstraints getGridJPanelActionsRelative(){
 private JButton getBtnAddRelative() {
 	if (btnAddRelative == null) {
 		btnAddRelative = new JButton("Nuevo");
+		btnAddRelative.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnAddRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
 	}
 	return btnAddRelative;
@@ -392,6 +429,42 @@ private JButton getBtnEditRelative() {
 	return btnEditRelative;
 }
 	
-	
+
+
+public void openEditRelative(int openMode, String title, AbstractJInternalFrame jinternalFrame) {
+
+	JManageEditRelative jManageEditRelative = null;
+	try {
+
+		if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)){
+			int row = this.getJTableRelatives().getSelectedRow();
+			if (row!=-1){
+				Relative relative = this.getRelativesTableModel().getDomainObject(row);
+			
+				jManageEditRelative = new JManageEditRelative(jinternalFrame, true, openMode, title, null);
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "Seleccione un registro");
+				return;
+		    }
+			
+		}
+		else{
+			jManageEditRelative = new JManageEditRelative(jinternalFrame, true, openMode, title, null);
+		}
+		
+		//this.desktop.add(jManageEditPeople);
+		//jManageEditPeople.setVisible(true);
+		//jManageEditPeople.moveToFront();
+		//jManageEditPeople.show();
+		
+			
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+}
+
 	
 }

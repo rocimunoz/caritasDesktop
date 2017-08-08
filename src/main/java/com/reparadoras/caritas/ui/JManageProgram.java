@@ -104,6 +104,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	
 	private JTabbedPane jtabPane1;
+	private JPanel jPanelAdress;
+	private JPanel jPanelHome;
+	private JPanel jPanelFamily;
+	private JPanel jPanelTypeAuthorization;
+	private JPanel jPanelJobSituation;
+	private JPanel jPanelStudies;
+	private JPanel jPanelEconomicSituation;
+	
+	
+	
 	
 	private People people = null;
 	
@@ -131,6 +141,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		createGUIComponents();
 		initComponents();
+		addListeners();
 		
 		onFilterProgram(true);
 		
@@ -152,7 +163,15 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		createGUIComponents();
 		initComponents();
+		addListeners();
+		
+		
 
+		
+
+	}
+
+	public void addListeners(){
 		
 		addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -166,11 +185,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 				
 			}
 		});
-
 		
-
+		
 	}
-
+	
 	
 	public void createGUIComponents(){
 		getContentPane().setLayout(getGridContentPane());
@@ -251,6 +269,10 @@ public void initCbPeople(){
 
 	
 	/* FUNCIONES DEL GETCONTENTPANE */
+
+
+
+
 
 	private GridBagLayout getGridContentPane() {
 
