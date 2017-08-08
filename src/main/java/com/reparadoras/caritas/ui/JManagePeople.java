@@ -30,7 +30,7 @@ import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
-import com.reparadoras.caritas.ui.components.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 
 import java.awt.Color;
 import java.awt.Dimension;

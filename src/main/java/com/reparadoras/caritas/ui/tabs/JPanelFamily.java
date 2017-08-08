@@ -21,9 +21,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
-import com.reparadoras.caritas.ui.components.GroupableTableHeader;
-import com.reparadoras.caritas.ui.components.PeopleTableModel;
-import com.reparadoras.caritas.ui.components.RelativesTableModel;
+import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
+
 import javax.swing.JRadioButton;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;

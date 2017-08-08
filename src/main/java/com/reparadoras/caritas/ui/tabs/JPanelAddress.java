@@ -21,8 +21,8 @@ import javax.swing.table.TableModel;
 
 import org.jdesktop.swingx.JXDatePicker;
 
-import com.reparadoras.caritas.ui.components.GroupableTableHeader;
-import com.reparadoras.caritas.ui.components.RelativesTableModel;
+import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
 public class JPanelAddress extends JPanel{
 	

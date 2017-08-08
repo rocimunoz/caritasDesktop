@@ -24,8 +24,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
-import com.reparadoras.caritas.ui.components.GroupableTableHeader;
-import com.reparadoras.caritas.ui.components.RelativesTableModel;
+import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
+
 import java.awt.GridLayout;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
@@ -145,8 +146,8 @@ public class JPanelTypeAuthorization extends JPanel{
 	
 	private GridBagConstraints getGridJPanelRadio() {
 		GridBagConstraints gbc_jPanelRadio = new GridBagConstraints();
-		gbc_jPanelRadio.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jPanelRadio.anchor = GridBagConstraints.WEST;
+		gbc_jPanelRadio.weighty = 1.0;
+		gbc_jPanelRadio.anchor = GridBagConstraints.NORTHWEST;
 		gbc_jPanelRadio.weightx = 1.0;
 		gbc_jPanelRadio.insets = new Insets(0, 10, 5, 0);
 		gbc_jPanelRadio.gridx = 0;

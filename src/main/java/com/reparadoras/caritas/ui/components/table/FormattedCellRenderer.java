@@ -1,4 +1,4 @@
-package com.reparadoras.caritas.ui.components;
+package com.reparadoras.caritas.ui.components.table;
 
 import java.awt.Component;
 import java.text.Format;

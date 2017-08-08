@@ -34,15 +34,18 @@ import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
-import com.reparadoras.caritas.ui.components.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.JWindowParams;
-import com.reparadoras.caritas.ui.components.PeopleTableModel;
-import com.reparadoras.caritas.ui.components.ProgramTableModel;
-import com.reparadoras.caritas.ui.components.RelativesTableModel;
-import com.reparadoras.caritas.ui.components.TicketsPeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.ProgramTableModel;
+import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
+import com.reparadoras.caritas.ui.components.table.TicketsPeopleTableModel;
 import com.reparadoras.caritas.ui.tabs.JPanelAddress;
+import com.reparadoras.caritas.ui.tabs.JPanelEconomicSituation;
 import com.reparadoras.caritas.ui.tabs.JPanelFamily;
 import com.reparadoras.caritas.ui.tabs.JPanelHome;
+import com.reparadoras.caritas.ui.tabs.JPanelJobSituation;
+import com.reparadoras.caritas.ui.tabs.JPanelStudies;
 import com.reparadoras.caritas.ui.tabs.JPanelTypeAuthorization;
 
 import java.awt.Color;
@@ -206,6 +209,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("Vivienda", new JPanelHome());
 		getJtabPane1().add("Familia", new JPanelFamily());
 		getJtabPane1().add("Tipo Autorización", new JPanelTypeAuthorization());
+		getJtabPane1().add("Situación Laboral", new JPanelJobSituation());
+		getJtabPane1().add("Esutudios", new JPanelStudies());
+		getJtabPane1().add("Situación Económica", new JPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
 		

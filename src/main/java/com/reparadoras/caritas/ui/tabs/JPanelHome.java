@@ -19,8 +19,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
-import com.reparadoras.caritas.ui.components.GroupableTableHeader;
-import com.reparadoras.caritas.ui.components.RelativesTableModel;
+import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
 public class JPanelHome extends JPanel{
 	

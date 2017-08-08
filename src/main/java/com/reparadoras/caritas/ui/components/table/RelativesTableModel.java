@@ -1,4 +1,4 @@
-package com.reparadoras.caritas.ui.components;
+package com.reparadoras.caritas.ui.components.table;
 
 import java.util.Date;
 import java.util.List;
