@@ -210,7 +210,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("Familia", new JPanelFamily());
 		getJtabPane1().add("Tipo Autorización", new JPanelTypeAuthorization());
 		getJtabPane1().add("Situación Laboral", new JPanelJobSituation());
-		getJtabPane1().add("Esutudios", new JPanelStudies());
+		getJtabPane1().add("Estudios", new JPanelStudies());
 		getJtabPane1().add("Situación Económica", new JPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);

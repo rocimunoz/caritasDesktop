@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -49,6 +52,12 @@ public class JPanelFamily extends JPanel{
 	private JRadioButton jRadioOther;
 	private JRadioButton jRadioWithChildren;
 	
+	//Acciones gastos
+		private JPanel jPanelActionsRelative;
+		private JButton btnAddRelative;
+		private JButton btnEditRelative;
+		private JButton btnDeleteRelative;
+	
 	public JPanelFamily() {
 		
 		createGUIPanel();
@@ -71,6 +80,13 @@ public class JPanelFamily extends JPanel{
 		this.add(getJPanelTableFamily(), getGridJPanelTable());
 		this.add(getJPanelTypeFamily(), getGridJPanelTypeFamily());
 		
+		//Acciones
+		getJPanelTableFamily().add(this.getJPanelActionsRelative(), getGridJPanelActionsRelative());
+		getJPanelActionsRelative().setLayout(new GridLayout(0, 1, 0, 0));
+		getJPanelActionsRelative().add(getBtnAddRelative());
+		getJPanelActionsRelative().add(getBtnEditRelative());
+		getJPanelActionsRelative().add(getBtnDeleteRelative());
+		
 		
 	}
 
@@ -89,7 +105,7 @@ public class JPanelFamily extends JPanel{
 	private GridBagLayout getGridLayoutJPanelTable() {
 
 		GridBagLayout gbl_jPanelTable = new GridBagLayout();
-		gbl_jPanelTable.columnWeights = new double[] { 0.0 };
+		gbl_jPanelTable.columnWeights = new double[] { 0.0, 0.0 };
 		gbl_jPanelTable.rowWeights = new double[] { 0.0 };
 
 		return gbl_jPanelTable;
@@ -301,7 +317,7 @@ public class JPanelFamily extends JPanel{
 		gbc_jPanelScroll.weightx = 1.0;
 		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
-		gbc_jPanelScroll.gridx = 0;
+		gbc_jPanelScroll.gridx = 1;
 		gbc_jPanelScroll.gridy = 0;
 		
 		return gbc_jPanelScroll; 
@@ -331,6 +347,50 @@ private RelativesTableModel getRelativesTableModel(){
 		
 		return relativesTableModel;
 	}
+
+private JPanel getJPanelActionsRelative() {
+	if (jPanelActionsRelative == null) {
+		jPanelActionsRelative = new JPanel();
+		
+		
+	}
+
+	return jPanelActionsRelative;
+}
+
+private GridBagConstraints getGridJPanelActionsRelative(){
+	
+	GridBagConstraints gbc_jPanelActionsRelative = new GridBagConstraints();
+	gbc_jPanelActionsRelative.anchor = GridBagConstraints.NORTHWEST;
+	gbc_jPanelActionsRelative.gridx = 0;
+	gbc_jPanelActionsRelative.gridy = 0;
+	
+	return gbc_jPanelActionsRelative; 
+}
+
+private JButton getBtnAddRelative() {
+	if (btnAddRelative == null) {
+		btnAddRelative = new JButton("Nuevo");
+		btnAddRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+	}
+	return btnAddRelative;
+}
+
+private JButton getBtnDeleteRelative() {
+	if (btnDeleteRelative == null) {
+		btnDeleteRelative = new JButton("Borrar");
+		btnDeleteRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+	}
+	return btnDeleteRelative;
+}
+
+private JButton getBtnEditRelative() {
+	if (btnEditRelative == null) {
+		btnEditRelative = new JButton("Editar");
+		btnEditRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+	}
+	return btnEditRelative;
+}
 	
 	
 	

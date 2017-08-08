@@ -122,7 +122,7 @@ public class JPanelStudies extends JPanel{
 		
 		
 		if (jRadioNoReadNoWrite == null) {
-			jRadioNoReadNoWrite = new JRadioButton("No sasbe leer ni escribir");
+			jRadioNoReadNoWrite = new JRadioButton("No sabe leer ni escribir");
 			
 			jRadioNoReadNoWrite.setMargin(new Insets(20, 20, 2, 20));
 			jRadioNoReadNoWrite.setFont(new Font("Verdana", Font.PLAIN, 14));

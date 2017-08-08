@@ -33,18 +33,36 @@ import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import java.awt.Dimension;
 import java.awt.Component;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.GridLayout;
 
 public class JPanelEconomicSituation extends JPanel{
 	
+	//Ingresos
 	private JPanel jPanelTableIncome;
 	private IncomesTableModel incomesTableModel = null;
 	private JTable tableIncomes = null;
 	private JScrollPane scrollPaneJTableIncomes = null;
 	
+	//Acciones ingresos
+	private JPanel jPanelActionsIncome;
+	private JButton btnAddIncome;
+	private JButton btnEditIncome;
+	private JButton btnDeleteIncome;
+	
+	//Gastos
 	private JPanel jPanelTableExpense;
 	private ExpensesTableModel expensesTableModel = null;
 	private JTable tableExpenses = null;
 	private JScrollPane scrollPaneJTableExpenses = null;
+	
+	//Acciones gastos
+	private JPanel jPanelActionsExpense;
+	private JButton btnAddExpense;
+	private JButton btnEditExpense;
+	private JButton btnDeleteExpense;
+	
 	
 	public JPanelEconomicSituation() {
 		
@@ -56,6 +74,7 @@ public class JPanelEconomicSituation extends JPanel{
 	private void createGUIPanel(){
 		
 		this.setLayout(getGridLayoutFamily());
+		
 		getJPanelTableIncome().setLayout(getGridLayoutJPanelTableIncome());
 		getJPanelTableExpense().setLayout(getGridLayoutJPanelTableExpense());
 		
@@ -65,6 +84,21 @@ public class JPanelEconomicSituation extends JPanel{
 		
 		this.add(getJPanelTableIncome(), getGridJPanelTableIncome());
 		this.add(getJPanelTableExpense(), getGridJPanelTableExpense());
+		
+		//panel Ingresos
+		getJPanelTableIncome().add(this.getJPanelActionsIncome(), getGridJPanelActionsIncome());
+		getJPanelActionsIncome().setLayout(new GridLayout(0, 1, 0, 0));
+		getJPanelActionsIncome().add(getBtnAddIncome());
+		getJPanelActionsIncome().add(getBtnEditIncome());
+		getJPanelActionsIncome().add(getBtnDeleteIncome());
+		
+		//panel Gastos
+		getJPanelTableExpense().add(this.getJPanelActionsExpense(), getGridJPanelActionsExpense());
+		getJPanelActionsExpense().setLayout(new GridLayout(0, 1, 0, 0));
+		getJPanelActionsExpense().add(getBtnAddExpense());
+		getJPanelActionsExpense().add(getBtnEditExpense());
+		getJPanelActionsExpense().add(getBtnDeleteExpense());
+		
 		
 		
 	}
@@ -84,7 +118,7 @@ public class JPanelEconomicSituation extends JPanel{
 	private GridBagLayout getGridLayoutJPanelTableIncome() {
 
 		GridBagLayout gbl_jPanelTableIncome = new GridBagLayout();
-		gbl_jPanelTableIncome.columnWeights = new double[] { 0.0 };
+		gbl_jPanelTableIncome.columnWeights = new double[] { 0.0, 0.0 };
 		gbl_jPanelTableIncome.rowWeights = new double[] { 0.0 };
 
 		return gbl_jPanelTableIncome;
@@ -129,7 +163,7 @@ public class JPanelEconomicSituation extends JPanel{
 		gbc_jPanelScroll.weightx = 1.0;
 		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
-		gbc_jPanelScroll.gridx = 0;
+		gbc_jPanelScroll.gridx = 1;
 		gbc_jPanelScroll.gridy = 0;
 		
 		return gbc_jPanelScroll; 
@@ -158,13 +192,58 @@ public class JPanelEconomicSituation extends JPanel{
 	}
 	
 	
+    private JPanel getJPanelActionsIncome() {
+		if (jPanelActionsIncome == null) {
+			jPanelActionsIncome = new JPanel();
+			
+			
+		}
+
+		return jPanelActionsIncome;
+	}
+    
+private GridBagConstraints getGridJPanelActionsIncome(){
+		
+		GridBagConstraints gbc_jPanelActionsIncome = new GridBagConstraints();
+		gbc_jPanelActionsIncome.weighty = 1.0;
+		gbc_jPanelActionsIncome.anchor = GridBagConstraints.NORTHWEST;
+		gbc_jPanelActionsIncome.gridx = 0;
+		gbc_jPanelActionsIncome.gridy = 0;
+		
+		return gbc_jPanelActionsIncome; 
+	}
+
+private JButton getBtnAddIncome() {
+	if (btnAddIncome == null) {
+		btnAddIncome = new JButton("Nuevo");
+		btnAddIncome.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+	}
+	return btnAddIncome;
+}
+
+private JButton getBtnDeleteIncome() {
+	if (btnDeleteIncome == null) {
+		btnDeleteIncome = new JButton("Borrar");
+		btnDeleteIncome.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+	}
+	return btnDeleteIncome;
+}
+
+private JButton getBtnEditIncome() {
+	if (btnEditIncome == null) {
+		btnEditIncome = new JButton("Editar");
+		btnEditIncome.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+	}
+	return btnEditIncome;
+}
+
     
     /*GASTOS*/
     
 	private GridBagLayout getGridLayoutJPanelTableExpense() {
 
 		GridBagLayout gbl_jPanelTableExpense = new GridBagLayout();
-		gbl_jPanelTableExpense.columnWeights = new double[] { 0.0 };
+		gbl_jPanelTableExpense.columnWeights = new double[] { 0.0, 0.0 };
 		gbl_jPanelTableExpense.rowWeights = new double[] { 0.0 };
 
 		return gbl_jPanelTableExpense;
@@ -207,7 +286,7 @@ public class JPanelEconomicSituation extends JPanel{
 		gbc_jPanelScrollExpense.weightx = 1.0;
 		gbc_jPanelScrollExpense.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScrollExpense.anchor = GridBagConstraints.WEST;
-		gbc_jPanelScrollExpense.gridx = 0;
+		gbc_jPanelScrollExpense.gridx = 1;
 		gbc_jPanelScrollExpense.gridy = 0;
 		
 		return gbc_jPanelScrollExpense; 
@@ -233,5 +312,50 @@ private ExpensesTableModel getExpensesTableModel(){
 		
 		return expensesTableModel;
 	}
+
+private JPanel getJPanelActionsExpense() {
+	if (jPanelActionsExpense == null) {
+		jPanelActionsExpense = new JPanel();
+		
+		
+	}
+
+	return jPanelActionsExpense;
+}
+
+private GridBagConstraints getGridJPanelActionsExpense(){
+	
+	GridBagConstraints gbc_jPanelActionsExpense = new GridBagConstraints();
+	gbc_jPanelActionsExpense.anchor = GridBagConstraints.NORTHWEST;
+	gbc_jPanelActionsExpense.gridx = 0;
+	gbc_jPanelActionsExpense.gridy = 0;
+	
+	return gbc_jPanelActionsExpense; 
+}
+
+private JButton getBtnAddExpense() {
+	if (btnAddExpense == null) {
+		btnAddExpense = new JButton("Nuevo");
+		btnAddExpense.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+	}
+	return btnAddExpense;
+}
+
+private JButton getBtnDeleteExpense() {
+	if (btnDeleteExpense == null) {
+		btnDeleteExpense = new JButton("Borrar");
+		btnDeleteExpense.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+	}
+	return btnDeleteExpense;
+}
+
+private JButton getBtnEditExpense() {
+	if (btnEditExpense == null) {
+		btnEditExpense = new JButton("Editar");
+		btnEditExpense.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+	}
+	return btnEditExpense;
+}
+	
 	
 }
