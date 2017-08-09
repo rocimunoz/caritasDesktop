@@ -62,17 +62,23 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JDesktopPane desktop = null;
-	private JPanel jPanelContent = null;
 	private PeopleTableModel peopleTableModel = null;
 	
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
-	private JLabel lblPeople;
+	private JLabel lblLogo;
+	private JPanel jPanelMenu;
+	private JLabel lblRegPeople;
+	private JLabel lblProgram;
+	private JLabel lblTickets;
+	private JPanel panel;
+	private JLabel lblExit;
 
 
 	public JMainWindow(JDesktopPane desktop) {
 		super(desktop);
+		getContentPane().setBackground(Color.WHITE);
 		this.desktop = desktop;
 		this.setTitle("Gestion Personas");
 		this.setVisible(true);
@@ -102,10 +108,22 @@ public class JMainWindow extends AbstractJInternalFrame {
 	
 	public void createGUIComponents(){
 		getContentPane().setLayout(getGridContentPane());
-
-		// Añado elementos del JPanelContent
-		getContentPane().add(getJPanelContent(), getGridJPanelContent());
-		getJPanelContent().setLayout(getGridLayoutJPanelContent());
+		GridBagConstraints gbc_jPanelMenu = new GridBagConstraints();
+		gbc_jPanelMenu.insets = new Insets(0, 0, 5, 5);
+		gbc_jPanelMenu.weightx = 1.0;
+		gbc_jPanelMenu.weighty = 1.0;
+		gbc_jPanelMenu.fill = GridBagConstraints.BOTH;
+		gbc_jPanelMenu.gridx = 0;
+		gbc_jPanelMenu.gridy = 0;
+		getContentPane().add(getJPanelMenu(), gbc_jPanelMenu);
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.weighty = 1.0;
+		gbc_panel.weightx = 1.0;
+		gbc_panel.anchor = GridBagConstraints.EAST;
+		gbc_panel.insets = new Insets(0, 0, 5, 40);
+		gbc_panel.gridx = 0;
+		gbc_panel.gridy = 1;
+		getContentPane().add(getPanel(), gbc_panel);
 	}
 	
 	public void initComponents(){
@@ -117,58 +135,13 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private GridBagLayout getGridContentPane() {
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0 };
-		gridBagLayout.rowHeights = new int[] { 0 };
 		gridBagLayout.columnWeights = new double[] { 1.0 };
-		gridBagLayout.rowWeights = new double[] { 0.0, 1.0 };
+		gridBagLayout.rowWeights = new double[] { 1.0, 1.0 };
 
 		return gridBagLayout;
 	}
-
-	/* FUNCIONES DEL PANEL DE FILTRO */
-
 	
-
-	/* FUNCIONES DEL PANEL DE CONTENIDO */
-
-	private JPanel getJPanelContent() {
-		if (jPanelContent == null) {
-			jPanelContent = new JPanel();
-			jPanelContent.setBackground(Color.WHITE);
-			jPanelContent.setBorder(new LineBorder(new Color(0, 0, 0)));
-			GridBagConstraints gbc_lblPeople = new GridBagConstraints();
-			gbc_lblPeople.insets = new Insets(0, 0, 5, 5);
-			gbc_lblPeople.gridx = 0;
-			gbc_lblPeople.gridy = 0;
-			jPanelContent.add(getLblPeople(), gbc_lblPeople);
-		}
-		return jPanelContent;
-
-	}
-
-	private GridBagConstraints getGridJPanelContent() {
-
-		GridBagConstraints gbc_jPanelContent = new GridBagConstraints();
-		gbc_jPanelContent.weighty = 1.0;
-		gbc_jPanelContent.weightx = 1.0;
-		gbc_jPanelContent.anchor = GridBagConstraints.NORTH;
-		gbc_jPanelContent.fill = GridBagConstraints.BOTH;
-		gbc_jPanelContent.insets = new Insets(0, 0, 5, 0);
-		gbc_jPanelContent.gridx = 0;
-		gbc_jPanelContent.gridy = 1;
-
-		return gbc_jPanelContent;
-	}
-
-	private GridBagLayout getGridLayoutJPanelContent() {
-		GridBagLayout gbl_jPanelContent = new GridBagLayout();
-		gbl_jPanelContent.columnWidths = new int[] { 548, 99, 1, 0 };
-		gbl_jPanelContent.rowHeights = new int[] { 23, 0, 0 };
-		gbl_jPanelContent.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_jPanelContent.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
-		return gbl_jPanelContent;
-	}
-
+	
 	
 	
 	
@@ -185,11 +158,116 @@ public class JMainWindow extends AbstractJInternalFrame {
 		
 	
 	
-	private JLabel getLblPeople() {
-		if (lblPeople == null) {
-			lblPeople = new JLabel("");
+	private JLabel getLblLogo() {
+		if (lblLogo == null) {
+			lblLogo = new JLabel("");
+			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
+			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo2.PNG")));
 		}
-		return lblPeople;
+		return lblLogo;
+	}
+	private JPanel getJPanelMenu() {
+		if (jPanelMenu == null) {
+			jPanelMenu = new JPanel();
+			jPanelMenu.setBackground(Color.WHITE);
+			GridBagLayout gbl_jPanelMenu = new GridBagLayout();
+			gbl_jPanelMenu.columnWeights = new double[]{1.0};
+			gbl_jPanelMenu.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+			jPanelMenu.setLayout(gbl_jPanelMenu);
+			GridBagConstraints gbc_lblRegPeople = new GridBagConstraints();
+			gbc_lblRegPeople.insets = new Insets(20, 0, 20, 0);
+			gbc_lblRegPeople.weightx = 1.0;
+			gbc_lblRegPeople.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblRegPeople.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblRegPeople.gridx = 0;
+			gbc_lblRegPeople.gridy = 1;
+			jPanelMenu.add(getLblRegPeople(), gbc_lblRegPeople);
+			GridBagConstraints gbc_lblTickets = new GridBagConstraints();
+			gbc_lblTickets.insets = new Insets(20, 0, 20, 0);
+			gbc_lblTickets.weightx = 1.0;
+			gbc_lblTickets.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblTickets.gridx = 0;
+			gbc_lblTickets.gridy = 2;
+			jPanelMenu.add(getLblTickets(), gbc_lblTickets);
+			GridBagConstraints gbc_lblLogo = new GridBagConstraints();
+			gbc_lblLogo.insets = new Insets(0, 0, 5, 0);
+			gbc_lblLogo.weighty = 1.0;
+			gbc_lblLogo.fill = GridBagConstraints.BOTH;
+			gbc_lblLogo.weightx = 1.0;
+			gbc_lblLogo.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblLogo.gridx = 0;
+			gbc_lblLogo.gridy = 0;
+			jPanelMenu.add(getLblLogo(), gbc_lblLogo);
+			GridBagConstraints gbc_lblProgram = new GridBagConstraints();
+			gbc_lblProgram.insets = new Insets(20, 0, 5, 20);
+			gbc_lblProgram.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblProgram.weightx = 1.0;
+			gbc_lblProgram.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblProgram.gridx = 0;
+			gbc_lblProgram.gridy = 3;
+			jPanelMenu.add(getLblProgram(), gbc_lblProgram);
+		}
+		return jPanelMenu;
+	}
+	private JLabel getLblRegPeople() {
+		if (lblRegPeople == null) {
+			lblRegPeople = new JLabel("  Fichero Registro Personas ");
+			lblRegPeople.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblRegPeople.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblRegPeople.setForeground(Color.BLACK);
+			lblRegPeople.setBackground(Color.WHITE);
+			lblRegPeople.setBorder(null);
+			lblRegPeople.setHorizontalAlignment(SwingConstants.CENTER);
+			lblRegPeople.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+		}
+		return lblRegPeople;
+	}
+	private JLabel getLblProgram() {
+		if (lblProgram == null) {
+			lblProgram = new JLabel("  Programa de Atención Primaria");
+			lblProgram.setHorizontalAlignment(SwingConstants.CENTER);
+			lblProgram.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+			lblProgram.setForeground(Color.BLACK);
+			lblProgram.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblProgram.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblProgram.setBackground(Color.WHITE);
+			lblProgram.setBorder(null);
+		}
+		return lblProgram;
+	}
+	private JLabel getLblTickets() {
+		if (lblTickets == null) {
+			lblTickets = new JLabel("  Gestión de Vales");
+			lblTickets.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+			lblTickets.setForeground(Color.BLACK);
+			lblTickets.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblTickets.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblTickets.setHorizontalAlignment(SwingConstants.CENTER);
+			lblTickets.setBorder(null);
+		}
+		return lblTickets;
+	}
+	private JPanel getPanel() {
+		if (panel == null) {
+			panel = new JPanel();
+			panel.setBackground(Color.WHITE);
+			FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+			flowLayout.setVgap(0);
+			flowLayout.setHgap(0);
+			panel.add(getLblExit());
+		}
+		return panel;
+	}
+	private JLabel getLblExit() {
+		if (lblExit == null) {
+			lblExit = new JLabel("Salir");
+			lblExit.setFont(new Font("Verdana", Font.PLAIN, 18));
+			lblExit.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblExit.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-exit-64.png")));
+		}
+		return lblExit;
 	}
 }
 	
