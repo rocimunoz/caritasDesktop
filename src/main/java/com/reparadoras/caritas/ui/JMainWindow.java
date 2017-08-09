@@ -6,7 +6,9 @@ import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,9 +35,12 @@ import com.reparadoras.caritas.ui.components.JWindowParams;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
@@ -49,6 +54,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.Graphics;
+
 import javax.swing.UIManager;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
@@ -56,6 +63,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseMotionAdapter;
 
 public class JMainWindow extends AbstractJInternalFrame {
 
@@ -67,13 +78,14 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
-	private JLabel lblLogo;
 	private JPanel jPanelMenu;
 	private JLabel lblRegPeople;
 	private JLabel lblProgram;
 	private JLabel lblTickets;
 	private JPanel panel;
 	private JLabel lblExit;
+	private JPanel jPanelLogo;
+	private JLabel lblLogo;
 
 
 	public JMainWindow(JDesktopPane desktop) {
@@ -109,12 +121,12 @@ public class JMainWindow extends AbstractJInternalFrame {
 	public void createGUIComponents(){
 		getContentPane().setLayout(getGridContentPane());
 		GridBagConstraints gbc_jPanelMenu = new GridBagConstraints();
-		gbc_jPanelMenu.insets = new Insets(0, 0, 5, 5);
+		gbc_jPanelMenu.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelMenu.weightx = 1.0;
 		gbc_jPanelMenu.weighty = 1.0;
-		gbc_jPanelMenu.fill = GridBagConstraints.BOTH;
+		gbc_jPanelMenu.fill = GridBagConstraints.VERTICAL;
 		gbc_jPanelMenu.gridx = 0;
-		gbc_jPanelMenu.gridy = 0;
+		gbc_jPanelMenu.gridy = 1;
 		getContentPane().add(getJPanelMenu(), gbc_jPanelMenu);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.weighty = 1.0;
@@ -122,8 +134,15 @@ public class JMainWindow extends AbstractJInternalFrame {
 		gbc_panel.anchor = GridBagConstraints.EAST;
 		gbc_panel.insets = new Insets(0, 0, 5, 40);
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 1;
+		gbc_panel.gridy = 2;
 		getContentPane().add(getPanel(), gbc_panel);
+		GridBagConstraints gbc_jPanelLogo = new GridBagConstraints();
+		gbc_jPanelLogo.weighty = 1.0;
+		gbc_jPanelLogo.weightx = 1.0;
+		gbc_jPanelLogo.fill = GridBagConstraints.BOTH;
+		gbc_jPanelLogo.gridx = 0;
+		gbc_jPanelLogo.gridy = 0;
+		getContentPane().add(getJPanelLogo(), gbc_jPanelLogo);
 	}
 	
 	public void initComponents(){
@@ -136,36 +155,9 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[] { 1.0 };
-		gridBagLayout.rowWeights = new double[] { 1.0, 1.0 };
+		gridBagLayout.rowWeights = new double[] { 1.0, 1.0, 0.0 };
 
 		return gridBagLayout;
-	}
-	
-	
-	
-	
-	
-	
-
-	
-	/* EVENTOS */
-
-	
-	
-	
-	
-	
-		
-	
-	
-	private JLabel getLblLogo() {
-		if (lblLogo == null) {
-			lblLogo = new JLabel("");
-			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
-			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
-			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo2.PNG")));
-		}
-		return lblLogo;
 	}
 	private JPanel getJPanelMenu() {
 		if (jPanelMenu == null) {
@@ -178,30 +170,22 @@ public class JMainWindow extends AbstractJInternalFrame {
 			GridBagConstraints gbc_lblRegPeople = new GridBagConstraints();
 			gbc_lblRegPeople.insets = new Insets(20, 0, 20, 0);
 			gbc_lblRegPeople.weightx = 1.0;
-			gbc_lblRegPeople.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblRegPeople.fill = GridBagConstraints.VERTICAL;
 			gbc_lblRegPeople.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblRegPeople.gridx = 0;
 			gbc_lblRegPeople.gridy = 1;
 			jPanelMenu.add(getLblRegPeople(), gbc_lblRegPeople);
 			GridBagConstraints gbc_lblTickets = new GridBagConstraints();
+			gbc_lblTickets.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblTickets.insets = new Insets(20, 0, 20, 0);
 			gbc_lblTickets.weightx = 1.0;
-			gbc_lblTickets.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblTickets.fill = GridBagConstraints.VERTICAL;
 			gbc_lblTickets.gridx = 0;
 			gbc_lblTickets.gridy = 2;
 			jPanelMenu.add(getLblTickets(), gbc_lblTickets);
-			GridBagConstraints gbc_lblLogo = new GridBagConstraints();
-			gbc_lblLogo.insets = new Insets(0, 0, 5, 0);
-			gbc_lblLogo.weighty = 1.0;
-			gbc_lblLogo.fill = GridBagConstraints.BOTH;
-			gbc_lblLogo.weightx = 1.0;
-			gbc_lblLogo.anchor = GridBagConstraints.NORTHWEST;
-			gbc_lblLogo.gridx = 0;
-			gbc_lblLogo.gridy = 0;
-			jPanelMenu.add(getLblLogo(), gbc_lblLogo);
 			GridBagConstraints gbc_lblProgram = new GridBagConstraints();
 			gbc_lblProgram.insets = new Insets(20, 0, 5, 20);
-			gbc_lblProgram.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblProgram.fill = GridBagConstraints.VERTICAL;
 			gbc_lblProgram.weightx = 1.0;
 			gbc_lblProgram.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblProgram.gridx = 0;
@@ -262,12 +246,48 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblExit() {
 		if (lblExit == null) {
 			lblExit = new JLabel("Salir");
+			lblExit.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					
+					lblExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
+					
+					
+				}
+			});
 			lblExit.setFont(new Font("Verdana", Font.PLAIN, 18));
 			lblExit.setHorizontalTextPosition(SwingConstants.RIGHT);
 			lblExit.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-exit-64.png")));
+			
+			
 		}
 		return lblExit;
+	}
+	private JPanel getJPanelLogo() {
+		if (jPanelLogo == null) {
+			jPanelLogo = new JPanel();
+			jPanelLogo.setBackground(Color.WHITE);
+			GridBagLayout gbl_jPanelLogo = new GridBagLayout();
+			gbl_jPanelLogo.columnWeights = new double[]{0.0};
+			gbl_jPanelLogo.rowWeights = new double[]{0.0};
+			jPanelLogo.setLayout(gbl_jPanelLogo);
+			GridBagConstraints gbc_lblLogo = new GridBagConstraints();
+			gbc_lblLogo.fill = GridBagConstraints.HORIZONTAL;
+			gbc_lblLogo.gridx = 0;
+			gbc_lblLogo.gridy = 0;
+			jPanelLogo.add(getLblLogo(), gbc_lblLogo);
+		}
+		return jPanelLogo;
+	}
+	private JLabel getLblLogo() {
+		if (lblLogo == null) {
+			lblLogo = new JLabel("");
+			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo2.PNG")));
+			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
+			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblLogo;
 	}
 }
 	
