@@ -15,5 +15,30 @@ CREATE TABLE C_PEOPLE (
   nationality varchar(20) DEFAULT NULL,
   year_to_spain smallint(6) DEFAULT NULL,
   civil_status varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+
+-- ADDRESS
+CREATE TABLE C_ADDRESS (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  town varchar(20) DEFAULT NULL,
+  street varchar(20) DEFAULT NULL,
+  gate varchar(20) DEFAULT NULL,
+  floor varchar(20) DEFAULT NULL,
+  telephone varchar(20) DEFAULT NULL,
+  telephone_contact varchar(20) DEFAULT NULL,
+  postal_code varchar(20) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- HOME
+
+-- FAMILY
+
+-- TYPE_FAMILY
+
+-- RELATIVE
+
+
+

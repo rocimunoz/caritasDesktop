@@ -18,15 +18,14 @@ import org.jdesktop.swingx.JXDatePicker;
 
 public class Address implements Serializable{
 
-	
 	private String town;
 	private String street;
 	private String gate;
 	private String floor;
 	private String telephone;
 	private String telephoneContact;
-	private Date census;
-	private String place;
+	private String postalCode;
+	
 	
 	
 	public String getTown() {
@@ -65,18 +64,14 @@ public class Address implements Serializable{
 	public void setTelephoneContact(String telephoneContact) {
 		this.telephoneContact = telephoneContact;
 	}
-	public Date getCensus() {
-		return census;
+	public String getPostalCode() {
+		return postalCode;
 	}
-	public void setCensus(Date census) {
-		this.census = census;
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
-	public String getPlace() {
-		return place;
-	}
-	public void setPlace(String place) {
-		this.place = place;
-	}
+	
+	
 	
 	
 	
