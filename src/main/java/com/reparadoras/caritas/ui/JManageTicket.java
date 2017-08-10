@@ -50,6 +50,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -73,9 +74,11 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
+	private JLabel lblDni;
+	private JTextField tfDni;
+	private JCheckBox ckActive;
 	private JComboBox<People> cbPeople = null;
 	private JPanel jPanelContent = null;
-	private JPanel jPanelActions = null;
 
 	private JPanel jPanelTable = null;
 	private TicketsPeopleTableModel ticketsPeopleTableModel = null;
@@ -83,6 +86,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JScrollPane scrollPaneJTable = null;
 	private JButton btnSaveTicket;
 	private JButton btnFilterTicket;
+	private JButton btnExit = null;
 	private People people = null;
 	
 	private TicketDAO ticketDAO;
@@ -144,15 +148,22 @@ public class JManageTicket extends AbstractJInternalFrame {
 	
 	public void addListeners(){
 		
-		getBtnFilterTicket().addActionListener(new ActionListener() {
+		getJButtonSearch().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onFilterTicket(false);
 			}
 		});
 		
-		this.getBtnSaveTicket().addActionListener(new ActionListener() {
+		getBtnSaveTicket().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onSaveTicket();
+			}
+		});
+		
+		getJButtonExit().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				dispose();
 			}
 		});
 	}
@@ -184,25 +195,28 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getContentPane().setLayout(getGridContentPane());
 		//getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
 
+		
 		// Añado elementos del JPanelFilter
-		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
-		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
-		getJPanelFilter().add(getBtnFilterTicket(), getGridJBtnFilter());
-		getJPanelFilter().add(getBtnSaveTicket(), getGridJBtnSave());
+				getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
+				getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
+				getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
+				
+				getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
+				getJPanelFilter().add(getJLabelName(), getGridJLabelName());
+				getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
+				getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
+				
+				getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
 
 		// Añado elementos del JPanelContent
 		getContentPane().add(getJPanelContent(), getGridJPanelContent());
 		getJPanelContent().setLayout(getGridLayoutJPanelContent());
 
-		// Añado elementos del JPanelActions
-		getJPanelContent().add(getJPanelActions(), getGridJPanelActions());
-		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-
 		getJPanelContent().add(getJPanelFilter(), getGridJPanelFilter());
 		getJPanelContent().add(getJPanelTable(), getGridJPanelTable());
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
 		
+		getJPanelTable().add(getBtnSaveTicket(), getGridJBtnSave());
 		getJPanelTable().add(getScrollPaneTable(), getGridJPanelScrollTable());
 		
 		
@@ -234,10 +248,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private GridBagLayout getGridLayoutJPanelFilter() {
 
 		GridBagLayout gbl_jPanelFilter = new GridBagLayout();
-		gbl_jPanelFilter.columnWidths = new int[] { 211, 211, 0, 0, 0 };
-		gbl_jPanelFilter.rowHeights = new int[] { 20, 0, 0 };
-		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_jPanelFilter.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+		gbl_jPanelFilter.rowWeights = new double[] { 0.0 };
 
 		return gbl_jPanelFilter;
 	}
@@ -259,11 +271,68 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_jPanelFilter.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelFilter.fill = GridBagConstraints.BOTH;
 		gbc_jPanelFilter.gridx = 0;
-		gbc_jPanelFilter.gridy = 1;
+		gbc_jPanelFilter.gridy = 0;
 
 		return gbc_jPanelFilter;
 	}
 
+	private JLabel getJLabelDni() {
+		if (lblDni == null) {
+			lblDni = new JLabel("Dni:");
+			lblDni.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblDni;
+	}
+	
+	private GridBagConstraints getGridJLabelDni() {
+		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDni.gridx = 0;
+		gbc_lblDni.gridy = 0;
+
+		return gbc_lblDni;
+	}
+	
+	private JTextField getJTextFieldDni() {
+		if (tfDni == null) {
+			tfDni = new JTextField();
+			tfDni.setColumns(10);
+		}
+		return tfDni;
+	}
+	
+	private GridBagConstraints getGridJTextFieldDni() {
+
+		GridBagConstraints gbc_tfDni = new GridBagConstraints();
+		gbc_tfDni.anchor = GridBagConstraints.NORTH;
+		gbc_tfDni.insets = new Insets(0, 0, 5, 5);
+		gbc_tfDni.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfDni.gridx = 1;
+		gbc_tfDni.gridy = 0;
+
+		return gbc_tfDni;
+	}
+	
+	
+	private JCheckBox getCkActive() {
+		if (ckActive == null) {
+			ckActive = new JCheckBox("Activo");
+		}
+		return ckActive;
+	}
+	
+	private GridBagConstraints getGridJCheckBoxdActive() {
+		GridBagConstraints gbc_tfActive = new GridBagConstraints();
+		gbc_tfActive.anchor = GridBagConstraints.NORTH;
+		gbc_tfActive.insets = new Insets(0, 0, 5, 5);
+		gbc_tfActive.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfActive.gridx = 2;
+		gbc_tfActive.gridy = 0;
+		
+		return gbc_tfActive;
+		
+	}
+	
 	private JLabel getJLabelName() {
 
 		if (lblName == null) {
@@ -278,7 +347,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_lblName.fill = GridBagConstraints.BOTH;
 		gbc_lblName.insets = new Insets(0, 5, 5, 5);
 		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 0;
+		gbc_lblName.gridy = 1;
 
 		return gbc_lblName;
 	}
@@ -300,50 +369,54 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_tfName.weightx = 1.0;
 		gbc_tfName.fill = GridBagConstraints.BOTH;
 		gbc_tfName.gridx = 1;
-		gbc_tfName.gridy = 0;
+		gbc_tfName.gridy = 1;
 
 		return gbc_tfName;
 	}
 	
-	private GridBagConstraints getGridJBtnSave() {
-
-		GridBagConstraints gbc_btnSave = new GridBagConstraints();
-		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSave.weightx = 1.0;
-		gbc_btnSave.fill = GridBagConstraints.BOTH;
-		gbc_btnSave.gridx = 3;
-		gbc_btnSave.gridy = 0;
-
-		return gbc_btnSave;
-	}
 	
-	private JButton getBtnSaveTicket() {
-		if (btnSaveTicket == null) {
-			btnSaveTicket = new JButton("Guardar");
-			btnSaveTicket.setIcon(new ImageIcon(JManageTicket.class.getResource("/com/reparadoras/images/icon-save.png")));
-		}
-		return btnSaveTicket;
-	}
 	
-	private GridBagConstraints getGridJBtnFilter() {
+	private GridBagConstraints getGridButtonSearch() {
 
 		GridBagConstraints gbc_btnFilter = new GridBagConstraints();
+		gbc_btnFilter.anchor = GridBagConstraints.WEST;
 		gbc_btnFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_btnFilter.weightx = 1.0;
-		gbc_btnFilter.fill = GridBagConstraints.BOTH;
 		gbc_btnFilter.gridx = 2;
-		gbc_btnFilter.gridy = 0;
+		gbc_btnFilter.gridy = 1;
 
 		return gbc_btnFilter;
 	}
 	
-	private JButton getBtnFilterTicket() {
+	private JButton getJButtonSearch() {
 		if (btnFilterTicket == null) {
 			btnFilterTicket = new JButton("Buscar");
 			
 			btnFilterTicket.setIcon(new ImageIcon(JManageTicket.class.getResource("/com/reparadoras/images/icon-search.png")));
 		}
 		return btnFilterTicket;
+	}
+	
+	private JButton getJButtonExit() {
+		if (btnExit == null) {
+			btnExit = new JButton("Salir al menu");
+			
+			btnExit.setHorizontalAlignment(SwingConstants.RIGHT);
+			
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+		}
+
+		return btnExit;
+	}
+	
+	private GridBagConstraints getGridButtonExit() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.gridx = 3;
+		gbc_btnExit.gridy = 1;
+
+		return gbc_btnExit;
 	}
 
 	
@@ -375,34 +448,12 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	private GridBagLayout getGridLayoutJPanelContent() {
 		GridBagLayout gbl_jPanelContent = new GridBagLayout();
-		gbl_jPanelContent.columnWidths = new int[] { 548, 99, 1, 0 };
-		gbl_jPanelContent.rowHeights = new int[] { 23, 0, 0 };
-		gbl_jPanelContent.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_jPanelContent.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_jPanelContent.columnWeights = new double[] { 0.0 };
+		gbl_jPanelContent.rowWeights = new double[] { 0.0, 0.0 };
 		return gbl_jPanelContent;
 	}
 
-	/* FUNCIONES DEL PANEL DE ACCIONES */
-
-	private JPanel getJPanelActions() {
-
-		if (jPanelActions == null) {
-			jPanelActions = new JPanel();
-			
-		}
-		return jPanelActions;
-	}
-
-	private GridBagConstraints getGridJPanelActions() {
-
-		GridBagConstraints gbc_jPanelActions = new GridBagConstraints();
-		gbc_jPanelActions.fill = GridBagConstraints.HORIZONTAL;
-		gbc_jPanelActions.anchor = GridBagConstraints.NORTHWEST;
-		gbc_jPanelActions.insets = new Insets(0, 0, 0, 5);
-		gbc_jPanelActions.gridx = 0;
-		gbc_jPanelActions.gridy = 0;
-		return gbc_jPanelActions;
-	}
+	
 
 	/* FUNCIONES DEL PANEL JTABLE */
 
@@ -421,7 +472,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_jPanelTable.fill = GridBagConstraints.BOTH;
 		gbc_jPanelTable.anchor = GridBagConstraints.WEST;
 		gbc_jPanelTable.gridx = 0;
-		gbc_jPanelTable.gridy = 2;
+		gbc_jPanelTable.gridy = 1;
 
 		return gbc_jPanelTable;
 
@@ -436,6 +487,26 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbl_jPanelTable.rowWeights = new double[] { Double.MIN_VALUE };
 
 		return gbl_jPanelTable;
+	}
+	
+	private GridBagConstraints getGridJBtnSave() {
+
+		GridBagConstraints gbc_btnSave = new GridBagConstraints();
+		gbc_btnSave.anchor = GridBagConstraints.WEST;
+		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSave.weightx = 1.0;
+		gbc_btnSave.gridx = 0;
+		gbc_btnSave.gridy = 0;
+
+		return gbc_btnSave;
+	}
+	
+	private JButton getBtnSaveTicket() {
+		if (btnSaveTicket == null) {
+			btnSaveTicket = new JButton("Guardar");
+			btnSaveTicket.setIcon(new ImageIcon(JManageTicket.class.getResource("/com/reparadoras/images/icon-save.png")));
+		}
+		return btnSaveTicket;
 	}
 	
 	private JScrollPane getScrollPaneTable(){
@@ -455,7 +526,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
 		gbc_jPanelScroll.gridx = 0;
-		gbc_jPanelScroll.gridy = 0;
+		gbc_jPanelScroll.gridy = 1;
 		
 		return gbc_jPanelScroll; 
 	}
@@ -538,40 +609,40 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private void setGroupHeadersTicket(){
 		GroupableTableHeader header =  (GroupableTableHeader) this.getJTableTicketsPeople().getTableHeader();
 		TableColumnModel tableColumnModel = this.getJTableTicketsPeople().getColumnModel();
-		ColumnGroup groupJanuary = new ColumnGroup("Enero");
+		ColumnGroup groupJanuary = new ColumnGroup("ENERO");
 		groupJanuary.add(tableColumnModel.getColumn(1));
 		groupJanuary.add(tableColumnModel.getColumn(2));
-		ColumnGroup groupFebruary = new ColumnGroup("Febrero");
+		ColumnGroup groupFebruary = new ColumnGroup("FEBRERO");
 		groupFebruary.add(tableColumnModel.getColumn(3));
 		groupFebruary.add(tableColumnModel.getColumn(4));
-		ColumnGroup groupMarch = new ColumnGroup("Marzo");
+		ColumnGroup groupMarch = new ColumnGroup("MARZO");
 		groupMarch.add(tableColumnModel.getColumn(5));
 		groupMarch.add(tableColumnModel.getColumn(6));
-		ColumnGroup groupApril = new ColumnGroup("Abril");
+		ColumnGroup groupApril = new ColumnGroup("ABRIL");
 		groupApril.add(tableColumnModel.getColumn(7));
 		groupApril.add(tableColumnModel.getColumn(8));
-		ColumnGroup groupMay = new ColumnGroup("Mayo");
+		ColumnGroup groupMay = new ColumnGroup("MAYO");
 		groupMay.add(tableColumnModel.getColumn(9));
 		groupMay.add(tableColumnModel.getColumn(10));
-		ColumnGroup groupJune = new ColumnGroup("Junio");
+		ColumnGroup groupJune = new ColumnGroup("JUNIO");
 		groupJune.add(tableColumnModel.getColumn(11));
 		groupJune.add(tableColumnModel.getColumn(12));
-		ColumnGroup groupJuly = new ColumnGroup("Julio");
+		ColumnGroup groupJuly = new ColumnGroup("JULIO");
 		groupJuly.add(tableColumnModel.getColumn(13));
 		groupJuly.add(tableColumnModel.getColumn(14));
-		ColumnGroup groupAugust = new ColumnGroup("Agosto");
+		ColumnGroup groupAugust = new ColumnGroup("AGOSTO");
 		groupAugust.add(tableColumnModel.getColumn(15));
 		groupAugust.add(tableColumnModel.getColumn(16));
-		ColumnGroup groupSeptember = new ColumnGroup("Septiembre");
+		ColumnGroup groupSeptember = new ColumnGroup("SEPTIEMBRE");
 		groupSeptember.add(tableColumnModel.getColumn(17));
 		groupSeptember.add(tableColumnModel.getColumn(18));
-		ColumnGroup groupOctober = new ColumnGroup("Octubre");
+		ColumnGroup groupOctober = new ColumnGroup("OCTUBRE");
 		groupOctober.add(tableColumnModel.getColumn(19));
 		groupOctober.add(tableColumnModel.getColumn(20));
-		ColumnGroup groupNovember = new ColumnGroup("Noviembre");
+		ColumnGroup groupNovember = new ColumnGroup("NOVIEMBRE");
 		groupNovember.add(tableColumnModel.getColumn(21));
 		groupNovember.add(tableColumnModel.getColumn(22));
-		ColumnGroup groupDecember = new ColumnGroup("Diciembre");
+		ColumnGroup groupDecember = new ColumnGroup("DICIEMBRE");
 		groupDecember.add(tableColumnModel.getColumn(23));
 		groupDecember.add(tableColumnModel.getColumn(24));
 		

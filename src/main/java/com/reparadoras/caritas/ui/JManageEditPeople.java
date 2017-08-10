@@ -28,6 +28,7 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
 import java.awt.Font;
+import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 
@@ -109,9 +110,12 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				
+				
+				
 				//Abrir transaccion
 				if (executingMode == JWindowParams.IMODE_UPDATE){
 					onUpdatePeople();
+				
 				}
 				else if (executingMode == JWindowParams.IMODE_INSERT){
 					onCreatePeople();
@@ -151,23 +155,30 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		if (mode == JWindowParams.IMODE_SELECT){
 			//Deshabilito campos
-			this.getJTextFieldDni().setEnabled(false);
+			this.getJTextFieldDni().setEditable(false);
 			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
-			this.getJTextFieldName().setEnabled(false);
+			this.getJTextFieldName().setEditable(false);
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
-			this.getJTextFieldSurname().setEnabled(false);
+			this.getJTextFieldSurname().setEditable(false);
 			this.getJTextFieldSurname().setText(this.selectedPeople.getSurname());
 			this.getComboBox().setEnabled(false);
-			//this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
+			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
+			
+			this.getJckActive().setEnabled(false);
+			
 			this.getJButtonAccept().setVisible(false);
 			this.getJButtonCancel().setText("Salir");
 		}
 		else{
 			//Habilito campos
-			this.getJTextFieldDni().setEnabled(true);
-			this.getJTextFieldName().setEnabled(true);
-			this.getJTextFieldSurname().setEnabled(true);
-			this.getComboBox().setEnabled(true);
+			this.getJTextFieldDni().setEditable(true);
+		
+			this.getJTextFieldName().setEditable(true);
+			this.getJTextFieldSurname().setEditable(true);
+			this.getComboBox().setEditable(true);
+			this.getJckActive().setEnabled(true);
+			
+			
 			this.getJButtonAccept().setVisible(true);
 			this.getJButtonCancel().setText("Cancelar");
 		}
@@ -200,8 +211,11 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		}
 		
 			peopleDAO.update(selectedPeople);
+			
+			JOptionPane.showMessageDialog(this, "Actualizado correctamente.", "Error", JOptionPane.INFORMATION_MESSAGE);
+			
 		}catch(Exception e){
-		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
+		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Actualización Persona", JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}
@@ -217,6 +231,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			
 			//save people
 			peopleDAO.insert(people);
+			
+			JOptionPane.showMessageDialog(this, "Se ha dado de alta correctamente a " + people.getName(), "Inserción Persona", JOptionPane.INFORMATION_MESSAGE);
 		}catch(Exception e){
 		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -230,10 +246,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagLayout getGridLayoutContentPane(){
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0, 0 };
-		gridBagLayout.rowHeights = new int[] { 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gridBagLayout.columnWeights = new double[] { 1.0 };
+		gridBagLayout.rowWeights = new double[] { 1.0 };
 		
 		return gridBagLayout;
 	}
@@ -250,7 +264,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagLayout getGridLayoutJPaneContentPane() {
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWeights = new double[] { 1.0 };
-		gbl_panel.rowWeights = new double[] { 0.0, 1.0 };
+		gbl_panel.rowWeights = new double[] { 0.0, 0.0 };
 		
 		return gbl_panel;
 	}
@@ -258,9 +272,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridBagConstraintsJPaneContentPane() {
 		
 		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.weightx = 1.0;
-		gbc_panel.weighty = 1.0;
 		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.weightx = 1.0;
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 0;
 		
@@ -284,9 +297,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJPanelPersonalData() {
 
 		GridBagConstraints gbc_jPanelPersonalData = new GridBagConstraints();
+		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTH;
 		gbc_jPanelPersonalData.weightx = 1.0;
 		gbc_jPanelPersonalData.weighty = 1.0;
-		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTH;
 		gbc_jPanelPersonalData.fill = GridBagConstraints.BOTH;
 		gbc_jPanelPersonalData.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelPersonalData.gridx = 0;
@@ -507,6 +520,8 @@ private GridBagConstraints getGridJCheckActive() {
 
 		if (jPanelActions == null) {
 			jPanelActions = new JPanel();
+			jPanelActions.setMinimumSize(new Dimension(100, 100));
+			jPanelActions.setMaximumSize(new Dimension(1000, 1000));
 		}
 
 		return jPanelActions;
@@ -514,6 +529,7 @@ private GridBagConstraints getGridJCheckActive() {
 	
 	private GridBagConstraints getGridBagConstraintsJPanelActions() {
 		GridBagConstraints gbc_jPanelActions = new GridBagConstraints();
+		gbc_jPanelActions.weighty = 1.0;
 		gbc_jPanelActions.anchor = GridBagConstraints.SOUTH;
 		gbc_jPanelActions.weightx = 1.0;
 		gbc_jPanelActions.fill = GridBagConstraints.HORIZONTAL;
@@ -534,6 +550,7 @@ private GridBagConstraints getGridJCheckActive() {
 	private JButton getJButtonAccept(){
 		if (jBtnAccept == null){
 			jBtnAccept = new JButton("Aceptar");
+			jBtnAccept.setIcon(new ImageIcon(JManageEditPeople.class.getResource("/com/reparadoras/images/icon-check.png")));
 		}
 		
 		return jBtnAccept;
@@ -552,6 +569,7 @@ private GridBagConstraints getGridJCheckActive() {
 	private JButton getJButtonCancel(){
 		if (jBtnCancel == null){
 			jBtnCancel = new JButton("Cancelar");
+			jBtnCancel.setIcon(new ImageIcon(JManageEditPeople.class.getResource("/com/reparadoras/images/icon-cancel.png")));
 		}
 		
 		return jBtnCancel;

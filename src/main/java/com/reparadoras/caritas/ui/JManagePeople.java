@@ -56,6 +56,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 
 public class JManagePeople extends AbstractJInternalFrame {
 
@@ -64,7 +65,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	private JTextField tfName;
+	private JComboBox<People> cbPeople;
 	private JButton btnSearchPeople = null;
 	private JPanel jPanelContent = null;
 	private JPanel jPanelActions = null;
@@ -79,16 +80,16 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JScrollPane scrollPaneJTable = null;
 	private JLabel lblDni;
 	private JTextField tfDni;
-	private JLabel lblActive;
 	private JCheckBox ckActive;
-	
+
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
-	
+
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
-
+	private JButton btnExitPeople;
+	private JComboBox<People> jComboPeople;
 
 	public JManagePeople(JDesktopPane desktop) {
 		super(desktop);
@@ -97,36 +98,36 @@ public class JManagePeople extends AbstractJInternalFrame {
 		this.setVisible(true);
 
 		this.pack();
-		this.setResizable(true);
+		this.setResizable(false);
 		this.setClosable(true);
-		
+
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+
 		createGUIComponents();
 		initComponents();
 
 		filterPeople();
-		
-		addInternalFrameListener(new InternalFrameAdapter(){
-            public void internalFrameClosing(InternalFrameEvent e) {
-                // do something  
-            	filterPeople();
-            	System.out.println("evento internal frame");
-            }
-        });
-	
-		getJButtonSearch().addActionListener(new ActionListener(){
+
+		addInternalFrameListener(new InternalFrameAdapter() {
+			public void internalFrameClosing(InternalFrameEvent e) {
+				// do something
+				filterPeople();
+				System.out.println("evento internal frame");
+			}
+		});
+
+		getJButtonSearch().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				filterPeople();
 			}
 		});
-		
+
 		getBtnNewPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openEditPeople(JWindowParams.IMODE_INSERT, "Nueva Persona");
-				//filterPeople();
+				// filterPeople();
 			}
 		});
 
@@ -134,7 +135,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				openEditPeople(JWindowParams.IMODE_SELECT, "Consulta Persona");
 				filterPeople();
-				
+
 			}
 		});
 
@@ -151,27 +152,31 @@ public class JManagePeople extends AbstractJInternalFrame {
 				filterPeople();
 			}
 		});
-		
+
 		getBtnProgramPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				onManageProgramPeople(JWindowParams.IMODE_UPDATE, "Programa Atención Primaria");
 			}
 		});
-		
+
 		getBtnTicketPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				onManageTicketPeople();
 			}
 		});
 
-		
+		getBtnExitPeople().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				dispose();
+			}
+		});
 
 	}
 
-	
-	public void createGUIComponents(){
+	public void createGUIComponents() {
 		getContentPane().setLayout(getGridContentPane());
 		getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
 
@@ -179,12 +184,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
-		getJPanelFilter().add(getLblActive(), getGridJLabelActive());
-		
+
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
+		getJPanelFilter().add(getJComboBoxPeople(), getGridJComboPeople());
+		
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
+		getJPanelFilter().add(getBtnExitPeople(), getGridButtonExit());
 
 		// Añado elementos del JPanelContent
 		getContentPane().add(getJPanelContent(), getGridJPanelContent());
@@ -202,22 +208,34 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		getJPanelContent().add(getJPanelTable(), getGridJPanelTable());
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
-		
+
 		getJPanelTable().add(getScrollPaneTable(), getGridJPanelScrollTable());
 	}
-	
-	public void initComponents(){
+
+	public void initComponents() {
 		this.getCkActive().setSelected(true);
+		initCbPeople();
+
 	}
-	
-	
+
+	public void initCbPeople() {
+
+		List<People> listPeople = peopleDAO.findAll();
+		People allPeople = new People();
+		allPeople.setName("TODOS");
+		allPeople.setIdPeople(-1);
+		listPeople.add(0, allPeople);
+		for (People p : listPeople) {
+			this.getJComboBoxPeople().addItem(p);
+		}
+
+	}
+
 	/* FUNCIONES DEL GETCONTENTPANE */
 
 	private GridBagLayout getGridContentPane() {
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0 };
-		gridBagLayout.rowHeights = new int[] { 0 };
 		gridBagLayout.columnWeights = new double[] { 1.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0 };
 
@@ -229,10 +247,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private GridBagLayout getGridLayoutJPanelFilter() {
 
 		GridBagLayout gbl_jPanelFilter = new GridBagLayout();
-		gbl_jPanelFilter.columnWidths = new int[] { 211, 211, 0, 0, 0 };
-		gbl_jPanelFilter.rowHeights = new int[] { 20, 0, 0 };
-		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
-		gbl_jPanelFilter.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0 };
+		gbl_jPanelFilter.rowWeights = new double[] { 0.0, 0.0 };
 
 		return gbl_jPanelFilter;
 	}
@@ -242,8 +258,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 			jPanelFilter = new JPanel();
 			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Personas",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
-			
-		
+
 		}
 
 		return jPanelFilter;
@@ -253,7 +268,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		GridBagConstraints gbc_jPanelFilter = new GridBagConstraints();
 		gbc_jPanelFilter.weightx = 1.0;
 		gbc_jPanelFilter.insets = new Insets(0, 0, 5, 0);
-		gbc_jPanelFilter.fill = GridBagConstraints.BOTH;
+		gbc_jPanelFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jPanelFilter.gridx = 0;
 		gbc_jPanelFilter.gridy = 0;
 
@@ -271,7 +286,6 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelName() {
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
-		gbc_lblName.fill = GridBagConstraints.BOTH;
 		gbc_lblName.insets = new Insets(0, 5, 0, 5);
 		gbc_lblName.gridx = 0;
 		gbc_lblName.gridy = 1;
@@ -279,17 +293,17 @@ public class JManagePeople extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JTextField getJTextFieldName() {
-		if (tfName == null) {
-			tfName = new JTextField();
-			tfName.setColumns(10);
+	private JComboBox<People> getJComboBoxPeople() {
+		if (cbPeople == null) {
+			cbPeople = new JComboBox<People>();
+
 		}
 
-		return tfName;
+		return cbPeople;
 
 	}
-	
-	private GridBagConstraints getGridJTextFieldName() {
+
+	private GridBagConstraints getGridJComboPeople() {
 
 		GridBagConstraints gbc_tfName = new GridBagConstraints();
 		gbc_tfName.insets = new Insets(0, 0, 0, 5);
@@ -308,7 +322,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		}
 		return lblDni;
 	}
-	
+
 	private GridBagConstraints getGridJLabelDni() {
 		GridBagConstraints gbc_lblDni = new GridBagConstraints();
 		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
@@ -317,7 +331,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return gbc_lblDni;
 	}
-	
+
 	private JTextField getJTextFieldDni() {
 		if (tfDni == null) {
 			tfDni = new JTextField();
@@ -325,10 +339,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 		}
 		return tfDni;
 	}
-	
+
 	private GridBagConstraints getGridJTextFieldDni() {
 
 		GridBagConstraints gbc_tfDni = new GridBagConstraints();
+		gbc_tfDni.weightx = 1.0;
 		gbc_tfDni.anchor = GridBagConstraints.NORTH;
 		gbc_tfDni.insets = new Insets(0, 0, 5, 5);
 		gbc_tfDni.fill = GridBagConstraints.HORIZONTAL;
@@ -337,42 +352,26 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
-	
-	private JLabel getLblActive() {
-		if (lblActive == null) {
-			lblActive = new JLabel("Activo:");
-			lblActive.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblActive;
-	}
-	private GridBagConstraints getGridJLabelActive() {
-	
-		GridBagConstraints gbc_lblActive = new GridBagConstraints();
-		gbc_lblActive.insets = new Insets(0, 0, 5, 5);
-		gbc_lblActive.gridx = 2;
-		gbc_lblActive.gridy = 0;
-		return gbc_lblActive;
-	}
-	
+
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
-			ckActive = new JCheckBox("");
+			ckActive = new JCheckBox("Activo");
 		}
 		return ckActive;
 	}
-	
+
 	private GridBagConstraints getGridJCheckBoxdActive() {
 		GridBagConstraints gbc_tfActive = new GridBagConstraints();
 		gbc_tfActive.anchor = GridBagConstraints.NORTH;
 		gbc_tfActive.insets = new Insets(0, 0, 5, 5);
 		gbc_tfActive.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfActive.gridx = 3;
+		gbc_tfActive.gridx = 2;
 		gbc_tfActive.gridy = 0;
-		
+
 		return gbc_tfActive;
-		
+
 	}
-	
+
 	private JButton getJButtonSearch() {
 		if (btnSearchPeople == null) {
 			btnSearchPeople = new JButton("Filtrar");
@@ -391,6 +390,27 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_btnSearchPeople.gridy = 1;
 
 		return gbc_btnSearchPeople;
+	}
+
+	private JButton getBtnExitPeople() {
+		if (btnExitPeople == null) {
+			btnExitPeople = new JButton("Salir al menú");
+			btnExitPeople.setHorizontalAlignment(SwingConstants.RIGHT);
+			btnExitPeople
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-exit.png")));
+		}
+		return btnExitPeople;
+	}
+
+	private GridBagConstraints getGridButtonExit() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.anchor = GridBagConstraints.EAST;
+		gbc_btnExit.insets = new Insets(0, 0, 0, 20);
+		gbc_btnExit.gridx = 3;
+		gbc_btnExit.gridy = 1;
+
+		return gbc_btnExit;
 	}
 
 	/* FUNCIONES DEL PANEL DE CONTENIDO */
@@ -420,10 +440,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private GridBagLayout getGridLayoutJPanelContent() {
 		GridBagLayout gbl_jPanelContent = new GridBagLayout();
-		gbl_jPanelContent.columnWidths = new int[] { 548, 99, 1, 0 };
-		gbl_jPanelContent.rowHeights = new int[] { 23, 0, 0 };
-		gbl_jPanelContent.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_jPanelContent.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_jPanelContent.columnWeights = new double[] { 0.0 };
+		gbl_jPanelContent.rowWeights = new double[] { 0.0, 0.0 };
 		return gbl_jPanelContent;
 	}
 
@@ -494,18 +512,21 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return btnViewPeople;
 	}
-	
+
 	private JButton getBtnProgramPeople() {
 		if (btnProgramPeople == null) {
 			btnProgramPeople = new JButton("Programa Atencion Primaria");
-			btnProgramPeople.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-program.png")));
+			btnProgramPeople.setIcon(
+					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-program.png")));
 		}
 		return btnProgramPeople;
 	}
+
 	private JButton getBtnTicketPeople() {
 		if (btnTicketPeople == null) {
 			btnTicketPeople = new JButton("Vales");
-			btnTicketPeople.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-ticket.png")));
+			btnTicketPeople
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-ticket.png")));
 		}
 		return btnTicketPeople;
 	}
@@ -543,18 +564,18 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return gbl_jPanelTable;
 	}
-	
-	private JScrollPane getScrollPaneTable(){
-		if (scrollPaneJTable == null){
+
+	private JScrollPane getScrollPaneTable() {
+		if (scrollPaneJTable == null) {
 			scrollPaneJTable = new JScrollPane(getJTablePeople());
 			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
 		}
-		
+
 		return scrollPaneJTable;
 	}
-	
-	private GridBagConstraints getGridJPanelScrollTable(){
-		
+
+	private GridBagConstraints getGridJPanelScrollTable() {
+
 		GridBagConstraints gbc_jPanelScroll = new GridBagConstraints();
 		gbc_jPanelScroll.weighty = 1.0;
 		gbc_jPanelScroll.weightx = 1.0;
@@ -562,208 +583,190 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
 		gbc_jPanelScroll.gridx = 0;
 		gbc_jPanelScroll.gridy = 0;
-		
-		return gbc_jPanelScroll; 
+
+		return gbc_jPanelScroll;
 	}
-	
-	private JTable getJTablePeople(){
-		if (tablePeople == null){
-			
+
+	private JTable getJTablePeople() {
+		if (tablePeople == null) {
+
 			tablePeople = new JTable(getPeopleTableModel());
 			tablePeople.setAutoCreateRowSorter(true);
 			tablePeople.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		}
-		
+
 		return tablePeople;
 	}
-	
-	private PeopleTableModel getPeopleTableModel(){
-		
-		if (peopleTableModel == null){
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos"};
+
+	private PeopleTableModel getPeopleTableModel() {
+
+		if (peopleTableModel == null) {
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos" };
 			peopleTableModel = new PeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
-		
+
 		return peopleTableModel;
 	}
-	
-	
 
-	
 	/* EVENTOS */
 
-	public void filterPeople(){
+	public void filterPeople() {
 		String filterDni = this.getJTextFieldDni().getText();
-		String filterName = this.getJTextFieldName().getText();
 		boolean filterActive = this.getCkActive().isSelected();
 		People filterPeople = new People();
-		if (filterDni!=null && !filterDni.equals("")){
+		if (filterDni != null && !filterDni.equals("")) {
 			filterPeople.setDni(filterDni);
 		}
-		if (filterName!=null && !filterName.equals("")){
-			filterPeople.setName(filterName);
-		}
 		
-			filterPeople.setActive(filterActive);
-				
+		People selectedPeople = (People)this.getJComboBoxPeople().getSelectedItem();
+		if (selectedPeople != null && selectedPeople.getIdPeople()!=-1) {
+			filterPeople.setName(selectedPeople.getName());
+		}
+
+		filterPeople.setActive(filterActive);
+
 		List<People> listPeople = peopleDAO.findPeople(filterPeople);
-		if (listPeople!=null && !listPeople.isEmpty()){
+		if (listPeople != null && !listPeople.isEmpty()) {
 			this.getPeopleTableModel().clearTableModelData();
 			this.getPeopleTableModel().addRows(listPeople);
-			
-		}
-		else{
+
+		} else {
 			JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 		}
-	
+
 	}
-	
-	private void onDeletePeople(){
-		try{
-		
+
+	private void onDeletePeople() {
+		try {
+
 			int rowIndex = this.getJTablePeople().getSelectedRow();
-			if (rowIndex!=-1){
-				
-				if (JOptionPane.showConfirmDialog(null, "Se eliminará la persona seleccionada, sus vales y su programa de atención primaria. ¿Está seguro?", "WARNING",
-				        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			if (rowIndex != -1) {
+
+				if (JOptionPane.showConfirmDialog(null,
+						"Se eliminará la persona seleccionada, sus vales y su programa de atención primaria. ¿Está seguro?",
+						"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
-					
-					if (selectedPeople!=null){
+
+					if (selectedPeople != null) {
 						ticketDAO.delete(selectedPeople);
 						programDAO.delete(selectedPeople);
-						peopleDAO.delete(selectedPeople.getIdPeople());	
+						peopleDAO.delete(selectedPeople.getIdPeople());
 					}
-				} 
-				
-				People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
-				if (selectedPeople!=null){
-					peopleDAO.delete(selectedPeople.getIdPeople());	
 				}
-				
-			}
-			else{
+
+				People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
+				if (selectedPeople != null) {
+					peopleDAO.delete(selectedPeople.getIdPeople());
+				}
+
+				JOptionPane.showMessageDialog(this, "Se ha eliminado correctamente el registro seleccionado ",
+						"Borrado Persona", JOptionPane.INFORMATION_MESSAGE);
+
+			} else {
 				JOptionPane.showMessageDialog(this, "Selecciona un registro");
 			}
-			
-		}catch(Exception e){
-		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible eliminar el registro", "Error", JOptionPane.ERROR_MESSAGE);
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible eliminar el registro",
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
+
 	}
-	
+
 	public void openEditPeople(int openMode, String title) {
 		JManageEditPeople jManageEditPeople = null;
 		try {
 
-			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)){
+			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
 				int row = this.getJTablePeople().getSelectedRow();
-				if (row!=-1){
+				if (row != -1) {
 					People people = this.getPeopleTableModel().getDomainObject(row);
-					jManageEditPeople = new JManageEditPeople(this, true, openMode, title, people);	
-				}
-				else{
+					jManageEditPeople = new JManageEditPeople(this, true, openMode, title, people);
+				} else {
 					JOptionPane.showMessageDialog(null, "Seleccione un registro");
 					return;
-			    }
-				
-			}
-			else{
+				}
+
+			} else {
 				jManageEditPeople = new JManageEditPeople(this, true, openMode, title, null);
 			}
-			
+
 			this.desktop.add(jManageEditPeople);
 			jManageEditPeople.setVisible(true);
 			jManageEditPeople.moveToFront();
 			jManageEditPeople.show();
-			
-				
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
-	public void onManageProgramPeople(int openMode, String title){
+
+	public void onManageProgramPeople(int openMode, String title) {
 		JManageProgram jManageProgram = null;
 		int row = getJTablePeople().getSelectedRow();
-		if (row!=-1){
+		if (row != -1) {
 			People people = getPeopleTableModel().getDomainObject(row);
-			
-			if (people!= null){
-			
-		           
-		        	try {
-		        	
-			        	jManageProgram = new JManageProgram(this, true, openMode, title, people);	
-			        	this.desktop.add(jManageProgram);
-						jManageProgram.setMaximum(true);
-						jManageProgram.setMaximizable(false);
-			        	jManageProgram.setVisible(true);
-			        	jManageProgram.moveToFront();
-			        	jManageProgram.show();
-					} catch (PropertyVetoException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		        	
-		        }
-		        else {
-		           //Abrir ventana programa con filtro 
-		        }	
-			
-		}
-		else{
+
+			if (people != null) {
+
+				try {
+
+					jManageProgram = new JManageProgram(this, true, openMode, title, people);
+					this.desktop.add(jManageProgram);
+					jManageProgram.setMaximum(true);
+					jManageProgram.setMaximizable(false);
+					jManageProgram.setVisible(true);
+					jManageProgram.moveToFront();
+					jManageProgram.show();
+				} catch (PropertyVetoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} else {
+				// Abrir ventana programa con filtro
+			}
+
+		} else {
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");
 			return;
-	    }
+		}
 	}
-	
-	
-	
 
-	
-	
-	
-	public void onManageTicketPeople(){
+	public void onManageTicketPeople() {
 		JManageTicket jManageTicket = null;
 		int row = getJTablePeople().getSelectedRow();
-		if (row!=-1){
-			
+		if (row != -1) {
+
 			People people = getPeopleTableModel().getDomainObject(row);
-			
-			if (people!=null){
-			
-			           
-			        	try {
-			        	
-			        		jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, people);	
-							this.desktop.add(jManageTicket);
-							jManageTicket.setMaximum(true);
-							jManageTicket.setMaximizable(true);
-							jManageTicket.setVisible(true);
-							jManageTicket.moveToFront();
-							jManageTicket.show();
-						} catch (PropertyVetoException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-			
-			
+
+			if (people != null) {
+
+				try {
+
+					jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, people);
+					this.desktop.add(jManageTicket);
+					jManageTicket.setMaximum(true);
+					jManageTicket.setMaximizable(true);
+					jManageTicket.setVisible(true);
+					jManageTicket.moveToFront();
+					jManageTicket.show();
+				} catch (PropertyVetoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} else {
+
+				return;
 			}
-		else{
+		} else {
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");
-			return;
 		}
-				  }
-		
-		
+
 	}
-		
-	
+
 	
 }
-	
-	
-	
-

@@ -197,6 +197,18 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblRegPeople() {
 		if (lblRegPeople == null) {
 			lblRegPeople = new JLabel("  Fichero Registro Personas ");
+			lblRegPeople.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					openManagePeopleWindow();
+				}
+			});
+			lblRegPeople.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblRegPeople.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
 			lblRegPeople.setHorizontalTextPosition(SwingConstants.RIGHT);
 			lblRegPeople.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblRegPeople.setForeground(Color.BLACK);
@@ -210,6 +222,18 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblProgram() {
 		if (lblProgram == null) {
 			lblProgram = new JLabel("  Programa de Atención Primaria");
+			lblProgram.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					//openWindow
+				}
+			});
+			lblProgram.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblProgram.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
 			lblProgram.setHorizontalAlignment(SwingConstants.CENTER);
 			lblProgram.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
 			lblProgram.setForeground(Color.BLACK);
@@ -223,6 +247,19 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblTickets() {
 		if (lblTickets == null) {
 			lblTickets = new JLabel("  Gestión de Vales");
+			lblTickets.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					//openWindow
+					openManageTicketPeopleWindow();
+				}
+			});
+			lblTickets.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblTickets.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
 			lblTickets.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
 			lblTickets.setForeground(Color.BLACK);
 			lblTickets.setFont(new Font("Verdana", Font.BOLD, 30));
@@ -289,6 +326,39 @@ public class JMainWindow extends AbstractJInternalFrame {
 		}
 		return lblLogo;
 	}
+	
+	
+	 private void openManageTicketPeopleWindow() {
+	        
+	        
+	        try {
+	        	JManageTicket jManageTicket = new JManageTicket(this.desktop);
+	        	desktop.add(jManageTicket);
+	        	
+	        	jManageTicket.setMaximum(true);
+	        	jManageTicket.setMaximizable(false);
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            
+	        }
+	    }
+	 
+	 private void openManagePeopleWindow() {
+	       
+	       
+	        try {
+	        	JManagePeople jManagePeople = new JManagePeople(this.desktop);
+	        	this.desktop.add(jManagePeople);
+	        	
+	        	jManagePeople.setMaximum(true);
+	        	jManagePeople.setMaximizable(false);
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            
+	        }
+	    }
 }
 	
 	

@@ -104,13 +104,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	
 	private JTabbedPane jtabPane1;
-	private JPanel jPanelAdress;
-	private JPanel jPanelHome;
-	private JPanel jPanelFamily;
-	private JPanel jPanelTypeAuthorization;
-	private JPanel jPanelJobSituation;
-	private JPanel jPanelStudies;
-	private JPanel jPanelEconomicSituation;
+	
 	
 	
 	
@@ -186,6 +180,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 		});
 		
+		getJButtonExit().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				dispose();
+			}
+		});
+		
 		
 	}
 	
@@ -206,10 +207,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
+		getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
 		
 		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		getJPanelActions().add(getJButtonSave());
-		getJPanelActions().add(getJButtonExit());
+		
 		
 		//Añado elementos del JPanelGrid
 		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
@@ -436,6 +438,26 @@ public void initCbPeople(){
 
 		return gbc_btnSearchPeople;
 	}
+	
+	private JButton getJButtonExit() {
+		if (btnExit == null) {
+			btnExit = new JButton("Salir al menu");
+			
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+		}
+
+		return btnExit;
+	}
+	
+	private GridBagConstraints getGridButtonExit() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.gridx = 3;
+		gbc_btnExit.gridy = 1;
+
+		return gbc_btnExit;
+	}
 
 	
 	/* FUNCIONES DEL PANEL DE ACCIONES*/
@@ -473,14 +495,7 @@ public void initCbPeople(){
 
 	
 	
-	private JButton getJButtonExit() {
-		if (btnExit == null) {
-			btnExit = new JButton("Salir");
-			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
-		}
-
-		return btnExit;
-	}
+	
 
 	
 
