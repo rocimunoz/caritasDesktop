@@ -204,7 +204,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		
 			People people = new People();
 			people.setName(this.getJTextFieldName().getText());
-			people.setSurname(this.getJTextFieldSurname().getText());
+			people.setFirstSurname(this.getJTextFieldSurname().getText());
 			//people.setDni(this.getJTextFieldDni().getText());
 			people.setActive(true);
 			

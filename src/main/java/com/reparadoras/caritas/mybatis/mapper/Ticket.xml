@@ -35,13 +35,13 @@
     </resultMap>
     
      <resultMap id="PeopleResult" type="People">
-     <id property="idPeople" column="idPeople"/>
+     <id property="id" column="id"/>
         <result property="name" column="name"/>  
        
     </resultMap>
  
    <select id="findTicket" parameterType="People" resultMap="TicketResult">
-        SELECT PE.IDPEOPLE, 
+        SELECT PE.ID, 
                PE.NAME, 
                T.POINTSJANUARY,
                T.POINTSFEBRUARY,
@@ -67,14 +67,14 @@
                T.DATEOCTOBER,
                T.DATENOVEMBER,
                T.DATEDECEMBER
-        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
+        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.IDPEOPLE 
         WHERE
-        PE.IDPEOPLE = #{idPeople}
+        PE.ID = #{id}
       
     </select>
     
     <select id="findAll"  resultMap="TicketResult">
-        SELECT PE.IDPEOPLE, 
+        SELECT PE.ID, 
                PE.NAME, 
                T.POINTSJANUARY,
                T.POINTSFEBRUARY,
@@ -100,7 +100,7 @@
                T.DATEOCTOBER,
                T.DATENOVEMBER,
                T.DATEDECEMBER
-        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.IDPEOPLE = T.IDPEOPLE 
+        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.IDPEOPLE 
         AND PE.ACTIVE = 1;
       
     </select>
@@ -109,7 +109,7 @@
         INSERT INTO C_TICKET 
         	(IDPEOPLE, POINTSJANUARY, POINTSFEBRUARY, POINTSMARCH, POINTSAPRIL, POINTSMAY, POINTSJUNE, POINTSJULY, POINTSAUGUST,
         	POINTSSEPTEMBER, POINTSOCTOBER, POINTSNOVEMBER, POINTSDECEMBER) 
-        VALUES (#{people.idPeople},
+        VALUES (#{people.id},
         #{pointsJanuary}, #{pointsFebruary}, 
         #{pointsMarch}, #{pointsApril}, 
         #{pointsMay}, #{pointsJune}, 
@@ -148,12 +148,12 @@
         <if test="dateDecember != null">dateDecember = #{dateDecember},</if>
         <if test="pointsDecember != null">pointsDecember = #{pointsDecember},</if>
         </set>
-        WHERE IDPEOPLE = #{people.idPeople}
+        WHERE IDPEOPLE = #{people.id}
     
     </update>
     
      <delete id="delete" parameterType="People">
-    	DELETE FROM C_TICKET WHERE idPeople = #{idPeople}
+    	DELETE FROM C_TICKET WHERE idPeople = #{id}
     </delete>
     
     

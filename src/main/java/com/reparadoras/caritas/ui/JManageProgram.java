@@ -258,7 +258,7 @@ public void initCbPeople(){
 			List<People> listPeople = peopleDAO.findAll();
 			People allPeople = new People();
 			allPeople.setName("TODOS");
-		    allPeople.setIdPeople(-1);
+		    allPeople.setId(-1);
 			listPeople.add(0, allPeople);
 			for (People p : listPeople) {
 				this.getJComboBoxPeople().addItem(p);
@@ -642,7 +642,7 @@ public void initCbPeople(){
 	public void onFilterProgram(boolean create){
 		People filterPeople = (People)this.getJComboBoxPeople().getSelectedItem();
 		
-		if (filterPeople.getIdPeople()!=-1){
+		if (filterPeople.getId()!=-1){
 			Program program = programDAO.findProgram(filterPeople);
 			if (program!=null){
 				this.getProgramTableModel().clearTableModelData();

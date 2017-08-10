@@ -8,15 +8,21 @@
 	
 
     <resultMap id="PeopleResult" type="People">
-        <result property="idPeople" column="idPeople"/>
+        <result property="id" column="id"/>
         <result property="name" column="name"/>  
-        <result property="surname" column="surname"/>  
-        <result property="dni" column="dni"/>  
+        <result property="firstSurname" column="first_surname"/>
+        <result property="secondSurname" column="second_surname"/>   
+        <result property="dni" column="dni"/>
+         <result property="passport" column="passport"/>   
         <result property="sex" column="sex"/>   
         <result property="active" column="active"/>
-        <!--<result property="date_born" column="date_born"/>
-        <result property="origin_country" column="origin_country"/>
-        <result property="civil_state" column="civil_state"/>-->
+        <result property="createDate" column="create_date"/>
+        <result property="reactivateDate" column="reactivate_date"/>
+        <result property="country" column="country"/>
+        <result property="nationality" column="nationality"/>
+        <result property="yearToSpain" column="year_to_spain"/>
+        <result property="civil_status" column="civil_status"/>
+        
 		
     </resultMap>
  
@@ -43,25 +49,25 @@
     </select>
     
     <delete id="delete" parameterType="int">
-    	DELETE FROM C_PEOPLE WHERE idPeople = #{idPeople}
+    	DELETE FROM C_PEOPLE WHERE id = #{id}
     </delete>
     
     
     
  	<insert id="insert" parameterType="People" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_PEOPLE (name, surname, dni, sex, active) VALUES (#{name},#{surname}, #{dni}, #{sex}, 1);
+        INSERT INTO C_PEOPLE (name, first_surname, dni, sex, active) VALUES (#{name},#{firstSurname}, #{dni}, #{sex}, 1);
     </insert>
     
     <update id="update" parameterType="People">
         UPDATE C_PEOPLE
         <set>
           <if test="name != null">name = #{name},</if>
-          <if test="surname != null">surname = #{surname},</if>
+          <if test="firstSurname != null">first_surname = #{firstSurname},</if>
           <if test="dni != null">dni = #{dni},</if>
           <if test="active != null">active = #{active},</if>
           <if test="sex != null">sex = #{sex},</if>
           </set>
-        WHERE idPeople = #{idPeople} 
+        WHERE id = #{id} 
   	</update>
  
 	

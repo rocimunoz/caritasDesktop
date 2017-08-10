@@ -223,7 +223,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		List<People> listPeople = peopleDAO.findAll();
 		People allPeople = new People();
 		allPeople.setName("TODOS");
-		allPeople.setIdPeople(-1);
+		allPeople.setId(-1);
 		listPeople.add(0, allPeople);
 		for (People p : listPeople) {
 			this.getJComboBoxPeople().addItem(p);
@@ -619,7 +619,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		}
 		
 		People selectedPeople = (People)this.getJComboBoxPeople().getSelectedItem();
-		if (selectedPeople != null && selectedPeople.getIdPeople()!=-1) {
+		if (selectedPeople != null && selectedPeople.getId()!=-1) {
 			filterPeople.setName(selectedPeople.getName());
 		}
 
@@ -650,13 +650,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 					if (selectedPeople != null) {
 						ticketDAO.delete(selectedPeople);
 						programDAO.delete(selectedPeople);
-						peopleDAO.delete(selectedPeople.getIdPeople());
+						peopleDAO.delete(selectedPeople.getId());
 					}
 				}
 
 				People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
 				if (selectedPeople != null) {
-					peopleDAO.delete(selectedPeople.getIdPeople());
+					peopleDAO.delete(selectedPeople.getId());
 				}
 
 				JOptionPane.showMessageDialog(this, "Se ha eliminado correctamente el registro seleccionado ",

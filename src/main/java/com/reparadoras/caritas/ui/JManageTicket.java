@@ -183,7 +183,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 			List<People> listPeople = peopleDAO.findAll();
 			People allPeople = new People();
 			allPeople.setName("TODOS");
-		    allPeople.setIdPeople(-1);
+		    allPeople.setId(-1);
 			listPeople.add(0, allPeople);
 			for (People p : listPeople) {
 				this.getJComboBoxPeople().addItem(p);
@@ -709,7 +709,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	public void onFilterTicket(boolean create){
 		People filterPeople = (People)this.getJComboBoxPeople().getSelectedItem();
 		
-		if (filterPeople.getIdPeople()!=-1){
+		if (filterPeople.getId()!=-1){
 			Ticket ticket = ticketDAO.findTicket(filterPeople);
 			if (ticket!=null){
 				this.getTicketsPeopleTableModel().clearTableModelData();

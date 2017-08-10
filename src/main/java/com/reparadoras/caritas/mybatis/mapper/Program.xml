@@ -13,7 +13,7 @@
     </resultMap>
     
      <resultMap id="PeopleResult" type="People">
-        <result property="idPeople" column="idPeople"/>
+        <result property="id" column="id"/>
         <result property="name" column="name"/>  
         <result property="dni" column="dni"/>  
         <result property="active" column="active"/>
@@ -29,19 +29,19 @@
                PE.NAME, 
                PR.DATEGBD
         FROM C_PEOPLE PE, C_PROGRAM PR
-        WHERE PR.IDPEOPLE = PE.IDPEOPLE
-        AND PE.IDPEOPLE = #{idPeople}
+        WHERE PR.IDPEOPLE = PE.id
+        AND PE.id = #{id}
     </select>
     
      <delete id="delete" parameterType="People">
-    	DELETE FROM C_PROGRAM WHERE idPeople = #{idPeople}
+    	DELETE FROM C_PROGRAM WHERE id = #{id}
     </delete>
     
     
     <insert id="insert" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_PROGRAM 
-        	(IDPEOPLE, DATEGBD) 
-        VALUES (#{people.idPeople},
+        	(ID, DATEGBD) 
+        VALUES (#{people.id},
         #{dateGBD})
     </insert>
  	

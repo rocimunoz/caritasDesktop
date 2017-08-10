@@ -29,7 +29,7 @@ public int update(People person){
          session.commit();
          session.close();
      }
-     System.out.println("update("+person+") --> "+person.getIdPeople());
+     System.out.println("update("+person+") --> "+person.getId());
      return id;
  }
 
@@ -43,7 +43,7 @@ public int insert(People person){
          session.commit();
          session.close();
      }
-     System.out.println("insert("+person+") --> "+person.getIdPeople());
+     System.out.println("insert("+person+") --> "+person.getId());
      return id;
  }
 

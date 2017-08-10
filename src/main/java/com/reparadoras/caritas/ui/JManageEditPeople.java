@@ -160,7 +160,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJTextFieldName().setEditable(false);
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
 			this.getJTextFieldSurname().setEditable(false);
-			this.getJTextFieldSurname().setText(this.selectedPeople.getSurname());
+			this.getJTextFieldSurname().setText(this.selectedPeople.getFirstSurname());
 			this.getComboBox().setEnabled(false);
 			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
 			
@@ -188,7 +188,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE){
 			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
-			this.getJTextFieldSurname().setText(this.selectedPeople.getSurname());
+			this.getJTextFieldSurname().setText(this.selectedPeople.getFirstSurname());
 			this.getJckActive().setSelected(this.selectedPeople.isActive());
 			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
 			
@@ -201,7 +201,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		this.selectedPeople.setDni(this.getJTextFieldDni().getText());
 		this.selectedPeople.setName(this.getJTextFieldName().getText());
-		this.selectedPeople.setSurname(this.getJTextFieldSurname().getText());
+		this.selectedPeople.setFirstSurname(this.getJTextFieldSurname().getText());
 		this.selectedPeople.setSex((String) this.getComboBox().getSelectedItem());
 		if (this.getJckActive().isSelected()){
 			this.selectedPeople.setActive(true);
@@ -225,8 +225,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 			People people = new People();
 			people.setName(this.getJTextFieldName().getText());
-			people.setSurname(this.getJTextFieldSurname().getText());
+			people.setFirstSurname(this.getJTextFieldSurname().getText());
 			people.setDni(this.getJTextFieldDni().getText());
+			people.setSex((String) this.getComboBox().getSelectedItem());
 			people.setActive(true);
 			
 			//save people
