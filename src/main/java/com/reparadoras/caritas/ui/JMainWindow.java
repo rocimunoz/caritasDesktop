@@ -225,7 +225,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblProgram.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					//openWindow
+					openManageProgramWindow();
 				}
 			});
 			lblProgram.addMouseMotionListener(new MouseMotionAdapter() {
@@ -283,6 +283,12 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblExit() {
 		if (lblExit == null) {
 			lblExit = new JLabel("Salir");
+			lblExit.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					System.exit(0);
+				}
+			});
 			lblExit.addMouseMotionListener(new MouseMotionAdapter() {
 				@Override
 				public void mouseMoved(MouseEvent arg0) {
@@ -353,6 +359,22 @@ public class JMainWindow extends AbstractJInternalFrame {
 	        	
 	        	jManagePeople.setMaximum(true);
 	        	jManagePeople.setMaximizable(false);
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            
+	        }
+	    }
+	 
+	 private void openManageProgramWindow() {
+	        
+	        
+	        try {
+	        	JManageProgram jManageProgram = new JManageProgram(this.desktop);
+	        	desktop.add(jManageProgram);
+	        	
+	        	jManageProgram.setMaximum(true);
+	        	jManageProgram.setMaximizable(false);
 	            
 	        } catch (Exception e) {
 	            e.printStackTrace();

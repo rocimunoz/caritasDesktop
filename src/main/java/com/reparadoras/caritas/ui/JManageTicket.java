@@ -138,6 +138,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
+		
+		onFilterTicket(false);
 
 	}
 

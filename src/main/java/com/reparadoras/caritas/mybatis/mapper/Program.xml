@@ -20,6 +20,10 @@
 		
     </resultMap>
     
+     <select id="findAll" resultMap="ProgramResult">
+        SELECT * FROM C_PROGRAM;
+    </select>
+    
     <select id="findProgram" parameterType="int" resultMap="ProgramResult">
         SELECT PE.DNI, 
                PE.NAME, 

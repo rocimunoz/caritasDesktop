@@ -159,7 +159,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		initComponents();
 		addListeners();
 		
-		
+		onFilterProgram(true);
 
 		
 
