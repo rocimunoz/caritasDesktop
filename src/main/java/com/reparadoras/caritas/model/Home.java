@@ -16,22 +16,17 @@ public class Home implements Serializable{
 	
 private static final long serialVersionUID = 1L;
 	
-private String typeHouse;
-private String regHolding;
+
+private String regHolding; //entidad type regHolding
 private int numberRooms;
 private int numberPeople;
 private int numberFamilies;
 private String otherInfo;
 
+private HomeType homeType;
 private Address address;
 
-public String getTypeHouse() {
-	return typeHouse;
-}
 
-public void setTypeHouse(String typeHouse) {
-	this.typeHouse = typeHouse;
-}
 
 public String getRegHolding() {
 	return regHolding;
@@ -80,6 +75,15 @@ public Address getAddress() {
 public void setAddress(Address address) {
 	this.address = address;
 }
+
+public HomeType getHomeType() {
+	return homeType;
+}
+
+public void setHomeType(HomeType homeType) {
+	this.homeType = homeType;
+}
+
 
 
    

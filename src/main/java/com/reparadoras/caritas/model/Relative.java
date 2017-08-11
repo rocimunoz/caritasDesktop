@@ -16,12 +16,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class Relative implements Serializable{
 
-	
+	private Long id;
 	private String relationShip;
 	private String surname;
 	private String name;
 	private Date dateBorn;
 	private String situation;
+	
 	public String getRelationShip() {
 		return relationShip;
 	}
@@ -52,6 +53,14 @@ public class Relative implements Serializable{
 	public void setSituation(String situation) {
 		this.situation = situation;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 	
 	
 	

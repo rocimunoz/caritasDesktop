@@ -6,7 +6,7 @@
 <mapper namespace="Program">
 
     <resultMap id="ProgramResult" type="Program">
-        <result property="idProgram" column="idProgram"/>
+        <result property="id" column="id"/>
         <association property="people" resultMap="PeopleResult"/>        
         
        
@@ -29,7 +29,7 @@
                PE.NAME, 
                PR.DATEGBD
         FROM C_PEOPLE PE, C_PROGRAM PR
-        WHERE PR.IDPEOPLE = PE.id
+        WHERE PR.ID_PEOPLE = PE.id
         AND PE.id = #{id}
     </select>
     

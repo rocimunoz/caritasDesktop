@@ -15,28 +15,60 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class Family implements Serializable{
 
+	private Long id;
 	
 	private Set<Relative> relatives;
-	private TypeFamily typeFamily;
+	
+	private FamilyType familyType;
+	private Home home;
+	
 	private String otherInfo;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public Set<Relative> getRelatives() {
 		return relatives;
 	}
+
 	public void setRelatives(Set<Relative> relatives) {
 		this.relatives = relatives;
 	}
-	public TypeFamily getTypeFamily() {
-		return typeFamily;
+
+	public FamilyType getFamilyType() {
+		return familyType;
 	}
-	public void setTypeFamily(TypeFamily typeFamily) {
-		this.typeFamily = typeFamily;
+
+	public void setFamilyType(FamilyType familyType) {
+		this.familyType = familyType;
 	}
+
+	public Home getHome() {
+		return home;
+	}
+
+	public void setHome(Home home) {
+		this.home = home;
+	}
+
 	public String getOtherInfo() {
 		return otherInfo;
 	}
+
 	public void setOtherInfo(String otherInfo) {
 		this.otherInfo = otherInfo;
 	}
+	
+	
+	
+	
+	
+	
 	
 	
 	

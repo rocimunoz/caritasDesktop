@@ -18,6 +18,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 public class Address implements Serializable{
 
+	private Long id;
 	private String town;
 	private String street;
 	private String gate;
@@ -69,6 +70,12 @@ public class Address implements Serializable{
 	}
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	

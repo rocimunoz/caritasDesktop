@@ -24,8 +24,7 @@ public class People implements Serializable{
     private String nationality;
     private int yearToSpain;
     private String civilStatus;
-   
-    
+  
     private Date dateBorn;
     
     private String sex;

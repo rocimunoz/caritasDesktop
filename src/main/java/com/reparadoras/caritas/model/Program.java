@@ -15,35 +15,33 @@ public class Program implements Serializable{
     private int id;
     
     private People people;
-    private Date dateGBD;
+    private Family family;
+    
+    
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public People getPeople() {
+		return people;
+	}
+	public void setPeople(People people) {
+		this.people = people;
+	}
+	public Family getFamily() {
+		return family;
+	}
+	public void setFamily(Family family) {
+		this.family = family;
+	}
     
     
 
 	
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public People getPeople() {
-		return people;
-	}
-
-	public void setPeople(People people) {
-		this.people = people;
-	}
-
-	public Date getDateGBD() {
-		return dateGBD;
-	}
-
-	public void setDateGBD(Date dateGBD) {
-		this.dateGBD = dateGBD;
-	}
+	
 	
 	
     
