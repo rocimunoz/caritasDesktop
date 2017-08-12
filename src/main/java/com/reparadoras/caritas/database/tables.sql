@@ -1,45 +1,139 @@
 -- PEOPLE
-CREATE TABLE C_PEOPLE (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  dni varchar(255) DEFAULT NULL,
-  name varchar(255) NOT NULL,
-  sex char(1) NOT NULL,
-  first_surname varchar(255) NOT NULL,
-  date_born date DEFAULT NULL,
-  active tinyint(1) DEFAULT '1',
-  passport varchar(11) NOT NULL,
-  second_surname varchar(255) NOT NULL,
-  create_date date DEFAULT NULL,
-  reactivate_date date DEFAULT NULL,
-  country varchar(20) NOT NULL,
-  nationality varchar(20) DEFAULT NULL,
-  year_to_spain smallint(6) DEFAULT NULL,
-  civil_status varchar(50) DEFAULT NULL,
-  PRIMARY KEY (id)
+CREATE TABLE `c_people` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DNI` varchar(255) DEFAULT NULL,
+  `NAME` varchar(255) NOT NULL,
+  `SEX` char(1) NOT NULL,
+  `FIRST_SURNAME` varchar(255) NOT NULL,
+  `DATE_BORN` date DEFAULT NULL,
+  `ACTIVE` tinyint(1) DEFAULT '1',
+  `PASSPORT` varchar(11) NOT NULL,
+  `SECOND_SURNAME` varchar(255) NOT NULL,
+  `CREATE_DATE` date DEFAULT NULL,
+  `REACTIVATE_DATE` date DEFAULT NULL,
+  `COUNTRY` varchar(20) NOT NULL,
+  `NATIONALITY` varchar(20) DEFAULT NULL,
+  `YEAR_TO_SPAIN` smallint(6) DEFAULT NULL,
+  `CIVIL_STATUS` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 
 -- ADDRESS
-CREATE TABLE C_ADDRESS (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  town varchar(20) DEFAULT NULL,
-  street varchar(20) DEFAULT NULL,
-  gate varchar(20) DEFAULT NULL,
-  floor varchar(20) DEFAULT NULL,
-  telephone varchar(20) DEFAULT NULL,
-  telephone_contact varchar(20) DEFAULT NULL,
-  postal_code varchar(20) DEFAULT NULL,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `c_address` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TOWN` varchar(20) DEFAULT NULL,
+  `STREET` varchar(20) DEFAULT NULL,
+  `GATE` varchar(20) DEFAULT NULL,
+  `FLOOR` varchar(20) DEFAULT NULL,
+  `TELEPHONE` varchar(20) DEFAULT NULL,
+  `TELEPHONE_CONTACT` varchar(20) DEFAULT NULL,
+  `POSTAL_CODE` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+)
 
 -- HOME
+CREATE TABLE `c_home` (
+  `ID` int(11) NOT NULL,
+  `REG_HOLDING` int(11) DEFAULT NULL,
+  `NUMBER_ROOMS` tinyint(4) DEFAULT NULL,
+  `NUMBER_PEOPLE` tinyint(4) DEFAULT NULL,
+  `NUMBER_FAMILIES` tinyint(4) DEFAULT NULL,
+  `OTHER_INFO` varchar(255) DEFAULT NULL,
+  `ID_HOME_TYPE` int(11) DEFAULT NULL,
+  `ID_ADDRESS` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `home_home_type` (`ID_HOME_TYPE`),
+  KEY `home_address` (`ID_ADDRESS`),
+  CONSTRAINT `home_address` FOREIGN KEY (`ID_ADDRESS`) REFERENCES `c_address` (`ID`),
+  CONSTRAINT `home_home_type` FOREIGN KEY (`ID_HOME_TYPE`) REFERENCES `c_home_type` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- HOME TYPE
+CREATE TABLE `c_home_type` (
+  `ID` int(11) NOT NULL,
+  `DESCRIPTION` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- FAMILY
+CREATE TABLE `c_family` (
+  `ID` int(11) NOT NULL,
+  `OTHER_INFO` varchar(20) DEFAULT NULL,
+  `ID_FAMILY_TYPE` int(11) DEFAULT NULL,
+  `ID_HOME` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `family_family_type` (`ID_FAMILY_TYPE`),
+  KEY `family_home` (`ID_HOME`),
+  CONSTRAINT `family_family_type` FOREIGN KEY (`ID_FAMILY_TYPE`) REFERENCES `c_family_type` (`ID`),
+  CONSTRAINT `family_home` FOREIGN KEY (`ID_HOME`) REFERENCES `c_home` (`ID`)
+
 
 -- TYPE_FAMILY
+CREATE TABLE `c_family_type` (
+  `ID` int(11) NOT NULL,
+  `DESCRIPTION` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+)
 
 -- RELATIVE
+CREATE TABLE `c_relative` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `RELATION_SHIP` varchar(20) DEFAULT NULL,
+  `NAME` varchar(20) DEFAULT NULL,
+  `SURNAME` varchar(20) DEFAULT NULL,
+  `DATE_BORN` date DEFAULT NULL,
+  `SITUATION` varchar(20) DEFAULT NULL,
+  `ID_FAMILY` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `relative_family` (`ID_FAMILY`),
+  CONSTRAINT `relative_family` FOREIGN KEY (`ID_FAMILY`) REFERENCES `c_family` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- PROGRAM 
+CREATE TABLE `c_program` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ID_PEOPLE` int(11) DEFAULT NULL,
+  `ID_FAMILY` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idPeople` (`ID_PEOPLE`),
+  KEY `program_family` (`ID_FAMILY`),
+  CONSTRAINT `program_family` FOREIGN KEY (`ID_FAMILY`) REFERENCES `c_family` (`ID`),
+  CONSTRAINT `program_people` FOREIGN KEY (`ID_PEOPLE`) REFERENCES `c_people` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- TICKET
+CREATE TABLE `c_ticket` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_PEOPLE` int(11) NOT NULL,
+  `DATE_APRIL` datetime DEFAULT NULL,
+  `DATE_AUGUST` datetime DEFAULT NULL,
+  `DATE_DECEMBER` datetime DEFAULT NULL,
+  `DATE_FEBRUARY` datetime DEFAULT NULL,
+  `DATE_JANUARY` datetime DEFAULT NULL,
+  `DATE_JULY` datetime DEFAULT NULL,
+  `DATE_JUNE` datetime DEFAULT NULL,
+  `DATE_MARCH` datetime DEFAULT NULL,
+  `DATE_MAY` datetime DEFAULT NULL,
+  `DATE_NOVEMBER` datetime DEFAULT NULL,
+  `DATE_OCTOBER` datetime DEFAULT NULL,
+  `DATE_SEPTEMBER` datetime DEFAULT NULL,
+  `POINTS_APRIL` int(11) NOT NULL,
+  `POINTS_AUGUST` int(11) NOT NULL,
+  `POINTS_DECEMBER` int(11) NOT NULL,
+  `POINTS_FEBRUARY` int(11) NOT NULL,
+  `POINTS_JANUARY` int(11) NOT NULL,
+  `POINTS_JULY` int(11) NOT NULL,
+  `POINTS_JUNE` int(11) NOT NULL,
+  `POINTS_MARCH` int(11) NOT NULL,
+  `POINTS_MAY` int(11) NOT NULL,
+  `POINTS_NOVEMBER` int(11) NOT NULL,
+  `POINTS_OCTOBER` int(11) NOT NULL,
+  `POINTS_SEPTEMBER` int(11) NOT NULL,
+  `YEAR` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idPeople` (`ID_PEOPLE`),
+  CONSTRAINT `idPeople` FOREIGN KEY (`ID_PEOPLE`) REFERENCES `c_people` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 

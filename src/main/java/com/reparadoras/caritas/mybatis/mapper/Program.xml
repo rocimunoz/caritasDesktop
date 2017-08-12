@@ -26,8 +26,7 @@
     
     <select id="findProgram" parameterType="int" resultMap="ProgramResult">
         SELECT PE.DNI, 
-               PE.NAME, 
-               PR.DATEGBD
+               PE.NAME
         FROM C_PEOPLE PE, C_PROGRAM PR
         WHERE PR.ID_PEOPLE = PE.id
         AND PE.id = #{id}
@@ -40,9 +39,9 @@
     
     <insert id="insert" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_PROGRAM 
-        	(ID, DATEGBD) 
-        VALUES (#{people.id},
-        #{dateGBD})
+        	(ID_PEOPLE) 
+        VALUES (#{people.id})
+        
     </insert>
  	
 </mapper>

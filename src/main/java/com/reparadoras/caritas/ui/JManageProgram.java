@@ -652,7 +652,8 @@ public void initCbPeople(){
 			else{
 				Program programNewReset = new Program();
 				programNewReset.setPeople(filterPeople);
-				programNewReset.setDateGBD(new Date());
+				//programNewReset.setDateGBD(new Date());
+				
 				
 				if (create){
 					int dialogResult = JOptionPane.showConfirmDialog(this, "No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");

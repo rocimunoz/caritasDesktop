@@ -6,30 +6,30 @@
 <mapper namespace="Ticket">
     <resultMap id="TicketResult" type="Ticket">
         <result property="idTicket" column="idTicket"/>
-        <result property="pointsJanuary" column="pointsJanuary"/>  
-        <result property="pointsFebruary" column="pointsFebruary"/>  
-        <result property="pointsMarch" column="pointsMarch"/>  
-        <result property="pointsApril" column="pointsApril"/>  
-        <result property="pointsMay" column="pointsMay"/>  
-        <result property="pointsJune" column="pointsJune"/>  
-        <result property="pointsJuly" column="pointsJuly"/>  
-        <result property="pointsAugust" column="pointsAugust"/>  
-        <result property="pointsSeptember" column="pointsSeptember"/>  
-        <result property="pointsOctober" column="pointsOctober"/>  
-        <result property="pointsNovember" column="pointsNovember"/>  
-        <result property="pointsDecember" column="pointsDecember"/>  
-        <result property="dateJanuary" column="dateJanuary"/>  
-        <result property="dateFebruary" column="dateFebruary"/>  
-        <result property="dateMarch" column="dateMarch"/>  
-        <result property="dateApril" column="dateApril"/>  
-        <result property="dateMay" column="dateMay"/>  
-        <result property="dateJune" column="dateJune"/>  
-        <result property="dateJuly" column="dateJuly"/>  
-        <result property="dateAugust" column="dateAugust"/>  
-        <result property="dateSeptember" column="dateSeptember"/>  
-        <result property="dateOctober" column="dateOctober"/>  
-        <result property="dateNovember" column="dateNovember"/>  
-        <result property="dateDecember" column="dateDecember"/>  
+        <result property="pointsJanuary" column="POINTS_JANUARY"/>  
+        <result property="pointsFebruary" column="POINTS_FEBRUARY"/>  
+        <result property="pointsMarch" column="POINTS_MARCH"/>  
+        <result property="pointsApril" column="POINTS_APRIL"/>  
+        <result property="pointsMay" column="POINTS_MAY"/>  
+        <result property="pointsJune" column="POINTS_JUNE"/>  
+        <result property="pointsJuly" column="POINTS_JULY"/>  
+        <result property="pointsAugust" column="POINTS_AUGUST"/>  
+        <result property="pointsSeptember" column="POINTS_SEPTEMBER"/>  
+        <result property="pointsOctober" column="POINTS_OCTOBER"/>  
+        <result property="pointsNovember" column="POINTS_NOVEMBER"/>  
+        <result property="pointsDecember" column="POINTS_DECEMBER"/>  
+        <result property="dateJanuary" column="DATE_JANUARY"/>  
+        <result property="dateFebruary" column="DATE_FEBRUARY"/>  
+        <result property="dateMarch" column="DATE_MARCH"/>  
+        <result property="dateApril" column="DATE_APRIL"/>  
+        <result property="dateMay" column="DATE_MAY"/>  
+        <result property="dateJune" column="DATE_JUNE"/>  
+        <result property="dateJuly" column="DATE_JULY"/>  
+        <result property="dateAugust" column="DATE_AUGUST"/>  
+        <result property="dateSeptember" column="DATE_SEPTEMBER"/>  
+        <result property="dateOctober" column="DATE_OCTOBER"/>  
+        <result property="dateNovember" column="DATE_NOVEMBER"/>  
+        <result property="dateDecember" column="DATE_DECEMBER"/>  
         <association property="people" resultMap="PeopleResult"/>  
       
     </resultMap>
@@ -43,32 +43,34 @@
    <select id="findTicket" parameterType="People" resultMap="TicketResult">
         SELECT PE.ID, 
                PE.NAME, 
-               T.POINTSJANUARY,
-               T.POINTSFEBRUARY,
-               T.POINTSMARCH,
-               T.POINTSAPRIL,
-               T.POINTSMAY,
-               T.POINTSJUNE,
-               T.POINTSJULY,
-               T.POINTSAUGUST,
-               T.POINTSSEPTEMBER,
-               T.POINTSOCTOBER,
-               T.POINTSNOVEMBER,
-               T.POINTSDECEMBER,
-               T.DATEJANUARY,
-               T.DATEFEBRUARY,
-               T.DATEMARCH,
-               T.DATEAPRIL,
-               T.DATEMAY,
-               T.DATEJUNE,
-               T.DATEJULY,
-               T.DATEAUGUST,
-               T.DATESEPTEMBER,
-               T.DATEOCTOBER,
-               T.DATENOVEMBER,
-               T.DATEDECEMBER
-        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.IDPEOPLE 
+               T.POINTS_JANUARY,
+               T.POINTS_FEBRUARY,
+               T.POINTS_MARCH,
+               T.POINTS_APRIL,
+               T.POINTS_MAY,
+               T.POINTS_JUNE,
+               T.POINTS_JULY,
+               T.POINTS_AUGUST,
+               T.POINTS_SEPTEMBER,
+               T.POINTS_OCTOBER,
+               T.POINTS_NOVEMBER,
+               T.POINTS_DECEMBER,
+               T.DATE_JANUARY,
+               T.DATE_FEBRUARY,
+               T.DATE_MARCH,
+               T.DATE_APRIL,
+               T.DATE_MAY,
+               T.DATE_JUNE,
+               T.DATE_JULY,
+               T.DATE_AUGUST,
+               T.DATE_SEPTEMBER,
+               T.DATE_OCTOBER,
+               T.DATE_NOVEMBER,
+               T.DATE_DECEMBER
+        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.ID_PEOPLE 
         WHERE
+        PE.ID = T.ID_PEOPLE
+        AND 
         PE.ID = #{id}
       
     </select>
@@ -76,46 +78,46 @@
     <select id="findAll"  resultMap="TicketResult">
         SELECT PE.ID, 
                PE.NAME, 
-               T.POINTSJANUARY,
-               T.POINTSFEBRUARY,
-               T.POINTSMARCH,
-               T.POINTSAPRIL,
-               T.POINTSMAY,
-               T.POINTSJUNE,
-               T.POINTSJULY,
-               T.POINTSAUGUST,
-               T.POINTSSEPTEMBER,
-               T.POINTSOCTOBER,
-               T.POINTSNOVEMBER,
-               T.POINTSDECEMBER,
-               T.DATEJANUARY,
-               T.DATEFEBRUARY,
-               T.DATEMARCH,
-               T.DATEAPRIL,
-               T.DATEMAY,
-               T.DATEJUNE,
-               T.DATEJULY,
-               T.DATEAUGUST,
-               T.DATESEPTEMBER,
-               T.DATEOCTOBER,
-               T.DATENOVEMBER,
-               T.DATEDECEMBER
-        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.IDPEOPLE 
+               T.POINTS_JANUARY,
+               T.POINTS_FEBRUARY,
+               T.POINTS_MARCH,
+               T.POINTS_APRIL,
+               T.POINTS_MAY,
+               T.POINTS_JUNE,
+               T.POINTS_JULY,
+               T.POINTS_AUGUST,
+               T.POINTS_SEPTEMBER,
+               T.POINTS_OCTOBER,
+               T.POINTS_NOVEMBER,
+               T.POINTS_DECEMBER,
+               T.DATE_JANUARY,
+               T.DATE_FEBRUARY,
+               T.DATE_MARCH,
+               T.DATE_APRIL,
+               T.DATE_MAY,
+               T.DATE_JUNE,
+               T.DATE_JULY,
+               T.DATE_AUGUST,
+               T.DATE_SEPTEMBER,
+               T.DATE_OCTOBER,
+               T.DATE_NOVEMBER,
+               T.DATE_DECEMBER
+        FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.ID_PEOPLE
         AND PE.ACTIVE = 1;
       
     </select>
 	
 	<insert id="insert" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_TICKET 
-        	(IDPEOPLE, POINTSJANUARY, POINTSFEBRUARY, POINTSMARCH, POINTSAPRIL, POINTSMAY, POINTSJUNE, POINTSJULY, POINTSAUGUST,
-        	POINTSSEPTEMBER, POINTSOCTOBER, POINTSNOVEMBER, POINTSDECEMBER) 
+        	(ID_PEOPLE, POINTS_JANUARY, POINTS_FEBRUARY, POINTS_MARCH, POINTS_APRIL, POINTS_MAY, POINTS_JUNE, POINTS_JULY, POINTS_AUGUST,
+        	POINTS_SEPTEMBER, POINTS_OCTOBER, POINTS_NOVEMBER, POINTS_DECEMBER) 
         VALUES (#{people.id},
-        #{pointsJanuary}, #{pointsFebruary}, 
-        #{pointsMarch}, #{pointsApril}, 
-        #{pointsMay}, #{pointsJune}, 
-        #{pointsJuly}, #{pointsAugust},
-        #{pointsSeptember}, #{pointsOctober},
-        #{pointsNovember}, #{pointsDecember})
+        #{points_January}, #{points_February}, 
+        #{points_March}, #{points_April}, 
+        #{points_May}, #{points_June}, 
+        #{points_July}, #{points_August},
+        #{points_September}, #{points_October},
+        #{points_November}, #{points_December})
     </insert>
     
  
@@ -123,37 +125,37 @@
     <update id="update" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
         
         UPDATE C_TICKET <set>
-        <if test="dateJanuary != null">dateJanuary = #{dateJanuary},</if>
-        <if test="pointsJanuary != null">pointsJanuary = #{pointsJanuary},</if>
-       <if test="dateFebruary != null">dateFebruary = #{dateFebruary},</if>
-        <if test="pointsFebruary != null">pointsFebruary = #{pointsFebruary},</if>
-        <if test="dateMarch != null">dateMarch = #{dateMarch},</if>
-        <if test="pointsMarch != null">  pointsMarch = #{pointsMarch},</if>
-        <if test="dateApril != null">dateApril = #{dateApril},</if>
-        <if test="pointsApril != null">pointsApril = #{pointsApril},</if>
-        <if test="dateMay != null">dateMay = #{dateMay},</if>
-        <if test="pointsMay != null">pointsMay = #{pointsMay},</if>
-        <if test="dateJune != null">dateJune = #{dateJune},</if>
-        <if test="pointsJune != null">pointsJune = #{pointsJune},</if>
-        <if test="dateJuly != null">dateJuly = #{dateJuly},</if>
-        <if test="pointsJuly != null">pointsJuly = #{pointsJuly},</if>
-        <if test="dateAugust != null">dateAugust = #{dateAugust},</if>
-        <if test="pointsAugust != null">pointsAugust = #{pointsAugust},</if>
-        <if test="dateSeptember != null">dateSeptember = #{dateSeptember},</if>
-        <if test="pointsSeptember != null">pointsSeptember = #{pointsSeptember},</if>
-        <if test="dateOctober != null">dateOctober = #{dateOctober},</if>
-        <if test="pointsOctober != null">pointsOctober = #{pointsOctober},</if>
-        <if test="dateNovember != null">dateNovember = #{dateNovember},</if>
-        <if test="pointsNovember != null">pointsNovember = #{pointsNovember},</if>
-        <if test="dateDecember != null">dateDecember = #{dateDecember},</if>
-        <if test="pointsDecember != null">pointsDecember = #{pointsDecember},</if>
+        <if test="dateJanuary != null">DATE_JANUARY = #{dateJanuary},</if>
+        <if test="pointsJanuary != null">POINTS_JANUARY = #{pointsJanuary},</if>
+       <if test="dateFebruary != null">DATE_FEBRUARY = #{dateFebruary},</if>
+        <if test="pointsFebruary != null">POINTS_FEBRUARY = #{pointsFebruary},</if>
+        <if test="dateMarch != null">DATE_MARCH = #{dateMarch},</if>
+        <if test="pointsMarch != null">  POINTS_MARCH = #{pointsMarch},</if>
+        <if test="dateApril != null">DATE_APRIL = #{dateApril},</if>
+        <if test="pointsApril != null">POINTS_APRIL = #{pointsApril},</if>
+        <if test="dateMay != null">DATE_MAY = #{dateMay},</if>
+        <if test="pointsMay != null">POINTS_MAY = #{pointsMay},</if>
+        <if test="dateJune != null">DATE_JUNE = #{dateJune},</if>
+        <if test="pointsJune != null">POINTS_JUNE = #{pointsJune},</if>
+        <if test="dateJuly != null">DATE_JULY = #{dateJuly},</if>
+        <if test="pointsJuly != null">POINTS_JULY = #{pointsJuly},</if>
+        <if test="dateAugust != null">DATE_AUGUST = #{dateAugust},</if>
+        <if test="pointsAugust != null">POINTS_AUGUST = #{pointsAugust},</if>
+        <if test="dateSeptember != null">DATE_SEPTEMBER = #{dateSeptember},</if>
+        <if test="pointsSeptember != null">POINTS_SEPTEMBER = #{pointsSeptember},</if>
+        <if test="dateOctober != null">DATE_OCTOBER = #{dateOctober},</if>
+        <if test="pointsOctober != null">POINTS_OCTOBER = #{pointsOctober},</if>
+        <if test="dateNovember != null">DATE_NOVEMBER = #{dateNovember},</if>
+        <if test="pointsNovember != null">POINTS_NOVEMBER = #{pointsNovember},</if>
+        <if test="dateDecember != null">DATE_DECEMBER = #{dateDecember},</if>
+        <if test="pointsDecember != null">POINTS_DECEMBER = #{pointsDecember},</if>
         </set>
-        WHERE IDPEOPLE = #{people.id}
+        WHERE ID_PEOPLE = #{people.id}
     
     </update>
     
      <delete id="delete" parameterType="People">
-    	DELETE FROM C_TICKET WHERE idPeople = #{id}
+    	DELETE FROM C_TICKET WHERE ID_PEOPLE = #{id}
     </delete>
     
     
