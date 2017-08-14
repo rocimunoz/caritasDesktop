@@ -19,6 +19,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import com.reparadoras.caritas.dao.HomeTypeDAO;
+import com.reparadoras.caritas.dao.PeopleDAO;
+import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
@@ -27,7 +30,7 @@ public class JPanelHome extends JPanel{
 	private JPanel jPanelHome;
 	/*VIEW HOUSE*/
 	private JLabel lblTypeHouse;
-	private JTextField tfTypeHouse;
+	private JComboBox<HomeType> tbHomeType;
 	private JLabel lblRegHolding;
 	private JTextField tfRegHolding;
 	private JLabel lblNumberRooms;
@@ -38,6 +41,8 @@ public class JPanelHome extends JPanel{
 	private JComboBox<Integer> cbNumberFamilies;
 	private JLabel lblOtherInfo;
 	private JTextArea taOtherInfo;
+	
+	private HomeTypeDAO homeTypeDAO;
 	
 	
 	public JPanelHome() {
@@ -56,6 +61,8 @@ public void initCombos(){
 		this.getJComboNumberPeople().addItem(i);
 		this.getJComboNumberRooms().addItem(i);
 		}
+		
+		
 		
 	}
 	
@@ -143,12 +150,12 @@ public void initCombos(){
 		return gbc_lblTypeHouse;
 	}
 	
-	private JTextField getJTextFieldTypeHouse() {
-		if (tfTypeHouse == null) {
-			tfTypeHouse = new JTextField();
-			tfTypeHouse.setColumns(10);
+	private JComboBox getJTextFieldTypeHouse() {
+		if (tbHomeType == null) {
+			tbHomeType = new JComboBox<HomeType>();
+			
 		}
-		return tfTypeHouse;
+		return tbHomeType;
 	}
 
 	private GridBagConstraints getGridJTextFieldTypeHouse() {

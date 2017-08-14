@@ -7,7 +7,8 @@
     <typeAliases>
         <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
         <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
-        <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>        
+        <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>
+        <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.HomeType"/>             
     </typeAliases>
  
     <environments default="development">
@@ -26,6 +27,7 @@
        <mapper resource="com/reparadoras/caritas/mybatis/mapper/People.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Program.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Ticket.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/HomeType.xml"/>
     
     </mappers>
 </configuration>
