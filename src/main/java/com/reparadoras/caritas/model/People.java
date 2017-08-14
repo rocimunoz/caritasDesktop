@@ -150,6 +150,13 @@ public class People implements Serializable{
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	@Override
+	public String toString() {
+		return this.name + "-" + this.firstSurname;
+	}
+	
+	
     
   
    

@@ -15,7 +15,7 @@
 		
     </resultMap>
  
-    <select id="findAll" resultMap="PeopleResult">
+    <select id="findAll" resultMap="HomeTypeResult">
         SELECT * FROM C_HOME_TYPE;
     </select>
     

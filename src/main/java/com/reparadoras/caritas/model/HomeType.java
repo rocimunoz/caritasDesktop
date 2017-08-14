@@ -13,7 +13,7 @@ public class HomeType{
 
 
     private int id;
-    private String descripcion;
+    private String description;
 	
     
     public int getId() {
@@ -22,12 +22,18 @@ public class HomeType{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getDescripcion() {
-		return descripcion;
+	public String getDescription() {
+		return description;
 	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setDescription(String description) {
+		this.description = description;
 	}
+	@Override
+	public String toString() {
+		return this.description;
+	}
+	
+	
     
     
      

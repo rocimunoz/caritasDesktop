@@ -8,7 +8,7 @@
         <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
         <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
         <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>
-        <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.HomeType"/>             
+        <typeAlias alias="HomeType" type="com.reparadoras.caritas.model.HomeType"/>             
     </typeAliases>
  
     <environments default="development">

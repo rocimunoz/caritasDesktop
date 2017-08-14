@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -22,6 +23,7 @@ import javax.swing.table.TableModel;
 import com.reparadoras.caritas.dao.HomeTypeDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.model.HomeType;
+import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
@@ -30,7 +32,7 @@ public class JPanelHome extends JPanel{
 	private JPanel jPanelHome;
 	/*VIEW HOUSE*/
 	private JLabel lblTypeHouse;
-	private JComboBox<HomeType> tbHomeType;
+	private JComboBox<HomeType> cbHomeType;
 	private JLabel lblRegHolding;
 	private JTextField tfRegHolding;
 	private JLabel lblNumberRooms;
@@ -47,6 +49,8 @@ public class JPanelHome extends JPanel{
 	
 	public JPanelHome() {
 		
+		
+		homeTypeDAO = new HomeTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIPanel();
 		
 		initCombos();
@@ -61,6 +65,12 @@ public void initCombos(){
 		this.getJComboNumberPeople().addItem(i);
 		this.getJComboNumberRooms().addItem(i);
 		}
+		
+		List<HomeType> listHomeType = homeTypeDAO.findAll();
+		for (HomeType homeType : listHomeType) {
+			cbHomeType.addItem(homeType);
+		}
+	
 		
 		
 		
@@ -151,11 +161,11 @@ public void initCombos(){
 	}
 	
 	private JComboBox getJTextFieldTypeHouse() {
-		if (tbHomeType == null) {
-			tbHomeType = new JComboBox<HomeType>();
+		if (cbHomeType == null) {
+			cbHomeType = new JComboBox<HomeType>();
 			
 		}
-		return tbHomeType;
+		return cbHomeType;
 	}
 
 	private GridBagConstraints getGridJTextFieldTypeHouse() {

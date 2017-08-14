@@ -35,21 +35,36 @@ import javax.swing.ImageIcon;
 public class JManageEditPeople extends AbstractJInternalFrame {
 	
 	private JPanel jPanelContentPane;
-	private JTextField txfName;
-	private JTextField txfDni;
+	
+	
 
 	private JPanel jPanelPersonalData;
 	private JLabel jLblName;
+	private JTextField txfName;
 	private JLabel jLblDni;
-	private JLabel jLblActive;
+	private JTextField txfDni;
+	private JLabel jLblPassport;
+	private JTextField txfPassport;
+	private JLabel jLblFirstSurname;
+	private JTextField txfFirstSurname;
+	private JLabel jLblSecondSurname;
+	private JTextField txfSecondSurname;
+	private JComboBox<String> jComboBoxSex;
+	private JLabel jLblSex;
+	
+	private JLabel jLblCountry;
+	private JTextField txfCountry;
+	private JLabel jLblNationality;
+	private JTextField txfNationality;
+	private JLabel jLblYearToSpain;
+	private JTextField txfYearToSpain;
+	
+	
 	
 	private JPanel jPanelActions;
 	private JButton jBtnAccept;
 	private JButton jBtnCancel;
-	private JLabel jLblSurname;
-	private JTextField txfSurname;
-	private JComboBox<String> jComboBoxSex;
-	private JLabel jLblSex;
+	
 	private PeopleDAO peopleDAO;
 	
 	private int executingMode;
@@ -86,14 +101,25 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		getJPanelContentPane().add(getJPanelPersonalData(), getGridJPanelPersonalData());
 		getJPanelPersonalData().setLayout(getGridLayoutJPanelPersonalData());
-		getJPanelPersonalData().add(getJLabelSurname(), getGridJLabelSurname());
-		getJPanelPersonalData().add(getJTextFieldSurname(), getGridJTextFieldSurname());
+		
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
+		getJPanelPersonalData().add(getJLabelFirstSurname(), getGridJLabelFirstSurname());
+		getJPanelPersonalData().add(getJTextFieldFirstSurname(), getGridJTextFieldFirstSurname());
+		getJPanelPersonalData().add(getJLabelSecondSurname(), getGridJLabelSecondSurname());
+		getJPanelPersonalData().add(getJTextFieldSecondSurname(), getGridJTextFieldSecondSurname());
 		getJPanelPersonalData().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelPersonalData().add(getJTextFieldDni(), getGridJTextFieldDni());
+		getJPanelPersonalData().add(getJLabelPassport(), getGridJLabelPassport());
+		getJPanelPersonalData().add(getJTextFieldPassport(), getGridJTextFieldPassport());
 		getJPanelPersonalData().add(getComboBox(), getGridComboBoxSex());
 		getJPanelPersonalData().add(getJLblSex(), getGridJLabelSex());
+		getJPanelPersonalData().add(getJLabelCountry(), getGridJLabelCountry());
+		getJPanelPersonalData().add(getJTextFieldCountry(), getGridJTextFieldCountry());
+		getJPanelPersonalData().add(getJLabelNationality(), getGridJLabelNationality());
+		getJPanelPersonalData().add(getJTextFieldNationality(), getGridJTextFieldNationality());
+		getJPanelPersonalData().add(getJLabelYearToSpain(), getGridJLabelYearToSpain());
+		getJPanelPersonalData().add(getJTextFieldYearToSpain(), getGridJTextFieldYearToSpain());
 		
 		getJPanelPersonalData().add(getJckActive(), getGridJCheckActive());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
@@ -159,8 +185,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
 			this.getJTextFieldName().setEditable(false);
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
-			this.getJTextFieldSurname().setEditable(false);
-			this.getJTextFieldSurname().setText(this.selectedPeople.getFirstSurname());
+			this.getJTextFieldFirstSurname().setEditable(false);
+			this.getJTextFieldFirstSurname().setText(this.selectedPeople.getFirstSurname());
 			this.getComboBox().setEnabled(false);
 			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
 			
@@ -174,7 +200,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJTextFieldDni().setEditable(true);
 		
 			this.getJTextFieldName().setEditable(true);
-			this.getJTextFieldSurname().setEditable(true);
+			this.getJTextFieldFirstSurname().setEditable(true);
 			this.getComboBox().setEditable(true);
 			this.getJckActive().setEnabled(true);
 			
@@ -188,7 +214,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE){
 			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
-			this.getJTextFieldSurname().setText(this.selectedPeople.getFirstSurname());
+			this.getJTextFieldFirstSurname().setText(this.selectedPeople.getFirstSurname());
 			this.getJckActive().setSelected(this.selectedPeople.isActive());
 			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
 			
@@ -201,7 +227,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		this.selectedPeople.setDni(this.getJTextFieldDni().getText());
 		this.selectedPeople.setName(this.getJTextFieldName().getText());
-		this.selectedPeople.setFirstSurname(this.getJTextFieldSurname().getText());
+		this.selectedPeople.setFirstSurname(this.getJTextFieldFirstSurname().getText());
 		this.selectedPeople.setSex((String) this.getComboBox().getSelectedItem());
 		if (this.getJckActive().isSelected()){
 			this.selectedPeople.setActive(true);
@@ -225,7 +251,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 			People people = new People();
 			people.setName(this.getJTextFieldName().getText());
-			people.setFirstSurname(this.getJTextFieldSurname().getText());
+			people.setFirstSurname(this.getJTextFieldFirstSurname().getText());
 			people.setDni(this.getJTextFieldDni().getText());
 			people.setSex((String) this.getComboBox().getSelectedItem());
 			people.setActive(true);
@@ -257,6 +283,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jPanelContentPane == null) {
 			jPanelContentPane = new JPanel();
+			jPanelContentPane.setMaximumSize(new Dimension(10, 10));
 			jPanelContentPane.setBorder(null);	
 		}
 		return jPanelContentPane;		
@@ -298,10 +325,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJPanelPersonalData() {
 
 		GridBagConstraints gbc_jPanelPersonalData = new GridBagConstraints();
-		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTH;
-		gbc_jPanelPersonalData.weightx = 1.0;
 		gbc_jPanelPersonalData.weighty = 1.0;
-		gbc_jPanelPersonalData.fill = GridBagConstraints.BOTH;
+		gbc_jPanelPersonalData.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jPanelPersonalData.anchor = GridBagConstraints.NORTH;
 		gbc_jPanelPersonalData.insets = new Insets(0, 0, 5, 0);
 		gbc_jPanelPersonalData.gridx = 0;
 		gbc_jPanelPersonalData.gridy = 0;
@@ -361,50 +387,97 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 	}
 	
-	private JLabel getJLabelSurname() {
+	private JLabel getJLabelFirstSurname() {
 
-		if (jLblSurname == null) {
-			jLblSurname = new JLabel("Apellidos");
-			jLblSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
-			jLblSurname.setMinimumSize(new Dimension(20, 14));
-			jLblSurname.setMaximumSize(new Dimension(20, 14));
+		if (jLblFirstSurname == null) {
+			jLblFirstSurname = new JLabel("Primer Apellido");
+			jLblFirstSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
+			jLblFirstSurname.setMinimumSize(new Dimension(20, 14));
+			jLblFirstSurname.setMaximumSize(new Dimension(20, 14));
 			
 		}
 
-		return jLblSurname;
+		return jLblFirstSurname;
 	}
 
-	private GridBagConstraints getGridJLabelSurname() {
-		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
-		gbc_lblSurname.anchor = GridBagConstraints.WEST;
-		gbc_lblSurname.insets = new Insets(0, 15, 5, 5);
-		gbc_lblSurname.gridx = 2;
-		gbc_lblSurname.gridy = 0;
+	private GridBagConstraints getGridJLabelFirstSurname() {
+		GridBagConstraints gbc_lblFirstSurname = new GridBagConstraints();
+		gbc_lblFirstSurname.anchor = GridBagConstraints.WEST;
+		gbc_lblFirstSurname.insets = new Insets(0, 15, 5, 5);
+		gbc_lblFirstSurname.gridx = 2;
+		gbc_lblFirstSurname.gridy = 0;
 		
-				return gbc_lblSurname;
+				return gbc_lblFirstSurname;
 	}
 	
-	private JTextField getJTextFieldSurname() {
+	private JTextField getJTextFieldFirstSurname() {
 
-		if (txfSurname == null){
-			txfSurname = new JTextField();	
-			txfSurname.setColumns(10);
+		if (txfFirstSurname == null){
+			txfFirstSurname = new JTextField();	
+			txfFirstSurname.setColumns(10);
 		}
 		
 
-		return txfSurname;
+		return txfFirstSurname;
 	}
 
-	private GridBagConstraints getGridJTextFieldSurname() {
+	private GridBagConstraints getGridJTextFieldFirstSurname() {
 
-		GridBagConstraints gbc_txfSurname = new GridBagConstraints();
-		gbc_txfSurname.weightx = 1.0;
-		gbc_txfSurname.insets = new Insets(0, 0, 5, 0);
-		gbc_txfSurname.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txfSurname.gridx = 3;
-		gbc_txfSurname.gridy = 0;
+		GridBagConstraints gbc_txfFirstSurname = new GridBagConstraints();
+		gbc_txfFirstSurname.weightx = 1.0;
+		gbc_txfFirstSurname.insets = new Insets(0, 0, 5, 0);
+		gbc_txfFirstSurname.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfFirstSurname.gridx = 3;
+		gbc_txfFirstSurname.gridy = 0;
 		
-		return gbc_txfSurname;
+		return gbc_txfFirstSurname;
+		
+	}
+	
+	private JLabel getJLabelSecondSurname() {
+
+		if (jLblSecondSurname == null) {
+			jLblSecondSurname = new JLabel("Segundo Apellido");
+			jLblSecondSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
+			jLblSecondSurname.setMinimumSize(new Dimension(20, 14));
+			jLblSecondSurname.setMaximumSize(new Dimension(20, 14));
+			
+		}
+
+		return jLblSecondSurname;
+	}
+
+	private GridBagConstraints getGridJLabelSecondSurname() {
+		GridBagConstraints gbc_lblSecondSurname = new GridBagConstraints();
+		gbc_lblSecondSurname.anchor = GridBagConstraints.WEST;
+		gbc_lblSecondSurname.insets = new Insets(0, 15, 5, 5);
+		gbc_lblSecondSurname.gridx = 4;
+		gbc_lblSecondSurname.gridy = 0;
+		
+				return gbc_lblSecondSurname;
+	}
+	
+	private JTextField getJTextFieldSecondSurname() {
+
+		if (txfSecondSurname == null){
+			txfSecondSurname = new JTextField();	
+			txfSecondSurname.setColumns(10);
+		}
+		
+
+		return txfSecondSurname;
+	}
+
+	private GridBagConstraints getGridJTextFieldSecondSurname() {
+
+		GridBagConstraints gbc_txfSecondSurname = new GridBagConstraints();
+		gbc_txfSecondSurname.weightx = 1.0;
+		gbc_txfSecondSurname.insets = new Insets(0, 0, 5, 0);
+		gbc_txfSecondSurname.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfSecondSurname.gridx = 5;
+		gbc_txfSecondSurname.gridy = 0;
+		
+		return gbc_txfSecondSurname;
 		
 	}
 	
@@ -412,6 +485,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jLblDni == null) {
 			jLblDni = new JLabel("Dni");
+			jLblDni.setMaximumSize(new Dimension(30, 14));
+			jLblDni.setHorizontalAlignment(SwingConstants.LEFT);
 			jLblDni.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 
@@ -455,6 +530,55 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 	}
 	
+	private JLabel getJLabelPassport() {
+
+		if (jLblPassport == null) {
+			jLblPassport = new JLabel("Pasaporte");
+			jLblPassport.setMaximumSize(new Dimension(30, 14));
+			jLblPassport.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblPassport.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblPassport;
+	}
+
+	private GridBagConstraints getGridJLabelPassport() {
+
+		GridBagConstraints gbc_lblPassport = new GridBagConstraints();
+		gbc_lblPassport.anchor = GridBagConstraints.WEST;
+		gbc_lblPassport.insets = new Insets(0, 20, 5, 5);
+		gbc_lblPassport.gridx = 2;
+		gbc_lblPassport.gridy = 1;
+		
+		
+
+		return gbc_lblPassport;
+	}
+	
+	private JTextField getJTextFieldPassport() {
+
+		if (txfPassport == null){
+			txfPassport = new JTextField();	
+			
+		}
+		
+
+		return txfPassport;
+	}
+
+	private GridBagConstraints getGridJTextFieldPassport() {
+
+		GridBagConstraints gbc_txfPassport = new GridBagConstraints();
+		gbc_txfPassport.weightx = 1.0;
+		gbc_txfPassport.insets = new Insets(0, 0, 5, 5);
+		gbc_txfPassport.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfPassport.gridx = 3;
+		gbc_txfPassport.gridy = 1;
+		
+		return gbc_txfPassport;
+		
+	}
+	
 	private JLabel getJLblSex() {
 		if (jLblSex == null) {
 			jLblSex = new JLabel("Sexo");
@@ -469,7 +593,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		gbc_jLblSex.anchor = GridBagConstraints.WEST;
 		gbc_jLblSex.weightx = 1.0;
 		gbc_jLblSex.insets = new Insets(0, 15, 5, 5);
-		gbc_jLblSex.gridx = 2;
+		gbc_jLblSex.gridx = 4;
 		gbc_jLblSex.gridy = 1;
 		
 		return gbc_jLblSex;
@@ -484,13 +608,156 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		return jComboBoxSex;
 	}
 	
+	private JLabel getJLabelCountry() {
+
+		if (jLblCountry == null) {
+			jLblCountry = new JLabel("Pais");
+			jLblCountry.setMaximumSize(new Dimension(30, 14));
+			jLblCountry.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblCountry.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblCountry;
+	}
+
+	private GridBagConstraints getGridJLabelCountry() {
+
+		GridBagConstraints gbc_lblCountry = new GridBagConstraints();
+		gbc_lblCountry.anchor = GridBagConstraints.WEST;
+		gbc_lblCountry.insets = new Insets(0, 20, 5, 5);
+		gbc_lblCountry.gridx = 0;
+		gbc_lblCountry.gridy = 2;
+		
+		
+
+		return gbc_lblCountry;
+	}
+	
+	private JTextField getJTextFieldCountry() {
+
+		if (txfCountry == null){
+			txfCountry = new JTextField();	
+			
+		}
+		
+
+		return txfCountry;
+	}
+
+	private GridBagConstraints getGridJTextFieldCountry() {
+
+		GridBagConstraints gbc_txfCountry = new GridBagConstraints();
+		gbc_txfCountry.weightx = 1.0;
+		gbc_txfCountry.insets = new Insets(0, 0, 5, 5);
+		gbc_txfCountry.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfCountry.gridx = 1;
+		gbc_txfCountry.gridy = 2;
+		
+		return gbc_txfCountry;
+		
+	}
+	
+	private JLabel getJLabelNationality() {
+
+		if (jLblNationality == null) {
+			jLblNationality = new JLabel("Nacionalidad");
+			jLblNationality.setMaximumSize(new Dimension(30, 14));
+			jLblNationality.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblNationality.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblNationality;
+	}
+
+	private GridBagConstraints getGridJLabelNationality() {
+
+		GridBagConstraints gbc_lblNationality = new GridBagConstraints();
+		gbc_lblNationality.anchor = GridBagConstraints.WEST;
+		gbc_lblNationality.insets = new Insets(0, 20, 5, 5);
+		gbc_lblNationality.gridx = 2;
+		gbc_lblNationality.gridy = 2;
+		
+		
+
+		return gbc_lblNationality;
+	}
+	
+	private JTextField getJTextFieldNationality() {
+
+		if (txfNationality == null){
+			txfNationality = new JTextField();	
+			
+		}
+		
+
+		return txfNationality;
+	}
+
+	private GridBagConstraints getGridJTextFieldNationality() {
+
+		GridBagConstraints gbc_txfNationality = new GridBagConstraints();
+		gbc_txfNationality.weightx = 1.0;
+		gbc_txfNationality.insets = new Insets(0, 0, 5, 5);
+		gbc_txfNationality.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfNationality.gridx = 3;
+		gbc_txfNationality.gridy = 2;
+		
+		return gbc_txfNationality;
+		
+	}
+	
+	private JLabel getJLabelYearToSpain() {
+
+		if (jLblYearToSpain == null) {
+			jLblYearToSpain = new JLabel("Año llegada España");
+			jLblYearToSpain.setMaximumSize(new Dimension(30, 14));
+			jLblYearToSpain.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblYearToSpain.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblYearToSpain;
+	}
+
+	private GridBagConstraints getGridJLabelYearToSpain() {
+
+		GridBagConstraints gbc_lblYearToSpain = new GridBagConstraints();
+		gbc_lblYearToSpain.anchor = GridBagConstraints.WEST;
+		gbc_lblYearToSpain.insets = new Insets(0, 20, 5, 5);
+		gbc_lblYearToSpain.gridx = 4;
+		gbc_lblYearToSpain.gridy = 2;
+		
+		return gbc_lblYearToSpain;
+	}
+	
+	private JTextField getJTextFieldYearToSpain() {
+
+		if (txfYearToSpain == null){
+			txfYearToSpain = new JTextField();	
+		}
+		
+		return txfYearToSpain;
+	}
+
+	private GridBagConstraints getGridJTextFieldYearToSpain() {
+
+		GridBagConstraints gbc_txfYearToSpain = new GridBagConstraints();
+		gbc_txfYearToSpain.weightx = 1.0;
+		gbc_txfYearToSpain.insets = new Insets(0, 0, 5, 5);
+		gbc_txfYearToSpain.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfYearToSpain.gridx = 5;
+		gbc_txfYearToSpain.gridy = 2;
+		
+		return gbc_txfYearToSpain;
+		
+	}
+	
 private  GridBagConstraints getGridComboBoxSex() {
 		
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.weightx = 1.0;
 		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 3;
+		gbc_comboBox.gridx = 5;
 		gbc_comboBox.gridy = 1;
 		
 		return gbc_comboBox;
@@ -511,7 +778,7 @@ private GridBagConstraints getGridJCheckActive() {
 	gbcCheckActive.anchor = GridBagConstraints.WEST;
 	gbcCheckActive.insets = new Insets(0, 15, 5, 5);
 	gbcCheckActive.gridx = 0;
-	gbcCheckActive.gridy = 2;
+	gbcCheckActive.gridy = 3;
 	return gbcCheckActive;
 }
 	
