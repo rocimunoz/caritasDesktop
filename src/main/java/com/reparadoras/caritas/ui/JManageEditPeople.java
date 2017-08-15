@@ -23,6 +23,7 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
@@ -58,7 +59,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField txfNationality;
 	private JLabel jLblYearToSpain;
 	private JTextField txfYearToSpain;
-	
+	private Date createDate;
+    private Date reactivateDate;
 	
 	
 	private JPanel jPanelActions;
@@ -120,7 +122,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJTextFieldNationality(), getGridJTextFieldNationality());
 		getJPanelPersonalData().add(getJLabelYearToSpain(), getGridJLabelYearToSpain());
 		getJPanelPersonalData().add(getJTextFieldYearToSpain(), getGridJTextFieldYearToSpain());
-		
+		//getJPanelPersonalData().add(getJLabelCreateDate(), getGridJLabelCreateDate());
+		//getJPanelPersonalData().add(getJTextFieldCreateDate(), getGridJTextFieldCreateDate());
 		getJPanelPersonalData().add(getJckActive(), getGridJCheckActive());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
