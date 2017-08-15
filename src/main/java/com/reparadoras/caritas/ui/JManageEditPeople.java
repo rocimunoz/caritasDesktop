@@ -15,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -59,8 +61,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField txfNationality;
 	private JLabel jLblYearToSpain;
 	private JTextField txfYearToSpain;
-	private Date createDate;
-    private Date reactivateDate;
+	private JLabel jLblCreateDate;
+	private JXDatePicker  jxCreateDate;
+	private JLabel jLblReactivateDate;
+	private JXDatePicker jxReactivateDate;
 	
 	
 	private JPanel jPanelActions;
@@ -122,8 +126,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJTextFieldNationality(), getGridJTextFieldNationality());
 		getJPanelPersonalData().add(getJLabelYearToSpain(), getGridJLabelYearToSpain());
 		getJPanelPersonalData().add(getJTextFieldYearToSpain(), getGridJTextFieldYearToSpain());
-		//getJPanelPersonalData().add(getJLabelCreateDate(), getGridJLabelCreateDate());
-		//getJPanelPersonalData().add(getJTextFieldCreateDate(), getGridJTextFieldCreateDate());
+		getJPanelPersonalData().add(getJLabelCreateDate(), getGridJLabelCreateDate());
+		getJPanelPersonalData().add(getJXCreateDate(), getGridJXCreateDate());
+		getJPanelPersonalData().add(getJLabelReactivateDate(), getGridJLabelReactivateDate());
+		getJPanelPersonalData().add(getJXReactivateDate(), getGridJXReactivateDate());
 		getJPanelPersonalData().add(getJckActive(), getGridJCheckActive());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
@@ -184,15 +190,29 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		if (mode == JWindowParams.IMODE_SELECT){
 			//Deshabilito campos
-			this.getJTextFieldDni().setEditable(false);
-			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
+			
 			this.getJTextFieldName().setEditable(false);
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
 			this.getJTextFieldFirstSurname().setEditable(false);
 			this.getJTextFieldFirstSurname().setText(this.selectedPeople.getFirstSurname());
+			this.getJTextFieldSecondSurname().setEditable(false);
+			this.getJTextFieldSecondSurname().setText(this.selectedPeople.getSecondSurname());
+			this.getJTextFieldDni().setEditable(false);
+			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
+			this.getJTextFieldPassport().setEditable(false);
+			this.getJTextFieldPassport().setText(this.selectedPeople.getPassport());
 			this.getComboBox().setEnabled(false);
 			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
-			
+			this.getJTextFieldCountry().setEditable(false);
+			this.getJTextFieldCountry().setText(this.selectedPeople.getCountry());
+			this.getJTextFieldNationality().setEditable(false);
+			this.getJTextFieldNationality().setText(this.selectedPeople.getNationality());
+			this.getJTextFieldYearToSpain().setEditable(false);
+			this.getJTextFieldYearToSpain().setText(this.selectedPeople.getYearToSpain() + ""); //revisar
+			this.getJXCreateDate().setEditable(false);
+			this.getJXCreateDate().setDate(this.selectedPeople.getCreateDate()); 
+			this.getJXReactivateDate().setEditable(false);
+			this.getJXReactivateDate().setDate(this.selectedPeople.getReactivateDate()); 
 			this.getJckActive().setEnabled(false);
 			
 			this.getJButtonAccept().setVisible(false);
@@ -204,7 +224,15 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 			this.getJTextFieldName().setEditable(true);
 			this.getJTextFieldFirstSurname().setEditable(true);
+			this.getJTextFieldSecondSurname().setEditable(true);
+			this.getJTextFieldDni().setEditable(true);
+			this.getJTextFieldPassport().setEditable(true);
 			this.getComboBox().setEditable(true);
+			this.getJTextFieldCountry().setEditable(true);
+			this.getJTextFieldNationality().setEditable(true);
+			this.getJTextFieldYearToSpain().setEditable(true);
+			this.getJXCreateDate().setEditable(true);
+			this.getJXReactivateDate().setEditable(true);
 			this.getJckActive().setEnabled(true);
 			
 			
@@ -218,8 +246,17 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
 			this.getJTextFieldName().setText(this.selectedPeople.getName());
 			this.getJTextFieldFirstSurname().setText(this.selectedPeople.getFirstSurname());
-			this.getJckActive().setSelected(this.selectedPeople.isActive());
+			this.getJTextFieldSecondSurname().setText(this.selectedPeople.getSecondSurname());
+			this.getJTextFieldDni().setText(this.selectedPeople.getDni());
+			this.getJTextFieldPassport().setText(this.selectedPeople.getPassport());
 			this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
+			this.getJTextFieldCountry().setText(this.selectedPeople.getCountry());
+			this.getJTextFieldNationality().setText(this.selectedPeople.getNationality());
+			this.getJTextFieldYearToSpain().setText(this.selectedPeople.getYearToSpain() + "");
+			this.getJXCreateDate().setDate(this.selectedPeople.getCreateDate());
+			this.getJXReactivateDate().setDate(this.selectedPeople.getReactivateDate());
+			this.getJckActive().setSelected(this.selectedPeople.isActive());
+			
 			
 		}
 		
@@ -228,10 +265,18 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private void onUpdatePeople(){
 		try{
 		
-		this.selectedPeople.setDni(this.getJTextFieldDni().getText());
+		
 		this.selectedPeople.setName(this.getJTextFieldName().getText());
 		this.selectedPeople.setFirstSurname(this.getJTextFieldFirstSurname().getText());
+		this.selectedPeople.setSecondSurname(this.getJTextFieldSecondSurname().getText());
+		this.selectedPeople.setDni(this.getJTextFieldDni().getText());
+		this.selectedPeople.setPassport(this.getJTextFieldPassport().getText());
 		this.selectedPeople.setSex((String) this.getComboBox().getSelectedItem());
+		this.selectedPeople.setCountry(this.getJTextFieldCountry().getText());
+		this.selectedPeople.setNationality(this.getJTextFieldNationality().getText());
+		this.selectedPeople.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
+		this.selectedPeople.setCreateDate(this.getJXCreateDate().getDate());
+		this.selectedPeople.setReactivateDate(this.getJXReactivateDate().getDate());
 		if (this.getJckActive().isSelected()){
 			this.selectedPeople.setActive(true);
 		}
@@ -255,8 +300,16 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			People people = new People();
 			people.setName(this.getJTextFieldName().getText());
 			people.setFirstSurname(this.getJTextFieldFirstSurname().getText());
+			people.setSecondSurname(this.getJTextFieldSecondSurname().getText());
+			
 			people.setDni(this.getJTextFieldDni().getText());
+			people.setPassport(this.getJTextFieldPassport().getText());
 			people.setSex((String) this.getComboBox().getSelectedItem());
+			people.setCountry(this.getJTextFieldCountry().getText());
+			people.setNationality(this.getJTextFieldNationality().getText());
+			people.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
+			people.setCreateDate(this.getJXCreateDate().getDate());
+			people.setReactivateDate(this.getJXReactivateDate().getDate());
 			people.setActive(true);
 			
 			//save people
@@ -754,6 +807,96 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 	}
 	
+	private JLabel getJLabelCreateDate() {
+
+		if (jLblCreateDate == null) {
+			jLblCreateDate = new JLabel("Fecha Alta");
+			jLblCreateDate.setMaximumSize(new Dimension(30, 14));
+			jLblCreateDate.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblCreateDate.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblCreateDate;
+	}
+
+	private GridBagConstraints getGridJLabelCreateDate() {
+
+		GridBagConstraints gbc_lblCreateDate = new GridBagConstraints();
+		gbc_lblCreateDate.anchor = GridBagConstraints.WEST;
+		gbc_lblCreateDate.insets = new Insets(0, 20, 5, 5);
+		gbc_lblCreateDate.gridx = 0;
+		gbc_lblCreateDate.gridy = 3;
+		
+		return gbc_lblCreateDate;
+	}
+	
+	private JXDatePicker getJXCreateDate() {
+
+		if (jxCreateDate == null){
+			jxCreateDate = new JXDatePicker();	
+		}
+		
+		return jxCreateDate;
+	}
+
+	private GridBagConstraints getGridJXCreateDate() {
+
+		GridBagConstraints gbc_txfCreateDate = new GridBagConstraints();
+		gbc_txfCreateDate.weightx = 1.0;
+		gbc_txfCreateDate.insets = new Insets(0, 0, 5, 5);
+		gbc_txfCreateDate.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfCreateDate.gridx = 1;
+		gbc_txfCreateDate.gridy = 3;
+		
+		return gbc_txfCreateDate;
+		
+	}
+	
+	private JLabel getJLabelReactivateDate() {
+
+		if (jLblReactivateDate == null) {
+			jLblReactivateDate = new JLabel("Fecha Reactivacion");
+			jLblReactivateDate.setMaximumSize(new Dimension(30, 14));
+			jLblReactivateDate.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblReactivateDate.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblReactivateDate;
+	}
+
+	private GridBagConstraints getGridJLabelReactivateDate() {
+
+		GridBagConstraints gbc_lblReactivateDate = new GridBagConstraints();
+		gbc_lblReactivateDate.anchor = GridBagConstraints.WEST;
+		gbc_lblReactivateDate.insets = new Insets(0, 20, 5, 5);
+		gbc_lblReactivateDate.gridx = 2;
+		gbc_lblReactivateDate.gridy = 3;
+		
+		return gbc_lblReactivateDate;
+	}
+	
+	private JXDatePicker getJXReactivateDate() {
+
+		if (jxReactivateDate == null){
+			jxReactivateDate = new JXDatePicker();	
+		}
+		
+		return jxReactivateDate;
+	}
+
+	private GridBagConstraints getGridJXReactivateDate() {
+
+		GridBagConstraints gbc_txfReactivateDate = new GridBagConstraints();
+		gbc_txfReactivateDate.weightx = 1.0;
+		gbc_txfReactivateDate.insets = new Insets(0, 0, 5, 5);
+		gbc_txfReactivateDate.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfReactivateDate.gridx = 3;
+		gbc_txfReactivateDate.gridy = 3;
+		
+		return gbc_txfReactivateDate;
+		
+	}
+	
 private  GridBagConstraints getGridComboBoxSex() {
 		
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
@@ -780,7 +923,7 @@ private GridBagConstraints getGridJCheckActive() {
 	GridBagConstraints gbcCheckActive = new GridBagConstraints();
 	gbcCheckActive.anchor = GridBagConstraints.WEST;
 	gbcCheckActive.insets = new Insets(0, 15, 5, 5);
-	gbcCheckActive.gridx = 0;
+	gbcCheckActive.gridx = 4;
 	gbcCheckActive.gridy = 3;
 	return gbcCheckActive;
 }

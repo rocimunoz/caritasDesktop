@@ -55,7 +55,32 @@
     
     
  	<insert id="insert" parameterType="People" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_PEOPLE (name, first_surname, dni, sex, active) VALUES (#{name},#{firstSurname}, #{dni}, #{sex}, 1);
+        INSERT INTO C_PEOPLE (
+        name, 
+        first_surname,
+        second_surname, 
+        dni,
+        passport, 
+        sex,
+        country,
+        nationality,
+        year_to_spain,
+        create_date,
+        reactivate_date, 
+        active) 
+        VALUES (
+        #{name},
+        #{firstSurname},
+        #{secondSurname},
+        #{dni},
+        #{passport},
+        #{sex},
+        #{country},
+        #{nationality},
+        #{yearToSpain},
+        #{createDate},
+        #{reactivateDate}, 
+        1);
     </insert>
     
     <update id="update" parameterType="People">
@@ -63,9 +88,17 @@
         <set>
           <if test="name != null">name = #{name},</if>
           <if test="firstSurname != null">first_surname = #{firstSurname},</if>
+          <if test="secondSurname != null">second_surname = #{secondSurname},</if>
           <if test="dni != null">dni = #{dni},</if>
-          <if test="active != null">active = #{active},</if>
+          <if test="passport != null">passport = #{passport},</if>
+          <if test="nationality != null">nationality = #{nationality},</if>
+          <if test="country != null">country = #{country},</if>
+          <if test="yearToSpain != null">year_to_spain = #{yearToSpain},</if>
+          <if test="createDate != null">create_date = #{createDate},</if>
+          <if test="reactivateDate != null">reactivate_date = #{reactivateDate},</if>
           <if test="sex != null">sex = #{sex},</if>
+          <if test="active != null">active = #{active},</if>
+          
           </set>
         WHERE id = #{id} 
   	</update>
