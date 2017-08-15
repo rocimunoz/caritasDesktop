@@ -112,12 +112,12 @@
         	(ID_PEOPLE, POINTS_JANUARY, POINTS_FEBRUARY, POINTS_MARCH, POINTS_APRIL, POINTS_MAY, POINTS_JUNE, POINTS_JULY, POINTS_AUGUST,
         	POINTS_SEPTEMBER, POINTS_OCTOBER, POINTS_NOVEMBER, POINTS_DECEMBER) 
         VALUES (#{people.id},
-        #{points_January}, #{points_February}, 
-        #{points_March}, #{points_April}, 
-        #{points_May}, #{points_June}, 
-        #{points_July}, #{points_August},
-        #{points_September}, #{points_October},
-        #{points_November}, #{points_December})
+        #{pointsJanuary}, #{pointsFebruary}, 
+        #{pointsMarch}, #{pointsApril}, 
+        #{pointsMay}, #{pointsJune}, 
+        #{pointsJuly}, #{pointsAugust},
+        #{pointsSeptember}, #{pointsOctober},
+        #{pointsNovember}, #{pointsDecember})
     </insert>
     
  
