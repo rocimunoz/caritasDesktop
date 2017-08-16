@@ -7,6 +7,7 @@ import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.utils.PeopleVerifier;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
@@ -32,6 +33,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
 import java.awt.Font;
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 
 @SuppressWarnings("serial")
 
@@ -72,6 +74,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JButton jBtnCancel;
 	
 	private PeopleDAO peopleDAO;
+	private PeopleVerifier peopleVerifier = new PeopleVerifier();
 	
 	private int executingMode;
 	
@@ -95,6 +98,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		this.selectedPeople = people;
 		this.executingMode = executingMode;
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 
 		
 		initComponents();
@@ -110,6 +114,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
+		
+		
 		getJPanelPersonalData().add(getJLabelFirstSurname(), getGridJLabelFirstSurname());
 		getJPanelPersonalData().add(getJTextFieldFirstSurname(), getGridJTextFieldFirstSurname());
 		getJPanelPersonalData().add(getJLabelSecondSurname(), getGridJLabelSecondSurname());
@@ -145,19 +151,23 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				
+			
+					//Abrir transaccion
+					if (executingMode == JWindowParams.IMODE_UPDATE){
+						
+						onUpdatePeople();
+					
+					}
+					else if (executingMode == JWindowParams.IMODE_INSERT){
+						onCreatePeople();
+					}
+					
+					//Cerrar Transaccion
+					onCloseWindow();
+			
 				
 				
-				//Abrir transaccion
-				if (executingMode == JWindowParams.IMODE_UPDATE){
-					onUpdatePeople();
 				
-				}
-				else if (executingMode == JWindowParams.IMODE_INSERT){
-					onCreatePeople();
-				}
-				
-				//Cerrar Transaccion
-				onCloseWindow();
 				
 				
 				
@@ -261,6 +271,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		}
 		
 	}
+	
+	
 	
 	private void onUpdatePeople(){
 		try{
@@ -404,6 +416,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			jLblName = new JLabel("Nombre");
 			jLblName.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblName.setPreferredSize(new Dimension(80, 25));
+			
+			
 		}
 
 		return jLblName;
@@ -424,6 +438,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (txfName == null){
 			txfName = new JTextField();	
 			txfName.setColumns(10);
+			txfName.setName("name");
+			txfName.setInputVerifier(peopleVerifier);
+			
 		}
 		
 
@@ -471,6 +488,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (txfFirstSurname == null){
 			txfFirstSurname = new JTextField();	
 			txfFirstSurname.setColumns(10);
+			txfFirstSurname.setName("firstSurname");
+			txfFirstSurname.setInputVerifier(peopleVerifier);
 		}
 		
 
@@ -518,6 +537,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (txfSecondSurname == null){
 			txfSecondSurname = new JTextField();	
 			txfSecondSurname.setColumns(10);
+			txfSecondSurname.setName("secondSurname");
+			txfSecondSurname.setInputVerifier(peopleVerifier);
 		}
 		
 
