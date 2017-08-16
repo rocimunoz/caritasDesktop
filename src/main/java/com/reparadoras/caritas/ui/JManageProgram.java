@@ -26,9 +26,13 @@ import javax.swing.table.TableModel;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.reparadoras.caritas.dao.FamilyDAO;
+import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.model.Family;
+import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
@@ -98,47 +102,46 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JPanel jPanelGrid;
 	private JTable tableProgram = null;
 	private JScrollPane scrollPaneJTable = null;
-	
-	
+
 	private PeopleDAO peopleDAO;
+	private FamilyDAO familyDAO;
+	private FamilyTypeDAO familyTypeDAO;
 	private ProgramDAO programDAO;
-	
+
 	private JTabbedPane jtabPane1;
-	
-	
-	
-	
-	
+	private JPanel jPanelFamily;
+
 	private People people = null;
-	
-	
+
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public JManageProgram(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, People people){
-		
+	public JManageProgram(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
+			People people) {
+
 		super(jCicIFParent, modal);
 		this.setVisible(true);
 		this.pack();
-		
+
 		this.moveToFront();
 		this.setClosable(true);
 		this.setMaximizable(false);
 		this.setResizable(false);
 		this.setTitle(title);
-		
+
 		this.people = people;
-		
+
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
-		
+		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+
 		createGUIComponents();
 		initComponents();
 		addListeners();
-		
+
 		onFilterProgram(true);
-		
+
 	}
 
 	public JManageProgram(JDesktopPane desktop) {
@@ -150,131 +153,131 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.pack();
 		this.setResizable(true);
 		this.setClosable(true);
-		
+
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 		createGUIComponents();
 		initComponents();
 		addListeners();
-		
-		onFilterProgram(true);
 
-		
+		onFilterProgram(true);
 
 	}
 
-	public void addListeners(){
-		
-		addInternalFrameListener(new InternalFrameAdapter(){
-            public void internalFrameClosing(InternalFrameEvent e) {
-                // do something  
-            	System.out.println("evento internal frame");
-            }
-        });
-	
-		getJButtonSearch().addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				
+	public void addListeners() {
+
+		addInternalFrameListener(new InternalFrameAdapter() {
+			public void internalFrameClosing(InternalFrameEvent e) {
+				// do something
+				System.out.println("evento internal frame");
 			}
 		});
-		
+
+		getJButtonSearch().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
 				dispose();
 			}
 		});
-		
-		
+
+		getJButtonSave().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				onSaveProgram();
+			}
+		});
+
 	}
-	
-	
-	public void createGUIComponents(){
+
+	public void createGUIComponents() {
 		getContentPane().setLayout(getGridContentPane());
-		
+
 		getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
-		//getContentPane().add(getJPanelActions(), this.getGridJPanelActions());
+		// getContentPane().add(getJPanelActions(),
+		// this.getGridJPanelActions());
 		getContentPane().add(getJPanelGrid(), this.getGridJPanelGrid());
-		
+
 		// Añado elementos del JPanelFilter
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
-		
+
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
-		
+
 		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		getJPanelActions().add(getJButtonSave());
-		
-		
-		//Añado elementos del JPanelGrid
+
+		// Añado elementos del JPanelGrid
 		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
 		getJPanelGrid().add(getJPanelActions(), this.getGridJPanelActions());
 		getJPanelGrid().add(this.getScrollPaneTable(), this.getGridJPanelScrollTable());
-		
-		
+
 		// Añado elementos del JPanelContent
 		getContentPane().add(getJPanelContent(), getGridJPanelContent());
 		getJPanelContent().setLayout(getGridLayoutJPanelContent());
-		
-		
+
 		getJPanelContent().add(getJtabPane1(), getGridJTabPane());
 		getJtabPane1().add("Direccion", new JPanelAddress());
 		getJtabPane1().add("Vivienda", new JPanelHome());
-		getJtabPane1().add("Familia", new JPanelFamily());
+		getJtabPane1().add("Familia", getJPanelFamily());
 		getJtabPane1().add("Tipo Autorización", new JPanelTypeAuthorization());
 		getJtabPane1().add("Situación Laboral", new JPanelJobSituation());
 		getJtabPane1().add("Estudios", new JPanelStudies());
 		getJtabPane1().add("Situación Económica", new JPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
-		
+
 		getJtabPane1().setBackgroundAt(0, Color.WHITE);
-		
-	
-		
+
 	}
-	
-	public void initComponents(){
+
+	public void initComponents() {
 		this.getCkActive().setSelected(true);
 		initCbPeople();
-		
+
 	}
-	
-public void initCbPeople(){
-		
-		
-		if (this.people!=null){
+
+	public void initCbPeople() {
+
+		if (this.people != null) {
 			this.getJComboBoxPeople().addItem(this.people);
 			this.getJComboBoxPeople().setSelectedItem(this.people);
-		}
-		else{
+		} else {
 			List<People> listPeople = peopleDAO.findAll();
 			People allPeople = new People();
 			allPeople.setName("TODOS");
-		    allPeople.setId(-1);
+			allPeople.setId(-1);
 			listPeople.add(0, allPeople);
 			for (People p : listPeople) {
 				this.getJComboBoxPeople().addItem(p);
 			}
 		}
-		
+
 	}
-	
-	
 
-	
+	/* TABS */
+
+	private JPanelFamily getJPanelFamily() {
+		if (jPanelFamily == null) {
+			jPanelFamily = new JPanelFamily();
+		}
+		return (JPanelFamily) jPanelFamily;
+	}
+
 	/* FUNCIONES DEL GETCONTENTPANE */
-
-
-
-
 
 	private GridBagLayout getGridContentPane() {
 
@@ -301,10 +304,10 @@ public void initCbPeople(){
 	private JPanel getJPanelFilter() {
 		if (jPanelFilter == null) {
 			jPanelFilter = new JPanel();
-			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Programa Atención Primaria",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
-			
-		
+			jPanelFilter.setBorder(
+					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Programa Atención Primaria",
+							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+
 		}
 
 		return jPanelFilter;
@@ -343,13 +346,13 @@ public void initCbPeople(){
 	private JComboBox<People> getJComboBoxPeople() {
 		if (cbPeople == null) {
 			cbPeople = new JComboBox<People>();
-			
+
 		}
 
 		return cbPeople;
 
 	}
-	
+
 	private GridBagConstraints getGridJTextFieldName() {
 
 		GridBagConstraints gbc_tfName = new GridBagConstraints();
@@ -369,7 +372,7 @@ public void initCbPeople(){
 		}
 		return lblDni;
 	}
-	
+
 	private GridBagConstraints getGridJLabelDni() {
 		GridBagConstraints gbc_lblDni = new GridBagConstraints();
 		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
@@ -378,7 +381,7 @@ public void initCbPeople(){
 
 		return gbc_lblDni;
 	}
-	
+
 	private JTextField getJTextFieldDni() {
 		if (tfDni == null) {
 			tfDni = new JTextField();
@@ -386,7 +389,7 @@ public void initCbPeople(){
 		}
 		return tfDni;
 	}
-	
+
 	private GridBagConstraints getGridJTextFieldDni() {
 
 		GridBagConstraints gbc_tfDni = new GridBagConstraints();
@@ -398,15 +401,14 @@ public void initCbPeople(){
 
 		return gbc_tfDni;
 	}
-	
-	
+
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
 			ckActive = new JCheckBox("Activo");
 		}
 		return ckActive;
 	}
-	
+
 	private GridBagConstraints getGridJCheckBoxdActive() {
 		GridBagConstraints gbc_tfActive = new GridBagConstraints();
 		gbc_tfActive.anchor = GridBagConstraints.NORTH;
@@ -414,16 +416,16 @@ public void initCbPeople(){
 		gbc_tfActive.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfActive.gridx = 2;
 		gbc_tfActive.gridy = 0;
-		
+
 		return gbc_tfActive;
-		
+
 	}
-	
+
 	private JButton getJButtonSearch() {
 		if (btnSearchPeople == null) {
 			btnSearchPeople = new JButton("Filtrar");
-			btnSearchPeople
-					.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-search.png")));
+			btnSearchPeople.setIcon(
+					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-search.png")));
 		}
 
 		return btnSearchPeople;
@@ -438,17 +440,17 @@ public void initCbPeople(){
 
 		return gbc_btnSearchPeople;
 	}
-	
+
 	private JButton getJButtonExit() {
 		if (btnExit == null) {
 			btnExit = new JButton("Salir al menu");
-			
+
 			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
 		}
 
 		return btnExit;
 	}
-	
+
 	private GridBagConstraints getGridButtonExit() {
 
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
@@ -459,10 +461,7 @@ public void initCbPeople(){
 		return gbc_btnExit;
 	}
 
-	
-	/* FUNCIONES DEL PANEL DE ACCIONES*/
-	
-	
+	/* FUNCIONES DEL PANEL DE ACCIONES */
 
 	private JPanel getJPanelActions() {
 		if (jPanelActions == null) {
@@ -472,7 +471,7 @@ public void initCbPeople(){
 
 		return jPanelActions;
 	}
-	
+
 	private GridBagConstraints getGridJPanelActions() {
 		GridBagConstraints gbc_jPanelGrid = new GridBagConstraints();
 		gbc_jPanelGrid.anchor = GridBagConstraints.WEST;
@@ -483,23 +482,17 @@ public void initCbPeople(){
 
 		return gbc_jPanelGrid;
 	}
-	
+
 	private JButton getJButtonSave() {
 		if (btnSave == null) {
 			btnSave = new JButton("Guardar");
+
 			btnSave.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-save.png")));
 		}
 
 		return btnSave;
 	}
 
-	
-	
-	
-
-	
-
-	
 	/* FUNCIONES DEL PANEL DEL GRID */
 
 	private GridBagLayout getGridLayoutJPanelGrid() {
@@ -514,8 +507,9 @@ public void initCbPeople(){
 	private JPanel getJPanelGrid() {
 		if (jPanelGrid == null) {
 			jPanelGrid = new JPanel();
-			jPanelGrid.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Listado Programa Atención Primaria",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+			jPanelGrid.setBorder(
+					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Listado Programa Atención Primaria",
+							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
 		}
 
 		return jPanelGrid;
@@ -532,18 +526,18 @@ public void initCbPeople(){
 
 		return gbc_jPanelGrid;
 	}
-	
-	private JScrollPane getScrollPaneTable(){
-		if (scrollPaneJTable == null){
+
+	private JScrollPane getScrollPaneTable() {
+		if (scrollPaneJTable == null) {
 			scrollPaneJTable = new JScrollPane(getJTableProgram());
 			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
 		}
-		
+
 		return scrollPaneJTable;
 	}
-	
-	private GridBagConstraints getGridJPanelScrollTable(){
-		
+
+	private GridBagConstraints getGridJPanelScrollTable() {
+
 		GridBagConstraints gbc_jPanelScroll = new GridBagConstraints();
 		gbc_jPanelScroll.weighty = 1.0;
 		gbc_jPanelScroll.weightx = 1.0;
@@ -551,39 +545,38 @@ public void initCbPeople(){
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
 		gbc_jPanelScroll.gridx = 0;
 		gbc_jPanelScroll.gridy = 1;
-		
-		return gbc_jPanelScroll; 
+
+		return gbc_jPanelScroll;
 	}
-	
-	private JTable getJTableProgram(){
-		if (tableProgram == null){
-			
+
+	private JTable getJTableProgram() {
+		if (tableProgram == null) {
+
 			tableProgram = new JTable(getProgramTableModel());
 			tableProgram.setAutoCreateRowSorter(true);
 			tableProgram.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		}
-		
+
 		return tableProgram;
 	}
-	
-	private ProgramTableModel getProgramTableModel(){
-		
-		if (programTableModel == null){
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha"};
+
+	private ProgramTableModel getProgramTableModel() {
+
+		if (programTableModel == null) {
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha" };
 			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
 		}
-		
+
 		return programTableModel;
 	}
-	
-	
+
 	/* FUNCIONES DEL PANEL DE CONTENIDO */
 
 	private JPanel getJPanelContent() {
 		if (jPanelContent == null) {
 			jPanelContent = new JPanel();
 			jPanelContent.setBorder(new LineBorder(new Color(0, 0, 0)));
-			
+
 		}
 		return jPanelContent;
 
@@ -609,14 +602,14 @@ public void initCbPeople(){
 		gbl_jPanelContent.rowWeights = new double[] { 1.0 };
 		return gbl_jPanelContent;
 	}
-	
+
 	private JTabbedPane getJtabPane1() {
 		if (jtabPane1 == null) {
 			jtabPane1 = new JTabbedPane(JTabbedPane.TOP);
 		}
 		return jtabPane1;
 	}
-	
+
 	private GridBagConstraints getGridJTabPane() {
 
 		GridBagConstraints gbc_jTabPane = new GridBagConstraints();
@@ -630,58 +623,101 @@ public void initCbPeople(){
 
 		return gbc_jTabPane;
 	}
-	
-	
-	
-	
-	
 
-	
 	/* EVENTOS */
 
-	public void onFilterProgram(boolean create){
-		People filterPeople = (People)this.getJComboBoxPeople().getSelectedItem();
-		
-		if (filterPeople.getId()!=-1){
+	public void onFilterProgram(boolean create) {
+		People filterPeople = (People) this.getJComboBoxPeople().getSelectedItem();
+
+		if (filterPeople.getId() != -1) {
 			Program program = programDAO.findProgram(filterPeople);
-			if (program!=null){
+			if (program != null) {
 				this.getProgramTableModel().clearTableModelData();
 				this.getProgramTableModel().addRow(program);
-				
-			}
-			else{
+
+			} else {
 				Program programNewReset = new Program();
+				Family family = new Family();
+				familyDAO.insert(family);
+				programNewReset.setFamily(family);
 				programNewReset.setPeople(filterPeople);
-				//programNewReset.setDateGBD(new Date());
-				
-				
-				if (create){
-					int dialogResult = JOptionPane.showConfirmDialog(this, "No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");
-					if (dialogResult == JOptionPane.YES_OPTION){
-						
+
+				if (create) {
+					int dialogResult = JOptionPane.showConfirmDialog(this,
+							"No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");
+					if (dialogResult == JOptionPane.YES_OPTION) {
+
 						programDAO.insert(programNewReset);
 						onFilterProgram(false);
 					}
-					
-				}
-				else{
+
+				} else {
 					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 				}
-				
+
 			}
-		}
-		else{
+		} else {
 			List<Program> listPrograms = programDAO.findAll();
 			this.getProgramTableModel().clearTableModelData();
 			this.getProgramTableModel().addRows(listPrograms);
 		}
+
+	}
+
+	public void onSaveFamily(Family family){
 		
-	
+		family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
+		
+		String description = "";
+		
+		if (getJPanelFamily().getJRadioAlone().isSelected()){
+			description = getJPanelFamily().getJRadioAlone().getText();
+		}else if (getJPanelFamily().getJRadioMono().isSelected()){
+			description = getJPanelFamily().getJRadioMono().getText();
+		}else if (getJPanelFamily().getJRadioNoChildren().isSelected()){
+			description = getJPanelFamily().getJRadioNoChildren().getText();
+		}else if (getJPanelFamily().getJRadioWithChildren().isSelected()){
+			description = getJPanelFamily().getJRadioWithChildren().getText();
+		}else if (getJPanelFamily().getJRadioOther().isSelected()){
+			description = getJPanelFamily().getJRadioOther().getText();
+		}
+		
+		FamilyType fType = new FamilyType();
+		fType.setDescripcion(description);
+		family.setFamilyType(familyTypeDAO.findFamilyType(fType));
+		
+		familyDAO.update(family);
 	}
 	
-	
-	
-	
-	
-	
+	public void onSaveProgram() {
+
+		int rowIndex = this.getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
+			try {
+				Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
+				People people = (People) this.getJComboBoxPeople().getSelectedItem();
+				if (selectedProgram != null) {
+
+					if (selectedProgram.getFamily() != null) {
+						
+						onSaveFamily(selectedProgram.getFamily());
+						
+						
+
+						
+
+					}
+					
+					JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente.");
+				}
+				
+				
+			} catch (Exception e) {
+
+			}
+
+		}
+
+	}
+
 }

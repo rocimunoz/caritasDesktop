@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Family">
+
+	
+
+    <resultMap id="FamilyResult" type="Family">
+        <result property="id" column="id"/>
+        <result property="otherInfo" column="other_info"/>  
+        <association property="familyType" resultMap="FamilyTypeResult"/>    
+        
+		
+    </resultMap>
+    
+     <resultMap id="FamilyTypeResult" type="FamilyType">
+        <result property="id" column="id"/>
+        <result property="description" column="description"/>
+       
+    </resultMap>
+ 
+    <select id="findAll" resultMap="FamilyResult">
+        SELECT * FROM C_FAMILY;
+    </select>
+    
+     
+    
+    
+    
+ 	<insert id="insert" parameterType="Family" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_FAMILY (other_info) VALUES (#{otherInfo});
+    </insert>
+    
+    <update id="update" parameterType="Family">
+        UPDATE C_FAMILY
+        <set>
+          <if test="otherInfo != null">other_info = #{otherInfo},</if>
+          <if test="familyType != null">id_family_type = #{familyType.id},</if>
+          </set>
+        WHERE id = #{id} 
+  	</update>
+    
+   
+    
+ 	
+ 
+	
+</mapper>

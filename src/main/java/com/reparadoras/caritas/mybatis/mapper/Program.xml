@@ -7,7 +7,8 @@
 
     <resultMap id="ProgramResult" type="Program">
         <result property="id" column="id"/>
-        <association property="people" resultMap="PeopleResult"/>        
+        <association property="people" resultMap="PeopleResult"/>
+        <association property="family" resultMap="FamilyResult"/>              
         
        
     </resultMap>
@@ -17,7 +18,18 @@
         <result property="name" column="name"/>  
         <result property="dni" column="dni"/>  
         <result property="active" column="active"/>
-		
+    </resultMap>
+    
+    <resultMap id="FamilyResult" type="Family">
+        <result property="id" column="id"/>
+        <result property="otherInfo" column="other_info"/>
+        <association property="familyType" resultMap="FamilyTypeResult"/>    
+    </resultMap>
+    
+    <resultMap id="FamilyTypeResult" type="FamilyType">
+        <result property="id" column="id"/>
+        <result property="description" column="description"/>
+       
     </resultMap>
     
      <select id="findAll" resultMap="ProgramResult">
@@ -26,9 +38,13 @@
     
     <select id="findProgram" parameterType="int" resultMap="ProgramResult">
         SELECT PE.DNI, 
-               PE.NAME
-        FROM C_PEOPLE PE, C_PROGRAM PR
+               PE.NAME,
+               F.ID
+        FROM C_PEOPLE PE, 
+             C_PROGRAM PR, 
+             C_FAMILY F
         WHERE PR.ID_PEOPLE = PE.id
+        AND PR.ID_FAMILY = F.ID
         AND PE.id = #{id}
     </select>
     
@@ -39,8 +55,8 @@
     
     <insert id="insert" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_PROGRAM 
-        	(ID_PEOPLE) 
-        VALUES (#{people.id})
+        	(ID_PEOPLE, ID_FAMILY) 
+        VALUES (#{people.id}, #{family.id})
         
     </insert>
  	

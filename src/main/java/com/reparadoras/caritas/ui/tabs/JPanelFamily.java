@@ -202,7 +202,7 @@ public class JPanelFamily extends JPanel{
 		return gbc_jPanelTable;
 	}
 	
-	private JPanel getJPanelRadioButton() {
+	public JPanel getJPanelRadioButton() {
 		if (jPanelRadioButton == null) {
 			ButtonGroup group = new ButtonGroup();
 	        group.add(getJRadioAlone());
@@ -235,7 +235,7 @@ public class JPanelFamily extends JPanel{
 		return gbc_jPanelRadio;
 	}
 	
-	private JRadioButton getJRadioWithChildren() {
+	public JRadioButton getJRadioWithChildren() {
 		if (jRadioWithChildren == null) {
 			jRadioWithChildren = new JRadioButton("Pareja con Hijos");
 			jRadioWithChildren.setMargin(new Insets(2, 20, 2, 20));
@@ -244,7 +244,7 @@ public class JPanelFamily extends JPanel{
 		return jRadioWithChildren;
 	}
 	
-	private JRadioButton getJRadioNoChildren() {
+	public JRadioButton getJRadioNoChildren() {
 		if (jRadioNoChildren == null) {
 			jRadioNoChildren = new JRadioButton("Pareja Sin Hijos");
 			jRadioNoChildren.setMargin(new Insets(2, 20, 2, 20));
@@ -253,7 +253,7 @@ public class JPanelFamily extends JPanel{
 		return jRadioNoChildren;
 	}
 	
-	private JRadioButton getJRadioMono() {
+	public JRadioButton getJRadioMono() {
 		if (jRadioMono == null) {
 			jRadioMono = new JRadioButton("MonoParental");
 			jRadioMono.setMargin(new Insets(2, 20, 2, 20));
@@ -262,7 +262,7 @@ public class JPanelFamily extends JPanel{
 		return jRadioMono;
 	}
 	
-	private JRadioButton getJRadioOther() {
+	public JRadioButton getJRadioOther() {
 		if (jRadioOther == null) {
 			jRadioOther = new JRadioButton("Otra");
 			jRadioOther.setMargin(new Insets(2, 20, 2, 20));
@@ -271,7 +271,7 @@ public class JPanelFamily extends JPanel{
 		return jRadioOther;
 	}
 	
-	private JRadioButton getJRadioAlone() {
+	public JRadioButton getJRadioAlone() {
 		if (jRadioAlone == null) {
 			jRadioAlone = new JRadioButton("Sola");
 			jRadioAlone.setMargin(new Insets(2, 20, 2, 20));
@@ -308,7 +308,7 @@ public class JPanelFamily extends JPanel{
 	}
 	
 	
-	private JTextArea getJTextAreaFamilyOtherInfo() {
+	public JTextArea getJTextAreaFamilyOtherInfo() {
 		if (taFamilyOtherInfo == null) {
 			taFamilyOtherInfo = new JTextArea();
 			taFamilyOtherInfo.setRows(6);
