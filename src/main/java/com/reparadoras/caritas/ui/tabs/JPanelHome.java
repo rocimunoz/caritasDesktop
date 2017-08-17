@@ -160,7 +160,7 @@ public void initCombos(){
 		return gbc_lblTypeHouse;
 	}
 	
-	private JComboBox getJTextFieldTypeHouse() {
+	public JComboBox getJTextFieldTypeHouse() {
 		if (cbHomeType == null) {
 			cbHomeType = new JComboBox<HomeType>();
 			
@@ -200,7 +200,7 @@ public void initCombos(){
 		return gbc_lblRegHolding;
 	}
 	
-	private JTextField getJTextFieldRegHolding() {
+	public JTextField getJTextFieldRegHolding() {
 		if (tfRegHolding == null) {
 			tfRegHolding = new JTextField();
 			tfRegHolding.setColumns(10);
@@ -240,7 +240,7 @@ public void initCombos(){
 	}
 	
 	
-	private JComboBox<Integer> getJComboNumberRooms() {
+	public JComboBox<Integer> getJComboNumberRooms() {
 
 		if ( cbNumberRooms== null) {
 			cbNumberRooms = new JComboBox<Integer>();
@@ -279,7 +279,7 @@ public void initCombos(){
 		return gbc_lblNumberPeople;
 	}
 	
-	private JComboBox<Integer> getJComboNumberPeople() {
+	public JComboBox<Integer> getJComboNumberPeople() {
 
 		if ( cbNumberPeople== null) {
 			cbNumberPeople = new JComboBox<Integer>();
@@ -318,7 +318,7 @@ public void initCombos(){
 		return gbc_lblNumberFamilies;
 	}
 	
-	private JComboBox<Integer> getJComboNumberFamilies() {
+	public JComboBox<Integer> getJComboNumberFamilies() {
 
 		if ( cbNumberFamilies== null) {
 			cbNumberFamilies = new JComboBox<Integer>();
@@ -359,7 +359,7 @@ public void initCombos(){
 	
 	
 	
-	private JTextArea getJTextAreaOtherInfo() {
+	public JTextArea getJTextAreaOtherInfo() {
 		
 		if ( taOtherInfo== null) {
 			taOtherInfo = new JTextArea();

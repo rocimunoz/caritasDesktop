@@ -8,7 +8,9 @@
         <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
         <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
         <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>
-        <typeAlias alias="HomeType" type="com.reparadoras.caritas.model.HomeType"/> 
+        <typeAlias alias="Home" type="com.reparadoras.caritas.model.Home"/>
+        <typeAlias alias="HomeType" type="com.reparadoras.caritas.model.HomeType"/>
+        <typeAlias alias="Address" type="com.reparadoras.caritas.model.Address"/> 
         <typeAlias alias="Family" type="com.reparadoras.caritas.model.Family"/>
         <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/>             
     </typeAliases>
@@ -29,9 +31,11 @@
        <mapper resource="com/reparadoras/caritas/mybatis/mapper/People.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Program.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Ticket.xml"/>
-    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/HomeType.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Family.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/FamilyType.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Home.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/HomeType.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Address.xml"/>
     
     </mappers>
 </configuration>

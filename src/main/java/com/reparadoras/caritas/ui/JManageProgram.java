@@ -24,15 +24,20 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.FamilyTypeDAO;
+import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
+import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
@@ -85,6 +90,8 @@ import java.awt.Component;
 public class JManageProgram extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	static final Logger logger = Logger.getLogger(JManageProgram.class);
 
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
@@ -107,9 +114,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private FamilyDAO familyDAO;
 	private FamilyTypeDAO familyTypeDAO;
 	private ProgramDAO programDAO;
+	private HomeDAO homeDAO;
+	private AddressDAO addressDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
+	private JPanel jPanelHome;
+	private JPanel jPanelAddress;
 
 	private People people = null;
 
@@ -135,6 +146,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		createGUIComponents();
 		initComponents();
@@ -158,6 +171,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 		createGUIComponents();
 		initComponents();
@@ -230,8 +245,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelContent().setLayout(getGridLayoutJPanelContent());
 
 		getJPanelContent().add(getJtabPane1(), getGridJTabPane());
-		getJtabPane1().add("Direccion", new JPanelAddress());
-		getJtabPane1().add("Vivienda", new JPanelHome());
+		getJtabPane1().add("Direccion", getJPanelAddress());
+		getJtabPane1().add("Vivienda", getJPanelHome());
 		getJtabPane1().add("Familia", getJPanelFamily());
 		getJtabPane1().add("Tipo Autorización", new JPanelTypeAuthorization());
 		getJtabPane1().add("Situación Laboral", new JPanelJobSituation());
@@ -275,6 +290,20 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelFamily = new JPanelFamily();
 		}
 		return (JPanelFamily) jPanelFamily;
+	}
+	
+	private JPanelHome getJPanelHome() {
+		if (jPanelHome == null) {
+			jPanelHome = new JPanelHome();
+		}
+		return (JPanelHome) jPanelHome;
+	}
+	
+	private JPanelAddress getJPanelAddress() {
+		if (jPanelAddress == null) {
+			jPanelAddress = new JPanelAddress();
+		}
+		return (JPanelAddress) jPanelAddress;
 	}
 
 	/* FUNCIONES DEL GETCONTENTPANE */
@@ -626,6 +655,28 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	/* EVENTOS */
 
+	public void onCreateProgramFirstTime(People filterPeople){
+		Program programNewReset = new Program();
+		
+		Address address = new Address();
+		addressDAO.insert(address);
+		
+		Home home = new Home();
+		home.setAddress(address);
+		homeDAO.insert(home);
+		
+		Family family = new Family();
+		family.setHome(home);
+		familyDAO.insert(family);
+		
+		programNewReset.setFamily(family);
+		programNewReset.setPeople(filterPeople);
+		
+		programDAO.insert(programNewReset);
+		
+		
+	}
+	
 	public void onFilterProgram(boolean create) {
 		People filterPeople = (People) this.getJComboBoxPeople().getSelectedItem();
 
@@ -636,18 +687,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 				this.getProgramTableModel().addRow(program);
 
 			} else {
-				Program programNewReset = new Program();
-				Family family = new Family();
-				familyDAO.insert(family);
-				programNewReset.setFamily(family);
-				programNewReset.setPeople(filterPeople);
+				
 
 				if (create) {
 					int dialogResult = JOptionPane.showConfirmDialog(this,
 							"No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");
 					if (dialogResult == JOptionPane.YES_OPTION) {
-
-						programDAO.insert(programNewReset);
+						
+						onCreateProgramFirstTime(filterPeople);
 						onFilterProgram(false);
 					}
 
@@ -664,29 +711,60 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
-	public void onSaveFamily(Family family){
+	public void onSaveFamily(Family family) throws Exception{
 		
-		family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
-		
-		String description = "";
-		
-		if (getJPanelFamily().getJRadioAlone().isSelected()){
-			description = getJPanelFamily().getJRadioAlone().getText();
-		}else if (getJPanelFamily().getJRadioMono().isSelected()){
-			description = getJPanelFamily().getJRadioMono().getText();
-		}else if (getJPanelFamily().getJRadioNoChildren().isSelected()){
-			description = getJPanelFamily().getJRadioNoChildren().getText();
-		}else if (getJPanelFamily().getJRadioWithChildren().isSelected()){
-			description = getJPanelFamily().getJRadioWithChildren().getText();
-		}else if (getJPanelFamily().getJRadioOther().isSelected()){
-			description = getJPanelFamily().getJRadioOther().getText();
+		try{
+			family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
+			
+			String description = "";
+			
+			if (getJPanelFamily().getJRadioAlone().isSelected()){
+				description = getJPanelFamily().getJRadioAlone().getText();
+			}else if (getJPanelFamily().getJRadioMono().isSelected()){
+				description = getJPanelFamily().getJRadioMono().getText();
+			}else if (getJPanelFamily().getJRadioNoChildren().isSelected()){
+				description = getJPanelFamily().getJRadioNoChildren().getText();
+			}else if (getJPanelFamily().getJRadioWithChildren().isSelected()){
+				description = getJPanelFamily().getJRadioWithChildren().getText();
+			}else if (getJPanelFamily().getJRadioOther().isSelected()){
+				description = getJPanelFamily().getJRadioOther().getText();
+			}
+			
+			FamilyType fType = new FamilyType();
+			fType.setDescription(description);
+			family.setFamilyType(familyTypeDAO.findFamilyType(fType));
+			
+			familyDAO.update(family);
+		}catch(Exception e){
+			logger.info(e);
+			throw new Exception();
 		}
 		
-		FamilyType fType = new FamilyType();
-		fType.setDescripcion(description);
-		family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 		
-		familyDAO.update(family);
+		
+	}
+	
+	public void onSaveHome(Home home){
+		
+		try{
+			
+			home.setNumberFamilies((Integer) getJPanelHome().getJComboNumberFamilies().getSelectedItem());
+			home.setNumberPeople((Integer) getJPanelHome().getJComboNumberPeople().getSelectedItem());
+			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
+			home.setOtherInfo(getJPanelHome().getJTextAreaOtherInfo().getText());
+			home.setRegHolding(getJPanelHome().getJTextFieldRegHolding().getText());
+			
+			homeDAO.update(home);
+			
+		}catch(Exception e){
+			
+		}
+	}
+	
+	public void onSaveAddress(Address address){
+		address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
+		
+		addressDAO.update(address);
 	}
 	
 	public void onSaveProgram() {
@@ -700,20 +778,19 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 					if (selectedProgram.getFamily() != null) {
 						
+						onSaveAddress(selectedProgram.getFamily().getHome().getAddress());
+						onSaveHome(selectedProgram.getFamily().getHome());
 						onSaveFamily(selectedProgram.getFamily());
 						
 						
-
 						
-
 					}
 					
 					JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente.");
 				}
 				
-				
 			} catch (Exception e) {
-
+				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Actualización Persona", JOptionPane.ERROR_MESSAGE);
 			}
 
 		}

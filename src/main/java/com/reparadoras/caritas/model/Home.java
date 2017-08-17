@@ -16,7 +16,7 @@ public class Home implements Serializable{
 	
 private static final long serialVersionUID = 1L;
 	
-
+private int id;
 private String regHolding; //entidad type regHolding
 private int numberRooms;
 private int numberPeople;
@@ -82,6 +82,14 @@ public HomeType getHomeType() {
 
 public void setHomeType(HomeType homeType) {
 	this.homeType = homeType;
+}
+
+public int getId() {
+	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
 }
 
 

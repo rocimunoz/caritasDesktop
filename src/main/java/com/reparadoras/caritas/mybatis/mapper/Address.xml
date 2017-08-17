@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Address">
+
+
+
+	<resultMap id="AddressResult" type="Address">
+		<result property="id" column="id" />
+		<result property="town" column="street" />
+		<result property="gate" column="gate" />
+		<result property="floor" column="floor" />
+		<result property="telephone" column="telephone" />
+		<result property="telephoneContact" column="telephone_contact" />
+		<result property="postalCode" column="postal_code" />
+
+	</resultMap>
+
+	
+
+	<select id="findAll" resultMap="AddressResult">
+		SELECT * FROM C_ADDRESS;
+	</select>
+
+
+	<insert id="insert" parameterType="Address" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO C_ADDRESS (town, gate, floor, telephone, telephone_contact, postal_code)
+		VALUES (
+		#{town},
+		#{gate},
+		#{floor},
+		#{telephone},
+		#{telephoneContact},
+		#{postalCode}
+		);
+	</insert>
+
+	<update id="update" parameterType="Address">
+		UPDATE C_HOME
+		<set>
+			<if test="town != null">town = #{town},</if>
+			<if test="gate != null">gate = #{gate},</if>
+			<if test="floor != null">floor = #{floor},</if>
+			<if test="telephone != null">telephone = #{telephone},</if>
+			<if test="telephoneContact != null">telephone_contact = #{telephoneContact},</if>
+			<if test="postalCode">postal_code = #{postalCode},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+
+
+
+
+</mapper>

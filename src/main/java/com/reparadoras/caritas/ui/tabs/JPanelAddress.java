@@ -244,7 +244,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblFloor;
 	}
 	
-	private JTextField getJTextFieldFloor() {
+	public JTextField getJTextFieldFloor() {
 		if (tfFloor == null) {
 			tfFloor = new JTextField();
 			tfFloor.setColumns(10);
