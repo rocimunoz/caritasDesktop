@@ -39,7 +39,7 @@
 	</insert>
 
 	<update id="update" parameterType="Address">
-		UPDATE C_HOME
+		UPDATE C_ADDRESS
 		<set>
 			<if test="town != null">town = #{town},</if>
 			<if test="gate != null">gate = #{gate},</if>

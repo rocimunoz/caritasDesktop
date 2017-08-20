@@ -15,8 +15,6 @@
 		<result property="numberFamilies" column="number_families" />
 		<result property="otherInfo" column="other_info" />
 		<association property="address" resultMap="AddressResult" />
-
-
 	</resultMap>
 
 	<resultMap id="AddressResult" type="Address">
@@ -58,7 +56,7 @@
 			<if test="regHolding != null">reg_holding = #{regHolding},</if>
 			<if test="numberRooms != null">number_rooms = #{numberRooms},</if>
 			<if test="numberPeople != null">number_people = #{numberPeople},</if>
-			<if test="numberFamilies != null">number_families = #{numbeFamilies},</if>
+			<if test="numberFamilies != null">number_families = #{numberFamilies},</if>
 			<if test="otherInfo != null">other_info = #{otherInfo},</if>
 			<if test="address.id != null">id_address = #{address.id},</if>
 		</set>

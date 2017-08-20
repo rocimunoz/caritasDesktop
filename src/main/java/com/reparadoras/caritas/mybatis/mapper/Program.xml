@@ -23,14 +23,35 @@
     <resultMap id="FamilyResult" type="Family">
         <result property="id" column="id"/>
         <result property="otherInfo" column="other_info"/>
-        <association property="familyType" resultMap="FamilyTypeResult"/>    
+        <association property="familyType" resultMap="FamilyTypeResult"/>
+        <association property="home" resultMap="HomeResult"/>     
     </resultMap>
     
     <resultMap id="FamilyTypeResult" type="FamilyType">
         <result property="id" column="id"/>
         <result property="description" column="description"/>
-       
     </resultMap>
+    
+    	<resultMap id="HomeResult" type="Home">
+		<result property="id" column="id" />
+		<result property="regHolding" column="reg_holding" />
+		<result property="numberRooms" column="number_rooms" />
+		<result property="numberPeople" column="number_people" />
+		<result property="numberFamilies" column="number_families" />
+		<result property="otherInfo" column="other_info" />
+		<association property="address" resultMap="AddressResult" />
+	</resultMap>
+	
+	<resultMap id="AddressResult" type="Address">
+		<result property="id" column="id" />
+		<result property="town" column="street" />
+		<result property="gate" column="gate" />
+		<result property="floor" column="floor" />
+		<result property="telephone" column="telephone" />
+		<result property="telephoneContact" column="telephone_contact" />
+		<result property="postalCode" column="postal_code" />
+
+	</resultMap>
     
      <select id="findAll" resultMap="ProgramResult">
         SELECT * FROM C_PROGRAM;
@@ -39,12 +60,33 @@
     <select id="findProgram" parameterType="int" resultMap="ProgramResult">
         SELECT PE.DNI, 
                PE.NAME,
-               F.ID
+               F.ID,
+               F.OTHER_INFO,
+               FT.DESCRIPTION,
+               H.ID,
+               H.REG_HOLDING,
+               H.NUMBER_ROOMS,
+               H.NUMBER_PEOPLE,
+               H.NUMBER_FAMILIES,
+               H.OTHER_INFO,
+               A.ID,
+               A.TOWN,
+               A.GATE,
+               A.FLOOR,
+               A.TELEPHONE,
+               A.TELEPHONE_CONTACT,
+               A.POSTAL_CODE
         FROM C_PEOPLE PE, 
              C_PROGRAM PR, 
-             C_FAMILY F
+             C_FAMILY F,
+             C_FAMILY_TYPE FT,
+             C_HOME H,
+             C_ADDRESS A
         WHERE PR.ID_PEOPLE = PE.id
         AND PR.ID_FAMILY = F.ID
+        AND F.ID_FAMILY_TYPE = FT.ID
+        AND F.ID_HOME = H.ID
+        AND H.ID_ADDRESS = A.ID
         AND PE.id = #{id}
     </select>
     

@@ -55,7 +55,7 @@ public class JPanelAddress extends JPanel{
 		
 	}
 	
-	private void createGUIPanel(){
+	public void createGUIPanel(){
 	
 		this.setLayout(getGridLayoutAddress());
 		
@@ -83,14 +83,14 @@ public class JPanelAddress extends JPanel{
 	}
 	
 	
-	private JPanel getJPanelAddress() {
+	public JPanel getJPanelAddress() {
 		if (jPanelAddress == null) {
 			jPanelAddress = new JPanel();
 		}
 		return jPanelAddress;
 	}
 	
-	private GridBagConstraints getGridJPanelAddress() {
+	public GridBagConstraints getGridJPanelAddress() {
 		GridBagConstraints gbc_jPanelRadio = new GridBagConstraints();
 		gbc_jPanelRadio.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jPanelRadio.weighty = 1.0;
@@ -105,7 +105,7 @@ public class JPanelAddress extends JPanel{
 	
 	
 	
-	private JLabel getJLabelTown() {
+	public JLabel getJLabelTown() {
 
 		if (lblTown == null) {
 			lblTown = new JLabel("Municipio:  ");
@@ -114,7 +114,7 @@ public class JPanelAddress extends JPanel{
 		return lblTown;
 	}
 
-	private GridBagConstraints getGridJLabelTown() {
+	public GridBagConstraints getGridJLabelTown() {
 		GridBagConstraints gbc_lblTown = new GridBagConstraints();
 		gbc_lblTown.anchor = GridBagConstraints.WEST;
 		gbc_lblTown.insets = new Insets(10, 20, 0, 5);
@@ -124,7 +124,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblTown;
 	}
 	
-	private JTextField getJTextFieldTown() {
+	public JTextField getJTextFieldTown() {
 		if (tfTown == null) {
 			tfTown = new JTextField();
 			tfTown.setColumns(10);
@@ -132,7 +132,7 @@ public class JPanelAddress extends JPanel{
 		return tfTown;
 	}
 	
-	private GridBagConstraints getGridJTextFieldTown() {
+	public GridBagConstraints getGridJTextFieldTown() {
 
 		GridBagConstraints gbc_tfTown = new GridBagConstraints();
 		gbc_tfTown.fill = GridBagConstraints.HORIZONTAL;
@@ -145,7 +145,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfTown;
 	}
 	
-	private JLabel getJLabelStreet() {
+	public JLabel getJLabelStreet() {
 
 		if (lblStreet == null) {
 			lblStreet = new JLabel("Calle:  ");
@@ -154,7 +154,7 @@ public class JPanelAddress extends JPanel{
 		return lblStreet;
 	}
 
-	private GridBagConstraints getGridJLabelStreet() {
+	public GridBagConstraints getGridJLabelStreet() {
 		GridBagConstraints gbc_lblStreet = new GridBagConstraints();
 		gbc_lblStreet.anchor = GridBagConstraints.WEST;
 		gbc_lblStreet.insets = new Insets(10, 5, 0, 5);
@@ -164,7 +164,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblStreet;
 	}
 	
-	private JTextField getJTextFieldStreet() {
+	public JTextField getJTextFieldStreet() {
 		if (tfStreet == null) {
 			tfStreet = new JTextField();
 			tfStreet.setColumns(10);
@@ -172,7 +172,7 @@ public class JPanelAddress extends JPanel{
 		return tfStreet;
 	}
 	
-	private GridBagConstraints getGridJTextFieldStreet() {
+	public GridBagConstraints getGridJTextFieldStreet() {
 
 		GridBagConstraints gbc_tfStreet = new GridBagConstraints();
 		gbc_tfStreet.weightx = 1.0;
@@ -185,7 +185,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfStreet;
 	}
 	
-	private JLabel getJLabelGate() {
+	public JLabel getJLabelGate() {
 
 		if (lblGate == null) {
 			lblGate = new JLabel("Portal:  ");
@@ -194,7 +194,7 @@ public class JPanelAddress extends JPanel{
 		return lblGate;
 	}
 	
-	private GridBagConstraints getGridJLabelGate() {
+	public GridBagConstraints getGridJLabelGate() {
 		GridBagConstraints gbc_lblGate = new GridBagConstraints();
 		gbc_lblGate.anchor = GridBagConstraints.WEST;
 		gbc_lblGate.insets = new Insets(10, 20, 0, 5);
@@ -204,7 +204,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblGate;
 	}
 	
-	private JTextField getJTextFieldGate() {
+	public JTextField getJTextFieldGate() {
 		if (tfGate == null) {
 			tfGate = new JTextField();
 			tfGate.setColumns(10);
@@ -212,7 +212,7 @@ public class JPanelAddress extends JPanel{
 		return tfGate;
 	}
 	
-	private GridBagConstraints getGridJTextFieldGate() {
+	public GridBagConstraints getGridJTextFieldGate() {
 
 		GridBagConstraints gbc_tfGate = new GridBagConstraints();
 		gbc_tfGate.weightx = 1.0;
@@ -225,7 +225,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfGate;
 	}
 	
-	private JLabel getJLabelFloor() {
+	public JLabel getJLabelFloor() {
 
 		if (lblFloor == null) {
 			lblFloor = new JLabel("Piso y mano:  ");
@@ -234,7 +234,7 @@ public class JPanelAddress extends JPanel{
 		return lblFloor;
 	}
 	
-	private GridBagConstraints getGridJLabelFloor() {
+	public GridBagConstraints getGridJLabelFloor() {
 		GridBagConstraints gbc_lblFloor = new GridBagConstraints();
 		gbc_lblFloor.anchor = GridBagConstraints.WEST;
 		gbc_lblFloor.insets = new Insets(10, 5, 0, 5);
@@ -252,7 +252,7 @@ public class JPanelAddress extends JPanel{
 		return tfFloor;
 	}
 	
-	private GridBagConstraints getGridJTextFieldFloor() {
+	public GridBagConstraints getGridJTextFieldFloor() {
 
 		GridBagConstraints gbc_tfFloor = new GridBagConstraints();
 		gbc_tfFloor.weightx = 1.0;
@@ -265,7 +265,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfFloor;
 	}
 	
-	private JLabel getJLabelTelephone() {
+	public JLabel getJLabelTelephone() {
 
 		if (lblTelephone == null) {
 			lblTelephone = new JLabel("Tfno Domicilio:  ");
@@ -274,7 +274,7 @@ public class JPanelAddress extends JPanel{
 		return lblTelephone;
 	}
 	
-	private GridBagConstraints getGridJLabelTelephone() {
+	public GridBagConstraints getGridJLabelTelephone() {
 		GridBagConstraints gbc_lblTelephone = new GridBagConstraints();
 		gbc_lblTelephone.anchor = GridBagConstraints.WEST;
 		gbc_lblTelephone.insets = new Insets(10, 20, 0, 5);
@@ -284,7 +284,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblTelephone;
 	}
 	
-	private JTextField getJTextFieldTelephone() {
+	public JTextField getJTextFieldTelephone() {
 		if (tfTelephone == null) {
 			tfTelephone = new JTextField();
 			tfTelephone.setColumns(10);
@@ -292,7 +292,7 @@ public class JPanelAddress extends JPanel{
 		return tfTelephone;
 	}
 	
-	private GridBagConstraints getGridJTextFieldTelephone() {
+	public GridBagConstraints getGridJTextFieldTelephone() {
 
 		GridBagConstraints gbc_tfTelephone = new GridBagConstraints();
 		gbc_tfTelephone.weightx = 1.0;
@@ -305,7 +305,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfTelephone;
 	}
 	
-	private JLabel getJLabelTelephoneContact() {
+	public JLabel getJLabelTelephoneContact() {
 
 		if (lblTelephoneContact == null) {
 			lblTelephoneContact = new JLabel("Tfno Contacto:  ");
@@ -314,7 +314,7 @@ public class JPanelAddress extends JPanel{
 		return lblTelephoneContact;
 	}
 	
-	private GridBagConstraints getGridJLabelTelephoneContact() {
+	public GridBagConstraints getGridJLabelTelephoneContact() {
 		GridBagConstraints gbc_lblTelephoneContact = new GridBagConstraints();
 		gbc_lblTelephoneContact.anchor = GridBagConstraints.WEST;
 		gbc_lblTelephoneContact.insets = new Insets(10, 5, 0, 5);
@@ -324,7 +324,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblTelephoneContact;
 	}
 	
-	private JTextField getJTextFieldTelephoneContact() {
+	public JTextField getJTextFieldTelephoneContact() {
 		if (tfTelephoneContact == null) {
 			tfTelephoneContact = new JTextField();
 			tfTelephoneContact.setColumns(10);
@@ -332,7 +332,7 @@ public class JPanelAddress extends JPanel{
 		return tfTelephoneContact;
 	}
 	
-	private GridBagConstraints getGridJTextFieldTelephoneContact() {
+	public GridBagConstraints getGridJTextFieldTelephoneContact() {
 
 		GridBagConstraints gbc_tfTelephoneContact = new GridBagConstraints();
 		gbc_tfTelephoneContact.weightx = 1.0;
@@ -345,7 +345,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfTelephoneContact;
 	}
 	
-	private JLabel getJLabelDatePickerCensus() {
+	public JLabel getJLabelDatePickerCensus() {
 
 		if (lblDateCensus == null) {
 			lblDateCensus = new JLabel("Fecha Padrón:  ");
@@ -354,7 +354,7 @@ public class JPanelAddress extends JPanel{
 		return lblDateCensus;
 	}
 	
-	private GridBagConstraints getGridLblDatePickerCensus() {
+	public GridBagConstraints getGridLblDatePickerCensus() {
 		GridBagConstraints gbc_datePickerCensus = new GridBagConstraints();
 		gbc_datePickerCensus.anchor = GridBagConstraints.WEST;
 		gbc_datePickerCensus.insets = new Insets(10, 20, 0, 5);
@@ -364,7 +364,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_datePickerCensus;
 	}
 	
-	private JXDatePicker getJXDatePickerCensus() {
+	public JXDatePicker getJXDatePickerCensus() {
 		if (datePickerCensus == null) {
 			datePickerCensus = new JXDatePicker();
 			
@@ -372,7 +372,7 @@ public class JPanelAddress extends JPanel{
 		return datePickerCensus;
 	}
 	
-	private GridBagConstraints getGridJXDatePickerCensus() {
+	public GridBagConstraints getGridJXDatePickerCensus() {
 
 		GridBagConstraints gbc_datePickerCensus = new GridBagConstraints();
 		gbc_datePickerCensus.weightx = 1.0;
@@ -385,7 +385,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_datePickerCensus;
 	}
 	
-	private JLabel getJLabelPlace() {
+	public JLabel getJLabelPlace() {
 
 		if (lblPlace == null) {
 			lblPlace = new JLabel("Lugar:  ");
@@ -394,7 +394,7 @@ public class JPanelAddress extends JPanel{
 		return lblPlace;
 	}
 	
-	private GridBagConstraints getGridJLabelPlace() {
+	public GridBagConstraints getGridJLabelPlace() {
 		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
 		gbc_lblPlace.anchor = GridBagConstraints.WEST;
 		gbc_lblPlace.insets = new Insets(10, 5, 0, 5);
@@ -404,7 +404,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_lblPlace;
 	}
 	
-	private JTextField getJTextFieldPlace() {
+	public JTextField getJTextFieldPlace() {
 		if (tfPlace == null) {
 			tfPlace = new JTextField();
 			tfPlace.setColumns(10);
@@ -412,7 +412,7 @@ public class JPanelAddress extends JPanel{
 		return tfPlace;
 	}
 	
-	private GridBagConstraints getGridJTextFieldPlace() {
+	public GridBagConstraints getGridJTextFieldPlace() {
 
 		GridBagConstraints gbc_tfPlace = new GridBagConstraints();
 		gbc_tfPlace.weightx = 1.0;
@@ -425,7 +425,7 @@ public class JPanelAddress extends JPanel{
 		return gbc_tfPlace;
 	}
 	
-	private GridBagLayout getGridLayoutAddress() {
+	public GridBagLayout getGridLayoutAddress() {
 		GridBagLayout gbl_LaoutAddress = new GridBagLayout();
 		gbl_LaoutAddress.columnWeights = new double[] { 0.0};
 		gbl_LaoutAddress.rowWeights = new double[] { };
@@ -433,7 +433,7 @@ public class JPanelAddress extends JPanel{
 		return gbl_LaoutAddress;
 	}
 	
-	private GridBagLayout getGridLayoutPanelAddress() {
+	public GridBagLayout getGridLayoutPanelAddress() {
 		GridBagLayout gbl_LaoutAddress = new GridBagLayout();
 		gbl_LaoutAddress.columnWeights = new double[] { 0.0};
 		gbl_LaoutAddress.rowWeights = new double[] { };

@@ -25,6 +25,9 @@
 					<if test="description!=null and !description.equals('')">
 						description = #{description}
 					</if>
+					<if test="id!=null and !id.equals('')">
+						id = #{id}
+					</if>
 				</where>
     </select>
     

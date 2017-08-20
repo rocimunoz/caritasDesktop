@@ -10,7 +10,8 @@
     <resultMap id="FamilyResult" type="Family">
         <result property="id" column="id"/>
         <result property="otherInfo" column="other_info"/>  
-        <association property="familyType" resultMap="FamilyTypeResult"/>    
+        <association property="familyType" resultMap="FamilyTypeResult"/> 
+        <association property="home" resultMap="HomeResult"/>    
         
 		
     </resultMap>
@@ -18,8 +19,11 @@
      <resultMap id="FamilyTypeResult" type="FamilyType">
         <result property="id" column="id"/>
         <result property="description" column="description"/>
-       
     </resultMap>
+    
+    <resultMap id="HomeResult" type="Home">
+		<result property="id" column="id" />
+	</resultMap>
  
     <select id="findAll" resultMap="FamilyResult">
         SELECT * FROM C_FAMILY;
@@ -30,7 +34,7 @@
     
     
  	<insert id="insert" parameterType="Family" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_FAMILY (other_info) VALUES (#{otherInfo});
+        INSERT INTO C_FAMILY (other_info, id_family_type, id_home) VALUES (#{otherInfo}, #{familyType.id}, #{home.id});
     </insert>
     
     <update id="update" parameterType="Family">
@@ -38,6 +42,7 @@
         <set>
           <if test="otherInfo != null">other_info = #{otherInfo},</if>
           <if test="familyType != null">id_family_type = #{familyType.id},</if>
+          <if test="home != null">id_home = #{home.id},</if>
           </set>
         WHERE id = #{id} 
   	</update>

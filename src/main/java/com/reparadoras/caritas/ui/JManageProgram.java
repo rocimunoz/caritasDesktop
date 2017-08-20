@@ -21,6 +21,8 @@ import java.awt.GridLayout;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
@@ -210,6 +212,15 @@ public class JManageProgram extends AbstractJInternalFrame {
 				onSaveProgram();
 			}
 		});
+		
+		
+		getJTableProgram().getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+	        public void valueChanged(ListSelectionEvent event) {
+	            
+	        	fillDataProgram();
+	            
+	        }
+	    });
 
 	}
 
@@ -654,6 +665,41 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	/* EVENTOS */
+	
+	public void fillDataProgram(){
+		int rowIndex = this.getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
+			//People people = (People) this.getJComboBoxPeople().getSelectedItem();
+			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
+			
+			Family family = selectedProgram.getFamily();
+			Home home = family.getHome();
+			Address address = home.getAddress();
+			//address
+			this.getJPanelAddress().getJTextFieldFloor().setText(address.getFloor());
+			this.getJPanelAddress().getJTextFieldGate().setText(address.getGate());
+			//this.getJPanelAddress().getJTextFieldPlace().setText();
+			this.getJPanelAddress().getJTextFieldStreet().setText(address.getStreet());
+			this.getJPanelAddress().getJTextFieldTelephone().setText(address.getTelephone());
+			this.getJPanelAddress().getJTextFieldTelephoneContact().setText(address.getTelephoneContact());
+			this.getJPanelAddress().getJTextFieldTown().setText(address.getTown());
+			
+			//Home
+			this.getJPanelHome().getJComboNumberFamilies().setSelectedItem(home.getNumberFamilies());
+			this.getJPanelHome().getJComboNumberPeople().setSelectedItem(home.getNumberPeople());
+			this.getJPanelHome().getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
+			this.getJPanelHome().getJTextAreaOtherInfo().setText(home.getOtherInfo());
+			this.getJPanelHome().getJTextFieldRegHolding().setText(home.getRegHolding());
+			//tipo de casa
+			
+			//Family
+			this.getJPanelFamily().getJTextAreaFamilyOtherInfo();
+			
+			
+			
+			logger.info("fillDataprogram");
+		}
+	}
 
 	public void onCreateProgramFirstTime(People filterPeople){
 		Program programNewReset = new Program();
@@ -667,6 +713,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		Family family = new Family();
 		family.setHome(home);
+		FamilyType fType = new FamilyType();
+		fType.setId(1);
+		family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 		familyDAO.insert(family);
 		
 		programNewReset.setFamily(family);
@@ -744,7 +793,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 	}
 	
-	public void onSaveHome(Home home){
+	public void onSaveHome(Home home) throws Exception{
 		
 		try{
 			
@@ -757,14 +806,26 @@ public class JManageProgram extends AbstractJInternalFrame {
 			homeDAO.update(home);
 			
 		}catch(Exception e){
-			
+			logger.info(e);
+			throw new Exception();
 		}
 	}
 	
-	public void onSaveAddress(Address address){
-		address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
+	public void onSaveAddress(Address address) throws Exception{
+		try{
+			address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
+			address.setGate(getJPanelAddress().getJTextFieldGate().getText());
+			//address.setPostalCode(getJPanelAddress().getjtextfield);
+			address.setStreet(getJPanelAddress().getJTextFieldStreet().getText());
+			address.setTelephone(getJPanelAddress().getJTextFieldTelephone().getText());
+			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());
+			address.setTown(getJPanelAddress().getJTextFieldTown().getText());
+			addressDAO.update(address);
+		}catch(Exception e){
+			logger.info(e);
+			throw new Exception();
+		}
 		
-		addressDAO.update(address);
 	}
 	
 	public void onSaveProgram() {
@@ -780,7 +841,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 						
 						onSaveAddress(selectedProgram.getFamily().getHome().getAddress());
 						onSaveHome(selectedProgram.getFamily().getHome());
-						onSaveFamily(selectedProgram.getFamily());
+						//onSaveFamily(selectedProgram.getFamily());
 						
 						
 						
@@ -791,6 +852,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Actualización Persona", JOptionPane.ERROR_MESSAGE);
+				logger.info(e);
 			}
 
 		}
