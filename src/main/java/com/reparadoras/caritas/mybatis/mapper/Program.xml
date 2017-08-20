@@ -28,12 +28,12 @@
     </resultMap>
     
     <resultMap id="FamilyTypeResult" type="FamilyType">
-        <result property="id" column="id"/>
+        <result property="id" column="id_family"/>
         <result property="description" column="description"/>
     </resultMap>
     
     	<resultMap id="HomeResult" type="Home">
-		<result property="id" column="id" />
+		<result property="id" column="id_home" />
 		<result property="regHolding" column="reg_holding" />
 		<result property="numberRooms" column="number_rooms" />
 		<result property="numberPeople" column="number_people" />
@@ -43,8 +43,9 @@
 	</resultMap>
 	
 	<resultMap id="AddressResult" type="Address">
-		<result property="id" column="id" />
-		<result property="town" column="street" />
+		<result property="id" column="id_address" />
+		<result property="town" column="town" />
+		<result property="street" column="street" />
 		<result property="gate" column="gate" />
 		<result property="floor" column="floor" />
 		<result property="telephone" column="telephone" />
@@ -60,17 +61,18 @@
     <select id="findProgram" parameterType="int" resultMap="ProgramResult">
         SELECT PE.DNI, 
                PE.NAME,
-               F.ID,
+               F.ID ID_FAMILY,
                F.OTHER_INFO,
                FT.DESCRIPTION,
-               H.ID,
+               H.ID ID_HOME,
                H.REG_HOLDING,
                H.NUMBER_ROOMS,
                H.NUMBER_PEOPLE,
                H.NUMBER_FAMILIES,
                H.OTHER_INFO,
-               A.ID,
+               A.ID ID_ADDRESS,
                A.TOWN,
+               A.STREET,
                A.GATE,
                A.FLOOR,
                A.TELEPHONE,

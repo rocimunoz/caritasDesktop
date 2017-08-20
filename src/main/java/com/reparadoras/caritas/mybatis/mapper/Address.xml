@@ -9,7 +9,8 @@
 
 	<resultMap id="AddressResult" type="Address">
 		<result property="id" column="id" />
-		<result property="town" column="street" />
+		<result property="town" column="town" />
+		<result property="street" column="street" />
 		<result property="gate" column="gate" />
 		<result property="floor" column="floor" />
 		<result property="telephone" column="telephone" />
@@ -27,9 +28,10 @@
 
 	<insert id="insert" parameterType="Address" useGeneratedKeys="true"
 		keyProperty="id">
-		INSERT INTO C_ADDRESS (town, gate, floor, telephone, telephone_contact, postal_code)
+		INSERT INTO C_ADDRESS (town, street, gate, floor, telephone, telephone_contact, postal_code)
 		VALUES (
 		#{town},
+		#{street},
 		#{gate},
 		#{floor},
 		#{telephone},
@@ -42,6 +44,7 @@
 		UPDATE C_ADDRESS
 		<set>
 			<if test="town != null">town = #{town},</if>
+			<if test="street != null">street = #{street},</if>
 			<if test="gate != null">gate = #{gate},</if>
 			<if test="floor != null">floor = #{floor},</if>
 			<if test="telephone != null">telephone = #{telephone},</if>

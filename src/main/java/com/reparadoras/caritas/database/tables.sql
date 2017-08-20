@@ -30,12 +30,12 @@ CREATE TABLE `c_address` (
   `TELEPHONE_CONTACT` varchar(20) DEFAULT NULL,
   `POSTAL_CODE` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- HOME
 CREATE TABLE `c_home` (
-  `ID` int(11) NOT NULL,
-  `REG_HOLDING` int(11) DEFAULT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `REG_HOLDING` varchar(20) DEFAULT NULL,
   `NUMBER_ROOMS` tinyint(4) DEFAULT NULL,
   `NUMBER_PEOPLE` tinyint(4) DEFAULT NULL,
   `NUMBER_FAMILIES` tinyint(4) DEFAULT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE `c_home` (
   KEY `home_address` (`ID_ADDRESS`),
   CONSTRAINT `home_address` FOREIGN KEY (`ID_ADDRESS`) REFERENCES `c_address` (`ID`),
   CONSTRAINT `home_home_type` FOREIGN KEY (`ID_HOME_TYPE`) REFERENCES `c_home_type` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- HOME TYPE
 CREATE TABLE `c_home_type` (
@@ -65,7 +65,7 @@ INSERT INTO C_HOME_TYPE (ID, DESCRIPTION) VALUES (4, 'Estudio');
 
 -- FAMILY
 CREATE TABLE `c_family` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `OTHER_INFO` varchar(20) DEFAULT NULL,
   `ID_FAMILY_TYPE` int(11) DEFAULT NULL,
   `ID_HOME` int(11) DEFAULT NULL,
@@ -74,6 +74,7 @@ CREATE TABLE `c_family` (
   KEY `family_home` (`ID_HOME`),
   CONSTRAINT `family_family_type` FOREIGN KEY (`ID_FAMILY_TYPE`) REFERENCES `c_family_type` (`ID`),
   CONSTRAINT `family_home` FOREIGN KEY (`ID_HOME`) REFERENCES `c_home` (`ID`)
+  ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 
 -- TYPE_FAMILY
@@ -95,7 +96,7 @@ CREATE TABLE `c_relative` (
   PRIMARY KEY (`ID`),
   KEY `relative_family` (`ID_FAMILY`),
   CONSTRAINT `relative_family` FOREIGN KEY (`ID_FAMILY`) REFERENCES `c_family` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- PROGRAM 
 CREATE TABLE `c_program` (
@@ -107,7 +108,7 @@ CREATE TABLE `c_program` (
   KEY `program_family` (`ID_FAMILY`),
   CONSTRAINT `program_family` FOREIGN KEY (`ID_FAMILY`) REFERENCES `c_family` (`ID`),
   CONSTRAINT `program_people` FOREIGN KEY (`ID_PEOPLE`) REFERENCES `c_people` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- TICKET
 CREATE TABLE `c_ticket` (
