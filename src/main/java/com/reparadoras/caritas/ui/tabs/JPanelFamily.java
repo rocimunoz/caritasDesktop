@@ -97,12 +97,7 @@ public class JPanelFamily extends JPanel{
 		getJPanelActionsRelative().add(getBtnDeleteRelative());
 		
 		
-		getBtnAddRelative().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//openEditRelative(JWindowParams.IMODE_INSERT, "Nuevo Pariente");
-				
-			}
-		});
+		
 
 		
 
@@ -360,7 +355,7 @@ public class JPanelFamily extends JPanel{
 	
 	
 	
-	private JTable getJTableRelatives(){
+	public JTable getJTableRelatives(){
 		if (tableRelatives == null){
 			
 			tableRelatives = new JTable(getRelativesTableModel());
@@ -371,7 +366,7 @@ public class JPanelFamily extends JPanel{
 		return tableRelatives;
 	}
 	
-private RelativesTableModel getRelativesTableModel(){
+	public RelativesTableModel getRelativesTableModel(){
 		
 		if (relativesTableModel == null){
 			Object[] columnIdentifiers = new Object[] { "Parentesco", "Apellidos", "Nombre", "Fecha Nacimiento", "Situacion"};
@@ -401,7 +396,7 @@ private GridBagConstraints getGridJPanelActionsRelative(){
 	return gbc_jPanelActionsRelative; 
 }
 
-private JButton getBtnAddRelative() {
+public JButton getBtnAddRelative() {
 	if (btnAddRelative == null) {
 		btnAddRelative = new JButton("Nuevo");
 		btnAddRelative.addActionListener(new ActionListener() {
@@ -413,7 +408,7 @@ private JButton getBtnAddRelative() {
 	return btnAddRelative;
 }
 
-private JButton getBtnDeleteRelative() {
+public JButton getBtnDeleteRelative() {
 	if (btnDeleteRelative == null) {
 		btnDeleteRelative = new JButton("Borrar");
 		btnDeleteRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
@@ -421,7 +416,7 @@ private JButton getBtnDeleteRelative() {
 	return btnDeleteRelative;
 }
 
-private JButton getBtnEditRelative() {
+public JButton getBtnEditRelative() {
 	if (btnEditRelative == null) {
 		btnEditRelative = new JButton("Editar");
 		btnEditRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
@@ -431,40 +426,7 @@ private JButton getBtnEditRelative() {
 	
 
 
-public void openEditRelative(int openMode, String title, AbstractJInternalFrame jinternalFrame) {
 
-	JManageEditRelative jManageEditRelative = null;
-	try {
-
-		if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)){
-			int row = this.getJTableRelatives().getSelectedRow();
-			if (row!=-1){
-				Relative relative = this.getRelativesTableModel().getDomainObject(row);
-			
-				jManageEditRelative = new JManageEditRelative(jinternalFrame, true, openMode, title, null);
-			}
-			else{
-				JOptionPane.showMessageDialog(null, "Seleccione un registro");
-				return;
-		    }
-			
-		}
-		else{
-			jManageEditRelative = new JManageEditRelative(jinternalFrame, true, openMode, title, null);
-		}
-		
-		//this.desktop.add(jManageEditPeople);
-		//jManageEditPeople.setVisible(true);
-		//jManageEditPeople.moveToFront();
-		//jManageEditPeople.show();
-		
-			
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-
-}
 
 	
 }

@@ -22,7 +22,7 @@
     
     <resultMap id="FamilyResult" type="Family">
         <result property="id" column="id"/>
-        <result property="otherInfo" column="other_info"/>
+        <result property="otherInfo" column="other_info_family"/>
         <association property="familyType" resultMap="FamilyTypeResult"/>
         <association property="home" resultMap="HomeResult"/>     
     </resultMap>
@@ -38,7 +38,7 @@
 		<result property="numberRooms" column="number_rooms" />
 		<result property="numberPeople" column="number_people" />
 		<result property="numberFamilies" column="number_families" />
-		<result property="otherInfo" column="other_info" />
+		<result property="otherInfo" column="other_info_home" />
 		<association property="address" resultMap="AddressResult" />
 	</resultMap>
 	
@@ -62,14 +62,14 @@
         SELECT PE.DNI, 
                PE.NAME,
                F.ID ID_FAMILY,
-               F.OTHER_INFO,
+               F.OTHER_INFO OTHER_INFO_FAMILY,
                FT.DESCRIPTION,
                H.ID ID_HOME,
                H.REG_HOLDING,
                H.NUMBER_ROOMS,
                H.NUMBER_PEOPLE,
                H.NUMBER_FAMILIES,
-               H.OTHER_INFO,
+               H.OTHER_INFO OTHER_INFO_HOME,
                A.ID ID_ADDRESS,
                A.TOWN,
                A.STREET,

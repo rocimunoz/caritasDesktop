@@ -42,6 +42,7 @@ import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
@@ -154,8 +155,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
-
 		onFilterProgram(true);
+		
+		if (this.getProgramTableModel().getDomainObjects().size() == 1){
+			this.getJTableProgram().setRowSelectionInterval(0, 0);
+		}
 
 	}
 
@@ -181,6 +185,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 		addListeners();
 
 		onFilterProgram(true);
+		
+		if (this.getProgramTableModel().getDomainObjects().size() == 1){
+			this.getJTableProgram().setRowSelectionInterval(0, 0);
+		}
 
 	}
 
@@ -221,6 +229,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 	            
 	        }
 	    });
+		
+		this.getJPanelFamily().getBtnAddRelative().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openEditRelative(JWindowParams.IMODE_INSERT, "Nuevo Pariente");
+				
+			}
+		});
 
 	}
 
@@ -273,6 +288,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
 		initCbPeople();
+		
 
 	}
 
@@ -694,7 +710,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			
 			//Family
 			this.getJPanelFamily().getJTextAreaFamilyOtherInfo();
-			
+		
 			
 			
 			logger.info("fillDataprogram");
@@ -756,6 +772,41 @@ public class JManageProgram extends AbstractJInternalFrame {
 			List<Program> listPrograms = programDAO.findAll();
 			this.getProgramTableModel().clearTableModelData();
 			this.getProgramTableModel().addRows(listPrograms);
+		}
+
+	}
+	
+	public void openEditRelative(int openMode, String title) {
+
+		JManageEditRelative jManageEditRelative = null;
+		try {
+
+			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)){
+				int row = this.getJPanelFamily().getJTableRelatives().getSelectedRow();
+				if (row!=-1){
+					Relative relative = getJPanelFamily().getRelativesTableModel().getDomainObject(row);
+				
+					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "Seleccione un registro");
+					return;
+			    }
+				
+			}
+			else{
+				jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null);
+			}
+			
+			this.desktop.add(jManageEditRelative);
+			jManageEditRelative.setVisible(true);
+			jManageEditRelative.moveToFront();
+			jManageEditRelative.show();
+			
+				
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}

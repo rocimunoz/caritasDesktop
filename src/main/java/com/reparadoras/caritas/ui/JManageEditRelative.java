@@ -36,11 +36,9 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	
 	private JPanel jPanelContentPane;
 	private JTextField txfName;
-	private JComboBox cbRelationShip;
 
 	private JPanel jPanelPersonalData;
 	private JLabel jLblName;
-	private JLabel jLblRelationShip;
 	
 	
 	private JPanel jPanelActions;
@@ -48,7 +46,6 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JButton jBtnCancel;
 	private JLabel jLblSurname;
 	private JTextField txfSurname;
-	private JComboBox<String> jComboBoxSex;
 	private JLabel jLblDateBorn;
 	private PeopleDAO peopleDAO;
 	
@@ -89,9 +86,6 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJTextFieldSurname(), getGridJTextFieldSurname());
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
-		getJPanelPersonalData().add(getJLabelRelationShip(), getGridJLabelRelationShip());
-		getJPanelPersonalData().add(getJLabelRelationShip(), getJComboBoxRelationShip());
-		getJPanelPersonalData().add(getComboBox(), getGridComboBoxSex());
 		getJPanelPersonalData().add(getJLblDateBorn(), getGridJLabelSex());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
@@ -140,8 +134,6 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	}
 	
 	private void initComponents(){
-	    this.getComboBox().addItem("V");
-	    this.getComboBox().addItem("F");
 	    
 	}
 	
@@ -155,7 +147,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			this.getJTextFieldName().setText(this.selectedRelative.getName());
 			this.getJTextFieldSurname().setEnabled(false);
 			this.getJTextFieldSurname().setText(this.selectedRelative.getSurname());
-			this.getComboBox().setEnabled(false);
+			//this.getComboBox().setEnabled(false);
 			//this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
 			this.getJButtonAccept().setVisible(false);
 			this.getJButtonCancel().setText("Salir");
@@ -165,7 +157,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			//this.getJTextFieldDni().setEnabled(true);
 			this.getJTextFieldName().setEnabled(true);
 			this.getJTextFieldSurname().setEnabled(true);
-			this.getComboBox().setEnabled(true);
+			//this.getComboBox().setEnabled(true);
 			this.getJButtonAccept().setVisible(true);
 			this.getJButtonCancel().setText("Cancelar");
 		}
@@ -386,38 +378,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		return gbc_txfSurname;
 		
 	}
-	
-	private JLabel getJLabelRelationShip() {
 
-		if (jLblRelationShip == null) {
-			jLblRelationShip = new JLabel("Parentesco");
-			jLblRelationShip.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-
-		return jLblRelationShip;
-	}
-
-	private GridBagConstraints getGridJLabelRelationShip() {
-
-		GridBagConstraints gbc_jLblRelationShip = new GridBagConstraints();
-		gbc_jLblRelationShip.anchor = GridBagConstraints.WEST;
-		gbc_jLblRelationShip.insets = new Insets(0, 20, 5, 5);
-		gbc_jLblRelationShip.gridx = 0;
-		gbc_jLblRelationShip.gridy = 1;
-		
-		
-
-		return gbc_jLblRelationShip;
-	}
-	
-	private JComboBox<String> getJComboBoxRelationShip() {
-
-		if (cbRelationShip == null){
-			cbRelationShip = new JComboBox();	
-		}
-		
-		return cbRelationShip;
-	}
 
 	private GridBagConstraints getGridJComboBoxRelationShip() {
 
@@ -446,32 +407,14 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_jLblDateBorn.anchor = GridBagConstraints.WEST;
 		gbc_jLblDateBorn.weightx = 1.0;
 		gbc_jLblDateBorn.insets = new Insets(0, 15, 5, 5);
-		gbc_jLblDateBorn.gridx = 2;
+		gbc_jLblDateBorn.gridx = 0;
 		gbc_jLblDateBorn.gridy = 1;
 		
 		return gbc_jLblDateBorn;
 		
 	}
 	
-	
-	private JComboBox getComboBox() {
-		if (jComboBoxSex == null) {
-			jComboBoxSex = new JComboBox();
-		}
-		return jComboBoxSex;
-	}
-	
-private  GridBagConstraints getGridComboBoxSex() {
-		
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.weightx = 1.0;
-		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 3;
-		gbc_comboBox.gridy = 1;
-		
-		return gbc_comboBox;
-	}
+
 
 
 	
