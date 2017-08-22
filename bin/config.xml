@@ -3,7 +3,11 @@
     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-config.dtd">
  
+
 <configuration>
+<properties resource="application.properties">
+  
+</properties>
     <typeAliases>
         <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
         <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
@@ -14,16 +18,17 @@
         <typeAlias alias="Family" type="com.reparadoras.caritas.model.Family"/>
         <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/>             
     </typeAliases>
- 
+   
     <environments default="development">
         <environment id="development">
           <transactionManager type="JDBC"/>
             <!--  connecting to Local MySql -->
+            
             <dataSource type="POOLED">
-                <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/caritas"/>
-                <property name="username" value="caritas"/>
-                <property name="password" value="caritas"/>
+                <property name="driver" value="${caritas.driverClassName}"/>
+                <property name="url" value="${caritas.url}"/>
+                <property name="username" value="${caritas.username}"/>
+                <property name="password" value="${caritas.password}"/>
             </dataSource>
        </environment>
     </environments>

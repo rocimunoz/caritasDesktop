@@ -36,11 +36,13 @@
        SELECT * 
 				FROM C_PEOPLE
 				<where>
+				
 					<if test="name!=null and !name.equals('')">
-						name = #{name}
+						name =  #{name}
 					</if>
 					<if test="dni!=null">
-					AND	dni = #{dni}
+					<bind name="pattern" value="'%' + dni + '%'" />
+					AND	dni like #{pattern}
 					</if>
 					<if test="active!=null">
 					AND	active = #{active}

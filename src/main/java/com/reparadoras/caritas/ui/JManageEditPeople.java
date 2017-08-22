@@ -92,7 +92,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		this.setClosable(true);
 		this.setMaximizable(true);
 		this.setResizable(true);
-		this.setSize(800, 300);
+		this.setSize(935, 301);
 		this.setTitle(title);
 		
 		this.selectedPeople = people;
@@ -384,6 +384,9 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (jPanelPersonalData == null) {
 			jPanelPersonalData = new JPanel();
 			jPanelPersonalData.setBorder(new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			
+			((javax.swing.border.TitledBorder) jPanelPersonalData.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 				
 		}
 

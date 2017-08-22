@@ -14,8 +14,10 @@ public class MyBatisConnectionFactory {
     static {
         try {
  
-            String resource = "com/reparadoras/caritas/mybatis/config.xml";
+            String resource = "config.xml";
             Reader reader = Resources.getResourceAsReader(resource);
+            
+            
  
             if (sqlSessionFactory == null) {
                 sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);

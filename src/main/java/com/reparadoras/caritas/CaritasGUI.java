@@ -23,6 +23,7 @@ import com.reparadoras.caritas.ui.JManageTicket;
 
 import javax.swing.Icon;
 import java.awt.event.ActionListener;
+import java.awt.Toolkit;
 
 /**
  *
@@ -39,6 +40,7 @@ public class CaritasGUI  extends JFrame{
 	private JMenuItem jMenuItemPeople = null;
 	
     public CaritasGUI() {
+    	setIconImage(Toolkit.getDefaultToolkit().getImage(CaritasGUI.class.getResource("/com/reparadoras/images/caritas.png")));
 
     	initLookAndFeel();
         initUI();
@@ -48,9 +50,11 @@ public class CaritasGUI  extends JFrame{
     private void initLookAndFeel() {
     	try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+            	System.out.println(info);
+                
+            	if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+                    //break;
                 }
             }
         } catch (ClassNotFoundException ex) {

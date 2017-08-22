@@ -30,6 +30,7 @@ import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.components.combobox.ComboBoxRenderer;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 
 import java.awt.Color;
@@ -67,6 +68,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JLabel lblName = null;
 	private JComboBox<People> cbPeople;
 	private JButton btnSearchPeople = null;
+	private JButton btnCleanPeople = null;
+	
 	private JPanel jPanelContent = null;
 	private JPanel jPanelActions = null;
 	private JButton btnNewPeople = null;
@@ -89,7 +92,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
 	private JButton btnExitPeople;
-	private JComboBox<People> jComboPeople;
+	
 
 	public JManagePeople(JDesktopPane desktop) {
 		super(desktop);
@@ -121,6 +124,12 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJButtonSearch().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				filterPeople();
+			}
+		});
+		
+		getJButtonClean().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cleanFilter();
 			}
 		});
 
@@ -190,6 +199,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJComboPeople());
 		
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
+		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 		getJPanelFilter().add(getBtnExitPeople(), getGridButtonExit());
 
 		// Añado elementos del JPanelContent
@@ -221,13 +231,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 	public void initCbPeople() {
 
 		List<People> listPeople = peopleDAO.findAll();
-		People allPeople = new People();
-		allPeople.setName("TODOS");
-		allPeople.setId(-1);
-		listPeople.add(0, allPeople);
+		
 		for (People p : listPeople) {
 			this.getJComboBoxPeople().addItem(p);
 		}
+		getJComboBoxPeople().setSelectedIndex(-1);
 
 	}
 
@@ -257,7 +265,10 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (jPanelFilter == null) {
 			jPanelFilter = new JPanel();
 			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Personas",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			
+			((javax.swing.border.TitledBorder) jPanelFilter.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 
 		}
 
@@ -278,7 +289,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JLabel getJLabelName() {
 
 		if (lblName == null) {
-			lblName = new JLabel("Nombre Persona ");
+			lblName = new JLabel("Nombre Persona: ");
 			lblName.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return lblName;
@@ -286,6 +297,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelName() {
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.anchor = GridBagConstraints.WEST;
 		gbc_lblName.insets = new Insets(0, 5, 0, 5);
 		gbc_lblName.gridx = 0;
 		gbc_lblName.gridy = 1;
@@ -296,7 +308,10 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JComboBox<People> getJComboBoxPeople() {
 		if (cbPeople == null) {
 			cbPeople = new JComboBox<People>();
-
+			
+			
+			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
+			cbPeople.setSelectedIndex(-1); //By default it selects first item, we don't want any selection
 		}
 
 		return cbPeople;
@@ -308,7 +323,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		GridBagConstraints gbc_tfName = new GridBagConstraints();
 		gbc_tfName.insets = new Insets(0, 0, 0, 5);
 		gbc_tfName.weightx = 1.0;
-		gbc_tfName.fill = GridBagConstraints.BOTH;
+		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
 		gbc_tfName.gridy = 1;
 
@@ -325,6 +340,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJLabelDni() {
 		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.anchor = GridBagConstraints.WEST;
 		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
 		gbc_lblDni.gridx = 0;
 		gbc_lblDni.gridy = 0;
@@ -356,6 +372,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
 			ckActive = new JCheckBox("Activo");
+			ckActive.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return ckActive;
 	}
@@ -391,6 +408,27 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return gbc_btnSearchPeople;
 	}
+	
+	private JButton getJButtonClean() {
+		if (btnCleanPeople == null) {
+			btnCleanPeople = new JButton("Limpiar");
+			btnCleanPeople
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+		}
+
+		return btnCleanPeople;
+	}
+
+	private GridBagConstraints getGridButtonClean() {
+
+		GridBagConstraints gbc_btnCleanPeople = new GridBagConstraints();
+		gbc_btnCleanPeople.anchor = GridBagConstraints.WEST;
+		gbc_btnCleanPeople.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCleanPeople.gridx = 3;
+		gbc_btnCleanPeople.gridy = 1;
+
+		return gbc_btnCleanPeople;
+	}
 
 	private JButton getBtnExitPeople() {
 		if (btnExitPeople == null) {
@@ -418,7 +456,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JPanel getJPanelContent() {
 		if (jPanelContent == null) {
 			jPanelContent = new JPanel();
-			jPanelContent.setBorder(new LineBorder(new Color(0, 0, 0)));
+			//jPanelContent.setBorder(new LineBorder(new Color(0, 0, 0)));
+			
+			jPanelContent.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Listado Personas",
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			
+			((javax.swing.border.TitledBorder) jPanelContent.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 		return jPanelContent;
 
@@ -610,6 +654,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	/* EVENTOS */
 
+	public void cleanFilter(){
+		this.getJTextFieldDni().setText("");
+		this.getJComboBoxPeople().setSelectedIndex(-1);
+	}
+	
 	public void filterPeople() {
 		String filterDni = this.getJTextFieldDni().getText();
 		boolean filterActive = this.getCkActive().isSelected();
@@ -631,7 +680,9 @@ public class JManagePeople extends AbstractJInternalFrame {
 			this.getPeopleTableModel().addRows(listPeople);
 
 		} else {
+			this.getPeopleTableModel().clearTableModelData();
 			JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+			
 		}
 
 	}
