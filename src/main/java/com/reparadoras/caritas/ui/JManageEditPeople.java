@@ -83,6 +83,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private People selectedPeople;
 	private JCheckBox jckActive;
 	
+	private AbstractJInternalFrame jCicIFParent;
+	
 
 	public JManageEditPeople(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, People people)
 			throws Exception {
@@ -97,6 +99,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		this.selectedPeople = people;
 		this.executingMode = executingMode;
+		this.jCicIFParent = jCicIFParent;
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 
@@ -184,6 +187,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private void onCloseWindow(){
 		try {
 			this.setClosed(true);
+			
 		} catch (PropertyVetoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -299,6 +303,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			peopleDAO.update(selectedPeople);
 			
 			JOptionPane.showMessageDialog(this, "Actualizado correctamente.", "Error", JOptionPane.INFORMATION_MESSAGE);
+			((JManagePeople)jCicIFParent).filterPeople();
 			
 		}catch(Exception e){
 		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Actualización Persona", JOptionPane.ERROR_MESSAGE);
@@ -319,7 +324,10 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			people.setSex((String) this.getComboBox().getSelectedItem());
 			people.setCountry(this.getJTextFieldCountry().getText());
 			people.setNationality(this.getJTextFieldNationality().getText());
-			people.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
+			if (this.getJTextFieldYearToSpain().getText()!=null && !this.getJTextFieldYearToSpain().getText().equals("")){
+				people.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
+			}
+			
 			people.setCreateDate(this.getJXCreateDate().getDate());
 			people.setReactivateDate(this.getJXReactivateDate().getDate());
 			people.setActive(true);
@@ -328,6 +336,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			peopleDAO.insert(people);
 			
 			JOptionPane.showMessageDialog(this, "Se ha dado de alta correctamente a " + people.getName(), "Inserción Persona", JOptionPane.INFORMATION_MESSAGE);
+			((JManagePeople)jCicIFParent).filterPeople();
 		}catch(Exception e){
 		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		}

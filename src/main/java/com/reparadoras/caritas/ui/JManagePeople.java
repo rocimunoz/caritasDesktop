@@ -703,15 +703,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 						programDAO.delete(selectedPeople);
 						peopleDAO.delete(selectedPeople.getId());
 					}
+					
+					
+
+					JOptionPane.showMessageDialog(this, "Se ha eliminado correctamente el registro seleccionado ",
+							"Borrado Persona", JOptionPane.INFORMATION_MESSAGE);
 				}
 
-				People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
-				if (selectedPeople != null) {
-					peopleDAO.delete(selectedPeople.getId());
-				}
-
-				JOptionPane.showMessageDialog(this, "Se ha eliminado correctamente el registro seleccionado ",
-						"Borrado Persona", JOptionPane.INFORMATION_MESSAGE);
 
 			} else {
 				JOptionPane.showMessageDialog(this, "Selecciona un registro");
