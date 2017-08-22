@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,7 +48,14 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JLabel jLblSurname;
 	private JTextField txfSurname;
 	private JLabel jLblDateBorn;
+	private JLabel jLblRelationShip;
+	private JTextField txfRelationShip;
+	
+	private JLabel jLblSituation;
+	private JTextField txfSituation;
 	private PeopleDAO peopleDAO;
+	
+	private JXDatePicker jxDateBorn;
 	
 	private int executingMode;
 	
@@ -86,7 +94,12 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJTextFieldSurname(), getGridJTextFieldSurname());
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
-		getJPanelPersonalData().add(getJLblDateBorn(), getGridJLabelSex());
+		getJPanelPersonalData().add(getJLblDateBorn(), getGridJLabelDateBorn());
+		getJPanelPersonalData().add(getJXDateBorn(), getGridJXDateBorn());
+		getJPanelPersonalData().add(getJLabelRelationShip(), getGridJLabelRelationShip());
+		getJPanelPersonalData().add(getJTextFieldRelationShip(), getGridJTextFieldRelationShip());
+		getJPanelPersonalData().add(getJLabelSituation(), getGridJLabelSituation());
+		getJPanelPersonalData().add(getJTextFieldSituation(), getGridJTextFieldSituation());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
 
@@ -380,18 +393,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	}
 
 
-	private GridBagConstraints getGridJComboBoxRelationShip() {
-
-		GridBagConstraints gbc_txfDni = new GridBagConstraints();
-		gbc_txfDni.weightx = 1.0;
-		gbc_txfDni.insets = new Insets(0, 0, 5, 5);
-		gbc_txfDni.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txfDni.gridx = 1;
-		gbc_txfDni.gridy = 1;
-		
-		return gbc_txfDni;
-		
-	}
+	
 	
 	private JLabel getJLblDateBorn() {
 		if (jLblDateBorn == null) {
@@ -401,7 +403,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		return jLblDateBorn;
 	}
 	
-	private GridBagConstraints getGridJLabelSex() {
+	private GridBagConstraints getGridJLabelDateBorn() {
 
 		GridBagConstraints gbc_jLblDateBorn = new GridBagConstraints();
 		gbc_jLblDateBorn.anchor = GridBagConstraints.WEST;
@@ -415,7 +417,121 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	}
 	
 
+	private JXDatePicker getJXDateBorn() {
 
+		if (jxDateBorn == null){
+			jxDateBorn = new JXDatePicker();	
+		}
+		
+		return jxDateBorn;
+	}
+
+	private GridBagConstraints getGridJXDateBorn() {
+
+		GridBagConstraints gbc_txfDateBorn = new GridBagConstraints();
+		gbc_txfDateBorn.weightx = 1.0;
+		gbc_txfDateBorn.insets = new Insets(0, 0, 5, 5);
+		gbc_txfDateBorn.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfDateBorn.gridx = 1;
+		gbc_txfDateBorn.gridy = 1;
+		
+		return gbc_txfDateBorn;
+		
+	}
+	
+	private JLabel getJLabelRelationShip() {
+
+		if (jLblRelationShip == null) {
+			jLblRelationShip = new JLabel("Parentesco");
+			jLblRelationShip.setFont(new Font("Verdana", Font.PLAIN, 14));
+			jLblRelationShip.setMinimumSize(new Dimension(20, 14));
+			jLblRelationShip.setMaximumSize(new Dimension(20, 14));
+			
+		}
+
+		return jLblRelationShip;
+	}
+
+	private GridBagConstraints getGridJLabelRelationShip() {
+		GridBagConstraints gbc_lblRelationShip = new GridBagConstraints();
+		gbc_lblRelationShip.anchor = GridBagConstraints.WEST;
+		gbc_lblRelationShip.insets = new Insets(0, 15, 5, 5);
+		gbc_lblRelationShip.gridx = 2;
+		gbc_lblRelationShip.gridy = 1;
+		
+				return gbc_lblRelationShip;
+	}
+	
+	private JTextField getJTextFieldRelationShip() {
+
+		if (txfRelationShip == null){
+			txfRelationShip = new JTextField();	
+			txfRelationShip.setColumns(10);
+		}
+		
+
+		return txfRelationShip;
+	}
+
+	private GridBagConstraints getGridJTextFieldRelationShip() {
+
+		GridBagConstraints gbc_txfSurname = new GridBagConstraints();
+		gbc_txfSurname.weightx = 1.0;
+		gbc_txfSurname.insets = new Insets(0, 0, 5, 0);
+		gbc_txfSurname.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfSurname.gridx = 3;
+		gbc_txfSurname.gridy = 1;
+		
+		return gbc_txfSurname;
+		
+	}
+	
+	private JLabel getJLabelSituation() {
+
+		if (jLblSituation == null) {
+			jLblSituation = new JLabel("Situacion");
+			jLblSituation.setFont(new Font("Verdana", Font.PLAIN, 14));
+			jLblSituation.setMinimumSize(new Dimension(20, 14));
+			jLblSituation.setMaximumSize(new Dimension(20, 14));
+			
+		}
+
+		return jLblSituation;
+	}
+
+	private GridBagConstraints getGridJLabelSituation() {
+		GridBagConstraints gbc_lblSituation = new GridBagConstraints();
+		gbc_lblSituation.anchor = GridBagConstraints.WEST;
+		gbc_lblSituation.insets = new Insets(0, 15, 5, 5);
+		gbc_lblSituation.gridx = 0;
+		gbc_lblSituation.gridy = 2;
+		
+				return gbc_lblSituation;
+	}
+	
+	private JTextField getJTextFieldSituation() {
+
+		if (txfSituation == null){
+			txfSituation = new JTextField();	
+			txfSituation.setColumns(10);
+		}
+		
+
+		return txfSituation;
+	}
+
+	private GridBagConstraints getGridJTextFieldSituation() {
+
+		GridBagConstraints gbc_txfSituation = new GridBagConstraints();
+		gbc_txfSituation.weightx = 1.0;
+		gbc_txfSituation.insets = new Insets(0, 0, 5, 0);
+		gbc_txfSituation.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfSituation.gridx = 1;
+		gbc_txfSituation.gridy = 2;
+		
+		return gbc_txfSituation;
+		
+	}
 
 	
 	/*  FUNCIONES PANEL ACCIONES*/

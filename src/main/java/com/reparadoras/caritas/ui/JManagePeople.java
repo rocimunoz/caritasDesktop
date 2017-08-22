@@ -136,14 +136,14 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getBtnNewPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openEditPeople(JWindowParams.IMODE_INSERT, "Nueva Persona");
-				// filterPeople();
+				
 			}
 		});
 
 		getBtnViewPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openEditPeople(JWindowParams.IMODE_SELECT, "Consulta Persona");
-				filterPeople();
+				
 
 			}
 		});
@@ -151,7 +151,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getBtnUpdatePeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openEditPeople(JWindowParams.IMODE_UPDATE, "Edicion Persona");
-				filterPeople();
+				
 			}
 		});
 
@@ -762,7 +762,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 				try {
 
-					jManageProgram = new JManageProgram(this, true, openMode, title, people);
+					jManageProgram = new JManageProgram(this, true, openMode, title, people, this.desktop);
 					this.desktop.add(jManageProgram);
 					jManageProgram.setMaximum(true);
 					jManageProgram.setMaximizable(false);

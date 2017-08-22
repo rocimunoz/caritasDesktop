@@ -47,6 +47,7 @@ import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.components.combobox.ComboBoxRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.table.ProgramTableModel;
@@ -101,6 +102,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JLabel lblName = null;
 	private JComboBox<People> cbPeople;
 	private JButton btnSearchPeople = null;
+	private JButton btnCleanPeople = null;
 	private JPanel jPanelContent = null;
 	private ProgramTableModel programTableModel = null;
 	private JLabel lblDni;
@@ -131,9 +133,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 	 * @wbp.parser.constructor
 	 */
 	public JManageProgram(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
-			People people) {
+			People people, JDesktopPane desktop) {
 
 		super(jCicIFParent, modal);
+		this.desktop = desktop;
 		this.setVisible(true);
 		this.pack();
 
@@ -206,6 +209,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 			}
 		});
+		
+		getJButtonClean().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cleanFilter();
+			}
+		});
+
 
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -256,6 +266,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
+		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 		getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
 
 		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -351,7 +362,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private GridBagLayout getGridLayoutJPanelFilter() {
 
 		GridBagLayout gbl_jPanelFilter = new GridBagLayout();
-		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0 };
+		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
 		gbl_jPanelFilter.rowWeights = new double[] { 0.0, 0.0 };
 
 		return gbl_jPanelFilter;
@@ -362,8 +373,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelFilter = new JPanel();
 			jPanelFilter.setBorder(
 					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Programa Atención Primaria",
-							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
-
+							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			((javax.swing.border.TitledBorder) jPanelFilter.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelFilter;
@@ -402,6 +414,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JComboBox<People> getJComboBoxPeople() {
 		if (cbPeople == null) {
 			cbPeople = new JComboBox<People>();
+			
+			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
+			cbPeople.setSelectedIndex(-1); //By default it selects first item, we don't want any selection
 
 		}
 
@@ -414,7 +429,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		GridBagConstraints gbc_tfName = new GridBagConstraints();
 		gbc_tfName.insets = new Insets(0, 0, 0, 5);
 		gbc_tfName.weightx = 1.0;
-		gbc_tfName.fill = GridBagConstraints.BOTH;
+		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
 		gbc_tfName.gridy = 1;
 
@@ -496,6 +511,27 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		return gbc_btnSearchPeople;
 	}
+	
+	private JButton getJButtonClean() {
+		if (btnCleanPeople == null) {
+			btnCleanPeople = new JButton("Limpiar");
+			btnCleanPeople
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+		}
+
+		return btnCleanPeople;
+	}
+
+	private GridBagConstraints getGridButtonClean() {
+
+		GridBagConstraints gbc_btnCleanPeople = new GridBagConstraints();
+		gbc_btnCleanPeople.anchor = GridBagConstraints.WEST;
+		gbc_btnCleanPeople.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCleanPeople.gridx = 3;
+		gbc_btnCleanPeople.gridy = 1;
+
+		return gbc_btnCleanPeople;
+	}
 
 	private JButton getJButtonExit() {
 		if (btnExit == null) {
@@ -511,7 +547,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
 		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
-		gbc_btnExit.gridx = 3;
+		gbc_btnExit.gridx = 4;
 		gbc_btnExit.gridy = 1;
 
 		return gbc_btnExit;
@@ -565,7 +601,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelGrid = new JPanel();
 			jPanelGrid.setBorder(
 					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Listado Programa Atención Primaria",
-							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			((javax.swing.border.TitledBorder) jPanelGrid.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelGrid;
@@ -682,10 +720,15 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	/* EVENTOS */
 	
+	public void cleanFilter(){
+		this.getJTextFieldDni().setText("");
+		this.getJComboBoxPeople().setSelectedIndex(-1);
+	}
+	
 	public void fillDataProgram(){
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
-			//People people = (People) this.getJComboBoxPeople().getSelectedItem();
+			People people = (People) this.getJComboBoxPeople().getSelectedItem();
 			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
 			
 			Family family = selectedProgram.getFamily();
@@ -744,35 +787,51 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	public void onFilterProgram(boolean create) {
 		People filterPeople = (People) this.getJComboBoxPeople().getSelectedItem();
-
-		if (filterPeople.getId() != -1) {
-			Program program = programDAO.findProgram(filterPeople);
-			if (program != null) {
-				this.getProgramTableModel().clearTableModelData();
-				this.getProgramTableModel().addRow(program);
-
-			} else {
-				
-
-				if (create) {
-					int dialogResult = JOptionPane.showConfirmDialog(this,
-							"No existen registros para los datos de búsqueda. ¿Quieres crear un nuevo programa de atención primaria?");
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						
-						onCreateProgramFirstTime(filterPeople);
-						onFilterProgram(false);
-					}
+		try{
+			
+			if (filterPeople.getId() != -1) {
+				Program program = programDAO.findProgram(filterPeople);
+				if (program != null) {
+					this.getProgramTableModel().clearTableModelData();
+					this.getProgramTableModel().addRow(program);
 
 				} else {
-					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
-				}
+					
 
+					if (create) {
+						int dialogResult = JOptionPane.showConfirmDialog(this,
+								"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?");
+						if (dialogResult == JOptionPane.YES_OPTION) {
+							
+							onCreateProgramFirstTime(filterPeople);
+							onFilterProgram(false);
+							
+							JOptionPane.showMessageDialog(this, "Se ha generado un Programa de Atención Primaria para el usuario " + filterPeople.getName() + "con todos los datos vacios.");
+						}
+						else{
+							try {
+								this.setClosed(true);
+							} catch (PropertyVetoException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+					}
+
+				}
+			} else {
+				List<Program> listPrograms = programDAO.findAll();
+				this.getProgramTableModel().clearTableModelData();
+				this.getProgramTableModel().addRows(listPrograms);
 			}
-		} else {
-			List<Program> listPrograms = programDAO.findAll();
-			this.getProgramTableModel().clearTableModelData();
-			this.getProgramTableModel().addRows(listPrograms);
+			
+		}catch(Exception e){
+			
 		}
+	
 
 	}
 	
