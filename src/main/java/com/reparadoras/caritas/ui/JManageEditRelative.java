@@ -3,6 +3,8 @@ package com.reparadoras.caritas.ui;
 import javax.swing.JInternalFrame;
 
 import com.reparadoras.caritas.dao.PeopleDAO;
+import com.reparadoras.caritas.dao.RelativeDAO;
+import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
@@ -53,18 +55,19 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	
 	private JLabel jLblSituation;
 	private JTextField txfSituation;
-	private PeopleDAO peopleDAO;
+	private RelativeDAO relativeDAO;
 	
 	private JXDatePicker jxDateBorn;
 	
 	private int executingMode;
-	
+	private AbstractJInternalFrame jCicIFParent;
 
 	
 	private Relative selectedRelative;
+	private Family family;
 	
 
-	public JManageEditRelative(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, Relative relative)
+	public JManageEditRelative(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, Relative relative, Family family)
 			throws Exception {
 		super(jCicIFParent, modal);
 		setVisible(true);
@@ -76,9 +79,10 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		this.setTitle(title);
 		
 		this.selectedRelative = relative;
+		this.family = family;
+		this.jCicIFParent = jCicIFParent;
 		this.executingMode = executingMode;
-		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-
+		
 		
 		initComponents();
 		configureModeEdition(executingMode);
@@ -116,10 +120,11 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 				
 				//Abrir transaccion
 				if (executingMode == JWindowParams.IMODE_UPDATE){
-					onUpdatePeople();
+					onUpdateRelationShip();
 				}
 				else if (executingMode == JWindowParams.IMODE_INSERT){
-					onCreatePeople();
+					Relative relative = onCreateRelationShip();
+					((JManageProgram)jCicIFParent).addRelative(relative);
 				}
 				
 				//Cerrar Transaccion
@@ -188,7 +193,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		
 	}
 	
-	private void onUpdatePeople(){
+	private void onUpdateRelationShip(){
 		try{
 		
 		//this.selectedPeople.setDni(this.getJTextFieldDni().getText());
@@ -204,20 +209,22 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		
 	}
 	
-	private void onCreatePeople(){
+	private Relative onCreateRelationShip(){
 		try{
 		
-			People people = new People();
-			people.setName(this.getJTextFieldName().getText());
-			people.setFirstSurname(this.getJTextFieldSurname().getText());
-			//people.setDni(this.getJTextFieldDni().getText());
-			people.setActive(true);
+			Relative relative = new Relative();
+			relative.setName(this.getJTextFieldName().getText());
+			relative.setRelationShip(this.getJTextFieldRelationShip().getText());
+			relative.setSituation(this.getJTextFieldSituation().getText());
+			relative.setSurname(this.getJTextFieldSurname().getText());
+			relative.setFamily(this.family);
 			
-			//save people
-			peopleDAO.insert(people);
+			return relative;
 		}catch(Exception e){
 		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		
+		return null;
 		
 	}
 	

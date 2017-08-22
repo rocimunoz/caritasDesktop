@@ -22,6 +22,7 @@ public class Relative implements Serializable{
 	private String name;
 	private Date dateBorn;
 	private String situation;
+	private Family family;
 	
 	public String getRelationShip() {
 		return relationShip;
@@ -58,6 +59,12 @@ public class Relative implements Serializable{
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public Family getFamily() {
+		return family;
+	}
+	public void setFamily(Family family) {
+		this.family = family;
 	}
 	
 	

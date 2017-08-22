@@ -242,7 +242,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		this.getJPanelFamily().getBtnAddRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				openEditRelative(JWindowParams.IMODE_INSERT, "Nuevo Pariente");
+				
+				int rowIndex = getJTableProgram().getSelectedRow();
+				if (rowIndex != -1) {
+					Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
+					if (selectedProgram!=null){
+						selectedProgram.getFamily();
+						openEditRelative(JWindowParams.IMODE_INSERT, "Nuevo Pariente", selectedProgram.getFamily());
+					}
+				}
+				
 				
 			}
 		});
@@ -728,7 +737,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void fillDataProgram(){
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
-			People people = (People) this.getJComboBoxPeople().getSelectedItem();
 			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
 			
 			Family family = selectedProgram.getFamily();
@@ -835,7 +843,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 	
-	public void openEditRelative(int openMode, String title) {
+	public void addRelative(Relative relative){
+		
+		this.getJPanelFamily().getRelativesTableModel().addRow(relative);
+	}
+	
+	public void openEditRelative(int openMode, String title, Family family) {
 
 		JManageEditRelative jManageEditRelative = null;
 		try {
@@ -845,7 +858,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 				if (row!=-1){
 					Relative relative = getJPanelFamily().getRelativesTableModel().getDomainObject(row);
 				
-					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null);
+					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null, relative.getFamily());
+					
+				
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Seleccione un registro");
@@ -854,7 +869,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				
 			}
 			else{
-				jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null);
+				jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null, family);
 			}
 			
 			this.desktop.add(jManageEditRelative);

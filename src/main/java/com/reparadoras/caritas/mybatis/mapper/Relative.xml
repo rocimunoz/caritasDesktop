@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Relative">
+    <resultMap id="RelativeResult" type="Relative">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="surname" column="surname"/>
+        <result property="relationShip" column="relation_ship"/>
+        <result property="situation" column="situation"/>
+        <result property="dateBorn" column="dateBorn"/>
+        <association property="family" resultMap="FamilyResult"/> 
+    </resultMap>
+    
+    <resultMap id="FamilyResult" type="Family">
+        <result property="id" column="id"/>
+        <result property="otherInfo" column="other_info"/>      
+        
+    </resultMap>
+ 
+    <select id="findAll" resultMap="RelativeResult">
+        SELECT * FROM C_RELATIVE;
+    </select>
+    
+ 	
+    
+    <select id="findRelative" parameterType="Relative" resultMap="RelativeResult">
+       SELECT * 
+				FROM C_RELATIVE
+				<where>
+				
+					<if test="id!=null and !id.equals('')">
+						id =  #{id}
+					</if>
+					
+				</where>
+    </select>
+    
+    <delete id="delete" parameterType="int">
+    	DELETE FROM C_RELATIVE WHERE id = #{id}
+    </delete>
+    
+    
+    
+ 	<insert id="insert" parameterType="Relative" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_RELATIVE (name,surname, situation, relation_ship, date_born, id_family) 
+        VALUES (
+        #{name},
+        #{surname},
+        #{situation},
+        #{relationShip},
+        #{dateBorn},
+        #{family.id});
+    </insert>
+    
+    <update id="update" parameterType="Relative">
+        UPDATE C_RELATIVE
+        <set>
+          <if test="name != null">name = #{name},</if>
+          </set>
+        WHERE id = #{id} 
+  	</update>
+ 
+	
+</mapper>

@@ -16,6 +16,7 @@
         <typeAlias alias="HomeType" type="com.reparadoras.caritas.model.HomeType"/>
         <typeAlias alias="Address" type="com.reparadoras.caritas.model.Address"/> 
         <typeAlias alias="Family" type="com.reparadoras.caritas.model.Family"/>
+        <typeAlias alias="Relative" type="com.reparadoras.caritas.model.Relative"/>
         <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/>             
     </typeAliases>
    
@@ -38,6 +39,7 @@
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Ticket.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Family.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/FamilyType.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Relative.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Home.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/HomeType.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Address.xml"/>
