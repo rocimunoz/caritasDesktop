@@ -120,7 +120,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 				
 				//Abrir transaccion
 				if (executingMode == JWindowParams.IMODE_UPDATE){
-					onUpdateRelationShip();
+					//TODO
 				}
 				else if (executingMode == JWindowParams.IMODE_INSERT){
 					Relative relative = onCreateRelationShip();
@@ -183,9 +183,12 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	
 	private void fillData(int mode){
 		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE){
-			//this.getJTextFieldDni().setText(this.selectedPeople.getDni());
+			
 			this.getJTextFieldName().setText(this.selectedRelative.getName());
 			this.getJTextFieldSurname().setText(this.selectedRelative.getSurname());
+			this.getJTextFieldRelationShip().setText(this.selectedRelative.getRelationShip());
+			this.getJTextFieldSituation().setText(this.selectedRelative.getSituation());
+			
 			
 			//this.getComboBox().setSelectedItem(this.selectedRelative.getSex());
 			

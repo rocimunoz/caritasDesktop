@@ -236,7 +236,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		getJTableProgram().getSelectionModel().addListSelectionListener(new ListSelectionListener(){
 	        public void valueChanged(ListSelectionEvent event) {
-	            
 	        	fillDataProgram();
 	            
 	        }
@@ -244,25 +243,19 @@ public class JManageProgram extends AbstractJInternalFrame {
 		
 		this.getJPanelFamily().getBtnAddRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				int rowIndex = getJTableProgram().getSelectedRow();
-				if (rowIndex != -1) {
-					Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
-					if (selectedProgram!=null){
-						selectedProgram.getFamily();
-						openEditRelative(JWindowParams.IMODE_INSERT, "Nuevo Pariente", selectedProgram.getFamily());
-					}
-				}
-				
-				
+				openRelative(JWindowParams.IMODE_INSERT);
 			}
 		});
 		
 		this.getJPanelFamily().getBtnDeleteRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				deleteRelative();
-			
+			}
+		});
+		
+		this.getJPanelFamily().getBtnEditRelative().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openRelative(JWindowParams.IMODE_UPDATE);
 			}
 		});
 
@@ -871,6 +864,18 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 	
+	public void openRelative(int mode){
+		
+		int rowIndex = getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
+			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
+			if (selectedProgram!=null){
+				selectedProgram.getFamily();
+				openEditRelative(mode, "Nuevo Pariente", selectedProgram.getFamily());
+			}
+		}
+	}
+	
 	public void addRelative(Relative relative){
 		
 		this.getJPanelFamily().getRelativesTableModel().addRow(relative);
@@ -900,7 +905,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				if (row!=-1){
 					Relative relative = getJPanelFamily().getRelativesTableModel().getDomainObject(row);
 				
-					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null, relative.getFamily());
+					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, relative, relative.getFamily());
 					
 				
 				}
