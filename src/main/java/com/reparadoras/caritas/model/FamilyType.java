@@ -12,12 +12,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FamilyType{
 
 
-    private int id;
+    private Integer id;
     private String description;
-	public int getId() {
+	
+    
+    
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getDescription() {

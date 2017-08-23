@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.People;
+import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
 
 public class RelativeDAO {
@@ -19,6 +20,21 @@ private SqlSessionFactory sqlSessionFactory = null;
 
 public RelativeDAO(SqlSessionFactory sqlSessionFactory){
     this.sqlSessionFactory = sqlSessionFactory;
+}
+
+
+public  List<Relative> findRelative(Relative relativeFilter){
+	List<Relative> relatives = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+    	relatives = session.selectList("Relative.findRelative", relativeFilter);
+    } finally {
+        session.close();
+    }
+    System.out.println("findRelative() --> "+relativeFilter);
+    return relatives;
+
 }
 
 public int update(Relative relative){
@@ -51,12 +67,12 @@ public int insert(Relative relation){
      return id;
  }
 
-public int delete(int idRelation){
+public int delete(Relative relative){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();
 
      try {
-         session.delete("Relative.delete", idRelation);
+         session.delete("Relative.delete", relative.getId());
      } finally {
          session.commit();
          session.close();

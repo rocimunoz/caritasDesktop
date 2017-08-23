@@ -35,6 +35,7 @@ import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
+import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.Family;
@@ -121,6 +122,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
+	private RelativeDAO relativeDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
@@ -154,7 +156,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-
+		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -182,7 +184,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -253,6 +255,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 				}
 				
 				
+			}
+		});
+		
+		this.getJPanelFamily().getBtnDeleteRelative().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				deleteRelative();
+			
 			}
 		});
 
@@ -760,8 +770,26 @@ public class JManageProgram extends AbstractJInternalFrame {
 			//tipo de casa
 			
 			//Family
-			this.getJPanelFamily().getJTextAreaFamilyOtherInfo();
-		
+			this.getJPanelFamily().getJTextAreaFamilyOtherInfo().setText(family.getOtherInfo());
+			if (family.getFamilyType().getId() == 1){
+				this.getJPanelFamily().getJRadioAlone().setSelected(true);
+			}else if (family.getFamilyType().getId() == 2){
+				this.getJPanelFamily().getJRadioWithChildren().setSelected(true);
+			}else if (family.getFamilyType().getId() == 3){
+				this.getJPanelFamily().getJRadioNoChildren().setSelected(true);
+			}else if (family.getFamilyType().getId() == 4){
+				this.getJPanelFamily().getJRadioMono().setSelected(true);
+			}else if (family.getFamilyType().getId() == 5){
+				this.getJPanelFamily().getJRadioOther().setSelected(true);
+			}
+			
+			//Relatives
+			
+			//this.getJPanelFamily().getRelativesTableModel().addRows(family.getRelatives());
+			Relative relativeFilter = new Relative();
+			relativeFilter.setFamily(family);
+			List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);	
+			this.getJPanelFamily().getRelativesTableModel().addRows(listRelatives);
 			
 			
 			logger.info("fillDataprogram");
@@ -848,6 +876,20 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.getJPanelFamily().getRelativesTableModel().addRow(relative);
 	}
 	
+	public void deleteRelative(){
+		
+		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
+		if (rowIndex != -1) {
+		
+			getJPanelFamily().getRelativesTableModel().deleteRow(rowIndex);
+			
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "Seleccione un registro");
+			return;
+	    }
+	}
+	
 	public void openEditRelative(int openMode, String title, Family family) {
 
 		JManageEditRelative jManageEditRelative = null;
@@ -908,6 +950,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 			fType.setDescription(description);
 			family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 			
+			//Relatives
+			List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();
+			for (Relative relative : listRelatives) {
+				relative.setFamily(family);
+				relativeDAO.insert(relative);
+			}
+			
+			
 			familyDAO.update(family);
 		}catch(Exception e){
 			logger.info(e);
@@ -966,7 +1016,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 						
 						onSaveAddress(selectedProgram.getFamily().getHome().getAddress());
 						onSaveHome(selectedProgram.getFamily().getHome());
-						//onSaveFamily(selectedProgram.getFamily());
+						onSaveFamily(selectedProgram.getFamily());
 						
 						
 						

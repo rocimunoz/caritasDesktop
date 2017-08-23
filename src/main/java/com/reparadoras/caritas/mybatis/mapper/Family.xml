@@ -12,24 +12,35 @@
         <result property="otherInfo" column="other_info"/>  
         <association property="familyType" resultMap="FamilyTypeResult"/> 
         <association property="home" resultMap="HomeResult"/>    
-        
+        <collection property="relatives" javaType="ArrayList" ofType="com.reparadoras.caritas.model.Relative"
+	    column="id_family" resultMap="RelativeResult"/>
 		
     </resultMap>
     
      <resultMap id="FamilyTypeResult" type="FamilyType">
-        <result property="id" column="id"/>
+        <result property="id" column="id_family_type"/>
         <result property="description" column="description"/>
     </resultMap>
     
     <resultMap id="HomeResult" type="Home">
-		<result property="id" column="id" />
+		<result property="id" column="id_home" />
 	</resultMap>
+	
+	 <resultMap id="RelativeResult" type="Relative">
+        <result property="id" column="id_family"/>
+        <result property="name" column="name"/>
+        <result property="surname" column="surname"/>
+        <result property="relationShip" column="relation_ship"/>
+        <result property="situation" column="situation"/>
+        <result property="dateBorn" column="dateBorn"/>
+    </resultMap>
  
     <select id="findAll" resultMap="FamilyResult">
-        SELECT * FROM C_FAMILY;
+        SELECT F.ID, F.OTHER_INFO, FT.ID ID_FAMILY_TYPE, H.ID ID_HOME  
+        FROM C_FAMILY F, C_FAMILY_TYPE FT, C_HOME H
+        WHERE F.ID = FT.ID
+        AND F.ID_HOME = H.ID
     </select>
-    
-     
     
     
     

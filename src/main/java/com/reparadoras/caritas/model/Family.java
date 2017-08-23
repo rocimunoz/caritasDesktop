@@ -17,7 +17,7 @@ public class Family implements Serializable{
 
 	private Long id;
 	
-	private Set<Relative> relatives;
+	private List<Relative> relatives;
 	
 	private FamilyType familyType;
 	private Home home;
@@ -32,11 +32,12 @@ public class Family implements Serializable{
 		this.id = id;
 	}
 
-	public Set<Relative> getRelatives() {
+	
+	public List<Relative> getRelatives() {
 		return relatives;
 	}
 
-	public void setRelatives(Set<Relative> relatives) {
+	public void setRelatives(List<Relative> relatives) {
 		this.relatives = relatives;
 	}
 

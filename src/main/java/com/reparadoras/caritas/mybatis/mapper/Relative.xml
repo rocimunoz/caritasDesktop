@@ -27,15 +27,8 @@
  	
     
     <select id="findRelative" parameterType="Relative" resultMap="RelativeResult">
-       SELECT * 
-				FROM C_RELATIVE
-				<where>
-				
-					<if test="id!=null and !id.equals('')">
-						id =  #{id}
-					</if>
-					
-				</where>
+       SELECT * FROM C_RELATIVE
+       WHERE ID_FAMILY = #{family.id}
     </select>
     
     <delete id="delete" parameterType="int">

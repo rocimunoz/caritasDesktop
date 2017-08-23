@@ -21,14 +21,17 @@
     </resultMap>
     
     <resultMap id="FamilyResult" type="Family">
-        <result property="id" column="id"/>
+        <result property="id" column="id_family"/>
         <result property="otherInfo" column="other_info_family"/>
         <association property="familyType" resultMap="FamilyTypeResult"/>
-        <association property="home" resultMap="HomeResult"/>     
+        <association property="home" resultMap="HomeResult"/>   
+
     </resultMap>
     
+     
+    
     <resultMap id="FamilyTypeResult" type="FamilyType">
-        <result property="id" column="id_family"/>
+        <result property="id" column="id_family_type"/>
         <result property="description" column="description"/>
     </resultMap>
     
@@ -63,6 +66,7 @@
                PE.NAME,
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,
+               FT.ID ID_FAMILY_TYPE,
                FT.DESCRIPTION,
                H.ID ID_HOME,
                H.REG_HOLDING,
