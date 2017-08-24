@@ -9,7 +9,7 @@
         <result property="id" column="id"/>
         <association property="people" resultMap="PeopleResult"/>
         <association property="family" resultMap="FamilyResult"/>              
-        
+        <association property="authorizationType" resultMap="AuthorizationType"/>
        
     </resultMap>
     
@@ -56,6 +56,11 @@
 		<result property="postalCode" column="postal_code" />
 
 	</resultMap>
+	
+	<resultMap id="AuthorizationTypeResult" type="AuthorizationType">
+        <result property="id" column="id_authorization_type"/>
+        <result property="description" column="description"/>
+    </resultMap>
     
      <select id="findAll" resultMap="ProgramResult">
         SELECT * FROM C_PROGRAM;
@@ -105,7 +110,15 @@
         INSERT INTO C_PROGRAM 
         	(ID_PEOPLE, ID_FAMILY) 
         VALUES (#{people.id}, #{family.id})
-        
     </insert>
+    
+    <update id="update" parameterType="Program">
+        UPDATE C_PROGRAM
+        <set>
+          <if test="id_authorization_type != null">id_authorization_type = #{id_authorization_type},</if>
+          
+          </set>
+        WHERE id = #{id} 
+  	</update>
  	
 </mapper>

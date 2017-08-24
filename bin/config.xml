@@ -17,7 +17,8 @@
         <typeAlias alias="Address" type="com.reparadoras.caritas.model.Address"/> 
         <typeAlias alias="Family" type="com.reparadoras.caritas.model.Family"/>
         <typeAlias alias="Relative" type="com.reparadoras.caritas.model.Relative"/>
-        <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/>             
+        <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/> 
+        <typeAlias alias="AuthorizationType" type="com.reparadoras.caritas.model.AuthorizationType"/>             
     </typeAliases>
    
     <environments default="development">

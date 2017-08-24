@@ -34,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.JCheckBox;
 import java.awt.Font;
+import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 
@@ -274,7 +275,9 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		if (jPanelPersonalData == null) {
 			jPanelPersonalData = new JPanel();
 			jPanelPersonalData.setBorder(
-					new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+					new TitledBorder(null, "Composicion Familiar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			((javax.swing.border.TitledBorder) jPanelPersonalData.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 
 		}
 
@@ -570,6 +573,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JButton getJButtonAccept() {
 		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
+			jBtnAccept.setIcon(new ImageIcon(JManageEditRelative.class.getResource("/com/reparadoras/images/icon-check.png")));
 		}
 
 		return jBtnAccept;
@@ -588,6 +592,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JButton getJButtonCancel() {
 		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
+			jBtnCancel.setIcon(new ImageIcon(JManageEditRelative.class.getResource("/com/reparadoras/images/icon-cancel.png")));
 		}
 
 		return jBtnCancel;

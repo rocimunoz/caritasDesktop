@@ -775,8 +775,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 
 			// Relatives
-
-			// this.getJPanelFamily().getRelativesTableModel().addRows(family.getRelatives());
 			Relative relativeFilter = new Relative();
 			relativeFilter.setFamily(family);
 			List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);
@@ -805,6 +803,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		programNewReset.setFamily(family);
 		programNewReset.setPeople(filterPeople);
+		
 
 		programDAO.insert(programNewReset);
 
