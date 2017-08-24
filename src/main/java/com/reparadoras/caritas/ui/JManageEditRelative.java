@@ -10,6 +10,8 @@ import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.utils.PeopleVerifier;
+import com.reparadoras.caritas.ui.utils.RelativeVerifier;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
@@ -36,14 +38,13 @@ import java.awt.Font;
 @SuppressWarnings("serial")
 
 public class JManageEditRelative extends AbstractJInternalFrame {
-	
+
 	private JPanel jPanelContentPane;
 	private JTextField txfName;
 
 	private JPanel jPanelPersonalData;
 	private JLabel jLblName;
-	
-	
+
 	private JPanel jPanelActions;
 	private JButton jBtnAccept;
 	private JButton jBtnCancel;
@@ -52,23 +53,24 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JLabel jLblDateBorn;
 	private JLabel jLblRelationShip;
 	private JTextField txfRelationShip;
-	
+
 	private JLabel jLblSituation;
 	private JTextField txfSituation;
 	private RelativeDAO relativeDAO;
-	
+
 	private JXDatePicker jxDateBorn;
-	
+
 	private int executingMode;
 	private AbstractJInternalFrame jCicIFParent;
 
-	
 	private Relative selectedRelative;
 	private Family family;
+	private Integer rowIndex;
 	
+	private RelativeVerifier relativeVerifier = new RelativeVerifier();
 
-	public JManageEditRelative(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title, Relative relative, Family family)
-			throws Exception {
+	public JManageEditRelative(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
+			Relative relative, Family family, Integer index) throws Exception {
 		super(jCicIFParent, modal);
 		setVisible(true);
 		this.moveToFront();
@@ -77,17 +79,17 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		this.setResizable(true);
 		this.setSize(800, 300);
 		this.setTitle(title);
-		
+
 		this.selectedRelative = relative;
 		this.family = family;
 		this.jCicIFParent = jCicIFParent;
 		this.executingMode = executingMode;
-		
-		
+		this.rowIndex = index;
+
 		initComponents();
-		configureModeEdition(executingMode);
-		fillData(executingMode);
 		
+		fillData(executingMode);
+
 		getContentPane().setLayout(getGridLayoutContentPane());
 		getContentPane().add(getJPanelContentPane(), getGridBagConstraintsJPaneContentPane());
 		getJPanelContentPane().setLayout(getGridLayoutJPaneContentPane());
@@ -113,36 +115,36 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			}
 		});
 
-		
 		getJButtonAccept().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
-				//Abrir transaccion
-				if (executingMode == JWindowParams.IMODE_UPDATE){
-					//TODO
+
+				if (checkRequiredFields()){
+					// Abrir transaccion
+					if (executingMode == JWindowParams.IMODE_UPDATE) {
+						Relative relative = onUpdateRelationShip();
+						((JManageProgram) jCicIFParent).editRelative(relative, rowIndex);
+					} else if (executingMode == JWindowParams.IMODE_INSERT) {
+						Relative relative = onCreateRelationShip();
+						((JManageProgram) jCicIFParent).addRelative(relative);
+					}
+
+					// Cerrar Transaccion
+					onCloseWindow();
 				}
-				else if (executingMode == JWindowParams.IMODE_INSERT){
-					Relative relative = onCreateRelationShip();
-					((JManageProgram)jCicIFParent).addRelative(relative);
-				}
-				
-				//Cerrar Transaccion
-				onCloseWindow();
 				
 				
 				
-				
+
 			}
 		});
-		
+
 		getJPanelActions().add(getJButtonAccept(), getGridBagConstraintsJButtonAccept());
-		
+
 		getJPanelActions().add(getJButtonCancel(), getGridBagConstraintsJButtonCancel());
 
 	}
-	
-	private void onCloseWindow(){
+
+	private void onCloseWindow() {
 		try {
 			this.setClosed(true);
 		} catch (PropertyVetoException e) {
@@ -150,140 +152,130 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			e.printStackTrace();
 		}
 	}
-	
-	private void initComponents(){
-	    
+
+	private void initComponents() {
+
 	}
+
 	
-	private void configureModeEdition(int mode){
+	private boolean checkRequiredFields(){
 		
-		if (mode == JWindowParams.IMODE_SELECT){
-			//Deshabilito campos
-			//this.getJTextFieldDni().setEnabled(false);
-			//this.getJTextFieldDni().setText(this.selectedPeople.getDni());
-			this.getJTextFieldName().setEnabled(false);
-			this.getJTextFieldName().setText(this.selectedRelative.getName());
-			this.getJTextFieldSurname().setEnabled(false);
-			this.getJTextFieldSurname().setText(this.selectedRelative.getSurname());
-			//this.getComboBox().setEnabled(false);
-			//this.getComboBox().setSelectedItem(this.selectedPeople.getSex());
-			this.getJButtonAccept().setVisible(false);
-			this.getJButtonCancel().setText("Salir");
+		if (!getJTextFieldName().getText().equals("") && !getJTextFieldRelationShip().getText().equals("") && !getJTextFieldSituation().getText().equals("") && this.getJXDateBorn().getDate()!=null ){
+			return true;
 		}
 		else{
-			//Habilito campos
-			//this.getJTextFieldDni().setEnabled(true);
-			this.getJTextFieldName().setEnabled(true);
-			this.getJTextFieldSurname().setEnabled(true);
-			//this.getComboBox().setEnabled(true);
-			this.getJButtonAccept().setVisible(true);
-			this.getJButtonCancel().setText("Cancelar");
+			JOptionPane.showMessageDialog(this, "Rellene todos los campos correctamente", "Error Dialog", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
+		
+		
 	}
-	
-	private void fillData(int mode){
-		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE){
-			
+
+	private void fillData(int mode) {
+		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE) {
+
 			this.getJTextFieldName().setText(this.selectedRelative.getName());
 			this.getJTextFieldSurname().setText(this.selectedRelative.getSurname());
 			this.getJTextFieldRelationShip().setText(this.selectedRelative.getRelationShip());
 			this.getJTextFieldSituation().setText(this.selectedRelative.getSituation());
-			
-			
-			//this.getComboBox().setSelectedItem(this.selectedRelative.getSex());
-			
+			this.getJXDateBorn().setDate(this.selectedRelative.getDateBorn());
+
 		}
-		
+
 	}
-	
-	private void onUpdateRelationShip(){
-		try{
-		
-		//this.selectedPeople.setDni(this.getJTextFieldDni().getText());
-		this.selectedRelative.setName(this.getJTextFieldName().getText());
-		this.selectedRelative.setSurname(this.getJTextFieldSurname().getText());
-		//this.selectedPeople.setSex((String) this.getComboBox().getSelectedItem());
-		
-		
-			//peopleDAO.update(selectedPeople);
-		}catch(Exception e){
-		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
+
+	private Relative onUpdateRelationShip() {
+		try {
+
+			
+			this.selectedRelative.setName(this.getJTextFieldName().getText());
+			this.selectedRelative.setRelationShip(this.getJTextFieldRelationShip().getText());
+			this.selectedRelative.setSituation(this.getJTextFieldSituation().getText());
+			this.selectedRelative.setSurname(this.getJTextFieldSurname().getText());
+			this.selectedRelative.setDateBorn(this.getJXDateBorn().getDate());
+			this.selectedRelative.setFamily(this.family);
+
+			return selectedRelative;
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
+
+		return null;
+
 	}
-	
-	private Relative onCreateRelationShip(){
-		try{
-		
+
+	private Relative onCreateRelationShip() {
+		try {
+
 			Relative relative = new Relative();
 			relative.setName(this.getJTextFieldName().getText());
 			relative.setRelationShip(this.getJTextFieldRelationShip().getText());
 			relative.setSituation(this.getJTextFieldSituation().getText());
 			relative.setSurname(this.getJTextFieldSurname().getText());
+			relative.setDateBorn(this.getJXDateBorn().getDate());
 			relative.setFamily(this.family);
-			
+
 			return relative;
-		}catch(Exception e){
-		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
+
 		return null;
-		
+
 	}
-	
-	
-	
-	/* FUNCIONES PANEL CONTENT PANE*/
-	
-	private GridBagLayout getGridLayoutContentPane(){
-		
+
+	/* FUNCIONES PANEL CONTENT PANE */
+
+	private GridBagLayout getGridLayoutContentPane() {
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 0 };
 		gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
-		
+
 		return gridBagLayout;
 	}
-	
+
 	private JPanel getJPanelContentPane() {
 
 		if (jPanelContentPane == null) {
 			jPanelContentPane = new JPanel();
-			jPanelContentPane.setBorder(null);	
+			jPanelContentPane.setBorder(null);
 		}
-		return jPanelContentPane;		
-}
-	
+		return jPanelContentPane;
+	}
+
 	private GridBagLayout getGridLayoutJPaneContentPane() {
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWeights = new double[] { 1.0 };
 		gbl_panel.rowWeights = new double[] { 0.0, 1.0 };
-		
+
 		return gbl_panel;
 	}
-	
+
 	private GridBagConstraints getGridBagConstraintsJPaneContentPane() {
-		
+
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.weightx = 1.0;
 		gbc_panel.weighty = 1.0;
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 0;
-		
+
 		return gbc_panel;
 	}
 
-	
-	
 	/* FUNCIONES PANEL PERSONAL DATA */
 	private JPanel getJPanelPersonalData() {
 
 		if (jPanelPersonalData == null) {
 			jPanelPersonalData = new JPanel();
-			jPanelPersonalData.setBorder(new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-				
+			jPanelPersonalData.setBorder(
+					new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
 		}
 
 		return jPanelPersonalData;
@@ -327,17 +319,18 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_jLblName.insets = new Insets(0, 20, 5, 5);
 		gbc_jLblName.gridx = 0;
 		gbc_jLblName.gridy = 0;
-		
-				return gbc_jLblName;
+
+		return gbc_jLblName;
 	}
-	
+
 	private JTextField getJTextFieldName() {
 
-		if (txfName == null){
-			txfName = new JTextField();	
+		if (txfName == null) {
+			txfName = new JTextField();
 			txfName.setColumns(10);
+			txfName.setName("name");
+			txfName.setInputVerifier(relativeVerifier);
 		}
-		
 
 		return txfName;
 	}
@@ -350,11 +343,11 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_txfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfName.gridx = 1;
 		gbc_txfName.gridy = 0;
-		
+
 		return gbc_txfName;
-		
+
 	}
-	
+
 	private JLabel getJLabelSurname() {
 
 		if (jLblSurname == null) {
@@ -362,7 +355,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			jLblSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblSurname.setMinimumSize(new Dimension(20, 14));
 			jLblSurname.setMaximumSize(new Dimension(20, 14));
-			
+
 		}
 
 		return jLblSurname;
@@ -374,17 +367,18 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_lblSurname.insets = new Insets(0, 15, 5, 5);
 		gbc_lblSurname.gridx = 2;
 		gbc_lblSurname.gridy = 0;
-		
-				return gbc_lblSurname;
+
+		return gbc_lblSurname;
 	}
-	
+
 	private JTextField getJTextFieldSurname() {
 
-		if (txfSurname == null){
-			txfSurname = new JTextField();	
+		if (txfSurname == null) {
+			txfSurname = new JTextField();
 			txfSurname.setColumns(10);
+			txfSurname.setName("surname");
+			txfSurname.setInputVerifier(relativeVerifier);
 		}
-		
 
 		return txfSurname;
 	}
@@ -397,14 +391,11 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_txfSurname.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfSurname.gridx = 3;
 		gbc_txfSurname.gridy = 0;
-		
+
 		return gbc_txfSurname;
-		
+
 	}
 
-
-	
-	
 	private JLabel getJLblDateBorn() {
 		if (jLblDateBorn == null) {
 			jLblDateBorn = new JLabel("Fecha Nacimiento");
@@ -412,7 +403,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		}
 		return jLblDateBorn;
 	}
-	
+
 	private GridBagConstraints getGridJLabelDateBorn() {
 
 		GridBagConstraints gbc_jLblDateBorn = new GridBagConstraints();
@@ -421,18 +412,19 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_jLblDateBorn.insets = new Insets(0, 15, 5, 5);
 		gbc_jLblDateBorn.gridx = 0;
 		gbc_jLblDateBorn.gridy = 1;
-		
+
 		return gbc_jLblDateBorn;
-		
+
 	}
-	
 
 	private JXDatePicker getJXDateBorn() {
 
-		if (jxDateBorn == null){
-			jxDateBorn = new JXDatePicker();	
+		if (jxDateBorn == null) {
+			jxDateBorn = new JXDatePicker();
+			jxDateBorn.setName("dateBorn");
+			jxDateBorn.setInputVerifier(relativeVerifier);
 		}
-		
+
 		return jxDateBorn;
 	}
 
@@ -444,11 +436,11 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_txfDateBorn.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfDateBorn.gridx = 1;
 		gbc_txfDateBorn.gridy = 1;
-		
+
 		return gbc_txfDateBorn;
-		
+
 	}
-	
+
 	private JLabel getJLabelRelationShip() {
 
 		if (jLblRelationShip == null) {
@@ -456,7 +448,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			jLblRelationShip.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblRelationShip.setMinimumSize(new Dimension(20, 14));
 			jLblRelationShip.setMaximumSize(new Dimension(20, 14));
-			
+
 		}
 
 		return jLblRelationShip;
@@ -468,17 +460,18 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_lblRelationShip.insets = new Insets(0, 15, 5, 5);
 		gbc_lblRelationShip.gridx = 2;
 		gbc_lblRelationShip.gridy = 1;
-		
-				return gbc_lblRelationShip;
+
+		return gbc_lblRelationShip;
 	}
-	
+
 	private JTextField getJTextFieldRelationShip() {
 
-		if (txfRelationShip == null){
-			txfRelationShip = new JTextField();	
+		if (txfRelationShip == null) {
+			txfRelationShip = new JTextField();
 			txfRelationShip.setColumns(10);
+			txfRelationShip.setName("relationShip");
+			txfRelationShip.setInputVerifier(relativeVerifier);
 		}
-		
 
 		return txfRelationShip;
 	}
@@ -491,11 +484,11 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_txfSurname.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfSurname.gridx = 3;
 		gbc_txfSurname.gridy = 1;
-		
+
 		return gbc_txfSurname;
-		
+
 	}
-	
+
 	private JLabel getJLabelSituation() {
 
 		if (jLblSituation == null) {
@@ -503,7 +496,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			jLblSituation.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblSituation.setMinimumSize(new Dimension(20, 14));
 			jLblSituation.setMaximumSize(new Dimension(20, 14));
-			
+
 		}
 
 		return jLblSituation;
@@ -515,17 +508,18 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_lblSituation.insets = new Insets(0, 15, 5, 5);
 		gbc_lblSituation.gridx = 0;
 		gbc_lblSituation.gridy = 2;
-		
-				return gbc_lblSituation;
+
+		return gbc_lblSituation;
 	}
-	
+
 	private JTextField getJTextFieldSituation() {
 
-		if (txfSituation == null){
-			txfSituation = new JTextField();	
+		if (txfSituation == null) {
+			txfSituation = new JTextField();
 			txfSituation.setColumns(10);
+			txfSituation.setName("situation");
+			txfSituation.setInputVerifier(relativeVerifier);
 		}
-		
 
 		return txfSituation;
 	}
@@ -538,14 +532,13 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_txfSituation.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfSituation.gridx = 1;
 		gbc_txfSituation.gridy = 2;
-		
+
 		return gbc_txfSituation;
-		
+
 	}
 
-	
-	/*  FUNCIONES PANEL ACCIONES*/
-	
+	/* FUNCIONES PANEL ACCIONES */
+
 	private JPanel getJPanelActions() {
 
 		if (jPanelActions == null) {
@@ -554,7 +547,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 
 		return jPanelActions;
 	}
-	
+
 	private GridBagConstraints getGridBagConstraintsJPanelActions() {
 		GridBagConstraints gbc_jPanelActions = new GridBagConstraints();
 		gbc_jPanelActions.anchor = GridBagConstraints.SOUTH;
@@ -562,55 +555,51 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		gbc_jPanelActions.fill = GridBagConstraints.HORIZONTAL;
 		gbc_jPanelActions.gridx = 0;
 		gbc_jPanelActions.gridy = 1;
-		
+
 		return gbc_jPanelActions;
 	}
-	
+
 	private GridBagLayout getGridLayoutJPanelActions() {
 		GridBagLayout gbl_jPanelActions = new GridBagLayout();
 		gbl_jPanelActions.columnWeights = new double[] { 0.0, 0.0, 0.0 };
 		gbl_jPanelActions.rowWeights = new double[] { 0.0 };
-		
+
 		return gbl_jPanelActions;
 	}
-	
-	private JButton getJButtonAccept(){
-		if (jBtnAccept == null){
+
+	private JButton getJButtonAccept() {
+		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
 		}
-		
+
 		return jBtnAccept;
 	}
-	
+
 	private GridBagConstraints getGridBagConstraintsJButtonAccept() {
 		GridBagConstraints gbc_btnAccept = new GridBagConstraints();
 		gbc_btnAccept.anchor = GridBagConstraints.NORTHWEST;
 		gbc_btnAccept.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAccept.gridx = 1;
 		gbc_btnAccept.gridy = 0;
-		
+
 		return gbc_btnAccept;
 	}
-	
-	private JButton getJButtonCancel(){
-		if (jBtnCancel == null){
+
+	private JButton getJButtonCancel() {
+		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
 		}
-		
+
 		return jBtnCancel;
 	}
-	
+
 	private GridBagConstraints getGridBagConstraintsJButtonCancel() {
 		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
 		gbc_btnCancel.anchor = GridBagConstraints.NORTHWEST;
 		gbc_btnCancel.gridx = 2;
 		gbc_btnCancel.gridy = 0;
-		
+
 		return gbc_btnCancel;
 	}
 
-	
-	
-	
-	
 }

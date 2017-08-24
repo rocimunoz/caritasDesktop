@@ -10,7 +10,7 @@
         <result property="surname" column="surname"/>
         <result property="relationShip" column="relation_ship"/>
         <result property="situation" column="situation"/>
-        <result property="dateBorn" column="dateBorn"/>
+        <result property="dateBorn" column="date_born"/>
         <association property="family" resultMap="FamilyResult"/> 
     </resultMap>
     
@@ -20,9 +20,7 @@
         
     </resultMap>
  
-    <select id="findAll" resultMap="RelativeResult">
-        SELECT * FROM C_RELATIVE;
-    </select>
+    
     
  	
     
@@ -31,7 +29,7 @@
        WHERE ID_FAMILY = #{family.id}
     </select>
     
-    <delete id="delete" parameterType="int">
+    <delete id="delete" parameterType="Relative">
     	DELETE FROM C_RELATIVE WHERE id = #{id}
     </delete>
     
@@ -52,6 +50,10 @@
         UPDATE C_RELATIVE
         <set>
           <if test="name != null">name = #{name},</if>
+          <if test="surname != null">surname = #{surname},</if>
+          <if test="situation != null">situation = #{situation},</if>
+          <if test="relationShip != null">relation_ship = #{relationShip},</if>
+          <if test="dateBorn != null">date_born = #{dateBorn},</if>
           </set>
         WHERE id = #{id} 
   	</update>

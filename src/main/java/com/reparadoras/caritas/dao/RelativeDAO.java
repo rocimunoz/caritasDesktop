@@ -37,6 +37,8 @@ public  List<Relative> findRelative(Relative relativeFilter){
 
 }
 
+
+
 public int update(Relative relative){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();
@@ -72,7 +74,7 @@ public int delete(Relative relative){
      SqlSession session = sqlSessionFactory.openSession();
 
      try {
-         session.delete("Relative.delete", relative.getId());
+         session.delete("Relative.delete", relative);
      } finally {
          session.commit();
          session.close();

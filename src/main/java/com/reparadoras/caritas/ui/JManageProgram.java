@@ -95,7 +95,7 @@ import java.awt.Component;
 public class JManageProgram extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	static final Logger logger = Logger.getLogger(JManageProgram.class);
 
 	private JDesktopPane desktop = null;
@@ -161,8 +161,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		initComponents();
 		addListeners();
 		onFilterProgram(true);
-		
-		if (this.getProgramTableModel().getDomainObjects().size() == 1){
+
+		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
 		}
 
@@ -190,8 +190,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		addListeners();
 
 		onFilterProgram(true);
-		
-		if (this.getProgramTableModel().getDomainObjects().size() == 1){
+
+		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
 		}
 
@@ -211,13 +211,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 			}
 		});
-		
+
 		getJButtonClean().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cleanFilter();
 			}
 		});
-
 
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -232,27 +231,26 @@ public class JManageProgram extends AbstractJInternalFrame {
 				onSaveProgram();
 			}
 		});
-		
-		
-		getJTableProgram().getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-	        public void valueChanged(ListSelectionEvent event) {
-	        	fillDataProgram();
-	            
-	        }
-	    });
-		
+
+		getJTableProgram().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+				fillDataProgram();
+
+			}
+		});
+
 		this.getJPanelFamily().getBtnAddRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openRelative(JWindowParams.IMODE_INSERT);
 			}
 		});
-		
+
 		this.getJPanelFamily().getBtnDeleteRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				deleteRelative();
 			}
 		});
-		
+
 		this.getJPanelFamily().getBtnEditRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openRelative(JWindowParams.IMODE_UPDATE);
@@ -311,7 +309,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
 		initCbPeople();
-		
 
 	}
 
@@ -341,14 +338,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 		return (JPanelFamily) jPanelFamily;
 	}
-	
+
 	private JPanelHome getJPanelHome() {
 		if (jPanelHome == null) {
 			jPanelHome = new JPanelHome();
 		}
 		return (JPanelHome) jPanelHome;
 	}
-	
+
 	private JPanelAddress getJPanelAddress() {
 		if (jPanelAddress == null) {
 			jPanelAddress = new JPanelAddress();
@@ -386,8 +383,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelFilter.setBorder(
 					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Programa Atención Primaria",
 							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-			((javax.swing.border.TitledBorder) jPanelFilter.getBorder()).
-	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
+			((javax.swing.border.TitledBorder) jPanelFilter.getBorder())
+					.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelFilter;
@@ -426,9 +423,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JComboBox<People> getJComboBoxPeople() {
 		if (cbPeople == null) {
 			cbPeople = new JComboBox<People>();
-			
+
 			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); //By default it selects first item, we don't want any selection
+			cbPeople.setSelectedIndex(-1); // By default it selects first item,
+											// we don't want any selection
 
 		}
 
@@ -523,12 +521,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		return gbc_btnSearchPeople;
 	}
-	
+
 	private JButton getJButtonClean() {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
-			btnCleanPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+			btnCleanPeople.setIcon(
+					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -614,8 +612,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelGrid.setBorder(
 					new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Listado Programa Atención Primaria",
 							TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-			((javax.swing.border.TitledBorder) jPanelGrid.getBorder()).
-	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
+			((javax.swing.border.TitledBorder) jPanelGrid.getBorder())
+					.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelGrid;
@@ -731,93 +729,91 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	/* EVENTOS */
-	
-	public void cleanFilter(){
+
+	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
 		this.getJComboBoxPeople().setSelectedIndex(-1);
 	}
-	
-	public void fillDataProgram(){
+
+	public void fillDataProgram() {
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
-			
+
 			Family family = selectedProgram.getFamily();
 			Home home = family.getHome();
 			Address address = home.getAddress();
-			//address
+			// address
 			this.getJPanelAddress().getJTextFieldFloor().setText(address.getFloor());
 			this.getJPanelAddress().getJTextFieldGate().setText(address.getGate());
-			//this.getJPanelAddress().getJTextFieldPlace().setText();
+			// this.getJPanelAddress().getJTextFieldPlace().setText();
 			this.getJPanelAddress().getJTextFieldStreet().setText(address.getStreet());
 			this.getJPanelAddress().getJTextFieldTelephone().setText(address.getTelephone());
 			this.getJPanelAddress().getJTextFieldTelephoneContact().setText(address.getTelephoneContact());
 			this.getJPanelAddress().getJTextFieldTown().setText(address.getTown());
-			
-			//Home
+
+			// Home
 			this.getJPanelHome().getJComboNumberFamilies().setSelectedItem(home.getNumberFamilies());
 			this.getJPanelHome().getJComboNumberPeople().setSelectedItem(home.getNumberPeople());
 			this.getJPanelHome().getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
 			this.getJPanelHome().getJTextAreaOtherInfo().setText(home.getOtherInfo());
 			this.getJPanelHome().getJTextFieldRegHolding().setText(home.getRegHolding());
-			//tipo de casa
-			
-			//Family
+			// tipo de casa
+
+			// Family
 			this.getJPanelFamily().getJTextAreaFamilyOtherInfo().setText(family.getOtherInfo());
-			if (family.getFamilyType().getId() == 1){
+			if (family.getFamilyType().getId() == 1) {
 				this.getJPanelFamily().getJRadioAlone().setSelected(true);
-			}else if (family.getFamilyType().getId() == 2){
+			} else if (family.getFamilyType().getId() == 2) {
 				this.getJPanelFamily().getJRadioWithChildren().setSelected(true);
-			}else if (family.getFamilyType().getId() == 3){
+			} else if (family.getFamilyType().getId() == 3) {
 				this.getJPanelFamily().getJRadioNoChildren().setSelected(true);
-			}else if (family.getFamilyType().getId() == 4){
+			} else if (family.getFamilyType().getId() == 4) {
 				this.getJPanelFamily().getJRadioMono().setSelected(true);
-			}else if (family.getFamilyType().getId() == 5){
+			} else if (family.getFamilyType().getId() == 5) {
 				this.getJPanelFamily().getJRadioOther().setSelected(true);
 			}
-			
-			//Relatives
-			
-			//this.getJPanelFamily().getRelativesTableModel().addRows(family.getRelatives());
+
+			// Relatives
+
+			// this.getJPanelFamily().getRelativesTableModel().addRows(family.getRelatives());
 			Relative relativeFilter = new Relative();
 			relativeFilter.setFamily(family);
-			List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);	
+			List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);
 			this.getJPanelFamily().getRelativesTableModel().addRows(listRelatives);
-			
-			
+
 			logger.info("fillDataprogram");
 		}
 	}
 
-	public void onCreateProgramFirstTime(People filterPeople){
+	public void onCreateProgramFirstTime(People filterPeople) {
 		Program programNewReset = new Program();
-		
+
 		Address address = new Address();
 		addressDAO.insert(address);
-		
+
 		Home home = new Home();
 		home.setAddress(address);
 		homeDAO.insert(home);
-		
+
 		Family family = new Family();
 		family.setHome(home);
 		FamilyType fType = new FamilyType();
 		fType.setId(1);
 		family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 		familyDAO.insert(family);
-		
+
 		programNewReset.setFamily(family);
 		programNewReset.setPeople(filterPeople);
-		
+
 		programDAO.insert(programNewReset);
-		
-		
+
 	}
-	
+
 	public void onFilterProgram(boolean create) {
 		People filterPeople = (People) this.getJComboBoxPeople().getSelectedItem();
-		try{
-			
+		try {
+
 			if (filterPeople.getId() != -1) {
 				Program program = programDAO.findProgram(filterPeople);
 				if (program != null) {
@@ -825,19 +821,19 @@ public class JManageProgram extends AbstractJInternalFrame {
 					this.getProgramTableModel().addRow(program);
 
 				} else {
-					
 
 					if (create) {
 						int dialogResult = JOptionPane.showConfirmDialog(this,
 								"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?");
 						if (dialogResult == JOptionPane.YES_OPTION) {
-							
+
 							onCreateProgramFirstTime(filterPeople);
 							onFilterProgram(false);
-							
-							JOptionPane.showMessageDialog(this, "Se ha generado un Programa de Atención Primaria para el usuario " + filterPeople.getName() + "con todos los datos vacios.");
-						}
-						else{
+
+							JOptionPane.showMessageDialog(this,
+									"Se ha generado un Programa de Atención Primaria para el usuario "
+											+ filterPeople.getName() + "con todos los datos vacios.");
+						} else {
 							try {
 								this.setClosed(true);
 							} catch (PropertyVetoException e) {
@@ -856,75 +852,118 @@ public class JManageProgram extends AbstractJInternalFrame {
 				this.getProgramTableModel().clearTableModelData();
 				this.getProgramTableModel().addRows(listPrograms);
 			}
-			
-		}catch(Exception e){
-			
+
+		} catch (Exception e) {
+
 		}
-	
 
 	}
-	
-	public void openRelative(int mode){
-		
+
+	public void openRelative(int mode) {
+
 		int rowIndex = getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
-			if (selectedProgram!=null){
+			if (selectedProgram != null) {
 				selectedProgram.getFamily();
-				openEditRelative(mode, "Nuevo Pariente", selectedProgram.getFamily());
+				openEditRelative(mode, "Nuevo Pariente", selectedProgram.getFamily(), rowIndex);
 			}
 		}
 	}
-	
-	public void addRelative(Relative relative){
-		
+
+	public void addRelative(Relative relative) {
+
 		this.getJPanelFamily().getRelativesTableModel().addRow(relative);
 	}
-	
-	public void deleteRelative(){
-		
+
+	public void editRelative(Relative relative, Integer rowIndex) {
+
+		Relative editedRelative = getJPanelFamily().getRelativesTableModel().getDomainObject(rowIndex);
+		if (editedRelative != null) {
+			if (relative.getName() != null) {
+				if (!editedRelative.getName().equals(relative.getName())) {
+					editedRelative.setName(relative.getName());
+				}
+			} else {
+				editedRelative.setName(null);
+			}
+
+			if (relative.getRelationShip() != null) {
+				if (!editedRelative.getRelationShip().equals(relative.getRelationShip())) {
+					editedRelative.setRelationShip(relative.getRelationShip());
+				}
+			} else {
+				editedRelative.setRelationShip(null);
+			}
+
+			if (relative.getSurname() != null) {
+				if (!editedRelative.getSurname().equals(relative.getSurname())) {
+					editedRelative.setSurname(relative.getSurname());
+				}
+			} else {
+				editedRelative.setSurname(null);
+			}
+
+			if (relative.getSituation() != null) {
+				if (!editedRelative.getSituation().equals(relative.getSituation())) {
+					editedRelative.setSituation(relative.getSituation());
+				}
+			} else {
+				editedRelative.setSituation(null);
+			}
+
+			if (relative.getDateBorn() != null) {
+				if (!editedRelative.getDateBorn().equals(relative.getDateBorn())) {
+					editedRelative.setDateBorn(relative.getDateBorn());
+				}
+			} else {
+				editedRelative.setDateBorn(null);
+			}
+
+		}
+
+	}
+
+	public void deleteRelative() {
+
 		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
 		if (rowIndex != -1) {
-		
+
 			getJPanelFamily().getRelativesTableModel().deleteRow(rowIndex);
-			
-		}
-		else{
+
+		} else {
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");
 			return;
-	    }
+		}
 	}
-	
-	public void openEditRelative(int openMode, String title, Family family) {
+
+	public void openEditRelative(int openMode, String title, Family family, Integer index) {
 
 		JManageEditRelative jManageEditRelative = null;
 		try {
 
-			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)){
+			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
 				int row = this.getJPanelFamily().getJTableRelatives().getSelectedRow();
-				if (row!=-1){
+				if (row != -1) {
 					Relative relative = getJPanelFamily().getRelativesTableModel().getDomainObject(row);
-				
-					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, relative, relative.getFamily());
-					
-				
-				}
-				else{
+
+					jManageEditRelative = new JManageEditRelative(this, true, openMode, title, relative,
+							relative.getFamily(), index);
+
+				} else {
 					JOptionPane.showMessageDialog(null, "Seleccione un registro");
 					return;
-			    }
-				
+				}
+
+			} else {
+				jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null, family, index);
 			}
-			else{
-				jManageEditRelative = new JManageEditRelative(this, true, openMode, title, null, family);
-			}
-			
+
 			this.desktop.add(jManageEditRelative);
 			jManageEditRelative.setVisible(true);
 			jManageEditRelative.moveToFront();
 			jManageEditRelative.show();
-			
-				
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -932,82 +971,119 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
-	public void onSaveFamily(Family family) throws Exception{
+	public void onSaveRelatives(Family family) {
+
+		List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();
+		Relative relativeFilter = new Relative();
+		relativeFilter.setFamily(family);
+		List<Relative> listRelativesBBDD = relativeDAO.findRelative(relativeFilter);
 		
-		try{
-			family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
-			
-			String description = "";
-			
-			if (getJPanelFamily().getJRadioAlone().isSelected()){
-				description = getJPanelFamily().getJRadioAlone().getText();
-			}else if (getJPanelFamily().getJRadioMono().isSelected()){
-				description = getJPanelFamily().getJRadioMono().getText();
-			}else if (getJPanelFamily().getJRadioNoChildren().isSelected()){
-				description = getJPanelFamily().getJRadioNoChildren().getText();
-			}else if (getJPanelFamily().getJRadioWithChildren().isSelected()){
-				description = getJPanelFamily().getJRadioWithChildren().getText();
-			}else if (getJPanelFamily().getJRadioOther().isSelected()){
-				description = getJPanelFamily().getJRadioOther().getText();
-			}
-			
-			FamilyType fType = new FamilyType();
-			fType.setDescription(description);
-			family.setFamilyType(familyTypeDAO.findFamilyType(fType));
-			
-			//Relatives
-			List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();
-			for (Relative relative : listRelatives) {
+		//Insert and Updates
+		for (Relative relative : listRelatives) {
+			if (relative.getId() != null) {
+				relativeDAO.update(relative);
+			} else {
 				relative.setFamily(family);
 				relativeDAO.insert(relative);
 			}
+		}
+		
+		
+		//Deletes
+		if (listRelatives.isEmpty()){
+			for (Relative relative : listRelativesBBDD) {
+				
+				relativeDAO.delete(relative);
+			}
+		}
+		else{
 			
+			for (Relative relativeBBDD : listRelativesBBDD) {
+				boolean exist = false;
+				for (Relative relativeGrid : listRelatives) {
+					
+					if (relativeBBDD.getId().equals(relativeGrid.getId())){
+						exist = true;
+						break;
+					}
+				}
+				if (exist == false){
+					relativeDAO.delete(relativeBBDD);
+				}
+			}
 			
-			familyDAO.update(family);
-		}catch(Exception e){
-			logger.info(e);
-			throw new Exception();
 		}
 		
 		
 		
 	}
-	
-	public void onSaveHome(Home home) throws Exception{
-		
-		try{
-			
+
+	public void onSaveFamily(Family family) throws Exception {
+
+		try {
+			family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
+
+			String description = "";
+
+			if (getJPanelFamily().getJRadioAlone().isSelected()) {
+				description = getJPanelFamily().getJRadioAlone().getText();
+			} else if (getJPanelFamily().getJRadioMono().isSelected()) {
+				description = getJPanelFamily().getJRadioMono().getText();
+			} else if (getJPanelFamily().getJRadioNoChildren().isSelected()) {
+				description = getJPanelFamily().getJRadioNoChildren().getText();
+			} else if (getJPanelFamily().getJRadioWithChildren().isSelected()) {
+				description = getJPanelFamily().getJRadioWithChildren().getText();
+			} else if (getJPanelFamily().getJRadioOther().isSelected()) {
+				description = getJPanelFamily().getJRadioOther().getText();
+			}
+
+			FamilyType fType = new FamilyType();
+			fType.setDescription(description);
+			family.setFamilyType(familyTypeDAO.findFamilyType(fType));
+
+			familyDAO.update(family);
+		} catch (Exception e) {
+			logger.info(e);
+			throw new Exception();
+		}
+
+	}
+
+	public void onSaveHome(Home home) throws Exception {
+
+		try {
+
 			home.setNumberFamilies((Integer) getJPanelHome().getJComboNumberFamilies().getSelectedItem());
 			home.setNumberPeople((Integer) getJPanelHome().getJComboNumberPeople().getSelectedItem());
 			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
 			home.setOtherInfo(getJPanelHome().getJTextAreaOtherInfo().getText());
 			home.setRegHolding(getJPanelHome().getJTextFieldRegHolding().getText());
-			
+
 			homeDAO.update(home);
-			
-		}catch(Exception e){
+
+		} catch (Exception e) {
 			logger.info(e);
 			throw new Exception();
 		}
 	}
-	
-	public void onSaveAddress(Address address) throws Exception{
-		try{
+
+	public void onSaveAddress(Address address) throws Exception {
+		try {
 			address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
 			address.setGate(getJPanelAddress().getJTextFieldGate().getText());
-			//address.setPostalCode(getJPanelAddress().getjtextfield);
+			// address.setPostalCode(getJPanelAddress().getjtextfield);
 			address.setStreet(getJPanelAddress().getJTextFieldStreet().getText());
 			address.setTelephone(getJPanelAddress().getJTextFieldTelephone().getText());
 			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());
 			address.setTown(getJPanelAddress().getJTextFieldTown().getText());
 			addressDAO.update(address);
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.info(e);
 			throw new Exception();
 		}
-		
+
 	}
-	
+
 	public void onSaveProgram() {
 
 		int rowIndex = this.getJTableProgram().getSelectedRow();
@@ -1018,20 +1094,20 @@ public class JManageProgram extends AbstractJInternalFrame {
 				if (selectedProgram != null) {
 
 					if (selectedProgram.getFamily() != null) {
-						
+
 						onSaveAddress(selectedProgram.getFamily().getHome().getAddress());
 						onSaveHome(selectedProgram.getFamily().getHome());
 						onSaveFamily(selectedProgram.getFamily());
-						
-						
-						
+						onSaveRelatives(selectedProgram.getFamily());
+
 					}
-					
+
 					JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente.");
 				}
-				
+
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Actualización Persona", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
+						"Actualización Persona", JOptionPane.ERROR_MESSAGE);
 				logger.info(e);
 			}
 
