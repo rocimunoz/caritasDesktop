@@ -18,6 +18,7 @@ public class Program implements Serializable{
     private Family family;
     private AuthorizationType authorizationType;
     private JobSituation jobSituation;
+    private Studies studies;
     
     
 	public int getId() {
@@ -50,6 +51,13 @@ public class Program implements Serializable{
 	public void setJobSituation(JobSituation jobSituation) {
 		this.jobSituation = jobSituation;
 	}
+	public Studies getStudies() {
+		return studies;
+	}
+	public void setStudies(Studies studies) {
+		this.studies = studies;
+	}
+	
 	
 	
 	

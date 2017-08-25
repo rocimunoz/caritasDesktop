@@ -128,6 +128,13 @@ INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (4, 'Labores del hogar (ama
 INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (5, 'Pensionista o Jubilado');
 INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (6, 'Otros inactivos (estudiantes, menores');
 
+-- STUDIES TYPE
+CREATE TABLE `c_studies` (
+  `ID` int(11) NOT NULL,
+  `DESCRIPTION` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- PROGRAM 
 CREATE TABLE `c_program` (

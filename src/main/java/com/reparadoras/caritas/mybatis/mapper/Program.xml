@@ -11,6 +11,7 @@
         <association property="family" resultMap="FamilyResult"/>              
         <association property="authorizationType" resultMap="AuthorizationTypeResult"/>
         <association property="jobSituation" resultMap="JobSituationResult"/>
+        <association property="studies" resultMap="StudiesResult"/>
        
     </resultMap>
     
@@ -68,6 +69,11 @@
         <result property="description" column="description"/>
     </resultMap>
     
+    <resultMap id="StudiesResult" type="Studies">
+        <result property="id" column="id_studies"/>
+        <result property="description" column="description"/>
+    </resultMap>
+    
      <select id="findAll" resultMap="ProgramResult">
         SELECT * FROM C_PROGRAM;
     </select>
@@ -95,10 +101,12 @@
                A.POSTAL_CODE,
                PR.ID ID_PROGRAM,
                PR.ID_AUTHORIZATION_TYPE,
-               PR.ID_JOB_SITUATION
+               PR.ID_JOB_SITUATION,
+               PR.ID_STUDIES
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
-              LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID,
+              LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
+              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID,
              C_FAMILY F,
              C_FAMILY_TYPE FT,
              C_HOME H,

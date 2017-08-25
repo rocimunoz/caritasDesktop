@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Studies">
+
+    
+    <resultMap id="StudiesResult" type="Studies">
+        <result property="id" column="id"/>
+        <result property="description" column="description"/>      
+        
+    </resultMap>
+ 
+    <select id="findAll" resultMap="StudiesResult">
+        SELECT * FROM C_STUDIES;
+    </select>
+    
+ 	<select id="findStudies" parameterType="Studies" resultMap="StudiesResult">
+       SELECT * 
+				FROM C_STUDIES
+				<where>
+					<if test="description!=null and !description.equals('')">
+						description = #{description}
+					</if>
+					<if test="id!=null">
+						AND id = #{id}
+					</if>
+				</where>
+    </select>
+    
+    
+ 
+	
+</mapper>

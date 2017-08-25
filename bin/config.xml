@@ -19,7 +19,8 @@
         <typeAlias alias="Relative" type="com.reparadoras.caritas.model.Relative"/>
         <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/> 
         <typeAlias alias="AuthorizationType" type="com.reparadoras.caritas.model.AuthorizationType"/>
-        <typeAlias alias="JobSituation" type="com.reparadoras.caritas.model.JobSituation"/>             
+        <typeAlias alias="JobSituation" type="com.reparadoras.caritas.model.JobSituation"/>  
+        <typeAlias alias="Studies" type="com.reparadoras.caritas.model.Studies"/>               
     </typeAliases>
    
     <environments default="development">
@@ -47,6 +48,7 @@
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Address.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/AuthorizationType.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/JobSituation.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Studies.xml"/>
     
     </mappers>
 </configuration>
