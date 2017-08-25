@@ -17,6 +17,7 @@ public class Program implements Serializable{
     private People people;
     private Family family;
     private AuthorizationType authorizationType;
+    private JobSituation jobSituation;
     
     
 	public int getId() {
@@ -43,6 +44,14 @@ public class Program implements Serializable{
 	public void setAuthorizationType(AuthorizationType authorizationType) {
 		this.authorizationType = authorizationType;
 	}
+	public JobSituation getJobSituation() {
+		return jobSituation;
+	}
+	public void setJobSituation(JobSituation jobSituation) {
+		this.jobSituation = jobSituation;
+	}
+	
+	
 	
 	
     

@@ -114,6 +114,20 @@ INSERT INTO C_AUTHORIZATION_TYPE (ID, DESCRIPTION) VALUES (5, 'Refugiado');
 INSERT INTO C_AUTHORIZATION_TYPE (ID, DESCRIPTION) VALUES (6, 'Indocumentado');
 INSERT INTO C_AUTHORIZATION_TYPE (ID, DESCRIPTION) VALUES (7, 'Situación Administrativa Irregular');
 
+-- AUTHORIZATION TYPE
+CREATE TABLE `c_job_situation` (
+  `ID` int(11) NOT NULL,
+  `DESCRIPTION` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (1, 'Parado');
+INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (2, 'Con Trabajo Normalizado');
+INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (3, 'Con Trabajo Marginal o Economia Sumergida');
+INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (4, 'Labores del hogar (ama de casa)');
+INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (5, 'Pensionista o Jubilado');
+INSERT INTO C_JOB_SITUATION (ID, DESCRIPTION) VALUES (6, 'Otros inactivos (estudiantes, menores');
+
 
 -- PROGRAM 
 CREATE TABLE `c_program` (
@@ -121,12 +135,15 @@ CREATE TABLE `c_program` (
   `ID_PEOPLE` int(11) DEFAULT NULL,
   `ID_FAMILY` int(11) DEFAULT NULL,
   `ID_AUTHORIZATION_TYPE` int(11) DEFAULT NULL,
+  `ID_JOB_SITUATION` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idPeople` (`ID_PEOPLE`),
-  KEY `program_family` (`ID_FAMILY`),
   KEY `program_authorization` (`ID_AUTHORIZATION_TYPE`),
+  KEY `program_family` (`ID_FAMILY`),
+  KEY `program_job_situation` (`ID_JOB_SITUATION`),
   CONSTRAINT `program_authorization` FOREIGN KEY (`ID_AUTHORIZATION_TYPE`) REFERENCES `c_authorization_type` (`ID`),
   CONSTRAINT `program_family` FOREIGN KEY (`ID_FAMILY`) REFERENCES `c_family` (`ID`),
+  CONSTRAINT `program_job_situation` FOREIGN KEY (`ID_JOB_SITUATION`) REFERENCES `c_job_situation` (`ID`),
   CONSTRAINT `program_people` FOREIGN KEY (`ID_PEOPLE`) REFERENCES `c_people` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
