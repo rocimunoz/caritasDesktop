@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
 import com.reparadoras.caritas.dao.AddressDAO;
+import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
@@ -38,6 +39,7 @@ import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.Address;
+import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
@@ -55,12 +57,12 @@ import com.reparadoras.caritas.ui.components.table.ProgramTableModel;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 import com.reparadoras.caritas.ui.components.table.TicketsPeopleTableModel;
 import com.reparadoras.caritas.ui.tabs.JPanelAddress;
+import com.reparadoras.caritas.ui.tabs.JPanelAuthorizationType;
 import com.reparadoras.caritas.ui.tabs.JPanelEconomicSituation;
 import com.reparadoras.caritas.ui.tabs.JPanelFamily;
 import com.reparadoras.caritas.ui.tabs.JPanelHome;
 import com.reparadoras.caritas.ui.tabs.JPanelJobSituation;
 import com.reparadoras.caritas.ui.tabs.JPanelStudies;
-import com.reparadoras.caritas.ui.tabs.JPanelTypeAuthorization;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -123,11 +125,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
 	private RelativeDAO relativeDAO;
+	private AuthorizationTypeDAO authorizationTypeDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
 	private JPanel jPanelHome;
 	private JPanel jPanelAddress;
+	private JPanel jPanelAuthorizationType;
 
 	private People people = null;
 
@@ -157,6 +161,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -185,6 +190,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -295,7 +301,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("Direccion", getJPanelAddress());
 		getJtabPane1().add("Vivienda", getJPanelHome());
 		getJtabPane1().add("Familia", getJPanelFamily());
-		getJtabPane1().add("Tipo Autorización", new JPanelTypeAuthorization());
+		getJtabPane1().add("Tipo Autorización", getJPanelAuthorizationType());
 		getJtabPane1().add("Situación Laboral", new JPanelJobSituation());
 		getJtabPane1().add("Estudios", new JPanelStudies());
 		getJtabPane1().add("Situación Económica", new JPanelEconomicSituation());
@@ -351,6 +357,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelAddress = new JPanelAddress();
 		}
 		return (JPanelAddress) jPanelAddress;
+	}
+
+	private JPanelAuthorizationType getJPanelAuthorizationType() {
+		if (jPanelAuthorizationType == null) {
+			jPanelAuthorizationType = new JPanelAuthorizationType();
+		}
+		return (JPanelAuthorizationType) jPanelAuthorizationType;
 	}
 
 	/* FUNCIONES DEL GETCONTENTPANE */
@@ -743,6 +756,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			Family family = selectedProgram.getFamily();
 			Home home = family.getHome();
 			Address address = home.getAddress();
+			AuthorizationType aType = selectedProgram.getAuthorizationType();
+
 			// address
 			this.getJPanelAddress().getJTextFieldFloor().setText(address.getFloor());
 			this.getJPanelAddress().getJTextFieldGate().setText(address.getGate());
@@ -758,7 +773,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 			this.getJPanelHome().getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
 			this.getJPanelHome().getJTextAreaOtherInfo().setText(home.getOtherInfo());
 			this.getJPanelHome().getJTextFieldRegHolding().setText(home.getRegHolding());
-			// tipo de casa
 
 			// Family
 			this.getJPanelFamily().getJTextAreaFamilyOtherInfo().setText(family.getOtherInfo());
@@ -779,6 +793,41 @@ public class JManageProgram extends AbstractJInternalFrame {
 			relativeFilter.setFamily(family);
 			List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);
 			this.getJPanelFamily().getRelativesTableModel().addRows(listRelatives);
+
+			// Authorization
+			if (aType != null) {
+				switch (aType.getId()) {
+				case 1:
+					this.getJPanelAuthorizationType().getJRadioResidence().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
+					break;
+				case 2:
+					this.getJPanelAuthorizationType().getJRadioResidenceWork().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
+					break;
+				case 3:
+					this.getJPanelAuthorizationType().getJRadioStudy().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
+					break;
+				case 4:
+					this.getJPanelAuthorizationType().getJRadioTourism().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
+					break;
+				case 5:
+					this.getJPanelAuthorizationType().getJRadioRefugee().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
+					break;
+				case 6:
+					this.getJPanelAuthorizationType().getJRadioUndocumented().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(false);
+					break;
+				case 7:
+					this.getJPanelAuthorizationType().getJRadioSAIrregular().setSelected(true);
+					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(false);
+					break;
+
+				}
+			}
 
 			logger.info("fillDataprogram");
 		}
@@ -803,7 +852,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		programNewReset.setFamily(family);
 		programNewReset.setPeople(filterPeople);
-		
 
 		programDAO.insert(programNewReset);
 
@@ -853,7 +901,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 
 		} catch (Exception e) {
-
+			logger.error(e);
 		}
 
 	}
@@ -976,8 +1024,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		Relative relativeFilter = new Relative();
 		relativeFilter.setFamily(family);
 		List<Relative> listRelativesBBDD = relativeDAO.findRelative(relativeFilter);
-		
-		//Insert and Updates
+
+		// Insert and Updates
 		for (Relative relative : listRelatives) {
 			if (relative.getId() != null) {
 				relativeDAO.update(relative);
@@ -986,35 +1034,31 @@ public class JManageProgram extends AbstractJInternalFrame {
 				relativeDAO.insert(relative);
 			}
 		}
-		
-		
-		//Deletes
-		if (listRelatives.isEmpty()){
+
+		// Deletes
+		if (listRelatives.isEmpty()) {
 			for (Relative relative : listRelativesBBDD) {
-				
+
 				relativeDAO.delete(relative);
 			}
-		}
-		else{
-			
+		} else {
+
 			for (Relative relativeBBDD : listRelativesBBDD) {
 				boolean exist = false;
 				for (Relative relativeGrid : listRelatives) {
-					
-					if (relativeBBDD.getId().equals(relativeGrid.getId())){
+
+					if (relativeBBDD.getId().equals(relativeGrid.getId())) {
 						exist = true;
 						break;
 					}
 				}
-				if (exist == false){
+				if (exist == false) {
 					relativeDAO.delete(relativeBBDD);
 				}
 			}
-			
+
 		}
-		
-		
-		
+
 	}
 
 	public void onSaveFamily(Family family) throws Exception {
@@ -1083,6 +1127,37 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
+	public void onSaveAuthorizationType(Program selectedProgram) {
+		AuthorizationType aTypeFilter = new AuthorizationType();
+		String description = "";
+		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()){
+			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioResidence().getText();
+			
+			} else if (this.getJPanelAuthorizationType().getJRadioResidenceWork().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioResidenceWork().getText();
+
+			} else if (this.getJPanelAuthorizationType().getJRadioStudy().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioStudy().getText();
+
+			} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioTourism().getText();
+				
+			}
+		}
+		
+		 else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
+			 description = getJPanelAuthorizationType().getJRadioUndocumented().getText();
+
+		} else if (this.getJPanelAuthorizationType().getJRadioSAIrregular().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
+
+		}
+		
+		aTypeFilter.setDescription(description);
+		selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
+	}
+
 	public void onSaveProgram() {
 
 		int rowIndex = this.getJTableProgram().getSelectedRow();
@@ -1098,6 +1173,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveHome(selectedProgram.getFamily().getHome());
 						onSaveFamily(selectedProgram.getFamily());
 						onSaveRelatives(selectedProgram.getFamily());
+
+						onSaveAuthorizationType(selectedProgram);
+						
+						
+						programDAO.update(selectedProgram);
 
 					}
 

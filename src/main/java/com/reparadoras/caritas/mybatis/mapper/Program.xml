@@ -6,10 +6,10 @@
 <mapper namespace="Program">
 
     <resultMap id="ProgramResult" type="Program">
-        <result property="id" column="id"/>
+        <result property="id" column="id_program"/>
         <association property="people" resultMap="PeopleResult"/>
         <association property="family" resultMap="FamilyResult"/>              
-        <association property="authorizationType" resultMap="AuthorizationType"/>
+        <association property="authorizationType" resultMap="AuthorizationTypeResult"/>
        
     </resultMap>
     
@@ -32,7 +32,7 @@
     
     <resultMap id="FamilyTypeResult" type="FamilyType">
         <result property="id" column="id_family_type"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_family_type"/>
     </resultMap>
     
     	<resultMap id="HomeResult" type="Home">
@@ -72,7 +72,7 @@
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,
                FT.ID ID_FAMILY_TYPE,
-               FT.DESCRIPTION,
+               FT.DESCRIPTION DESCRIPTION_FAMILY_TYPE,
                H.ID ID_HOME,
                H.REG_HOLDING,
                H.NUMBER_ROOMS,
@@ -86,9 +86,11 @@
                A.FLOOR,
                A.TELEPHONE,
                A.TELEPHONE_CONTACT,
-               A.POSTAL_CODE
+               A.POSTAL_CODE,
+               PR.ID ID_PROGRAM,
+               PR.ID_AUTHORIZATION_TYPE
         FROM C_PEOPLE PE, 
-             C_PROGRAM PR, 
+              C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID,
              C_FAMILY F,
              C_FAMILY_TYPE FT,
              C_HOME H,
@@ -115,7 +117,7 @@
     <update id="update" parameterType="Program">
         UPDATE C_PROGRAM
         <set>
-          <if test="id_authorization_type != null">id_authorization_type = #{id_authorization_type},</if>
+          <if test="authorizationType.id != null">id_authorization_type = #{authorizationType.id},</if>
           
           </set>
         WHERE id = #{id} 

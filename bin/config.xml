@@ -44,6 +44,7 @@
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Home.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/HomeType.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Address.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/AuthorizationType.xml"/>
     
     </mappers>
 </configuration>

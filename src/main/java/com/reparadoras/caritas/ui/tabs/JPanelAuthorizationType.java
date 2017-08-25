@@ -31,7 +31,7 @@ import java.awt.GridLayout;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
-public class JPanelTypeAuthorization extends JPanel{
+public class JPanelAuthorizationType extends JPanel{
 	
 	
 	private JPanel jPanelRadioButton;
@@ -45,7 +45,7 @@ public class JPanelTypeAuthorization extends JPanel{
 	private JRadioButton jRadioUndocumented;
 	
 	
-	public JPanelTypeAuthorization() {
+	public JPanelAuthorizationType() {
 		
 		createGUIPanel();
 		
@@ -66,7 +66,14 @@ public class JPanelTypeAuthorization extends JPanel{
 					getJRadioStudy().setEnabled(true);
 					getJRadioRefugee().setEnabled(true);
 				}
-				else{
+				
+			}
+		});
+		
+		 getJRadioUndocumented().addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				JRadioButton radio = (JRadioButton) e.getSource();
+				if (radio.isSelected()){
 					getJRadioResidence().setEnabled(false);
 					getJRadioResidence().setSelected(false);
 					getJRadioResidenceWork().setEnabled(false);
@@ -79,12 +86,32 @@ public class JPanelTypeAuthorization extends JPanel{
 					
 					getJRadioRefugee().setEnabled(false);
 					getJRadioRefugee().setSelected(false);
-					
 				}
+				
 			}
 		});
 		
-		
+		 this.getJRadioSAIrregular().addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JRadioButton radio = (JRadioButton) e.getSource();
+					if (radio.isSelected()){
+						getJRadioResidence().setEnabled(false);
+						getJRadioResidence().setSelected(false);
+						getJRadioResidenceWork().setEnabled(false);
+						getJRadioResidenceWork().setSelected(false);
+
+						getJRadioTourism().setEnabled(false);
+						getJRadioTourism().setSelected(false);
+						getJRadioStudy().setEnabled(false);
+						getJRadioStudy().setSelected(false);
+						
+						getJRadioRefugee().setEnabled(false);
+						getJRadioRefugee().setSelected(false);
+					}
+					
+				}
+			});
+			
 		
 		
 		
@@ -156,7 +183,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return gbc_jPanelRadio;
 	}
 	
-	private JRadioButton getJRadioSARegular() {
+	public JRadioButton getJRadioSARegular() {
 		if (jRadioSARegular == null) {
 			jRadioSARegular = new JRadioButton("Situación Administrativa Regular");
 			
@@ -166,7 +193,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioSARegular;
 	}
 	
-	private JRadioButton getJRadioSAIrregular() {
+	public JRadioButton getJRadioSAIrregular() {
 		if (jRadioSAIrregular == null) {
 			jRadioSAIrregular = new JRadioButton("Situación Administrativa Irregular");
 			jRadioSAIrregular.setMargin(new Insets(20, 20, 2, 20));
@@ -175,7 +202,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioSAIrregular;
 	}
 	
-	private JRadioButton getJRadioUndocumented() {
+	public JRadioButton getJRadioUndocumented() {
 		if (jRadioUndocumented == null) {
 			jRadioUndocumented = new JRadioButton("Indocumentado");
 			jRadioUndocumented.setMargin(new Insets(20, 20, 2, 20));
@@ -184,7 +211,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioUndocumented;
 	}
 	
-	private JRadioButton getJRadioResidence() {
+	public JRadioButton getJRadioResidence() {
 		if (jRadioResidence == null) {
 			jRadioResidence = new JRadioButton("Autorización Residencia");
 			jRadioResidence.setMargin(new Insets(2, 50, 2, 20));
@@ -193,7 +220,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioResidence;
 	}
 	
-	private JRadioButton getJRadioResidenceWork() {
+	public JRadioButton getJRadioResidenceWork() {
 		if (jRadioResidenceWork == null) {
 			jRadioResidenceWork = new JRadioButton("Autorización Residencia y Trabajo");
 			jRadioResidenceWork.setMargin(new Insets(2, 50, 2, 20));
@@ -202,7 +229,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioResidenceWork;
 	}
 	
-	private JRadioButton getJRadioStudy() {
+	public JRadioButton getJRadioStudy() {
 		if (jRadioStudy == null) {
 			jRadioStudy = new JRadioButton("Estudios");
 			jRadioStudy.setMargin(new Insets(2, 50, 2, 20));
@@ -211,7 +238,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioStudy;
 	}
 	
-	private JRadioButton getJRadioTourism() {
+	public JRadioButton getJRadioTourism() {
 		if (jRadioTourism == null) {
 			jRadioTourism = new JRadioButton("Turismo");
 			jRadioTourism.setMargin(new Insets(2, 50, 2, 20));
@@ -220,7 +247,7 @@ public class JPanelTypeAuthorization extends JPanel{
 		return jRadioTourism;
 	}
 	
-	private JRadioButton getJRadioRefugee() {
+	public JRadioButton getJRadioRefugee() {
 		if (jRadioRefugee == null) {
 			jRadioRefugee = new JRadioButton("Refugiado");
 			jRadioRefugee.setMargin(new Insets(2, 50, 2, 20));

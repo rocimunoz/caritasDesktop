@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
@@ -60,6 +61,21 @@ public int delete(People people){
          session.close();
      }
      System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
+public int update(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+    	 session.update("Program.update", program);
+        
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("update("+program+") --> "+program.getId());
      return id;
  }
 
