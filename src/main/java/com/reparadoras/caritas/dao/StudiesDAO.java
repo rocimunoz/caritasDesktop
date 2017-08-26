@@ -47,7 +47,7 @@ public  Studies findStudies(Studies sFilter){
     } finally {
         session.close();
     }
-    System.out.println("findJobSituation() --> "+studies);
+    System.out.println("findStudies() --> "+studies);
     return studies;
 
 }

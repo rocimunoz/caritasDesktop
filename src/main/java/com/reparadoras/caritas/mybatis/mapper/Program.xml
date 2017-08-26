@@ -134,6 +134,8 @@
         UPDATE C_PROGRAM
         <set>
           <if test="authorizationType.id != null">id_authorization_type = #{authorizationType.id},</if>
+          <if test="studies.id != null">id_studies = #{studies.id},</if>
+           <if test="jobSituation.id != null">id_job_situation = #{jobSituation.id},</if>
           
           </set>
         WHERE id = #{id} 

@@ -41,7 +41,7 @@ public  JobSituation findJobSituation(JobSituation jsFilter){
     SqlSession session = sqlSessionFactory.openSession();
 
     try {
-    	jobSituation = session.selectOne("AuthorizationType.findAuthorizationType", jsFilter);
+    	jobSituation = session.selectOne("JobSituation.findJobSituation", jsFilter);
        
     } finally {
         session.close();

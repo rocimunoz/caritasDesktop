@@ -189,7 +189,7 @@ public class JPanelStudies extends JPanel{
 	public JRadioButton getjRadioFP() {
 	
 		if (jRadioFP == null) {
-			jRadioFP = new JRadioButton("FP Grado Medio");
+			jRadioFP = new JRadioButton("FP-Grado Medio");
 			
 			jRadioFP.setMargin(new Insets(20, 20, 2, 20));
 			jRadioFP.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -200,7 +200,7 @@ public class JPanelStudies extends JPanel{
 	public JRadioButton getjRadioFPHigh() {
 		
 		if (jRadioFPHigh == null) {
-			jRadioFPHigh = new JRadioButton("FP Grado Superior");
+			jRadioFPHigh = new JRadioButton("FP-Grado Superior");
 			
 			jRadioFPHigh.setMargin(new Insets(20, 20, 2, 20));
 			jRadioFPHigh.setFont(new Font("Verdana", Font.PLAIN, 14));

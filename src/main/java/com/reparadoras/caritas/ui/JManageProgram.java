@@ -34,6 +34,7 @@ import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
+import com.reparadoras.caritas.dao.JobSituationDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
@@ -44,6 +45,7 @@ import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
@@ -128,6 +130,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private AddressDAO addressDAO;
 	private RelativeDAO relativeDAO;
 	private AuthorizationTypeDAO authorizationTypeDAO;
+	private JobSituationDAO jobSituationDAO;
 	private StudiesDAO studiesDAO;
 
 	private JTabbedPane jtabPane1;
@@ -136,6 +139,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JPanel jPanelAddress;
 	private JPanel jPanelAuthorizationType;
 	private JPanel jPanelStudies;
+	private JPanel jPanelJobSituation;
 
 	private People people = null;
 
@@ -167,6 +171,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -197,6 +202,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -308,8 +314,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("Vivienda", getJPanelHome());
 		getJtabPane1().add("Familia", getJPanelFamily());
 		getJtabPane1().add("Tipo Autorización", getJPanelAuthorizationType());
-		getJtabPane1().add("Situación Laboral", new JPanelJobSituation());
-		getJtabPane1().add("Estudios", new JPanelStudies());
+		getJtabPane1().add("Situación Laboral", getJPanelJobSituation());
+		getJtabPane1().add("Estudios", getJPanelStudies());
 		getJtabPane1().add("Situación Económica", new JPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
@@ -372,6 +378,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return (JPanelAuthorizationType) jPanelAuthorizationType;
 	}
 
+	private JPanelJobSituation getJPanelJobSituation() {
+		if (jPanelJobSituation == null) {
+			jPanelJobSituation = new JPanelJobSituation();
+		}
+		return (JPanelJobSituation) jPanelJobSituation;
+	}
+	
 	private JPanelStudies getJPanelStudies() {
 		if (jPanelStudies == null) {
 			jPanelStudies = new JPanelStudies();
@@ -770,6 +783,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			Home home = family.getHome();
 			Address address = home.getAddress();
 			AuthorizationType aType = selectedProgram.getAuthorizationType();
+			JobSituation jobSituation = selectedProgram.getJobSituation();
 			Studies studies = selectedProgram.getStudies();
 
 			// address
@@ -842,6 +856,31 @@ public class JManageProgram extends AbstractJInternalFrame {
 				}
 			}
 
+			//JobSituation
+			
+			if (jobSituation != null) {
+				switch (jobSituation.getId()) {
+				case 1:
+					this.getJPanelJobSituation().getjRadioUnemployee().setSelected(true);
+					break;
+				case 2:
+					this.getJPanelJobSituation().getjRadioNormalJob().setSelected(true);
+					break;
+				case 3:
+					this.getJPanelJobSituation().getjRadioMarginalJob().setSelected(true);
+					break;
+				case 4:
+					this.getJPanelJobSituation().getjRadioHouseJob().setSelected(true);
+					break;
+				case 5:
+					this.getJPanelJobSituation().getjRadioRetired().setSelected(true);
+					break;
+				case 6:
+					this.getJPanelJobSituation().getjRadioOthers().setSelected(true);
+					break;
+				}
+			}
+			
 			// Studies
 			if (studies != null) {
 				switch (studies.getId()) {
@@ -874,6 +913,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 					break;
 				}
 			}
+			
+			
 
 			logger.info("fillDataprogram");
 		}
@@ -1204,6 +1245,33 @@ public class JManageProgram extends AbstractJInternalFrame {
 		selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
 	}
 
+	public void onSaveJobSituation(Program selectedProgram) {
+		JobSituation jsFilter = new JobSituation();
+		String description = "";
+
+		if (this.getJPanelJobSituation().getjRadioUnemployee().isSelected()) {
+			description = getJPanelJobSituation().getjRadioUnemployee().getText();
+
+		} else if (this.getJPanelJobSituation().getjRadioNormalJob().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNormalJob().getText();
+			
+		} else if (this.getJPanelJobSituation().getjRadioMarginalJob().isSelected()) {
+			description = getJPanelJobSituation().getjRadioMarginalJob().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioHouseJob().isSelected()) {
+			description = getJPanelJobSituation().getjRadioHouseJob().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioRetired().isSelected()) {
+			description = getJPanelJobSituation().getjRadioRetired().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioOthers().isSelected()) {
+			description = getJPanelJobSituation().getjRadioOthers().getText();
+		}
+		
+		jsFilter.setDescription(description);
+		selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
+	}
+	
 	public void onSaveStudies(Program selectedProgram) {
 		Studies studiesFilter = new Studies();
 		String description = "";
@@ -1256,6 +1324,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveFamily(selectedProgram.getFamily());
 						onSaveRelatives(selectedProgram.getFamily());
 						onSaveAuthorizationType(selectedProgram);
+						onSaveJobSituation(selectedProgram);
 						onSaveStudies(selectedProgram);
 
 						programDAO.update(selectedProgram);
