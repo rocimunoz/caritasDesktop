@@ -37,6 +37,7 @@ import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
+import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
@@ -46,6 +47,7 @@ import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
+import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
@@ -126,12 +128,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private AddressDAO addressDAO;
 	private RelativeDAO relativeDAO;
 	private AuthorizationTypeDAO authorizationTypeDAO;
+	private StudiesDAO studiesDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
 	private JPanel jPanelHome;
 	private JPanel jPanelAddress;
 	private JPanel jPanelAuthorizationType;
+	private JPanel jPanelStudies;
 
 	private People people = null;
 
@@ -162,6 +166,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -191,6 +196,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -364,6 +370,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelAuthorizationType = new JPanelAuthorizationType();
 		}
 		return (JPanelAuthorizationType) jPanelAuthorizationType;
+	}
+
+	private JPanelStudies getJPanelStudies() {
+		if (jPanelStudies == null) {
+			jPanelStudies = new JPanelStudies();
+		}
+		return (JPanelStudies) jPanelStudies;
 	}
 
 	/* FUNCIONES DEL GETCONTENTPANE */
@@ -757,6 +770,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			Home home = family.getHome();
 			Address address = home.getAddress();
 			AuthorizationType aType = selectedProgram.getAuthorizationType();
+			Studies studies = selectedProgram.getStudies();
 
 			// address
 			this.getJPanelAddress().getJTextFieldFloor().setText(address.getFloor());
@@ -825,7 +839,39 @@ public class JManageProgram extends AbstractJInternalFrame {
 					this.getJPanelAuthorizationType().getJRadioSAIrregular().setSelected(true);
 					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(false);
 					break;
+				}
+			}
 
+			// Studies
+			if (studies != null) {
+				switch (studies.getId()) {
+				case 1:
+					this.getJPanelStudies().getjRadioNoReadNoWrite().setSelected(true);
+					break;
+				case 2:
+					this.getJPanelStudies().getjRadioReadWrite().setSelected(true);
+					break;
+				case 3:
+					this.getJPanelStudies().getjRadioChild().setSelected(true);
+					break;
+				case 4:
+					this.getJPanelStudies().getjRadioSchool().setSelected(true);
+					break;
+				case 5:
+					this.getJPanelStudies().getjRadioHighSchool().setSelected(true);
+					break;
+				case 6:
+					this.getJPanelStudies().getjRadioBachelor().setSelected(true);
+					break;
+				case 7:
+					this.getJPanelStudies().getjRadioFP().setSelected(true);
+					break;
+				case 8:
+					this.getJPanelStudies().getjRadioFPHigh().setSelected(true);
+					break;
+				case 9:
+					this.getJPanelStudies().getjRadioUniversity().setSelected(true);
+					break;
 				}
 			}
 
@@ -1130,10 +1176,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveAuthorizationType(Program selectedProgram) {
 		AuthorizationType aTypeFilter = new AuthorizationType();
 		String description = "";
-		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()){
+		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()) {
 			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioResidence().getText();
-			
+
 			} else if (this.getJPanelAuthorizationType().getJRadioResidenceWork().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioResidenceWork().getText();
 
@@ -1142,20 +1188,56 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 			} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioTourism().getText();
-				
+
 			}
 		}
-		
-		 else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
-			 description = getJPanelAuthorizationType().getJRadioUndocumented().getText();
+
+		else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioUndocumented().getText();
 
 		} else if (this.getJPanelAuthorizationType().getJRadioSAIrregular().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
 
 		}
-		
+
 		aTypeFilter.setDescription(description);
 		selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
+	}
+
+	public void onSaveStudies(Program selectedProgram) {
+		Studies studiesFilter = new Studies();
+		String description = "";
+
+		if (this.getJPanelStudies().getjRadioNoReadNoWrite().isSelected()) {
+			description = getJPanelStudies().getjRadioNoReadNoWrite().getText();
+
+		} else if (this.getJPanelStudies().getjRadioReadWrite().isSelected()) {
+			description = getJPanelStudies().getjRadioReadWrite().getText();
+			
+		} else if (this.getJPanelStudies().getjRadioChild().isSelected()) {
+			description = getJPanelStudies().getjRadioChild().getText();
+		}
+		else if (this.getJPanelStudies().getjRadioSchool().isSelected()) {
+			description = getJPanelStudies().getjRadioSchool().getText();
+		}
+		else if (this.getJPanelStudies().getjRadioHighSchool().isSelected()) {
+			description = getJPanelStudies().getjRadioHighSchool().getText();
+		}
+		else if (this.getJPanelStudies().getjRadioBachelor().isSelected()) {
+			description = getJPanelStudies().getjRadioBachelor().getText();
+		}
+		else if (this.getJPanelStudies().getjRadioFP().isSelected()) {
+			description = getJPanelStudies().getjRadioFP().getText();
+		}
+		else if (this.getJPanelStudies().getjRadioFPHigh().isSelected()) {
+			description = getJPanelStudies().getjRadioFPHigh().getText();
+		}
+		else if (this.getJPanelStudies().getjRadioUniversity().isSelected()) {
+			description = getJPanelStudies().getjRadioUniversity().getText();
+		}
+
+		studiesFilter.setDescription(description);
+		selectedProgram.setStudies(studiesDAO.findStudies(studiesFilter));
 	}
 
 	public void onSaveProgram() {
@@ -1173,10 +1255,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveHome(selectedProgram.getFamily().getHome());
 						onSaveFamily(selectedProgram.getFamily());
 						onSaveRelatives(selectedProgram.getFamily());
-
 						onSaveAuthorizationType(selectedProgram);
-						
-						
+						onSaveStudies(selectedProgram);
+
 						programDAO.update(selectedProgram);
 
 					}
