@@ -45,6 +45,7 @@ import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
@@ -140,6 +141,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JPanel jPanelAuthorizationType;
 	private JPanel jPanelStudies;
 	private JPanel jPanelJobSituation;
+	private JPanel jPanelEconomicSituation;
 
 	private People people = null;
 
@@ -274,6 +276,24 @@ public class JManageProgram extends AbstractJInternalFrame {
 				openRelative(JWindowParams.IMODE_UPDATE);
 			}
 		});
+		
+		this.getJPanelEconomicSituation().getBtnAddIncome().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openIncome(JWindowParams.IMODE_INSERT);
+			}
+		});
+
+		this.getJPanelEconomicSituation().getBtnDeleteIncome().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteIncome();
+			}
+		});
+
+		this.getJPanelEconomicSituation().getBtnEditIncome().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openIncome(JWindowParams.IMODE_UPDATE);
+			}
+		});
 
 	}
 
@@ -316,7 +336,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("Tipo Autorización", getJPanelAuthorizationType());
 		getJtabPane1().add("Situación Laboral", getJPanelJobSituation());
 		getJtabPane1().add("Estudios", getJPanelStudies());
-		getJtabPane1().add("Situación Económica", new JPanelEconomicSituation());
+		getJtabPane1().add("Situación Económica", getJPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
 
@@ -390,6 +410,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelStudies = new JPanelStudies();
 		}
 		return (JPanelStudies) jPanelStudies;
+	}
+	
+	private JPanelEconomicSituation getJPanelEconomicSituation() {
+		if (jPanelEconomicSituation == null) {
+			jPanelEconomicSituation = new JPanelEconomicSituation();
+		}
+		return (JPanelEconomicSituation) jPanelEconomicSituation;
 	}
 
 	/* FUNCIONES DEL GETCONTENTPANE */
@@ -1105,6 +1132,74 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
+	
+	public void openIncome(int mode) {
+
+		int rowIndex = getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
+			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
+			if (selectedProgram != null) {
+				selectedProgram.getFamily();
+				openEditIncome(mode, "Nuevo Pariente", null, rowIndex);
+			}
+		}
+	}
+	public void addIncome(Income income) {
+
+		this.getJPanelEconomicSituation().getIncomesTableModel().addRow(income);
+		
+	}
+	
+	public void editIncome(Income income, Integer rowIndex){
+		
+	}
+	
+	public void deleteIncome() {
+
+		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
+		if (rowIndex != -1) {
+
+			getJPanelFamily().getRelativesTableModel().deleteRow(rowIndex);
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Seleccione un registro");
+			return;
+		}
+	}
+	
+	public void openEditIncome(int openMode, String title, Family family, Integer index) {
+
+		JManageEditIncome jManageEditIncome = null;
+		try {
+
+			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
+				int row = this.getJPanelEconomicSituation().getJTableIncomes().getSelectedRow();
+				if (row != -1) {
+					Income income = getJPanelEconomicSituation().getIncomesTableModel().getDomainObject(row);
+
+					jManageEditIncome = new JManageEditIncome(this, true, openMode, title, income, index);
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Seleccione un registro");
+					return;
+				}
+
+			} else {
+				jManageEditIncome = new JManageEditIncome(this, true, openMode, title,null, index);
+			}
+
+			this.desktop.add(jManageEditIncome);
+			jManageEditIncome.setVisible(true);
+			jManageEditIncome.moveToFront();
+			jManageEditIncome.show();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 	public void onSaveRelatives(Family family) {
 
 		List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();

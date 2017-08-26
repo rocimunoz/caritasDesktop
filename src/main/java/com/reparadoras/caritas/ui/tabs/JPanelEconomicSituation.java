@@ -170,7 +170,7 @@ public class JPanelEconomicSituation extends JPanel{
 	}
 	
 	
-	private JTable getJTableIncomes(){
+	public JTable getJTableIncomes(){
 		if (tableIncomes == null){
 			
 			tableIncomes = new JTable(getIncomesTableModel());
@@ -181,7 +181,7 @@ public class JPanelEconomicSituation extends JPanel{
 		return tableIncomes;
 	}
 	
-    private IncomesTableModel getIncomesTableModel(){
+    public IncomesTableModel getIncomesTableModel(){
 		
 		if (incomesTableModel == null){
 			Object[] columnIdentifiers = new Object[] { "Persona", "Concepto", "Cantidad", "Fecha Fin"};
@@ -213,7 +213,7 @@ private GridBagConstraints getGridJPanelActionsIncome(){
 		return gbc_jPanelActionsIncome; 
 	}
 
-private JButton getBtnAddIncome() {
+public JButton getBtnAddIncome() {
 	if (btnAddIncome == null) {
 		btnAddIncome = new JButton("Nuevo");
 		btnAddIncome.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
@@ -221,7 +221,7 @@ private JButton getBtnAddIncome() {
 	return btnAddIncome;
 }
 
-private JButton getBtnDeleteIncome() {
+public JButton getBtnDeleteIncome() {
 	if (btnDeleteIncome == null) {
 		btnDeleteIncome = new JButton("Borrar");
 		btnDeleteIncome.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
@@ -229,7 +229,7 @@ private JButton getBtnDeleteIncome() {
 	return btnDeleteIncome;
 }
 
-private JButton getBtnEditIncome() {
+public JButton getBtnEditIncome() {
 	if (btnEditIncome == null) {
 		btnEditIncome = new JButton("Editar");
 		btnEditIncome.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
