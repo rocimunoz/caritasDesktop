@@ -292,7 +292,7 @@ public JButton getBtnEditIncome() {
 		return gbc_jPanelScrollExpense; 
 	}
 	
-	private JTable getJTableExpenses(){
+	public JTable getJTableExpenses(){
 		if (tableExpenses == null){
 			
 			tableExpenses = new JTable(getExpensesTableModel());
@@ -303,7 +303,7 @@ public JButton getBtnEditIncome() {
 		return tableExpenses;
 	}
 	
-private ExpensesTableModel getExpensesTableModel(){
+public ExpensesTableModel getExpensesTableModel(){
 		
 		if (expensesTableModel == null){
 			Object[] columnIdentifiers = new Object[] { "Concepto", "Cantidad", "Periodicidad", "Fecha Fin"};
@@ -333,7 +333,7 @@ private GridBagConstraints getGridJPanelActionsExpense(){
 	return gbc_jPanelActionsExpense; 
 }
 
-private JButton getBtnAddExpense() {
+public JButton getBtnAddExpense() {
 	if (btnAddExpense == null) {
 		btnAddExpense = new JButton("Nuevo");
 		btnAddExpense.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
@@ -341,7 +341,7 @@ private JButton getBtnAddExpense() {
 	return btnAddExpense;
 }
 
-private JButton getBtnDeleteExpense() {
+public JButton getBtnDeleteExpense() {
 	if (btnDeleteExpense == null) {
 		btnDeleteExpense = new JButton("Borrar");
 		btnDeleteExpense.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
@@ -349,7 +349,7 @@ private JButton getBtnDeleteExpense() {
 	return btnDeleteExpense;
 }
 
-private JButton getBtnEditExpense() {
+public JButton getBtnEditExpense() {
 	if (btnEditExpense == null) {
 		btnEditExpense = new JButton("Editar");
 		btnEditExpense.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));

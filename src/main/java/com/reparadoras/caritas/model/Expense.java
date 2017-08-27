@@ -16,13 +16,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class Expense implements Serializable{
 
-	
+	private Long id;
 	private String concept;
 	private Integer amount;
 	private String regularity; //quiza enumerado
 	private Date endDate;
+	private Program program;
 	
 	
+	
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getConcept() {
 		return concept;
 	}
@@ -47,6 +56,14 @@ public class Expense implements Serializable{
 	public void setRegularity(String regularity) {
 		this.regularity = regularity;
 	}
+	public Program getProgram() {
+		return program;
+	}
+	public void setProgram(Program program) {
+		this.program = program;
+	}
+	
+	
 	
 	
 	

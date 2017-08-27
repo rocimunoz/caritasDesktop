@@ -4,6 +4,7 @@ import javax.swing.JInternalFrame;
 
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
+import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.People;
@@ -44,13 +45,13 @@ import java.awt.Color;
 
 @SuppressWarnings("serial")
 
-public class JManageEditIncome extends AbstractJInternalFrame {
+public class JManageEditExpense extends AbstractJInternalFrame {
 
 	private JPanel jPanelContentPane;
 	private JTextField txfPeople;
 
 	private JPanel jPanelPersonalData;
-	private JLabel jLblPeople;
+	private JLabel jLblfrequency;
 
 	private JPanel jPanelActions;
 	private JButton jBtnAccept;
@@ -62,19 +63,20 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JLabel jLblConcept;
 	private JTextField txfConcept;
 	
+
 	private JXDatePicker jxDateBorn;
 
 	private int executingMode;
 	private AbstractJInternalFrame jCicIFParent;
 
-	private Income selectedIncome;
+	private Expense selectedExpense;
 
 	private Integer rowIndex;
 
 	private JobSituationVerifier jobSituationVerifier = new JobSituationVerifier();
 
-	public JManageEditIncome(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
-			Income income, Integer index) throws Exception {
+	public JManageEditExpense(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
+			Expense expense, Integer index) throws Exception {
 		super(jCicIFParent, modal);
 		setVisible(true);
 		this.moveToFront();
@@ -84,7 +86,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		this.setSize(800, 300);
 		this.setTitle(title);
 
-		this.selectedIncome = income;
+		this.selectedExpense = expense;
 
 		this.jCicIFParent = jCicIFParent;
 		this.executingMode = executingMode;
@@ -102,8 +104,8 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		getJPanelPersonalData().setLayout(getGridLayoutJPanelPersonalData());
 		getJPanelPersonalData().add(getJLabelAmount(), getGridJLabelAmount());
 		getJPanelPersonalData().add(getJTextFieldAmount(), getGridJTextFieldAmount());
-		getJPanelPersonalData().add(getJLabelPeople(), getGridJLabelName());
-		getJPanelPersonalData().add(getJTextFieldPeople(), getGridJTextFieldName());
+		getJPanelPersonalData().add(getJLabelFrequency(), getGridJLabelFrequency());
+		getJPanelPersonalData().add(getJTextFieldFrequency(), getGridJTextFieldFrequency());
 		getJPanelPersonalData().add(getJLblDateEnd(), getGridJLabelDateEnd());
 		getJPanelPersonalData().add(getJXDateEnd(), getGridJXDateEnd());
 		getJPanelPersonalData().add(getJLabelSituation(), getGridJLabelSituation());
@@ -123,11 +125,11 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 				if (checkRequiredFields()) {
 					// Abrir transaccion
 					if (executingMode == JWindowParams.IMODE_UPDATE) {
-						Income income = onUpdateIncomes();
-						((JManageProgram) jCicIFParent).editIncome(income, rowIndex);
+						Expense expense = onUpdateExpense();
+						((JManageProgram) jCicIFParent).editExpense(expense, rowIndex);
 					} else if (executingMode == JWindowParams.IMODE_INSERT) {
-						Income income = onCreateIncome();
-						((JManageProgram) jCicIFParent).addIncome(income);
+						Expense expense = onCreateExpense();
+						((JManageProgram) jCicIFParent).addExpense(expense);
 					}
 
 					// Cerrar Transaccion
@@ -157,7 +159,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 	private boolean checkRequiredFields() {
 
-		if (!getJTextFieldPeople().getText().equals("") && !getJTextFieldConcept().getText().equals("")
+		if (!getJTextFieldFrequency().getText().equals("") && !getJTextFieldConcept().getText().equals("")
 				&& this.getJXDateEnd().getDate() != null) {
 			return true;
 		} else {
@@ -170,25 +172,26 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private void fillData(int mode) {
 		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE) {
 
-			this.getJTextFieldAmount().setText(this.selectedIncome.getAmount() + "");
-			this.getJTextFieldConcept().setText(this.selectedIncome.getConcept());
-			this.getJXDateEnd().setDate(this.selectedIncome.getEndDate());
+			this.getJTextFieldAmount().setText(this.selectedExpense.getAmount() + "");
+			this.getJTextFieldConcept().setText(this.selectedExpense.getConcept());
+			this.getJXDateEnd().setDate(this.selectedExpense.getEndDate());
+			this.getJTextFieldFrequency().setText(this.selectedExpense.getRegularity());
 
 		}
 
 	}
 
-	private Income onUpdateIncomes() {
+	private Expense onUpdateExpense() {
 		try {
 
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				this.selectedIncome.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				this.selectedExpense.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
 			}
 
-			this.selectedIncome.setConcept(this.getJTextFieldConcept().getText());
-			this.selectedIncome.setEndDate(this.getJXDateEnd().getDate());
+			this.selectedExpense.setConcept(this.getJTextFieldConcept().getText());
+			this.selectedExpense.setEndDate(this.getJXDateEnd().getDate());
 
-			return selectedIncome;
+			return selectedExpense;
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
@@ -198,18 +201,18 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 	}
 
-	private Income onCreateIncome() {
+	private Expense onCreateExpense() {
 		try {
 
-			Income income = new Income();
+			Expense expense = new Expense();
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				income.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				expense.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
 			}
 
-			income.setConcept(this.getJTextFieldConcept().getText());
-			income.setEndDate(this.getJXDateEnd().getDate());
+			expense.setConcept(this.getJTextFieldConcept().getText());
+			expense.setEndDate(this.getJXDateEnd().getDate());
 
-			return income;
+			return expense;
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
@@ -266,7 +269,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 		if (jPanelPersonalData == null) {
 			jPanelPersonalData = new JPanel();
-			jPanelPersonalData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ingresos",
+			jPanelPersonalData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Gastos",
 					TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			((javax.swing.border.TitledBorder) jPanelPersonalData.getBorder())
 					.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
@@ -297,18 +300,18 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		return gbl_jPanelPersonalData;
 	}
 
-	private JLabel getJLabelPeople() {
+	private JLabel getJLabelFrequency() {
 
-		if (jLblPeople == null) {
-			jLblPeople = new JLabel("Persona");
-			jLblPeople.setFont(new Font("Verdana", Font.PLAIN, 14));
-			jLblPeople.setPreferredSize(new Dimension(80, 25));
+		if (jLblfrequency == null) {
+			jLblfrequency = new JLabel("Periodicidad");
+			jLblfrequency.setMinimumSize(new Dimension(150, 14));
+			jLblfrequency.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 
-		return jLblPeople;
+		return jLblfrequency;
 	}
 
-	private GridBagConstraints getGridJLabelName() {
+	private GridBagConstraints getGridJLabelFrequency() {
 		GridBagConstraints gbc_jLblName = new GridBagConstraints();
 		gbc_jLblName.anchor = GridBagConstraints.WEST;
 		gbc_jLblName.insets = new Insets(0, 20, 5, 5);
@@ -318,7 +321,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		return gbc_jLblName;
 	}
 
-	private JTextField getJTextFieldPeople() {
+	private JTextField getJTextFieldFrequency() {
 
 		if (txfPeople == null) {
 			txfPeople = new JTextField();
@@ -330,7 +333,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		return txfPeople;
 	}
 
-	private GridBagConstraints getGridJTextFieldName() {
+	private GridBagConstraints getGridJTextFieldFrequency() {
 
 		GridBagConstraints gbc_txfName = new GridBagConstraints();
 		gbc_txfName.weightx = 1.0;
@@ -369,11 +372,9 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JFormattedTextField getJTextFieldAmount() {
 
 		if (txfAmount == null) {
-			
 			NumberFormat amountFormat = NumberFormat.getNumberInstance();
-			
+		
 			txfAmount = new JFormattedTextField(amountFormat);
-			
 			txfAmount.setColumns(10);
 			txfAmount.setName("amount");
 			txfAmount.setInputVerifier(jobSituationVerifier);
@@ -522,7 +523,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
 			jBtnAccept.setIcon(
-					new ImageIcon(JManageEditIncome.class.getResource("/com/reparadoras/images/icon-check.png")));
+					new ImageIcon(JManageEditExpense.class.getResource("/com/reparadoras/images/icon-check.png")));
 		}
 
 		return jBtnAccept;
@@ -542,7 +543,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
 			jBtnCancel.setIcon(
-					new ImageIcon(JManageEditIncome.class.getResource("/com/reparadoras/images/icon-cancel.png")));
+					new ImageIcon(JManageEditExpense.class.getResource("/com/reparadoras/images/icon-cancel.png")));
 		}
 
 		return jBtnCancel;

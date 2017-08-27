@@ -32,7 +32,7 @@ public class IncomesTableModel extends GenericDomainTableModel<Income>{
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Income income = getDomainObject(rowIndex);
         switch(columnIndex) {
-            case 0: return "";
+            case 0: return income.getPeople();
             case 1: return income.getConcept();
             case 2: return income.getAmount();
             case 3: return income.getEndDate();
@@ -45,7 +45,7 @@ public class IncomesTableModel extends GenericDomainTableModel<Income>{
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Income income = getDomainObject(rowIndex);
         switch(columnIndex) {
-            case 0: ; break;
+            case 0: income.setPeople((String)aValue); break;
             case 1: income.setConcept((String)aValue);break;
             case 2: income.setAmount((Integer)aValue); break;
             case 3: income.setEndDate((Date)aValue); break;

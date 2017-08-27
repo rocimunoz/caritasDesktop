@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Income">
+    <resultMap id="IncomeResult" type="Income">
+        <result property="id" column="id"/>
+        <result property="concept" column="concept"/>
+        <result property="endDate" column="end_date"/>
+        <result property="amount" column="amount"/>
+        <result property="people" column="people"/>
+        <association property="program" resultMap="ProgramResult"/> 
+    </resultMap>
+    
+    <resultMap id="ProgramResult" type="Program">
+        <result property="id" column="id"/>      
+    </resultMap>
+ 
+    
+    <select id="findIncome" parameterType="Income" resultMap="IncomeResult">
+       SELECT * FROM C_INCOME
+       WHERE ID_PROGRAM = #{program.id}
+    </select>
+    
+    <delete id="delete" parameterType="Income">
+    	DELETE FROM C_INCOME WHERE id = #{id}
+    </delete>
+    
+ 	<insert id="insert" parameterType="Income" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_INCOME (people,concept, amount, end_date, id_program) 
+        VALUES (
+        #{people},
+        #{concept},
+        #{amount},
+        #{endDate},
+        #{program.id});
+    </insert>
+    
+    <update id="update" parameterType="Income">
+        UPDATE C_INCOME
+        <set>
+          <if test="people != null">people = #{people},</if>
+          <if test="concept != null">concept = #{concept},</if>
+          <if test="amount != null">amount = #{amount},</if>
+          <if test="endDate != null">end_date = #{endDate},</if>
+          </set>
+        WHERE id = #{id} 
+  	</update>
+ 
+	
+</mapper>

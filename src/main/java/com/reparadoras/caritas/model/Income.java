@@ -16,12 +16,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class Income implements Serializable{
 
-	
+	private Long id;
+	private String people;
 	private String concept;
 	private Integer amount;
 	private Date endDate;
+	private Program program;
 	
 	
+	
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getConcept() {
 		return concept;
 	}
@@ -40,6 +50,19 @@ public class Income implements Serializable{
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+	public String getPeople() {
+		return people;
+	}
+	public void setPeople(String people) {
+		this.people = people;
+	}
+	public Program getProgram() {
+		return program;
+	}
+	public void setProgram(Program program) {
+		this.program = program;
+	}
+	
 	
 	
 	

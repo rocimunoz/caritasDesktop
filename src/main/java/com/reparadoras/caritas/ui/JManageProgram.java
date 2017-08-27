@@ -31,9 +31,11 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
+import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
+import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.JobSituationDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
@@ -42,6 +44,7 @@ import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
+import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
@@ -133,6 +136,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private AuthorizationTypeDAO authorizationTypeDAO;
 	private JobSituationDAO jobSituationDAO;
 	private StudiesDAO studiesDAO;
+	private IncomesDAO incomesDAO;
+	private ExpensesDAO expensesDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
@@ -174,6 +179,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -205,6 +212,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -276,7 +285,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				openRelative(JWindowParams.IMODE_UPDATE);
 			}
 		});
-		
+
 		this.getJPanelEconomicSituation().getBtnAddIncome().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openIncome(JWindowParams.IMODE_INSERT);
@@ -292,6 +301,24 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.getJPanelEconomicSituation().getBtnEditIncome().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openIncome(JWindowParams.IMODE_UPDATE);
+			}
+		});
+
+		this.getJPanelEconomicSituation().getBtnAddExpense().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openExpense(JWindowParams.IMODE_INSERT);
+			}
+		});
+
+		this.getJPanelEconomicSituation().getBtnDeleteExpense().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteExpense();
+			}
+		});
+
+		this.getJPanelEconomicSituation().getBtnEditExpense().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openExpense(JWindowParams.IMODE_UPDATE);
 			}
 		});
 
@@ -404,14 +431,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 		return (JPanelJobSituation) jPanelJobSituation;
 	}
-	
+
 	private JPanelStudies getJPanelStudies() {
 		if (jPanelStudies == null) {
 			jPanelStudies = new JPanelStudies();
 		}
 		return (JPanelStudies) jPanelStudies;
 	}
-	
+
 	private JPanelEconomicSituation getJPanelEconomicSituation() {
 		if (jPanelEconomicSituation == null) {
 			jPanelEconomicSituation = new JPanelEconomicSituation();
@@ -883,8 +910,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 				}
 			}
 
-			//JobSituation
-			
+			// JobSituation
+
 			if (jobSituation != null) {
 				switch (jobSituation.getId()) {
 				case 1:
@@ -907,7 +934,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 					break;
 				}
 			}
-			
+
 			// Studies
 			if (studies != null) {
 				switch (studies.getId()) {
@@ -940,8 +967,18 @@ public class JManageProgram extends AbstractJInternalFrame {
 					break;
 				}
 			}
-			
-			
+
+			// Incomes
+			Income incomeFilter = new Income();
+			incomeFilter.setProgram(selectedProgram);
+			List<Income> listIncomes = incomesDAO.findIncomes(incomeFilter);
+			this.getJPanelEconomicSituation().getIncomesTableModel().addRows(listIncomes);
+
+			// Expenses
+			Expense expenseFilter = new Expense();
+			expenseFilter.setProgram(selectedProgram);
+			List<Expense> listExpenses = expensesDAO.findExpenses(expenseFilter);
+			this.getJPanelEconomicSituation().getExpensesTableModel().addRows(listExpenses);
 
 			logger.info("fillDataprogram");
 		}
@@ -1132,7 +1169,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
-	
 	public void openIncome(int mode) {
 
 		int rowIndex = getJTableProgram().getSelectedRow();
@@ -1140,20 +1176,21 @@ public class JManageProgram extends AbstractJInternalFrame {
 			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
 			if (selectedProgram != null) {
 				selectedProgram.getFamily();
-				openEditIncome(mode, "Nuevo Pariente", null, rowIndex);
+				openEditIncome(mode, "Nuevo Ingreso", null, rowIndex);
 			}
 		}
 	}
+
 	public void addIncome(Income income) {
 
 		this.getJPanelEconomicSituation().getIncomesTableModel().addRow(income);
-		
+
 	}
-	
-	public void editIncome(Income income, Integer rowIndex){
-		
+
+	public void editIncome(Income income, Integer rowIndex) {
+
 	}
-	
+
 	public void deleteIncome() {
 
 		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
@@ -1166,7 +1203,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			return;
 		}
 	}
-	
+
 	public void openEditIncome(int openMode, String title, Family family, Integer index) {
 
 		JManageEditIncome jManageEditIncome = null;
@@ -1185,7 +1222,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				}
 
 			} else {
-				jManageEditIncome = new JManageEditIncome(this, true, openMode, title,null, index);
+				jManageEditIncome = new JManageEditIncome(this, true, openMode, title, null, index);
 			}
 
 			this.desktop.add(jManageEditIncome);
@@ -1199,7 +1236,75 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 
 	}
-	
+
+	public void openExpense(int mode) {
+
+		int rowIndex = getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
+			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
+			if (selectedProgram != null) {
+				selectedProgram.getFamily();
+				openEditExpense(mode, "Nuevo Gasto", null, rowIndex);
+			}
+		}
+	}
+
+	public void addExpense(Expense expense) {
+
+		this.getJPanelEconomicSituation().getExpensesTableModel().addRow(expense);
+
+	}
+
+	public void editExpense(Expense expense, Integer rowIndex) {
+
+	}
+
+	public void deleteExpense() {
+
+		int rowIndex = getJPanelEconomicSituation().getJTableExpenses().getSelectedRow();
+		if (rowIndex != -1) {
+
+			getJPanelEconomicSituation().getExpensesTableModel().deleteRow(rowIndex);
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Seleccione un registro");
+			return;
+		}
+	}
+
+	public void openEditExpense(int openMode, String title, Family family, Integer index) {
+
+		JManageEditExpense jManageEditexpense = null;
+		try {
+
+			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
+				int row = this.getJPanelEconomicSituation().getJTableExpenses().getSelectedRow();
+				if (row != -1) {
+					Expense expense = getJPanelEconomicSituation().getExpensesTableModel().getDomainObject(row);
+
+					jManageEditexpense = new JManageEditExpense(this, true, openMode, title, expense, index);
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Seleccione un registro");
+					return;
+				}
+
+			} else {
+				jManageEditexpense = new JManageEditExpense(this, true, openMode, title, null, index);
+			}
+
+			this.desktop.add(jManageEditexpense);
+			jManageEditexpense.setVisible(true);
+			jManageEditexpense.moveToFront();
+			jManageEditexpense.show();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	public void onSaveRelatives(Family family) {
 
 		List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();
@@ -1349,24 +1454,21 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		} else if (this.getJPanelJobSituation().getjRadioNormalJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioNormalJob().getText();
-			
+
 		} else if (this.getJPanelJobSituation().getjRadioMarginalJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioMarginalJob().getText();
-		}
-		else if (this.getJPanelJobSituation().getjRadioHouseJob().isSelected()) {
+		} else if (this.getJPanelJobSituation().getjRadioHouseJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioHouseJob().getText();
-		}
-		else if (this.getJPanelJobSituation().getjRadioRetired().isSelected()) {
+		} else if (this.getJPanelJobSituation().getjRadioRetired().isSelected()) {
 			description = getJPanelJobSituation().getjRadioRetired().getText();
-		}
-		else if (this.getJPanelJobSituation().getjRadioOthers().isSelected()) {
+		} else if (this.getJPanelJobSituation().getjRadioOthers().isSelected()) {
 			description = getJPanelJobSituation().getjRadioOthers().getText();
 		}
-		
+
 		jsFilter.setDescription(description);
 		selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
 	}
-	
+
 	public void onSaveStudies(Program selectedProgram) {
 		Studies studiesFilter = new Studies();
 		String description = "";
@@ -1376,31 +1478,111 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		} else if (this.getJPanelStudies().getjRadioReadWrite().isSelected()) {
 			description = getJPanelStudies().getjRadioReadWrite().getText();
-			
+
 		} else if (this.getJPanelStudies().getjRadioChild().isSelected()) {
 			description = getJPanelStudies().getjRadioChild().getText();
-		}
-		else if (this.getJPanelStudies().getjRadioSchool().isSelected()) {
+		} else if (this.getJPanelStudies().getjRadioSchool().isSelected()) {
 			description = getJPanelStudies().getjRadioSchool().getText();
-		}
-		else if (this.getJPanelStudies().getjRadioHighSchool().isSelected()) {
+		} else if (this.getJPanelStudies().getjRadioHighSchool().isSelected()) {
 			description = getJPanelStudies().getjRadioHighSchool().getText();
-		}
-		else if (this.getJPanelStudies().getjRadioBachelor().isSelected()) {
+		} else if (this.getJPanelStudies().getjRadioBachelor().isSelected()) {
 			description = getJPanelStudies().getjRadioBachelor().getText();
-		}
-		else if (this.getJPanelStudies().getjRadioFP().isSelected()) {
+		} else if (this.getJPanelStudies().getjRadioFP().isSelected()) {
 			description = getJPanelStudies().getjRadioFP().getText();
-		}
-		else if (this.getJPanelStudies().getjRadioFPHigh().isSelected()) {
+		} else if (this.getJPanelStudies().getjRadioFPHigh().isSelected()) {
 			description = getJPanelStudies().getjRadioFPHigh().getText();
-		}
-		else if (this.getJPanelStudies().getjRadioUniversity().isSelected()) {
+		} else if (this.getJPanelStudies().getjRadioUniversity().isSelected()) {
 			description = getJPanelStudies().getjRadioUniversity().getText();
 		}
 
 		studiesFilter.setDescription(description);
 		selectedProgram.setStudies(studiesDAO.findStudies(studiesFilter));
+	}
+
+	public void onSaveIncomes(Program selectedProgram) {
+
+		List<Income> listIncomes = this.getJPanelEconomicSituation().getIncomesTableModel().getDomainObjects();
+		Income incomeFilter = new Income();
+		incomeFilter.setProgram(selectedProgram);
+		List<Income> listIncomesBBDD = incomesDAO.findIncomes(incomeFilter);
+
+		// Insert and Updates
+		for (Income income : listIncomes) {
+			if (income.getId() != null) {
+				incomesDAO.update(income);
+			} else {
+				income.setProgram(selectedProgram);
+				incomesDAO.insert(income);
+			}
+		}
+
+		// Deletes
+		if (listIncomes.isEmpty()) {
+			for (Income income : listIncomesBBDD) {
+
+				incomesDAO.delete(income);
+			}
+		} else {
+
+			for (Income incomeBBDD : listIncomesBBDD) {
+				boolean exist = false;
+				for (Income incomeGrid : listIncomes) {
+
+					if (incomeBBDD.getId().equals(incomeGrid.getId())) {
+						exist = true;
+						break;
+					}
+				}
+				if (exist == false) {
+					incomesDAO.delete(incomeBBDD);
+				}
+			}
+
+		}
+
+	}
+	
+	public void onSaveExpenses(Program selectedProgram) {
+
+		List<Expense> listExpenses = this.getJPanelEconomicSituation().getExpensesTableModel().getDomainObjects();
+		Expense expenseFilter = new Expense();
+		expenseFilter.setProgram(selectedProgram);
+		List<Expense> listExpenseBBDD = expensesDAO.findExpenses(expenseFilter);
+
+		// Insert and Updates
+		for (Expense expense : listExpenses) {
+			if (expense.getId() != null) {
+				expensesDAO.update(expense);
+			} else {
+				expense.setProgram(selectedProgram);
+				expensesDAO.insert(expense);
+			}
+		}
+
+		// Deletes
+		if (listExpenses.isEmpty()) {
+			for (Expense expense : listExpenseBBDD) {
+
+				expensesDAO.delete(expense);
+			}
+		} else {
+
+			for (Expense expenseBBDD : listExpenseBBDD) {
+				boolean exist = false;
+				for (Expense expenseGrid : listExpenses) {
+
+					if (expenseBBDD.getId().equals(expenseGrid.getId())) {
+						exist = true;
+						break;
+					}
+				}
+				if (exist == false) {
+					expensesDAO.delete(expenseBBDD);
+				}
+			}
+
+		}
+
 	}
 
 	public void onSaveProgram() {
@@ -1421,6 +1603,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveAuthorizationType(selectedProgram);
 						onSaveJobSituation(selectedProgram);
 						onSaveStudies(selectedProgram);
+						onSaveIncomes(selectedProgram);
+						onSaveExpenses(selectedProgram);
 
 						programDAO.update(selectedProgram);
 
