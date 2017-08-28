@@ -173,6 +173,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 			this.getJTextFieldAmount().setText(this.selectedIncome.getAmount() + "");
 			this.getJTextFieldConcept().setText(this.selectedIncome.getConcept());
 			this.getJXDateEnd().setDate(this.selectedIncome.getEndDate());
+			this.getJTextFieldPeople().setText(this.selectedIncome.getPeople());
 
 		}
 
@@ -187,6 +188,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 			this.selectedIncome.setConcept(this.getJTextFieldConcept().getText());
 			this.selectedIncome.setEndDate(this.getJXDateEnd().getDate());
+			this.selectedIncome.setPeople(this.getJTextFieldPeople().getText());
 
 			return selectedIncome;
 		} catch (Exception e) {
@@ -208,6 +210,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 			income.setConcept(this.getJTextFieldConcept().getText());
 			income.setEndDate(this.getJXDateEnd().getDate());
+			income.setPeople(this.getJTextFieldPeople().getText());
 
 			return income;
 		} catch (Exception e) {

@@ -443,6 +443,18 @@ public class JPanelAddress extends JPanel{
 
 	
 	
+	public void cleanAddress() {
+		// address
+		this.getJTextFieldFloor().setText("");
+		this.getJTextFieldGate().setText("");
+		this.getJTextFieldPlace().setText("");
+		this.getJTextFieldStreet().setText("");
+		this.getJTextFieldTelephone().setText("");
+		this.getJTextFieldTelephoneContact().setText("");
+		this.getJTextFieldTown().setText("");
+
+	}
+	
 	
 	
 	

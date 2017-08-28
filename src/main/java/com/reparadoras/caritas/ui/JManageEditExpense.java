@@ -190,6 +190,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 
 			this.selectedExpense.setConcept(this.getJTextFieldConcept().getText());
 			this.selectedExpense.setEndDate(this.getJXDateEnd().getDate());
+			this.selectedExpense.setRegularity(this.getJTextFieldFrequency().getText());
 
 			return selectedExpense;
 		} catch (Exception e) {
@@ -211,6 +212,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 
 			expense.setConcept(this.getJTextFieldConcept().getText());
 			expense.setEndDate(this.getJXDateEnd().getDate());
+			expense.setRegularity(this.getJTextFieldFrequency().getText());
 
 			return expense;
 		} catch (Exception e) {

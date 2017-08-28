@@ -386,8 +386,14 @@ public void initCombos(){
 
 	
 	
-	
-	
+	public void cleanHome(){
+		this.getJComboNumberFamilies().setSelectedItem("");
+		this.getJComboNumberPeople().setSelectedItem(-1);
+		this.getJComboNumberRooms().setSelectedItem(-1);
+		this.getJTextAreaOtherInfo().setText("");
+		this.getJTextFieldRegHolding().setText("");
+		
+	}
 	
 	
 	

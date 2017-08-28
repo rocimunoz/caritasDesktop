@@ -237,7 +237,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJButtonSearch().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				onFilterProgram(false);
 			}
 		});
 
@@ -379,19 +379,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void initCbPeople() {
 
-		if (this.people != null) {
-			this.getJComboBoxPeople().addItem(this.people);
-			this.getJComboBoxPeople().setSelectedItem(this.people);
-		} else {
-			List<People> listPeople = peopleDAO.findAll();
-			People allPeople = new People();
-			allPeople.setName("TODOS");
-			allPeople.setId(-1);
-			listPeople.add(0, allPeople);
-			for (People p : listPeople) {
-				this.getJComboBoxPeople().addItem(p);
-			}
+		List<People> listPeople = peopleDAO.findAll();
+
+		for (People p : listPeople) {
+			this.getJComboBoxPeople().addItem(p);
 		}
+		getJComboBoxPeople().setSelectedIndex(-1);
 
 	}
 
@@ -828,7 +821,26 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.getJComboBoxPeople().setSelectedIndex(-1);
 	}
 
+	public void cleanGrids() {
+		this.getJPanelFamily().getRelativesTableModel().clearTableModelData();
+		this.getJPanelEconomicSituation().getExpensesTableModel().clearTableModelData();
+		this.getJPanelEconomicSituation().getIncomesTableModel().clearTableModelData();
+	}
+
+	public void cleanTabs(){
+		this.getJPanelAddress().cleanAddress();
+		this.getJPanelHome().cleanHome();
+		//TODO: limpiar paneles
+		//this.getJPanelFamily().cleanFamily();
+		//this.getJPanelAuthorizationType().cleanAuthorization();
+		//this.getJPanelJobSituation().cleanJobSituation();
+		//this.getJPanelStudies().cleanStudies();
+		//this.getJPanelEconomicSituation().cleanEconomicSituation();
+		
+	}
+
 	public void fillDataProgram() {
+		cleanGrids();
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
@@ -1012,14 +1024,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 		People filterPeople = (People) this.getJComboBoxPeople().getSelectedItem();
 		try {
 
-			if (filterPeople.getId() != -1) {
+			if (filterPeople != null && filterPeople.getId() != -1) {
 				Program program = programDAO.findProgram(filterPeople);
 				if (program != null) {
 					this.getProgramTableModel().clearTableModelData();
 					this.getProgramTableModel().addRow(program);
 
 				} else {
-
+					cleanTabs();
 					if (create) {
 						int dialogResult = JOptionPane.showConfirmDialog(this,
 								"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?");
@@ -1193,10 +1205,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void deleteIncome() {
 
-		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
+		int rowIndex = getJPanelEconomicSituation().getJTableIncomes().getSelectedRow();
 		if (rowIndex != -1) {
 
-			getJPanelFamily().getRelativesTableModel().deleteRow(rowIndex);
+			getJPanelEconomicSituation().getIncomesTableModel().deleteRow(rowIndex);
 
 		} else {
 			JOptionPane.showMessageDialog(null, "Seleccione un registro");
@@ -1541,7 +1553,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 
 	}
-	
+
 	public void onSaveExpenses(Program selectedProgram) {
 
 		List<Expense> listExpenses = this.getJPanelEconomicSituation().getExpensesTableModel().getDomainObjects();
