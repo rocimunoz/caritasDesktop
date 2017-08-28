@@ -22,6 +22,7 @@ import javax.swing.table.TableModel;
 
 import com.reparadoras.caritas.dao.HomeTypeDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
+import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
@@ -395,7 +396,14 @@ public void initCombos(){
 		
 	}
 	
-	
+	public void fillData(Home home){
+		
+		this.getJComboNumberFamilies().setSelectedItem(home.getNumberFamilies());
+		this.getJComboNumberPeople().setSelectedItem(home.getNumberPeople());
+		this.getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
+		this.getJTextAreaOtherInfo().setText(home.getOtherInfo());
+		this.getJTextFieldRegHolding().setText(home.getRegHolding());
+	}
 	
 	
 }

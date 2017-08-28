@@ -22,19 +22,7 @@ public ProgramDAO(SqlSessionFactory sqlSessionFactory){
 }
 
 
-public  Program findProgram(People people){
-	Program program = null;
-    SqlSession session = sqlSessionFactory.openSession();
 
-    try {
-        program = session.selectOne("Program.findProgram", people);
-    } finally {
-        session.close();
-    }
-    System.out.println("findProgramById() --> "+program);
-    return program;
-
-}
 
 public int insert(Program program){
     int id = -1;
@@ -85,6 +73,20 @@ public  List<Program> findAll(){
 
     try {
         list = session.selectList("Program.findAll");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAll() --> "+list);
+    return list;
+
+}
+
+public  List<Program> findProgram(People people){
+	List<Program> list = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+        list = session.selectList("Program.findProgram", people);
     } finally {
         session.close();
     }

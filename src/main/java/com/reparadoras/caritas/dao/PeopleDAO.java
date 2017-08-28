@@ -47,12 +47,12 @@ public int insert(People person){
      return id;
  }
 
-public int delete(int idPeople){
+public int delete(People people){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();
 
      try {
-         session.delete("People.delete", idPeople);
+         session.delete("People.delete", people.getId());
      } finally {
          session.commit();
          session.close();

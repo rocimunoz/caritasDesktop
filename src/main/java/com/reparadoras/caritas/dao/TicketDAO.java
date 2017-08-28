@@ -77,6 +77,21 @@ public  List<Ticket> findAll(){
 
 }
 
+public  List<Ticket> findTicket(People people){
+	List<Ticket> list = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+        list = session.selectList("Ticket.findTicket", people);
+    } finally {
+        session.close();
+    }
+    System.out.println("findTicket() --> "+list);
+    return list;
+
+}
+
+/*
 public  Ticket findTicket(People people){
 	Ticket ticket = null;
     SqlSession session = sqlSessionFactory.openSession();
@@ -89,7 +104,7 @@ public  Ticket findTicket(People people){
     System.out.println("findTicket() --> "+ticket);
     return ticket;
 
-}
+}*/
 
 
 }

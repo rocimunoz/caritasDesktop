@@ -24,6 +24,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
@@ -31,9 +32,8 @@ import java.awt.GridLayout;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
-public class JPanelJobSituation extends JPanel{
-	
-	
+public class JPanelJobSituation extends JPanel {
+
 	private JPanel jPanelRadioButton;
 	private JRadioButton jRadioUnemployee;
 	private JRadioButton jRadioNormalJob;
@@ -41,43 +41,33 @@ public class JPanelJobSituation extends JPanel{
 	private JRadioButton jRadioHouseJob;
 	private JRadioButton jRadioRetired;
 	private JRadioButton jRadioOthers;
-	
-	
-	
+
 	public JPanelJobSituation() {
-		
+
 		createGUIPanel();
-		
-		
-		
-	
+
 	}
-	
-	
-	
-	private void createGUIPanel(){
-		
-		
+
+	private void createGUIPanel() {
+
 		this.setLayout(getGridJobSituation());
-		
-		//Añado elementos del Tab Vivienda
+
+		// Añado elementos del Tab Vivienda
 		this.add(getJPanelRadioButton(), getGridJPanelRadio());
-		
-		
+
 	}
-	
+
 	private GridBagLayout getGridJobSituation() {
 		GridBagLayout gbl_LayoutJobSituation = new GridBagLayout();
-		gbl_LayoutJobSituation.columnWeights = new double[] { 0.0};
-		gbl_LayoutJobSituation.rowWeights = new double[] { 0.0};
+		gbl_LayoutJobSituation.columnWeights = new double[] { 0.0 };
+		gbl_LayoutJobSituation.rowWeights = new double[] { 0.0 };
 
 		return gbl_LayoutJobSituation;
 	}
-	
-	
+
 	private JPanel getJPanelRadioButton() {
 		if (jPanelRadioButton == null) {
-		
+
 			jPanelRadioButton = new JPanel();
 			jPanelRadioButton.setLayout(new GridLayout(0, 1, 0, 0));
 			jPanelRadioButton.add(getjRadioUnemployee());
@@ -86,8 +76,7 @@ public class JPanelJobSituation extends JPanel{
 			jPanelRadioButton.add(getjRadioMarginalJob());
 			jPanelRadioButton.add(getjRadioOthers());
 			jPanelRadioButton.add(getjRadioRetired());
-			
-			
+
 			ButtonGroup groupL1 = new ButtonGroup();
 			groupL1.add(getjRadioUnemployee());
 			groupL1.add(getjRadioNormalJob());
@@ -95,11 +84,11 @@ public class JPanelJobSituation extends JPanel{
 			groupL1.add(getjRadioMarginalJob());
 			groupL1.add(getjRadioOthers());
 			groupL1.add(getjRadioRetired());
-			
+
 		}
 		return jPanelRadioButton;
 	}
-	
+
 	private GridBagConstraints getGridJPanelRadio() {
 		GridBagConstraints gbc_jPanelRadio = new GridBagConstraints();
 		gbc_jPanelRadio.weighty = 1.0;
@@ -111,25 +100,23 @@ public class JPanelJobSituation extends JPanel{
 
 		return gbc_jPanelRadio;
 	}
-	
-	
-	
+
 	public JRadioButton getjRadioUnemployee() {
 		if (jRadioUnemployee == null) {
 			jRadioUnemployee = new JRadioButton("Parado");
-			
+
 			jRadioUnemployee.setMargin(new Insets(20, 20, 2, 20));
 			jRadioUnemployee.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jRadioUnemployee;
-		
+
 	}
 
 	public JRadioButton getjRadioNormalJob() {
-		
+
 		if (jRadioNormalJob == null) {
 			jRadioNormalJob = new JRadioButton("Con Trabajo Normalizado");
-			
+
 			jRadioNormalJob.setMargin(new Insets(20, 20, 2, 20));
 			jRadioNormalJob.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
@@ -137,7 +124,7 @@ public class JPanelJobSituation extends JPanel{
 	}
 
 	public JRadioButton getjRadioMarginalJob() {
-		
+
 		if (jRadioMarginalJob == null) {
 			jRadioMarginalJob = new JRadioButton("Con Trabajo Marginal o Economia Sumergida");
 			jRadioMarginalJob.setMargin(new Insets(20, 20, 2, 20));
@@ -147,10 +134,10 @@ public class JPanelJobSituation extends JPanel{
 	}
 
 	public JRadioButton getjRadioHouseJob() {
-		
+
 		if (jRadioHouseJob == null) {
 			jRadioHouseJob = new JRadioButton("Labores del Hogar (Ama de casa)");
-			
+
 			jRadioHouseJob.setMargin(new Insets(20, 20, 2, 20));
 			jRadioHouseJob.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
@@ -160,7 +147,7 @@ public class JPanelJobSituation extends JPanel{
 	public JRadioButton getjRadioRetired() {
 		if (jRadioRetired == null) {
 			jRadioRetired = new JRadioButton("Pensionista o Jubilado");
-			
+
 			jRadioRetired.setMargin(new Insets(20, 20, 2, 20));
 			jRadioRetired.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
@@ -168,29 +155,50 @@ public class JPanelJobSituation extends JPanel{
 	}
 
 	public JRadioButton getjRadioOthers() {
-		
+
 		if (jRadioOthers == null) {
 			jRadioOthers = new JRadioButton("Otros inactivos (Estudiantes, Menores)");
-			
+
 			jRadioOthers.setMargin(new Insets(20, 20, 2, 20));
 			jRadioOthers.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jRadioOthers;
 	}
 
-	
+	public void cleanJobSituation() {
 
-	
-	
-	
-	
+		this.getjRadioUnemployee().setSelected(false);
+		this.getjRadioNormalJob().setSelected(false);
+		this.getjRadioMarginalJob().setSelected(false);
+		this.getjRadioHouseJob().setSelected(false);
+		this.getjRadioRetired().setSelected(false);
 
+	}
 	
-	
-	
-	
-	
-	
-	
-	
+	public void fillData(JobSituation jobSituation){
+		
+		if (jobSituation != null) {
+			switch (jobSituation.getId()) {
+			case 1:
+				this.getjRadioUnemployee().setSelected(true);
+				break;
+			case 2:
+				this.getjRadioNormalJob().setSelected(true);
+				break;
+			case 3:
+				this.getjRadioMarginalJob().setSelected(true);
+				break;
+			case 4:
+				this.getjRadioHouseJob().setSelected(true);
+				break;
+			case 5:
+				this.getjRadioRetired().setSelected(true);
+				break;
+			case 6:
+				this.getjRadioOthers().setSelected(true);
+				break;
+			}
+		}
+	}
+
 }

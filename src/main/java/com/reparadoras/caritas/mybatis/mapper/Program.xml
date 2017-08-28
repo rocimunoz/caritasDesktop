@@ -114,7 +114,7 @@
         AND H.ID_ADDRESS = A.ID
     </select>
     
-    <select id="findProgram" parameterType="int" resultMap="ProgramResult">
+    <select id="findProgram" parameterType="People" resultMap="ProgramResult">
         SELECT PE.DNI, 
                PE.NAME,
                F.ID ID_FAMILY,
@@ -152,7 +152,20 @@
         AND F.ID_FAMILY_TYPE = FT.ID
         AND F.ID_HOME = H.ID
         AND H.ID_ADDRESS = A.ID
-        AND PE.id = #{id}
+         <if test="id != null">
+    		AND PE.ID = #{id}
+  		</if>
+  		<if test="name != null">
+    		AND PE.NAME = #{name}
+  		</if>
+  		<if test="dni != null and !dni.equals('')">
+  		<bind name="pattern" value="'%' + dni + '%'" />
+    		AND PE.DNI like #{pattern}
+  		</if>
+  		<if test="active != null">
+    		AND PE.ACTIVE = #{active}
+  		</if>
+      
     </select>
     
      <delete id="delete" parameterType="People">

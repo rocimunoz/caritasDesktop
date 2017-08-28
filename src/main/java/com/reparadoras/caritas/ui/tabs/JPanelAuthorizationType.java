@@ -24,6 +24,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
 
@@ -257,7 +258,55 @@ public class JPanelAuthorizationType extends JPanel{
 	}
 	
 	
+	public void cleanAuthorization(){
+		
+		this.getJRadioResidence().setSelected(false);
+		this.getJRadioSARegular().setSelected(false);
+		this.getJRadioResidenceWork().setSelected(false);
+		this.getJRadioStudy().setSelected(false);
+		this.getJRadioTourism().setSelected(false);
+		this.getJRadioRefugee().setSelected(false);
+		this.getJRadioUndocumented().setSelected(false);
+		this.getJRadioSAIrregular().setSelected(false);
+		
+		
+	}
 	
+	public void fillData(AuthorizationType aType){
+		
+		if (aType != null) {
+			switch (aType.getId()) {
+			case 1:
+				this.getJRadioResidence().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 2:
+				this.getJRadioResidenceWork().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 3:
+				this.getJRadioStudy().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 4:
+				this.getJRadioTourism().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 5:
+				this.getJRadioRefugee().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 6:
+				this.getJRadioUndocumented().setSelected(true);
+				this.getJRadioSARegular().setSelected(false);
+				break;
+			case 7:
+				this.getJRadioSAIrregular().setSelected(true);
+				this.getJRadioSARegular().setSelected(false);
+				break;
+			}
+		}
+	}
 
 	
 	

@@ -701,7 +701,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 					if (selectedPeople != null) {
 						ticketDAO.delete(selectedPeople);
 						programDAO.delete(selectedPeople);
-						peopleDAO.delete(selectedPeople.getId());
+						peopleDAO.delete(selectedPeople);
 					}
 					
 					

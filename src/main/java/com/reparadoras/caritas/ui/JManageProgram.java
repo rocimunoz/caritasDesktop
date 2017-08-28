@@ -384,7 +384,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 		for (People p : listPeople) {
 			this.getJComboBoxPeople().addItem(p);
 		}
-		getJComboBoxPeople().setSelectedIndex(-1);
+
+		if (this.people != null) {
+			this.getJComboBoxPeople().setSelectedItem(this.people);
+		} else {
+			getJComboBoxPeople().setSelectedIndex(-1);
+		}
 
 	}
 
@@ -766,6 +771,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (jPanelContent == null) {
 			jPanelContent = new JPanel();
 			jPanelContent.setBorder(new LineBorder(new Color(0, 0, 0)));
+			jPanelContent.setVisible(false);
 
 		}
 		return jPanelContent;
@@ -821,28 +827,25 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.getJComboBoxPeople().setSelectedIndex(-1);
 	}
 
-	public void cleanGrids() {
-		this.getJPanelFamily().getRelativesTableModel().clearTableModelData();
-		this.getJPanelEconomicSituation().getExpensesTableModel().clearTableModelData();
-		this.getJPanelEconomicSituation().getIncomesTableModel().clearTableModelData();
-	}
-
-	public void cleanTabs(){
+	public void cleanTabs() {
 		this.getJPanelAddress().cleanAddress();
 		this.getJPanelHome().cleanHome();
-		//TODO: limpiar paneles
-		//this.getJPanelFamily().cleanFamily();
-		//this.getJPanelAuthorizationType().cleanAuthorization();
-		//this.getJPanelJobSituation().cleanJobSituation();
-		//this.getJPanelStudies().cleanStudies();
-		//this.getJPanelEconomicSituation().cleanEconomicSituation();
-		
+		this.getJPanelFamily().cleanFamily();
+		this.getJPanelAuthorizationType().cleanAuthorization();
+		this.getJPanelJobSituation().cleanJobSituation();
+		this.getJPanelStudies().cleanStudies();
+		this.getJPanelEconomicSituation().cleanGrids();
+
 	}
 
 	public void fillDataProgram() {
-		cleanGrids();
+
+		cleanTabs();
+
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
+
+			this.getJPanelContent().setVisible(true);
 			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
 
 			Family family = selectedProgram.getFamily();
@@ -852,147 +855,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 			JobSituation jobSituation = selectedProgram.getJobSituation();
 			Studies studies = selectedProgram.getStudies();
 
-			// address
-			this.getJPanelAddress().getJTextFieldFloor().setText(address.getFloor());
-			this.getJPanelAddress().getJTextFieldGate().setText(address.getGate());
-			// this.getJPanelAddress().getJTextFieldPlace().setText();
-			this.getJPanelAddress().getJTextFieldStreet().setText(address.getStreet());
-			this.getJPanelAddress().getJTextFieldTelephone().setText(address.getTelephone());
-			this.getJPanelAddress().getJTextFieldTelephoneContact().setText(address.getTelephoneContact());
-			this.getJPanelAddress().getJTextFieldTown().setText(address.getTown());
+			this.getJPanelAddress().fillData(address);
+			this.getJPanelHome().fillData(home);
+			this.getJPanelFamily().fillData(relativeDAO, family);
+			this.getJPanelAuthorizationType().fillData(aType);
+			this.getJPanelJobSituation().fillData(jobSituation);
+			this.getJPanelStudies().fillData(studies);
+			this.getJPanelEconomicSituation().fillData(incomesDAO, expensesDAO, selectedProgram);
 
-			// Home
-			this.getJPanelHome().getJComboNumberFamilies().setSelectedItem(home.getNumberFamilies());
-			this.getJPanelHome().getJComboNumberPeople().setSelectedItem(home.getNumberPeople());
-			this.getJPanelHome().getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
-			this.getJPanelHome().getJTextAreaOtherInfo().setText(home.getOtherInfo());
-			this.getJPanelHome().getJTextFieldRegHolding().setText(home.getRegHolding());
-
-			// Family
-			this.getJPanelFamily().getJTextAreaFamilyOtherInfo().setText(family.getOtherInfo());
-			if (family.getFamilyType().getId() == 1) {
-				this.getJPanelFamily().getJRadioAlone().setSelected(true);
-			} else if (family.getFamilyType().getId() == 2) {
-				this.getJPanelFamily().getJRadioWithChildren().setSelected(true);
-			} else if (family.getFamilyType().getId() == 3) {
-				this.getJPanelFamily().getJRadioNoChildren().setSelected(true);
-			} else if (family.getFamilyType().getId() == 4) {
-				this.getJPanelFamily().getJRadioMono().setSelected(true);
-			} else if (family.getFamilyType().getId() == 5) {
-				this.getJPanelFamily().getJRadioOther().setSelected(true);
-			}
-
-			// Relatives
-			Relative relativeFilter = new Relative();
-			relativeFilter.setFamily(family);
-			List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);
-			this.getJPanelFamily().getRelativesTableModel().addRows(listRelatives);
-
-			// Authorization
-			if (aType != null) {
-				switch (aType.getId()) {
-				case 1:
-					this.getJPanelAuthorizationType().getJRadioResidence().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
-					break;
-				case 2:
-					this.getJPanelAuthorizationType().getJRadioResidenceWork().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
-					break;
-				case 3:
-					this.getJPanelAuthorizationType().getJRadioStudy().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
-					break;
-				case 4:
-					this.getJPanelAuthorizationType().getJRadioTourism().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
-					break;
-				case 5:
-					this.getJPanelAuthorizationType().getJRadioRefugee().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(true);
-					break;
-				case 6:
-					this.getJPanelAuthorizationType().getJRadioUndocumented().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(false);
-					break;
-				case 7:
-					this.getJPanelAuthorizationType().getJRadioSAIrregular().setSelected(true);
-					this.getJPanelAuthorizationType().getJRadioSARegular().setSelected(false);
-					break;
-				}
-			}
-
-			// JobSituation
-
-			if (jobSituation != null) {
-				switch (jobSituation.getId()) {
-				case 1:
-					this.getJPanelJobSituation().getjRadioUnemployee().setSelected(true);
-					break;
-				case 2:
-					this.getJPanelJobSituation().getjRadioNormalJob().setSelected(true);
-					break;
-				case 3:
-					this.getJPanelJobSituation().getjRadioMarginalJob().setSelected(true);
-					break;
-				case 4:
-					this.getJPanelJobSituation().getjRadioHouseJob().setSelected(true);
-					break;
-				case 5:
-					this.getJPanelJobSituation().getjRadioRetired().setSelected(true);
-					break;
-				case 6:
-					this.getJPanelJobSituation().getjRadioOthers().setSelected(true);
-					break;
-				}
-			}
-
-			// Studies
-			if (studies != null) {
-				switch (studies.getId()) {
-				case 1:
-					this.getJPanelStudies().getjRadioNoReadNoWrite().setSelected(true);
-					break;
-				case 2:
-					this.getJPanelStudies().getjRadioReadWrite().setSelected(true);
-					break;
-				case 3:
-					this.getJPanelStudies().getjRadioChild().setSelected(true);
-					break;
-				case 4:
-					this.getJPanelStudies().getjRadioSchool().setSelected(true);
-					break;
-				case 5:
-					this.getJPanelStudies().getjRadioHighSchool().setSelected(true);
-					break;
-				case 6:
-					this.getJPanelStudies().getjRadioBachelor().setSelected(true);
-					break;
-				case 7:
-					this.getJPanelStudies().getjRadioFP().setSelected(true);
-					break;
-				case 8:
-					this.getJPanelStudies().getjRadioFPHigh().setSelected(true);
-					break;
-				case 9:
-					this.getJPanelStudies().getjRadioUniversity().setSelected(true);
-					break;
-				}
-			}
-
-			// Incomes
-			Income incomeFilter = new Income();
-			incomeFilter.setProgram(selectedProgram);
-			List<Income> listIncomes = incomesDAO.findIncomes(incomeFilter);
-			this.getJPanelEconomicSituation().getIncomesTableModel().addRows(listIncomes);
-
-			// Expenses
-			Expense expenseFilter = new Expense();
-			expenseFilter.setProgram(selectedProgram);
-			List<Expense> listExpenses = expensesDAO.findExpenses(expenseFilter);
-			this.getJPanelEconomicSituation().getExpensesTableModel().addRows(listExpenses);
-
-			logger.info("fillDataprogram");
+			logger.info("FillDataProgram: campos rellenos");
+		} else {
+			this.getJPanelContent().setVisible(false);
 		}
 	}
 
@@ -1021,46 +894,48 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void onFilterProgram(boolean create) {
-		People filterPeople = (People) this.getJComboBoxPeople().getSelectedItem();
+
 		try {
 
-			if (filterPeople != null && filterPeople.getId() != -1) {
-				Program program = programDAO.findProgram(filterPeople);
-				if (program != null) {
-					this.getProgramTableModel().clearTableModelData();
-					this.getProgramTableModel().addRow(program);
+			People filterPeople = new People();
+			filterPeople.setActive(this.getCkActive().isSelected());
+			filterPeople.setDni(this.getJTextFieldDni().getText());
+			People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
+			if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
+				filterPeople.setName(selectedPeopleCombo.getName());
+			}
 
-				} else {
-					cleanTabs();
-					if (create) {
-						int dialogResult = JOptionPane.showConfirmDialog(this,
-								"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?");
-						if (dialogResult == JOptionPane.YES_OPTION) {
+			List<Program> programs = programDAO.findProgram(filterPeople);
+			if (programs != null) {
+				this.getProgramTableModel().clearTableModelData();
+				this.getProgramTableModel().addRows(programs);
 
-							onCreateProgramFirstTime(filterPeople);
-							onFilterProgram(false);
+			} else {
+				cleanTabs();
+				if (create) {
+					int dialogResult = JOptionPane.showConfirmDialog(this,
+							"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?");
+					if (dialogResult == JOptionPane.YES_OPTION) {
 
-							JOptionPane.showMessageDialog(this,
-									"Se ha generado un Programa de Atención Primaria para el usuario "
-											+ filterPeople.getName() + "con todos los datos vacios.");
-						} else {
-							try {
-								this.setClosed(true);
-							} catch (PropertyVetoException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+						onCreateProgramFirstTime(filterPeople);
+						onFilterProgram(false);
 
+						JOptionPane.showMessageDialog(this,
+								"Se ha generado un Programa de Atención Primaria para el usuario "
+										+ filterPeople.getName() + "con todos los datos vacios.");
 					} else {
-						JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+						try {
+							this.setClosed(true);
+						} catch (PropertyVetoException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 
+				} else {
+					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 				}
-			} else {
-				List<Program> listPrograms = programDAO.findAll();
-				this.getProgramTableModel().clearTableModelData();
-				this.getProgramTableModel().addRows(listPrograms);
+
 			}
 
 		} catch (Exception e) {

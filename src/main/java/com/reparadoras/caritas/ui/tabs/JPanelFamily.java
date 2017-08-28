@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -25,6 +26,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
+import com.reparadoras.caritas.dao.RelativeDAO;
+import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.ui.JManageEditPeople;
@@ -44,11 +47,11 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class JPanelFamily extends JPanel{
-	
+public class JPanelFamily extends JPanel {
+
 	private JPanel jPanelTable;
 	private JPanel jPanelTypeFamily;
-	
+
 	private JLabel lblFamilyOtherInfo;
 	private JTextArea taFamilyOtherInfo;
 	private RelativesTableModel relativesTableModel = null;
@@ -60,76 +63,66 @@ public class JPanelFamily extends JPanel{
 	private JRadioButton jRadioMono;
 	private JRadioButton jRadioOther;
 	private JRadioButton jRadioWithChildren;
-	
-	//Acciones gastos
-		private JPanel jPanelActionsRelative;
-		private JButton btnAddRelative;
-		private JButton btnEditRelative;
-		private JButton btnDeleteRelative;
-	
+
+	// Acciones gastos
+	private JPanel jPanelActionsRelative;
+	private JButton btnAddRelative;
+	private JButton btnEditRelative;
+	private JButton btnDeleteRelative;
+
 	public JPanelFamily() {
-		
+
 		createGUIPanel();
-		
-		
+
 	}
-	
-	private void createGUIPanel(){
-		
+
+	private void createGUIPanel() {
+
 		this.setLayout(getGridLayoutFamily());
 		getJPanelTableFamily().setLayout(getGridLayoutJPanelTable());
 		getJPanelTypeFamily().setLayout(getGridLayoutJPanelTypeFamily());
-		
+
 		getJPanelTableFamily().add(getScrollPaneTable(), getGridJPanelScrollTable());
-		
+
 		getJPanelTypeFamily().add(getJPanelRadioButton(), getGridJPanelRadio());
 		getJPanelTypeFamily().add(getLabelFamilyOtherInfo(), getGridJLabelFamilyOtherInfo());
 		getJPanelTypeFamily().add(getJTextAreaFamilyOtherInfo(), getGridJTextAreaFamilyOtherInfo());
-		
+
 		this.add(getJPanelTableFamily(), getGridJPanelTable());
 		this.add(getJPanelTypeFamily(), getGridJPanelTypeFamily());
-		
-		//Acciones
+
+		// Acciones
 		getJPanelTableFamily().add(this.getJPanelActionsRelative(), getGridJPanelActionsRelative());
 		getJPanelActionsRelative().setLayout(new GridLayout(0, 1, 0, 0));
 		getJPanelActionsRelative().add(getBtnAddRelative());
 		getJPanelActionsRelative().add(getBtnEditRelative());
 		getJPanelActionsRelative().add(getBtnDeleteRelative());
-		
-		
-		
-
-		
 
 		getBtnEditRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//openEditRelative(JWindowParams.IMODE_UPDATE, "Edicion Pariente");
-				
+				// openEditRelative(JWindowParams.IMODE_UPDATE, "Edicion
+				// Pariente");
+
 			}
 		});
 
 		getBtnDeleteRelative().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//onDeletePeople();
-				
+				// onDeletePeople();
+
 			}
 		});
-		
-		
+
 	}
 
-	
-	
-	
 	private GridBagLayout getGridLayoutFamily() {
 		GridBagLayout gbl_LayoutFamily = new GridBagLayout();
-		gbl_LayoutFamily.columnWeights = new double[] { 0.0};
-		gbl_LayoutFamily.rowWeights = new double[] { 0.0, 0.0};
+		gbl_LayoutFamily.columnWeights = new double[] { 0.0 };
+		gbl_LayoutFamily.rowWeights = new double[] { 0.0, 0.0 };
 
 		return gbl_LayoutFamily;
 	}
-	
-	
+
 	private GridBagLayout getGridLayoutJPanelTable() {
 
 		GridBagLayout gbl_jPanelTable = new GridBagLayout();
@@ -160,11 +153,7 @@ public class JPanelFamily extends JPanel{
 
 		return gbc_jPanelTable;
 	}
-	
-	
-	
-	
-	
+
 	private GridBagLayout getGridLayoutJPanelTypeFamily() {
 
 		GridBagLayout gbl_jPanelTable = new GridBagLayout();
@@ -179,7 +168,7 @@ public class JPanelFamily extends JPanel{
 			jPanelTypeFamily = new JPanel();
 			jPanelTypeFamily.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Tipo de familia",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
-			
+
 		}
 
 		return jPanelTypeFamily;
@@ -196,15 +185,15 @@ public class JPanelFamily extends JPanel{
 
 		return gbc_jPanelTable;
 	}
-	
+
 	public JPanel getJPanelRadioButton() {
 		if (jPanelRadioButton == null) {
 			ButtonGroup group = new ButtonGroup();
-	        group.add(getJRadioAlone());
-	        group.add(getJRadioWithChildren());
-	        group.add(getJRadioNoChildren());
-	        group.add(getJRadioMono());
-	        group.add(getJRadioOther());
+			group.add(getJRadioAlone());
+			group.add(getJRadioWithChildren());
+			group.add(getJRadioNoChildren());
+			group.add(getJRadioMono());
+			group.add(getJRadioOther());
 			jPanelRadioButton = new JPanel();
 			jPanelRadioButton.setLayout(new BoxLayout(jPanelRadioButton, BoxLayout.X_AXIS));
 			jPanelRadioButton.add(getJRadioAlone());
@@ -212,12 +201,11 @@ public class JPanelFamily extends JPanel{
 			jPanelRadioButton.add(getJRadioNoChildren());
 			jPanelRadioButton.add(getJRadioMono());
 			jPanelRadioButton.add(getJRadioOther());
-			
-			
+
 		}
 		return jPanelRadioButton;
 	}
-	
+
 	private GridBagConstraints getGridJPanelRadio() {
 		GridBagConstraints gbc_jPanelRadio = new GridBagConstraints();
 		gbc_jPanelRadio.fill = GridBagConstraints.HORIZONTAL;
@@ -229,7 +217,7 @@ public class JPanelFamily extends JPanel{
 
 		return gbc_jPanelRadio;
 	}
-	
+
 	public JRadioButton getJRadioWithChildren() {
 		if (jRadioWithChildren == null) {
 			jRadioWithChildren = new JRadioButton("Pareja con Hijos");
@@ -238,7 +226,7 @@ public class JPanelFamily extends JPanel{
 		}
 		return jRadioWithChildren;
 	}
-	
+
 	public JRadioButton getJRadioNoChildren() {
 		if (jRadioNoChildren == null) {
 			jRadioNoChildren = new JRadioButton("Pareja Sin Hijos");
@@ -247,7 +235,7 @@ public class JPanelFamily extends JPanel{
 		}
 		return jRadioNoChildren;
 	}
-	
+
 	public JRadioButton getJRadioMono() {
 		if (jRadioMono == null) {
 			jRadioMono = new JRadioButton("MonoParental");
@@ -256,7 +244,7 @@ public class JPanelFamily extends JPanel{
 		}
 		return jRadioMono;
 	}
-	
+
 	public JRadioButton getJRadioOther() {
 		if (jRadioOther == null) {
 			jRadioOther = new JRadioButton("Otra");
@@ -265,7 +253,7 @@ public class JPanelFamily extends JPanel{
 		}
 		return jRadioOther;
 	}
-	
+
 	public JRadioButton getJRadioAlone() {
 		if (jRadioAlone == null) {
 			jRadioAlone = new JRadioButton("Sola");
@@ -278,10 +266,7 @@ public class JPanelFamily extends JPanel{
 		}
 		return jRadioAlone;
 	}
-	
-	
-	
-	
+
 	private JLabel getLabelFamilyOtherInfo() {
 
 		if (lblFamilyOtherInfo == null) {
@@ -301,8 +286,7 @@ public class JPanelFamily extends JPanel{
 
 		return gbc_lblOtherInfo;
 	}
-	
-	
+
 	public JTextArea getJTextAreaFamilyOtherInfo() {
 		if (taFamilyOtherInfo == null) {
 			taFamilyOtherInfo = new JTextArea();
@@ -323,23 +307,18 @@ public class JPanelFamily extends JPanel{
 
 		return gbc_taOtherInfo;
 	}
-	
-	
-	
-	
-	
-	
-	private JScrollPane getScrollPaneTable(){
-		if (scrollPaneJTable == null){
+
+	private JScrollPane getScrollPaneTable() {
+		if (scrollPaneJTable == null) {
 			scrollPaneJTable = new JScrollPane(getJTableRelatives());
 			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
 		}
-		
+
 		return scrollPaneJTable;
 	}
-	
-	private GridBagConstraints getGridJPanelScrollTable(){
-		
+
+	private GridBagConstraints getGridJPanelScrollTable() {
+
 		GridBagConstraints gbc_jPanelScroll = new GridBagConstraints();
 		gbc_jPanelScroll.weighty = 1.0;
 		gbc_jPanelScroll.weightx = 1.0;
@@ -347,86 +326,114 @@ public class JPanelFamily extends JPanel{
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
 		gbc_jPanelScroll.gridx = 1;
 		gbc_jPanelScroll.gridy = 0;
-		
-		return gbc_jPanelScroll; 
+
+		return gbc_jPanelScroll;
 	}
-	
-	
-	
-	
-	
-	public JTable getJTableRelatives(){
-		if (tableRelatives == null){
-			
+
+	public JTable getJTableRelatives() {
+		if (tableRelatives == null) {
+
 			tableRelatives = new JTable(getRelativesTableModel());
 			tableRelatives.setAutoCreateRowSorter(true);
 			tableRelatives.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		}
-		
+
 		return tableRelatives;
 	}
-	
-	public RelativesTableModel getRelativesTableModel(){
-		
-		if (relativesTableModel == null){
-			Object[] columnIdentifiers = new Object[] { "Parentesco", "Apellidos", "Nombre", "Fecha Nacimiento", "Situacion"};
+
+	public RelativesTableModel getRelativesTableModel() {
+
+		if (relativesTableModel == null) {
+			Object[] columnIdentifiers = new Object[] { "Parentesco", "Apellidos", "Nombre", "Fecha Nacimiento",
+					"Situacion" };
 			relativesTableModel = new RelativesTableModel(Arrays.asList(columnIdentifiers));
 		}
-		
+
 		return relativesTableModel;
 	}
 
-private JPanel getJPanelActionsRelative() {
-	if (jPanelActionsRelative == null) {
-		jPanelActionsRelative = new JPanel();
+	private JPanel getJPanelActionsRelative() {
+		if (jPanelActionsRelative == null) {
+			jPanelActionsRelative = new JPanel();
+
+		}
+
+		return jPanelActionsRelative;
+	}
+
+	private GridBagConstraints getGridJPanelActionsRelative() {
+
+		GridBagConstraints gbc_jPanelActionsRelative = new GridBagConstraints();
+		gbc_jPanelActionsRelative.anchor = GridBagConstraints.NORTHWEST;
+		gbc_jPanelActionsRelative.gridx = 0;
+		gbc_jPanelActionsRelative.gridy = 0;
+
+		return gbc_jPanelActionsRelative;
+	}
+
+	public JButton getBtnAddRelative() {
+		if (btnAddRelative == null) {
+			btnAddRelative = new JButton("Nuevo");
+			btnAddRelative.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				}
+			});
+			btnAddRelative.setIcon(
+					new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+		}
+		return btnAddRelative;
+	}
+
+	public JButton getBtnDeleteRelative() {
+		if (btnDeleteRelative == null) {
+			btnDeleteRelative = new JButton("Borrar");
+			btnDeleteRelative.setIcon(new ImageIcon(
+					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+		}
+		return btnDeleteRelative;
+	}
+
+	public JButton getBtnEditRelative() {
+		if (btnEditRelative == null) {
+			btnEditRelative = new JButton("Editar");
+			btnEditRelative.setIcon(new ImageIcon(
+					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+		}
+		return btnEditRelative;
+	}
+
+	public void cleanFamily() {
+
+		this.getJTextAreaFamilyOtherInfo().setText("");
+		this.getJRadioAlone().setSelected(false);
+		this.getJRadioWithChildren().setSelected(false);
+		this.getJRadioNoChildren().setSelected(false);
+		this.getJRadioMono().setSelected(false);
+		this.getJRadioOther().setSelected(false);
+
+		this.getRelativesTableModel().clearTableModelData();
+
+	}
+
+	public void fillData(RelativeDAO relativeDAO, Family family) {
+
+		this.getJTextAreaFamilyOtherInfo().setText(family.getOtherInfo());
+		if (family.getFamilyType().getId() == 1) {
+			this.getJRadioAlone().setSelected(true);
+		} else if (family.getFamilyType().getId() == 2) {
+			this.getJRadioWithChildren().setSelected(true);
+		} else if (family.getFamilyType().getId() == 3) {
+			this.getJRadioNoChildren().setSelected(true);
+		} else if (family.getFamilyType().getId() == 4) {
+			this.getJRadioMono().setSelected(true);
+		} else if (family.getFamilyType().getId() == 5) {
+			this.getJRadioOther().setSelected(true);
+		}
 		
-		
+		Relative relativeFilter = new Relative();
+		relativeFilter.setFamily(family);
+		List<Relative> listRelatives = relativeDAO.findRelative(relativeFilter);
+		this.getRelativesTableModel().addRows(listRelatives);
+
 	}
-
-	return jPanelActionsRelative;
-}
-
-private GridBagConstraints getGridJPanelActionsRelative(){
-	
-	GridBagConstraints gbc_jPanelActionsRelative = new GridBagConstraints();
-	gbc_jPanelActionsRelative.anchor = GridBagConstraints.NORTHWEST;
-	gbc_jPanelActionsRelative.gridx = 0;
-	gbc_jPanelActionsRelative.gridy = 0;
-	
-	return gbc_jPanelActionsRelative; 
-}
-
-public JButton getBtnAddRelative() {
-	if (btnAddRelative == null) {
-		btnAddRelative = new JButton("Nuevo");
-		btnAddRelative.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		btnAddRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
-	}
-	return btnAddRelative;
-}
-
-public JButton getBtnDeleteRelative() {
-	if (btnDeleteRelative == null) {
-		btnDeleteRelative = new JButton("Borrar");
-		btnDeleteRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
-	}
-	return btnDeleteRelative;
-}
-
-public JButton getBtnEditRelative() {
-	if (btnEditRelative == null) {
-		btnEditRelative = new JButton("Editar");
-		btnEditRelative.setIcon(new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
-	}
-	return btnEditRelative;
-}
-	
-
-
-
-
-	
 }
