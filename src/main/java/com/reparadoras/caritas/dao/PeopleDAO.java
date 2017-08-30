@@ -61,6 +61,21 @@ public int delete(People people){
      return id;
  }
 
+public  People findPeopleById(People selectedPeople){
+	People people = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+        people = session.selectOne("People.findById", selectedPeople);
+    } finally {
+        session.close();
+    }
+    System.out.println("findById() --> "+people);
+    return people;
+
+}
+
+
 public  List<People> findAll(){
 	List<People> list = null;
     SqlSession session = sqlSessionFactory.openSession();

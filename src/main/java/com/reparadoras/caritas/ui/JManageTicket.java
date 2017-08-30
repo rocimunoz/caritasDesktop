@@ -88,6 +88,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JButton btnSaveTicket;
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
+	private JButton btnCleanPeople = null;
 	private People people = null;
 
 	private TicketDAO ticketDAO;
@@ -169,18 +170,32 @@ public class JManageTicket extends AbstractJInternalFrame {
 				dispose();
 			}
 		});
+		
+		getJButtonClean().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cleanFilter();
+			}
+		});
 	}
 
+	
+	public void cleanFilter() {
+		this.getJTextFieldDni().setText("");
+		this.getJComboBoxPeople().setSelectedIndex(-1);
+	}
+	
 	public void initCbPeople() {
 
 		List<People> listPeople = peopleDAO.findAll();
 
-		for (People p : listPeople) {
-			this.getJComboBoxPeople().addItem(p);
-		}
 		if (this.people!=null){
+			this.getJComboBoxPeople().addItem(this.people);
 			this.getJComboBoxPeople().setSelectedItem(this.people);
-		}else{
+		}
+		else{
+			for (People p : listPeople) {
+				this.getJComboBoxPeople().addItem(p);
+			}
 			getJComboBoxPeople().setSelectedIndex(-1);
 		}
 		
@@ -201,6 +216,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
+		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 
 		getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
 
@@ -248,8 +264,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (jPanelFilter == null) {
 			jPanelFilter = new JPanel();
 			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Personas",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
-
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			((javax.swing.border.TitledBorder) jPanelFilter.getBorder())
+			.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelFilter;
@@ -372,7 +389,6 @@ public class JManageTicket extends AbstractJInternalFrame {
 		GridBagConstraints gbc_btnFilter = new GridBagConstraints();
 		gbc_btnFilter.anchor = GridBagConstraints.WEST;
 		gbc_btnFilter.insets = new Insets(0, 0, 5, 5);
-		gbc_btnFilter.weightx = 1.0;
 		gbc_btnFilter.gridx = 2;
 		gbc_btnFilter.gridy = 1;
 
@@ -387,6 +403,27 @@ public class JManageTicket extends AbstractJInternalFrame {
 					.setIcon(new ImageIcon(JManageTicket.class.getResource("/com/reparadoras/images/icon-search.png")));
 		}
 		return btnFilterTicket;
+	}
+	
+	private JButton getJButtonClean() {
+		if (btnCleanPeople == null) {
+			btnCleanPeople = new JButton("Limpiar");
+			btnCleanPeople.setIcon(
+					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+		}
+
+		return btnCleanPeople;
+	}
+
+	private GridBagConstraints getGridButtonClean() {
+
+		GridBagConstraints gbc_btnCleanPeople = new GridBagConstraints();
+		gbc_btnCleanPeople.anchor = GridBagConstraints.WEST;
+		gbc_btnCleanPeople.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCleanPeople.gridx = 3;
+		gbc_btnCleanPeople.gridy = 1;
+
+		return gbc_btnCleanPeople;
 	}
 
 	private JButton getJButtonExit() {
@@ -405,7 +442,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
 		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
-		gbc_btnExit.gridx = 3;
+		gbc_btnExit.gridx = 4;
 		gbc_btnExit.gridy = 1;
 
 		return gbc_btnExit;
@@ -567,7 +604,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		TableColumn decemberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(23);
 		CaritasDatePickerCellEditor datePicker = new CaritasDatePickerCellEditor();
 
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 		januaryColumn.setCellEditor(datePicker);
 		januaryColumn.setCellRenderer(dateRenderer);

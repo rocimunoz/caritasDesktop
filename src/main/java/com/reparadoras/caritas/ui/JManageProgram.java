@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyVetoException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,6 +25,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
@@ -59,6 +61,7 @@ import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
 import com.reparadoras.caritas.ui.components.combobox.ComboBoxRenderer;
+import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.table.ProgramTableModel;
@@ -381,16 +384,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		List<People> listPeople = peopleDAO.findAll();
 
-		for (People p : listPeople) {
-			this.getJComboBoxPeople().addItem(p);
-		}
-
-		if (this.people != null) {
+		if (this.people!=null){
+			this.getJComboBoxPeople().addItem(this.people);
 			this.getJComboBoxPeople().setSelectedItem(this.people);
-		} else {
+		}
+		else{
+			for (People p : listPeople) {
+				this.getJComboBoxPeople().addItem(p);
+			}
 			getJComboBoxPeople().setSelectedIndex(-1);
 		}
-
+		
 	}
 
 	/* TABS */
@@ -750,6 +754,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 			tableProgram = new JTable(getProgramTableModel());
 			tableProgram.setAutoCreateRowSorter(true);
 			tableProgram.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+			tableProgram.getColumnModel().getColumn(2).setCellRenderer(dateRenderer);
 		}
 
 		return tableProgram;
@@ -758,7 +766,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramTableModel getProgramTableModel() {
 
 		if (programTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha" };
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha Creacion" };
 			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -906,30 +914,26 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 
 			List<Program> programs = programDAO.findProgram(filterPeople);
-			if (programs != null) {
+			if (programs != null && !programs.isEmpty()) {
 				this.getProgramTableModel().clearTableModelData();
 				this.getProgramTableModel().addRows(programs);
 
 			} else {
 				cleanTabs();
 				if (create) {
-					int dialogResult = JOptionPane.showConfirmDialog(this,
-							"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?");
-					if (dialogResult == JOptionPane.YES_OPTION) {
+					
+					if (JOptionPane.showConfirmDialog(this,
+							"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?",
+							"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
-						onCreateProgramFirstTime(filterPeople);
+						onCreateProgramFirstTime(this.people);
 						onFilterProgram(false);
 
 						JOptionPane.showMessageDialog(this,
 								"Se ha generado un Programa de Atención Primaria para el usuario "
 										+ filterPeople.getName() + "con todos los datos vacios.");
 					} else {
-						try {
-							this.setClosed(true);
-						} catch (PropertyVetoException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						dispose();
 					}
 
 				} else {

@@ -31,7 +31,7 @@ public class ProgramTableModel extends GenericDomainTableModel<Program>{
         switch(columnIndex) {
             case 0: return program.getPeople().getDni();
             case 1: return program.getPeople().getName();
-            case 2: return new Date();
+            case 2: return program.getPeople().getCreateDate();
             
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}

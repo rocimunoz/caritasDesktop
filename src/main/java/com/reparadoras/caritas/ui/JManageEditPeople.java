@@ -26,6 +26,7 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -34,6 +35,8 @@ import javax.swing.JCheckBox;
 import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.InputVerifier;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 @SuppressWarnings("serial")
 
@@ -153,8 +156,6 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJButtonAccept().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
-			
 					//Abrir transaccion
 					if (executingMode == JWindowParams.IMODE_UPDATE){
 						
@@ -277,10 +278,32 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	}
 	
 	
-	
+	private boolean manageReactivateDate(){
+		//Compruebo si en BBDD no estaba activo
+		People peopleBBDD = peopleDAO.findPeopleById(this.selectedPeople);
+		if (peopleBBDD!=null){
+			if (!peopleBBDD.isActive()){
+				return true;
+			}
+			else return false;
+		}else return false;
+		
+	}
 	private void onUpdatePeople(){
 		try{
 		
+			if (this.getJckActive().isSelected()){
+				if (manageReactivateDate()){
+					SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
+					
+					this.getJXReactivateDate().setDate(sf.parse(sf.format(new Date())));
+				}
+				this.selectedPeople.setActive(true);
+				
+			}
+			else{
+				this.selectedPeople.setActive(false);
+			}
 		
 		this.selectedPeople.setName(this.getJTextFieldName().getText());
 		this.selectedPeople.setFirstSurname(this.getJTextFieldFirstSurname().getText());
@@ -293,12 +316,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		this.selectedPeople.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
 		this.selectedPeople.setCreateDate(this.getJXCreateDate().getDate());
 		this.selectedPeople.setReactivateDate(this.getJXReactivateDate().getDate());
-		if (this.getJckActive().isSelected()){
-			this.selectedPeople.setActive(true);
-		}
-		else{
-			this.selectedPeople.setActive(false);
-		}
+		
+		
 		
 			peopleDAO.update(selectedPeople);
 			
@@ -912,6 +931,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		if (jxReactivateDate == null){
 			jxReactivateDate = new JXDatePicker();	
+			jxReactivateDate.setEnabled(false);
 		}
 		
 		return jxReactivateDate;
@@ -947,6 +967,7 @@ private  GridBagConstraints getGridComboBoxSex() {
 private JCheckBox getJckActive() {
 	if (jckActive == null) {
 		jckActive = new JCheckBox("Activo");
+		
 		jckActive.setFont(new Font("Verdana", Font.PLAIN, 14));
 	}
 	return jckActive;

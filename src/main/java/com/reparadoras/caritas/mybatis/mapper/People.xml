@@ -30,6 +30,10 @@
         SELECT * FROM C_PEOPLE;
     </select>
     
+    <select id="findById" resultMap="PeopleResult">
+        SELECT * FROM C_PEOPLE WHERE id = #{id}
+    </select>
+    
  	
     
     <select id="findPeople" parameterType="People" resultMap="PeopleResult">
