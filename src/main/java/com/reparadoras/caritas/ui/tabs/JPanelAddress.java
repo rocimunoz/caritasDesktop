@@ -7,9 +7,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -41,9 +43,9 @@ public class JPanelAddress extends JPanel {
 	private JLabel lblFloor;
 	private JTextField tfFloor;
 	private JLabel lblTelephone;
-	private JTextField tfTelephone;
+	private JFormattedTextField tfTelephone;
 	private JLabel lblTelephoneContact;
-	private JTextField tfTelephoneContact;
+	private JFormattedTextField tfTelephoneContact;
 	private JLabel lblDateCensus;
 	private JXDatePicker datePickerCensus;
 	private JLabel lblPlace;
@@ -281,9 +283,10 @@ public class JPanelAddress extends JPanel {
 		return gbc_lblTelephone;
 	}
 
-	public JTextField getJTextFieldTelephone() {
+	public JFormattedTextField getJTextFieldTelephone() {
 		if (tfTelephone == null) {
-			tfTelephone = new JTextField();
+			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			tfTelephone = new JFormattedTextField(numberFormat);
 			tfTelephone.setColumns(10);
 		}
 		return tfTelephone;
@@ -321,9 +324,10 @@ public class JPanelAddress extends JPanel {
 		return gbc_lblTelephoneContact;
 	}
 
-	public JTextField getJTextFieldTelephoneContact() {
+	public JFormattedTextField getJTextFieldTelephoneContact() {
 		if (tfTelephoneContact == null) {
-			tfTelephoneContact = new JTextField();
+			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			tfTelephoneContact = new JFormattedTextField(numberFormat);
 			tfTelephoneContact.setColumns(10);
 		}
 		return tfTelephoneContact;

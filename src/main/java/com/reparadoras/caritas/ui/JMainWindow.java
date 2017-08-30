@@ -82,6 +82,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel lblRegPeople;
 	private JLabel lblProgram;
 	private JLabel lblTickets;
+	private JLabel lblImportExport;
 	private JPanel panel;
 	private JLabel lblExit;
 	private JPanel jPanelLogo;
@@ -191,6 +192,14 @@ public class JMainWindow extends AbstractJInternalFrame {
 			gbc_lblProgram.gridx = 0;
 			gbc_lblProgram.gridy = 3;
 			jPanelMenu.add(getLblProgram(), gbc_lblProgram);
+			GridBagConstraints gbc_lblImportExport = new GridBagConstraints();
+			gbc_lblImportExport.insets = new Insets(20, 0, 5, 20);
+			gbc_lblImportExport.fill = GridBagConstraints.VERTICAL;
+			gbc_lblImportExport.weightx = 1.0;
+			gbc_lblImportExport.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblImportExport.gridx = 0;
+			gbc_lblImportExport.gridy = 4;
+			jPanelMenu.add(getLblImportExport(), gbc_lblImportExport);
 		}
 		return jPanelMenu;
 	}
@@ -268,6 +277,32 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblTickets.setBorder(null);
 		}
 		return lblTickets;
+	}
+	
+	private JLabel getLblImportExport() {
+		if (lblImportExport == null) {
+			lblImportExport = new JLabel("   Importar/Exportar datos");
+			lblImportExport.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					openManageBackup();
+				}
+			});
+			lblImportExport.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblImportExport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
+			lblImportExport.setHorizontalAlignment(SwingConstants.CENTER);
+			lblImportExport.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-backup-64.png")));
+			lblImportExport.setForeground(Color.BLACK);
+			lblImportExport.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblImportExport.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblImportExport.setBackground(Color.WHITE);
+			lblImportExport.setBorder(null);
+		}
+		return lblImportExport;
 	}
 	private JPanel getPanel() {
 		if (panel == null) {
@@ -381,6 +416,21 @@ public class JMainWindow extends AbstractJInternalFrame {
 	            
 	        }
 	    }
+	 
+	 private void openManageBackup(){
+		 
+		 try {
+	        	JManageBackup jManageBackup = new JManageBackup(this.desktop);
+	        	desktop.add(jManageBackup);
+	        	
+	        	jManageBackup.setMaximum(false);
+	        	jManageBackup.setMaximizable(false);
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            
+	        }
+	 }
 }
 	
 	
