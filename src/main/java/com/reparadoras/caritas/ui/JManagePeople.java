@@ -760,6 +760,10 @@ public class JManagePeople extends AbstractJInternalFrame {
 	public void onManageProgramPeople(int openMode, String title) {
 		JManageProgram jManageProgram = null;
 		int row = getJTablePeople().getSelectedRow();
+		
+		row = getJTablePeople().convertRowIndexToModel(row);
+
+		
 		if (row != -1) {
 			People people = getPeopleTableModel().getDomainObject(row);
 

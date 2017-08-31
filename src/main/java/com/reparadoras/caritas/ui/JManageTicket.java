@@ -736,6 +736,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
 		if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
 			filterPeople.setName(selectedPeopleCombo.getName());
+			
 		}
 
 		List<Ticket> tickets = ticketDAO.findTicket(filterPeople);

@@ -161,6 +161,9 @@
   		<if test="name != null">
     		AND PE.NAME = #{name}
   		</if>
+  		<if test="firstSurname != null">
+    		AND PE.FIRST_SURNAME = #{firstSurname}
+  		</if>
   		<if test="dni != null and !dni.equals('')">
   		<bind name="pattern" value="'%' + dni + '%'" />
     		AND PE.DNI like #{pattern}

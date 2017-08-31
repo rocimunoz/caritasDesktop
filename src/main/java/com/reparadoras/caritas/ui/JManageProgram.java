@@ -917,6 +917,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
 			if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
 				filterPeople.setName(selectedPeopleCombo.getName());
+				filterPeople.setFirstSurname(selectedPeopleCombo.getFirstSurname());
 			}
 
 			List<Program> programs = programDAO.findProgram(filterPeople);
