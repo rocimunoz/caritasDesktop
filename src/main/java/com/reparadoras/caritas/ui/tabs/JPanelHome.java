@@ -35,7 +35,7 @@ public class JPanelHome extends JPanel{
 	private JLabel lblTypeHouse;
 	private JComboBox<HomeType> cbHomeType;
 	private JLabel lblRegHolding;
-	private JTextField tfRegHolding;
+	private JComboBox<String> tfRegHolding;
 	private JLabel lblNumberRooms;
 	private JComboBox<Integer> cbNumberRooms;
 	private JLabel lblNumberPeople;
@@ -72,6 +72,11 @@ public void initCombos(){
 			cbHomeType.addItem(homeType);
 		}
 	
+		this.getJComboBoxRegHolding().addItem("Alquiler");
+		this.getJComboBoxRegHolding().addItem("Alquiler compartido");
+		this.getJComboBoxRegHolding().addItem("Tutelado");
+		this.getJComboBoxRegHolding().addItem("Compartido");
+		this.getJComboBoxRegHolding().addItem("Cedido");
 		
 		
 		
@@ -89,7 +94,7 @@ public void initCombos(){
 		getJPanelHome().add(getJLabelTypeHouse(), getGridJLabelTypeHouse());
 		getJPanelHome().add(getJTextFieldTypeHouse(), getGridJTextFieldTypeHouse());
 		getJPanelHome().add(getJLabelRegHolding(), getGridJLabelRegHolding());
-		getJPanelHome().add(getJTextFieldRegHolding(), getGridJTextFieldRegHolding());
+		getJPanelHome().add(getJComboBoxRegHolding(), getGridJComboBoxRegHolding());
 		getJPanelHome().add(getJLabelNumberRooms(), getGridJLabelNumberRooms());
 		getJPanelHome().add(getJComboNumberRooms(), getGridJComboNumberRooms());
 		getJPanelHome().add(getJLabelNumberPeople(), getGridJLabelNumberPeople());
@@ -201,15 +206,15 @@ public void initCombos(){
 		return gbc_lblRegHolding;
 	}
 	
-	public JTextField getJTextFieldRegHolding() {
+	public JComboBox<String> getJComboBoxRegHolding() {
 		if (tfRegHolding == null) {
-			tfRegHolding = new JTextField();
-			tfRegHolding.setColumns(10);
+			tfRegHolding = new JComboBox<String>();
+			
 		}
 		return tfRegHolding;
 	}
 
-	private GridBagConstraints getGridJTextFieldRegHolding() {
+	private GridBagConstraints getGridJComboBoxRegHolding() {
 		GridBagConstraints gbc_tfTypeRegHolding = new GridBagConstraints();
 		gbc_tfTypeRegHolding.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfTypeRegHolding.weightx = 1.0;
@@ -392,7 +397,7 @@ public void initCombos(){
 		this.getJComboNumberPeople().setSelectedItem(-1);
 		this.getJComboNumberRooms().setSelectedItem(-1);
 		this.getJTextAreaOtherInfo().setText("");
-		this.getJTextFieldRegHolding().setText("");
+		this.getJComboBoxRegHolding().setSelectedItem(-1);
 		
 	}
 	
@@ -402,7 +407,7 @@ public void initCombos(){
 		this.getJComboNumberPeople().setSelectedItem(home.getNumberPeople());
 		this.getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
 		this.getJTextAreaOtherInfo().setText(home.getOtherInfo());
-		this.getJTextFieldRegHolding().setText(home.getRegHolding());
+		this.getJComboBoxRegHolding().setSelectedItem(home.getRegHolding());
 	}
 	
 	

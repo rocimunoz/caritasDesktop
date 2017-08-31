@@ -172,7 +172,7 @@
     </select>
     
      <delete id="delete" parameterType="People">
-    	DELETE FROM C_PROGRAM WHERE id = #{id}
+    	DELETE FROM C_PROGRAM WHERE id_people = #{id}
     </delete>
     
     
@@ -185,9 +185,9 @@
     <update id="update" parameterType="Program">
         UPDATE C_PROGRAM
         <set>
-          <if test="authorizationType.id != null">id_authorization_type = #{authorizationType.id},</if>
-          <if test="studies.id != null">id_studies = #{studies.id},</if>
-           <if test="jobSituation.id != null">id_job_situation = #{jobSituation.id},</if>
+          <if test="authorizationType != null">id_authorization_type = #{authorizationType.id},</if>
+          <if test="studies != null">id_studies = #{studies.id},</if>
+           <if test="jobSituation != null">id_job_situation = #{jobSituation.id},</if>
           
           </set>
         WHERE id = #{id} 

@@ -1284,7 +1284,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			home.setNumberPeople((Integer) getJPanelHome().getJComboNumberPeople().getSelectedItem());
 			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
 			home.setOtherInfo(getJPanelHome().getJTextAreaOtherInfo().getText());
-			home.setRegHolding(getJPanelHome().getJTextFieldRegHolding().getText());
+			home.setRegHolding((String) getJPanelHome().getJComboBoxRegHolding().getSelectedItem());
 
 			homeDAO.update(home);
 
@@ -1337,9 +1337,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
 
 		}
-
-		aTypeFilter.setDescription(description);
-		selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
+		if (!description.equals("")){
+			aTypeFilter.setDescription(description);
+			selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
+		}
+		
 	}
 
 	public void onSaveJobSituation(Program selectedProgram) {
@@ -1362,8 +1364,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelJobSituation().getjRadioOthers().getText();
 		}
 
-		jsFilter.setDescription(description);
-		selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
+		if (!description.equals("")){
+			jsFilter.setDescription(description);
+			selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
+		}
+		
 	}
 
 	public void onSaveStudies(Program selectedProgram) {
@@ -1391,9 +1396,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} else if (this.getJPanelStudies().getjRadioUniversity().isSelected()) {
 			description = getJPanelStudies().getjRadioUniversity().getText();
 		}
+		
+		if (!description.equals("")){
+			studiesFilter.setDescription(description);
+			selectedProgram.setStudies(studiesDAO.findStudies(studiesFilter));
+		}
 
-		studiesFilter.setDescription(description);
-		selectedProgram.setStudies(studiesDAO.findStudies(studiesFilter));
+		
 	}
 
 	public void onSaveIncomes(Program selectedProgram) {
@@ -1503,7 +1512,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveIncomes(selectedProgram);
 						onSaveExpenses(selectedProgram);
 
-						programDAO.update(selectedProgram);
+						if (selectedProgram.getJobSituation()!=null || selectedProgram.getAuthorizationType()!=null || selectedProgram.getStudies()!=null){
+							programDAO.update(selectedProgram);
+						}
+						
 
 					}
 

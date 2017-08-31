@@ -739,20 +739,25 @@ public class JManageTicket extends AbstractJInternalFrame {
 		}
 
 		List<Ticket> tickets = ticketDAO.findTicket(filterPeople);
-		if (tickets != null) {
+		if (tickets != null && !tickets.isEmpty()) {
 			this.getTicketsPeopleTableModel().clearTableModelData();
 			this.getTicketsPeopleTableModel().addRows(tickets);
 
 		} else {
 			Ticket ticketNewReset = new Ticket();
-			ticketNewReset.setPeople(filterPeople);
+			ticketNewReset.setPeople(this.people);
 
 			if (create) {
-				int dialogResult = JOptionPane.showConfirmDialog(this,
-						"No existen registros para los datos de búsqueda. Se va a crear un nuevo registro. ¿Está de acuerdo?");
-				if (dialogResult == JOptionPane.YES_OPTION) {
+				if (JOptionPane.showConfirmDialog(this,
+						"Este usuario no tiene registros de Vales todavia. ¿Quieres crearlo?",
+						"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				
 					ticketDAO.insert(ticketNewReset);
+					
+					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.people.getName() + " con todos los meses inicializados a 0");
 					onFilterTicket(false);
+					
+					
 				}
 
 			} else {

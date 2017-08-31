@@ -54,7 +54,7 @@
 				</where>
     </select>
     
-    <delete id="delete" parameterType="int">
+    <delete id="delete" parameterType="People">
     	DELETE FROM C_PEOPLE WHERE id = #{id}
     </delete>
     
