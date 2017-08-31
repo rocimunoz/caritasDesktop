@@ -109,7 +109,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 		// int returnValue = getFileChooser().showSaveDialog(null);
 		int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
-
+			
 			importData(jfc.getSelectedFile());
 
 		}
@@ -118,59 +118,63 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 	public void importData(File file) {
 
-		try {
+		
 			readExcelFileXls(jfc.getSelectedFile());
 
-		} catch (IOException e) {
-
-		}
+		 
 	}
 
-	public void readExcelFileXls(File file) throws IOException {
+	public void readExcelFileXls(File file)  {
 
-		InputStream targetStream = new FileInputStream(file);
-		HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
+		try{
+			InputStream targetStream = new FileInputStream(file);
+			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
 
-		// Acceso a la primera hoja del documento
-		HSSFSheet sheet = workbook.getSheetAt(0);
-		List<String> data = new ArrayList<String>();
-		Map<String, Program> mapProgram = new HashMap<String, Program>();
+			// Acceso a la primera hoja del documento
+			HSSFSheet sheet = workbook.getSheetAt(0);
+			List<String> data = new ArrayList<String>();
+			Map<String, Program> mapProgram = new HashMap<String, Program>();
 
-		// Recorremos las filas del documento
-		Iterator rows = sheet.rowIterator();
-		while (rows.hasNext()) {
+			// Recorremos las filas del documento
+			Iterator rows = sheet.rowIterator();
+			while (rows.hasNext()) {
 
-			HSSFRow row = (HSSFRow) rows.next();
-			if (row.getRowNum() >= 2) {
+				HSSFRow row = (HSSFRow) rows.next();
+				if (row.getRowNum() >= 2) {
 
-				Iterator cells = row.cellIterator();
-				String key = "";
+					Iterator cells = row.cellIterator();
+					String key = "";
 
-				Program program = new Program();
-				People people = new People();
-				Family family = new Family();
-				Home home = new Home();
-				Address address = new Address();
-				home.setAddress(address);
-				family.setHome(home);
+					Program program = new Program();
+					People people = new People();
+					Family family = new Family();
+					Home home = new Home();
+					Address address = new Address();
+					home.setAddress(address);
+					family.setHome(home);
 
-				program.setPeople(people);
-				program.setFamily(family);
+					program.setPeople(people);
+					program.setFamily(family);
 
-				while (cells.hasNext()) {
-					HSSFCell cell = (HSSFCell) cells.next();
-					key = extractDataRow(cell, mapProgram, key, program);
-										
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						key = extractDataRow(cell, mapProgram, key, program);
+											
+					}
+					
+					addressDAO.insert(address);
+					homeDAO.insert(home);
+					familyDAO.insert(family);
+					peopleDAO.insert(people);
+					programDAO.insert(program);
 				}
-				
-				addressDAO.insert(address);
-				homeDAO.insert(home);
-				familyDAO.insert(family);
-				peopleDAO.insert(people);
-				programDAO.insert(program);
-			}
 
+			}
 		}
+		catch(Exception e){
+			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
+		}
+	
 	}
 
 	public String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, String key, Program program) {

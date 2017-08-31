@@ -19,6 +19,7 @@ public class PeopleTableModel extends GenericDomainTableModel<People>{
         case 0: return String.class;
         case 1: return String.class;
         case 2: return String.class;
+        case 3: return String.class;
     }
     throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}
@@ -30,6 +31,7 @@ public class PeopleTableModel extends GenericDomainTableModel<People>{
             case 0: return people.getDni();
             case 1: return people.getName();
             case 2: return people.getFirstSurname();
+            case 3: return people.getSecondSurname();
             
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}
@@ -42,6 +44,7 @@ public class PeopleTableModel extends GenericDomainTableModel<People>{
             case 0: people.setDni((String)aValue); break;
             case 1: people.setName((String)aValue); break;
             case 2: people.setFirstSurname((String)aValue); break;
+            case 3: people.setSecondSurname((String)aValue); break;
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
         }
         notifyTableCellUpdated(rowIndex, columnIndex);

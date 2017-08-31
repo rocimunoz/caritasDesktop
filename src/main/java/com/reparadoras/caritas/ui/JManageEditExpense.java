@@ -52,6 +52,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 
 	private JPanel jPanelPersonalData;
 	private JLabel jLblfrequency;
+	private JComboBox jComboBoxRegularity;
 
 	private JPanel jPanelActions;
 	private JButton jBtnAccept;
@@ -105,7 +106,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJLabelAmount(), getGridJLabelAmount());
 		getJPanelPersonalData().add(getJTextFieldAmount(), getGridJTextFieldAmount());
 		getJPanelPersonalData().add(getJLabelFrequency(), getGridJLabelFrequency());
-		getJPanelPersonalData().add(getJTextFieldFrequency(), getGridJTextFieldFrequency());
+		getJPanelPersonalData().add(getJComboBoxRegularity(), getGridJComboBoxRegularity());
 		getJPanelPersonalData().add(getJLblDateEnd(), getGridJLabelDateEnd());
 		getJPanelPersonalData().add(getJXDateEnd(), getGridJXDateEnd());
 		getJPanelPersonalData().add(getJLabelSituation(), getGridJLabelSituation());
@@ -154,12 +155,24 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 	}
 
 	private void initComponents() {
-
+		initCbRegularity();
+	}
+	
+	private void initCbRegularity(){
+		
+		
+		this.getJComboBoxRegularity().addItem("Diario");
+		this.getJComboBoxRegularity().addItem("Semanal");
+		this.getJComboBoxRegularity().addItem("Mensual");
+		this.getJComboBoxRegularity().addItem("Anual");
+		
+		
+		
 	}
 
 	private boolean checkRequiredFields() {
 
-		if (!getJTextFieldFrequency().getText().equals("") && !getJTextFieldConcept().getText().equals("")
+		if (getJComboBoxRegularity().getSelectedItem()!=null && !getJTextFieldConcept().getText().equals("")
 				&& this.getJXDateEnd().getDate() != null) {
 			return true;
 		} else {
@@ -175,7 +188,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 			this.getJTextFieldAmount().setText(this.selectedExpense.getAmount() + "");
 			this.getJTextFieldConcept().setText(this.selectedExpense.getConcept());
 			this.getJXDateEnd().setDate(this.selectedExpense.getEndDate());
-			this.getJTextFieldFrequency().setText(this.selectedExpense.getRegularity());
+			this.getJComboBoxRegularity().setSelectedItem(this.selectedExpense.getRegularity());
 
 		}
 
@@ -190,7 +203,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 
 			this.selectedExpense.setConcept(this.getJTextFieldConcept().getText());
 			this.selectedExpense.setEndDate(this.getJXDateEnd().getDate());
-			this.selectedExpense.setRegularity(this.getJTextFieldFrequency().getText());
+			this.selectedExpense.setRegularity((String) this.getJComboBoxRegularity().getSelectedItem());
 
 			return selectedExpense;
 		} catch (Exception e) {
@@ -212,7 +225,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 
 			expense.setConcept(this.getJTextFieldConcept().getText());
 			expense.setEndDate(this.getJXDateEnd().getDate());
-			expense.setRegularity(this.getJTextFieldFrequency().getText());
+			expense.setRegularity((String) this.getJComboBoxRegularity().getSelectedItem());
 
 			return expense;
 		} catch (Exception e) {
@@ -323,19 +336,15 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		return gbc_jLblName;
 	}
 
-	private JTextField getJTextFieldFrequency() {
+	private JComboBox<String> getJComboBoxRegularity() {
 
-		if (txfPeople == null) {
-			txfPeople = new JTextField();
-			txfPeople.setColumns(10);
-			txfPeople.setName("people");
-			txfPeople.setInputVerifier(jobSituationVerifier);
+		if (jComboBoxRegularity == null) {
+			jComboBoxRegularity = new JComboBox<String>();
 		}
-
-		return txfPeople;
+		return jComboBoxRegularity;
 	}
 
-	private GridBagConstraints getGridJTextFieldFrequency() {
+	private GridBagConstraints getGridJComboBoxRegularity() {
 
 		GridBagConstraints gbc_txfName = new GridBagConstraints();
 		gbc_txfName.weightx = 1.0;

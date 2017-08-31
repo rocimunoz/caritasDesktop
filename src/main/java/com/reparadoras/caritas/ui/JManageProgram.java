@@ -360,15 +360,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelContent().setLayout(getGridLayoutJPanelContent());
 
 		getJPanelContent().add(getJtabPane1(), getGridJTabPane());
-		getJtabPane1().add("Direccion", getJPanelAddress());
-		getJtabPane1().add("Vivienda", getJPanelHome());
-		getJtabPane1().add("Familia", getJPanelFamily());
-		getJtabPane1().add("Tipo Autorización", getJPanelAuthorizationType());
-		getJtabPane1().add("Situación Laboral", getJPanelJobSituation());
-		getJtabPane1().add("Estudios", getJPanelStudies());
-		getJtabPane1().add("Situación Económica", getJPanelEconomicSituation());
+		getJtabPane1().add("DIRECCION", getJPanelAddress());
+		getJtabPane1().add("VIVIENDA", getJPanelHome());
+		getJtabPane1().add("FAMILIA", getJPanelFamily());
+		getJtabPane1().add("TIPO AUTORIZACION", getJPanelAuthorizationType());
+		getJtabPane1().add("SITUACION LABORAL", getJPanelJobSituation());
+		getJtabPane1().add("ESTUDIOS", getJPanelStudies());
+		getJtabPane1().add("SITUACION ECONOMICA", getJPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
+		
 
 		getJtabPane1().setBackgroundAt(0, Color.WHITE);
 
@@ -758,6 +759,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 			tableProgram.getColumnModel().getColumn(2).setCellRenderer(dateRenderer);
+			
+			tableProgram.setRowMargin(5);
+			tableProgram.setRowHeight(30);
+			tableProgram.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
 		}
 
 		return tableProgram;
@@ -810,6 +815,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JTabbedPane getJtabPane1() {
 		if (jtabPane1 == null) {
 			jtabPane1 = new JTabbedPane(JTabbedPane.TOP);
+			jtabPane1.setFont(new Font("Verdana", Font.BOLD, 14));
 		}
 		return jtabPane1;
 	}

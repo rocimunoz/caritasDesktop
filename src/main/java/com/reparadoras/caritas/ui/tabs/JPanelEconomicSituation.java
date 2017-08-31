@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import com.reparadoras.caritas.dao.ExpensesDAO;
@@ -28,6 +30,7 @@ import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.ui.components.table.ExpensesTableModel;
+import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.IncomesTableModel;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
@@ -127,7 +130,10 @@ public class JPanelEconomicSituation extends JPanel {
 		if (jPanelTableIncome == null) {
 			jPanelTableIncome = new JPanel();
 			jPanelTableIncome.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ingresos",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			
+			((javax.swing.border.TitledBorder) jPanelTableIncome.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelTableIncome;
@@ -173,6 +179,12 @@ public class JPanelEconomicSituation extends JPanel {
 			tableIncomes = new JTable(getIncomesTableModel());
 			tableIncomes.setAutoCreateRowSorter(true);
 			tableIncomes.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			tableIncomes.setRowMargin(5);
+			tableIncomes.setRowHeight(30);
+			tableIncomes.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+			tableIncomes.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
 		}
 
 		return tableIncomes;
@@ -181,7 +193,7 @@ public class JPanelEconomicSituation extends JPanel {
 	public IncomesTableModel getIncomesTableModel() {
 
 		if (incomesTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Persona", "Concepto", "Cantidad", "Fecha Fin" };
+			Object[] columnIdentifiers = new Object[] { "PERSONA", "CONCEPTO", "CANTIDAD", "FECHA FIN" };
 			incomesTableModel = new IncomesTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -250,7 +262,10 @@ public class JPanelEconomicSituation extends JPanel {
 		if (jPanelTableExpense == null) {
 			jPanelTableExpense = new JPanel();
 			jPanelTableExpense.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Gastos",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			
+			((javax.swing.border.TitledBorder) jPanelTableExpense.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelTableExpense;
@@ -296,6 +311,13 @@ public class JPanelEconomicSituation extends JPanel {
 			tableExpenses = new JTable(getExpensesTableModel());
 			tableExpenses.setAutoCreateRowSorter(true);
 			tableExpenses.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			tableExpenses.setRowMargin(5);
+			tableExpenses.setRowHeight(30);
+			tableExpenses.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+			tableExpenses.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
 		}
 
 		return tableExpenses;
@@ -304,7 +326,7 @@ public class JPanelEconomicSituation extends JPanel {
 	public ExpensesTableModel getExpensesTableModel() {
 
 		if (expensesTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Concepto", "Cantidad", "Periodicidad", "Fecha Fin" };
+			Object[] columnIdentifiers = new Object[] { "CONCEPTO", "CANTIDAD", "PERIODICIDAD", "FECHA FIN" };
 			expensesTableModel = new ExpensesTableModel(Arrays.asList(columnIdentifiers));
 		}
 

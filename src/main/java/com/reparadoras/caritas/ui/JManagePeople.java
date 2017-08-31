@@ -637,6 +637,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 			tablePeople = new JTable(getPeopleTableModel());
 			tablePeople.setAutoCreateRowSorter(true);
 			tablePeople.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			tablePeople.setFont(new Font("Verdana", Font.PLAIN, 14));
+			
+			tablePeople.setRowMargin(5);
+			tablePeople.setRowHeight(30);
+			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
 		}
 
 		return tablePeople;
@@ -645,7 +650,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private PeopleTableModel getPeopleTableModel() {
 
 		if (peopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos" };
+			Object[] columnIdentifiers = new Object[] { "DNI", "NOMBRE", "APELLIDO 1", "APELLIDO 2" };
 			peopleTableModel = new PeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 

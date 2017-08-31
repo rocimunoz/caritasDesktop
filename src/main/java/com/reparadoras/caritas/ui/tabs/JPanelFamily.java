@@ -24,6 +24,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import com.reparadoras.caritas.dao.RelativeDAO;
@@ -34,6 +35,7 @@ import com.reparadoras.caritas.ui.JManageEditPeople;
 import com.reparadoras.caritas.ui.JManageEditRelative;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.table.RelativesTableModel;
@@ -45,6 +47,7 @@ import javax.swing.BoxLayout;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 
 public class JPanelFamily extends JPanel {
@@ -136,7 +139,10 @@ public class JPanelFamily extends JPanel {
 		if (jPanelTable == null) {
 			jPanelTable = new JPanel();
 			jPanelTable.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Composicion Familiar",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			
+			((javax.swing.border.TitledBorder) jPanelTable.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelTable;
@@ -167,7 +173,10 @@ public class JPanelFamily extends JPanel {
 		if (jPanelTypeFamily == null) {
 			jPanelTypeFamily = new JPanel();
 			jPanelTypeFamily.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Tipo de familia",
-					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(255, 0, 0)));
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			
+			((javax.swing.border.TitledBorder) jPanelTypeFamily.getBorder()).
+	        setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 
 		}
 
@@ -336,6 +345,14 @@ public class JPanelFamily extends JPanel {
 			tableRelatives = new JTable(getRelativesTableModel());
 			tableRelatives.setAutoCreateRowSorter(true);
 			tableRelatives.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			tableRelatives.setRowMargin(5);
+			tableRelatives.setRowHeight(30);
+			tableRelatives.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+			tableRelatives.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
+			
 		}
 
 		return tableRelatives;
@@ -344,8 +361,8 @@ public class JPanelFamily extends JPanel {
 	public RelativesTableModel getRelativesTableModel() {
 
 		if (relativesTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Parentesco", "Apellidos", "Nombre", "Fecha Nacimiento",
-					"Situacion" };
+			Object[] columnIdentifiers = new Object[] { "PARENTESCO", "APELLIDOS", "NOMBRE", "FECHA NACIMIENTO",
+					"SITUACION" };
 			relativesTableModel = new RelativesTableModel(Arrays.asList(columnIdentifiers));
 		}
 
