@@ -938,7 +938,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 						JOptionPane.showMessageDialog(this,
 								"Se ha generado un Programa de Atención Primaria para el usuario "
-										+ filterPeople.getName() + "con todos los datos vacios.");
+										+ filterPeople.getName() + " con todos los datos vacios.");
 					} else {
 						dispose();
 					}
