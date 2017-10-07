@@ -155,27 +155,20 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		
 		getJButtonAccept().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if (checkRequiredFields()){
 					//Abrir transaccion
 					if (executingMode == JWindowParams.IMODE_UPDATE){
-						
 						onUpdatePeople();
-					
 					}
 					else if (executingMode == JWindowParams.IMODE_INSERT){
 						onCreatePeople();
 					}
 					
 					//Cerrar Transaccion
-					onCloseWindow();
-			
+					onCloseWindow();	
+				}
 				
-				
-				
-				
-				
-				
-				
+					
 			}
 		});
 		
@@ -274,6 +267,11 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			
 			
 		}
+		else if (mode == JWindowParams.IMODE_INSERT){
+			this.getJckActive().setSelected(true);
+		}
+		
+		
 		
 	}
 	
@@ -349,7 +347,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			
 			people.setCreateDate(this.getJXCreateDate().getDate());
 			people.setReactivateDate(this.getJXReactivateDate().getDate());
-			people.setActive(true);
+			people.setActive(this.getJckActive().isSelected());
 			
 			//save people
 			peopleDAO.insert(people);
@@ -359,6 +357,19 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		}catch(Exception e){
 		    JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		
+	}
+	
+private boolean checkRequiredFields(){
+		//TODO:Añadir resto campos
+		if (!getJTextFieldName().getText().equals("") ){
+			return true;
+		}
+		else{
+			JOptionPane.showMessageDialog(this, "Rellene todos los campos correctamente", "Error Dialog", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
 		
 	}
 	

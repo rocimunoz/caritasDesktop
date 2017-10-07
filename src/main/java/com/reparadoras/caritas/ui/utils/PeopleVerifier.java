@@ -39,6 +39,12 @@ public class PeopleVerifier extends InputVerifier {
 				state = true;
 		}
 		
+		if (name.equals("createDate")) {
+			String date = ((JTextField) input).getText().trim();
+			//TODO:añadir comprobacion fecha inferior a fecha actual
+			
+		}
+		
 		
 		
 		if (state == false){
