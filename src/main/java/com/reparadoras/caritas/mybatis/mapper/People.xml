@@ -27,7 +27,7 @@
     </resultMap>
  
     <select id="findAll" resultMap="PeopleResult">
-        SELECT * FROM C_PEOPLE;
+        SELECT * FROM C_PEOPLE ORDER BY NAME ASC;
     </select>
     
     <select id="findById" resultMap="PeopleResult">

@@ -16,16 +16,22 @@ import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.model.Address;
+import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Family;
+import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -71,15 +77,18 @@ import javax.swing.JFrame;
 public class JManageBackup extends AbstractJInternalFrame {
 
 	static final Logger logger = Logger.getLogger(JManageBackup.class);
-	
+
 	private JDesktopPane desktop = null;
 	private PeopleDAO peopleDAO;
-	
+
 	private FamilyDAO familyDAO;
+	private FamilyTypeDAO familyTypeDAO;
+	private AuthorizationTypeDAO authorizationTypeDAO;
+	private JobSituationDAO jobSituationDAO;
+	private StudiesDAO studiesDAO;
 	private ProgramDAO programDAO;
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
-	
 
 	private JFileChooser jfc = null;
 
@@ -95,11 +104,15 @@ public class JManageBackup extends AbstractJInternalFrame {
 		this.pack();
 		this.setResizable(false);
 		this.setClosable(true);
-		
+
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
@@ -109,8 +122,10 @@ public class JManageBackup extends AbstractJInternalFrame {
 		// int returnValue = getFileChooser().showSaveDialog(null);
 		int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
+
 			
 			importData(jfc.getSelectedFile());
+			
 
 		}
 
@@ -118,15 +133,14 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 	public void importData(File file) {
 
-		
-			readExcelFileXls(jfc.getSelectedFile());
+		readExcelFileXls(jfc.getSelectedFile());
 
-		 
 	}
 
-	public void readExcelFileXls(File file)  {
+	public void readExcelFileXls(File file) {
 
-		try{
+		try {
+			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			InputStream targetStream = new FileInputStream(file);
 			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
 
@@ -159,41 +173,41 @@ public class JManageBackup extends AbstractJInternalFrame {
 					while (cells.hasNext()) {
 						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow(cell, mapProgram, key, program);
-											
+
 					}
-					
+
 					addressDAO.insert(address);
 					homeDAO.insert(home);
 					familyDAO.insert(family);
 					peopleDAO.insert(people);
-					programDAO.insert(program);
+					programDAO.insertExcel(program);
 				}
 
 			}
-		}
-		catch(Exception e){
+			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		} catch (Exception e) {
 			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
 		}
-	
+
 	}
 
 	public String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, String key, Program program) {
 
 		String primaryKey = key;
-		try{
+		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
 				mapProgram.put(cell.getStringCellValue(), program);
 				mapProgram.get(cell.getStringCellValue()).getPeople().setDni(cell.getStringCellValue());
 				primaryKey = cell.getStringCellValue();
-				
+
 				break;
 			case 1:
 				mapProgram.get(key).getPeople().setPassport(cell.getStringCellValue());
 				break;
 			case 2:
-				
-				if (cell.getDateCellValue()!=null) {
+
+				if (cell.getDateCellValue() != null) {
 					mapProgram.get(key).getPeople().setCreateDate(cell.getDateCellValue());
 				}
 				break;
@@ -230,15 +244,16 @@ public class JManageBackup extends AbstractJInternalFrame {
 				mapProgram.get(key).getPeople().setNationality(cell.getStringCellValue());
 				break;
 			case 15:
-			
-					mapProgram.get(key).getPeople().setYearToSpain(new Double(cell.getNumericCellValue()).intValue());
-			
+
+				mapProgram.get(key).getPeople().setYearToSpain(new Double(cell.getNumericCellValue()).intValue());
+
 				break;
 			case 16:
 				mapProgram.get(key).getFamily().getHome().getAddress().setTown(cell.getStringCellValue());
 				break;
 			case 17:
-				mapProgram.get(key).getFamily().getHome().getAddress().setPostalCode(String.valueOf(cell.getNumericCellValue()));
+				mapProgram.get(key).getFamily().getHome().getAddress()
+						.setPostalCode(String.valueOf(cell.getNumericCellValue()));
 				break;
 			case 18:
 				mapProgram.get(key).getFamily().getHome().getAddress().setStreet(cell.getStringCellValue());
@@ -246,19 +261,20 @@ public class JManageBackup extends AbstractJInternalFrame {
 			case 19:
 				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 					mapProgram.get(key).getFamily().getHome().getAddress().setGate(cell.getStringCellValue());
-				}else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
-					mapProgram.get(key).getFamily().getHome().getAddress().setGate(String.valueOf(cell.getNumericCellValue()));
+				} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+					mapProgram.get(key).getFamily().getHome().getAddress()
+							.setGate(String.valueOf(cell.getNumericCellValue()));
 				}
-				
+
 				break;
 			case 20:
 				mapProgram.get(key).getFamily().getHome().getAddress().setFloor(cell.getStringCellValue());
 				break;
 			case 21:
-				mapProgram.get(key).getFamily().getHome().getAddress().setTelephone(String.valueOf(cell.getNumericCellValue()));
+				mapProgram.get(key).getFamily().getHome().getAddress().setTelephone(cell.getStringCellValue());
 				break;
 			case 22:
-				mapProgram.get(key).getFamily().getHome().getAddress().setTelephoneContact(String.valueOf(cell.getNumericCellValue()));
+				mapProgram.get(key).getFamily().getHome().getAddress().setTelephoneContact(cell.getStringCellValue());
 				break;
 			case 23:
 				// mapProgram.get(key).getFamily().getHome().setHomeType(homeType);
@@ -267,27 +283,149 @@ public class JManageBackup extends AbstractJInternalFrame {
 				mapProgram.get(key).getFamily().getHome().setRegHolding(cell.getStringCellValue());
 				break;
 			case 25:
-					mapProgram.get(key).getFamily().getHome().setNumberRooms(new Double(cell.getNumericCellValue()).intValue());
+				mapProgram.get(key).getFamily().getHome().setNumberRooms(Integer.parseInt(cell.getStringCellValue()));
 				break;
 			case 26:
-					mapProgram.get(key).getFamily().getHome().setNumberPeople(new Double(cell.getNumericCellValue()).intValue());
+				mapProgram.get(key).getFamily().getHome().setNumberPeople(Integer.parseInt(cell.getStringCellValue()));
 				break;
 			case 27:
-					mapProgram.get(key).getFamily().getHome().setNumberFamilies(new Double(cell.getNumericCellValue()).intValue());
+				mapProgram.get(key).getFamily().getHome()
+						.setNumberFamilies(Integer.parseInt(cell.getStringCellValue()));
 				break;
 			case 28:
 				mapProgram.get(key).getFamily().getHome().setOtherInfo(cell.getStringCellValue());
 
 				break;
+			case 64:
+				String nemonic = cell.getStringCellValue();
+				FamilyType familyType = getFamilyType(nemonic);
+				mapProgram.get(key).getFamily().setFamilyType(familyType);
+
+				break;
+			case 66:
+				String nemonicAuthorization = cell.getStringCellValue();
+				AuthorizationType authorizationType = getAuthorizationType(nemonicAuthorization);
+				mapProgram.get(key).setAuthorizationType(authorizationType);
+
+				break;
+			case 67:
+				String nemonicJobSituation = cell.getStringCellValue();
+				JobSituation jobSituation = getJobSituation(nemonicJobSituation);
+				mapProgram.get(key).setJobSituation(jobSituation);
+
+				break;
+			case 68:
+				String nemonicStudies = cell.getStringCellValue();
+				Studies studies = getStudies(nemonicStudies);
+				mapProgram.get(key).setStudies(studies);
+
+				break;
 			}
-		}
-		catch(Exception e){
-		
+
+		} catch (Exception e) {
+
 			logger.error(e);
 		}
-		
+
 		return primaryKey;
+
+	}
+
+	public FamilyType getFamilyType(String nemonic) {
+		FamilyType fType = new FamilyType();
+		if (nemonic.equals("S")) {
+			fType.setDescription("Sola");
+
+		} else if (nemonic.equals("PCH")) {
+			fType.setDescription("Pareja con Hijos");
+
+		} else if (nemonic.equals("PSH")) {
+			fType.setDescription("Pareja sin Hijos");
+		} else if (nemonic.equals("M")) {
+			fType.setDescription("Monoparental");
+		} else if (nemonic.equals("O")) {
+			fType.setDescription("Otra");
+		} else
+			fType.setDescription("Sola");
+
+		return familyTypeDAO.findFamilyType(fType);
+
+	}
+
+	public AuthorizationType getAuthorizationType(String nemonic) {
+		AuthorizationType aType = new AuthorizationType();
+		if (nemonic.equals("AR")) {
+			aType.setDescription("Autorización Residencia");
+
+		} else if (nemonic.equals("ART")) {
+			aType.setDescription("Autorización Residencia y Trabajo");
+
+		} else if (nemonic.equals("E")) {
+			aType.setDescription("Estudios");
+		} else if (nemonic.equals("T")) {
+			aType.setDescription("Turismo");
+		} else if (nemonic.equals("R")) {
+			aType.setDescription("Refugiado");
+		} else
+			aType.setDescription("Autorización Residencia");
+
+		return authorizationTypeDAO.findAuthorizationType(aType);
+
+	}
+
+	public JobSituation getJobSituation(String nemonic) {
+		JobSituation jType = new JobSituation();
+		if (nemonic.equals("P")) {
+			jType.setDescription("Parado");
+
+		} else if (nemonic.equals("TN")) {
+			jType.setDescription("Con Trabajo Normalizado");
+
+		} else if (nemonic.equals("TM")) {
+			jType.setDescription("Con Trabajo Marginal o Economia Sumergida");
+		} else if (nemonic.equals("Ama de casa")) {
+			jType.setDescription("Labores del hogar (ama de casa)");
+		} else if (nemonic.equals("Pe")) {
+			jType.setDescription("Pensionista o Jubilado");
+		} else if (nemonic.equals("O")) {
+			jType.setDescription("Otros inactivos (estudiantes, menores");
+		} else
+			jType.setDescription("Parado");
+
+		return jobSituationDAO.findJobSituation(jType);
+
+	}
+
+	public Studies getStudies(String nemonic) {
+		Studies sType = new Studies();
+		if (nemonic.equals("NLE")) {
+			sType.setDescription("No sabe leer ni escribir");
+
+		} else if (nemonic.equals("SLE")) {
+			sType.setDescription("Sólo sabe leer y escribir");
+
+		} else if (nemonic.equals("I")) {
+			sType.setDescription("Infanil");
+		} else if (nemonic.equals("P")) {
+			sType.setDescription("Primaria");
+		} else if (nemonic.equals("S")) {
+			sType.setDescription("Secundaria");
+		} else if (nemonic.equals("B")) {
+			sType.setDescription("Bachillerato");
+		}else if (nemonic.equals("FP-GM")) {
+			sType.setDescription("FP-Grado Medio");
+		} else if (nemonic.equals("FP-GS")) {
+			sType.setDescription("FP-Grado Superior");
+		} else if (nemonic.equals("UL")) {
+			sType.setDescription("Universidad Diplomado");
+		} 
 		
+		
+		else
+			sType.setDescription("No sabe leer ni escribir");
+
+		return studiesDAO.findStudies(sType);
+
 	}
 
 	public void readExcelFileXlsx(File file) {

@@ -38,6 +38,20 @@ public int insert(Program program){
      return id;
  }
 
+public int insertExcel(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         id = session.insert("Program.insert-excel", program);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("insert("+program+") --> "+program.getId());
+     return id;
+ }
+
 public int delete(People people){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();

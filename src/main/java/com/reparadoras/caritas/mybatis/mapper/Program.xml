@@ -185,6 +185,12 @@
         VALUES (#{people.id}, #{family.id})
     </insert>
     
+    <insert id="insert-excel" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_PROGRAM 
+        	(ID_PEOPLE, ID_FAMILY, ID_JOB_SITUATION, ID_AUTHORIZATION_TYPE, ID_STUDIES) 
+        VALUES (#{people.id}, #{family.id}, #{jobSituation.id}, #{authorizationType.id}, #{studies.id})
+    </insert>
+    
     <update id="update" parameterType="Program">
         UPDATE C_PROGRAM
         <set>

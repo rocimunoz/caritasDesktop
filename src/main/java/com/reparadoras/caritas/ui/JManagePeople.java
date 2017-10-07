@@ -761,6 +761,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		JManageProgram jManageProgram = null;
 		int row = getJTablePeople().getSelectedRow();
 		
+		//cuando ordeno pierde el orden. Solucion convertir la fila
 		row = getJTablePeople().convertRowIndexToModel(row);
 
 		
