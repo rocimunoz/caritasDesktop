@@ -1,5 +1,9 @@
 package com.reparadoras.caritas.ui.utils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -41,7 +45,15 @@ public class PeopleVerifier extends InputVerifier {
 		
 		if (name.equals("createDate")) {
 			String date = ((JTextField) input).getText().trim();
-			//TODO:añadir comprobacion fecha inferior a fecha actual
+		
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+			//convert String to LocalDate
+			LocalDateTime localDate = LocalDateTime.parse(date, formatter);
+			if (localDate.isAfter(LocalDateTime.now())){
+				message = "Revisar los campos introducidos. La fecha de alta no puede ser superior a la fecha actual";
+				state = false;
+			}
 			
 		}
 		

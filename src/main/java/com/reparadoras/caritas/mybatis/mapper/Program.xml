@@ -18,6 +18,7 @@
      <resultMap id="PeopleResult" type="People">
         <result property="id" column="id"/>
         <result property="name" column="name"/>  
+        <result property="firstSurname" column="first_surname"/>
         <result property="dni" column="dni"/>  
         <result property="active" column="active"/>
         <result property="createDate" column="create_date"/>
@@ -78,6 +79,7 @@
      <select id="findAll" resultMap="ProgramResult">
           SELECT PE.DNI, 
                PE.NAME,
+               PE.FIRST_SURNAME,
                PE.CREATE_DATE,
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,
@@ -119,6 +121,7 @@
     <select id="findProgram" parameterType="People" resultMap="ProgramResult">
         SELECT PE.DNI, 
                PE.NAME,
+               PE.FIRST_SURNAME,
                PE.CREATE_DATE,
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,

@@ -758,7 +758,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
-			tableProgram.getColumnModel().getColumn(2).setCellRenderer(dateRenderer);
+			tableProgram.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
 			
 			tableProgram.setRowMargin(5);
 			tableProgram.setRowHeight(30);
@@ -771,7 +771,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramTableModel getProgramTableModel() {
 
 		if (programTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha Creacion" };
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre","Apellidos", "Fecha Creacion" };
 			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
 		}
 

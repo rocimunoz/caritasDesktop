@@ -696,6 +696,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 		try {
 
 			int rowIndex = this.getJTablePeople().getSelectedRow();
+			//cuando ordeno pierde el orden. Solucion convertir la fila
+			rowIndex = getJTablePeople().convertRowIndexToModel(rowIndex);
 			if (rowIndex != -1) {
 
 				if (JOptionPane.showConfirmDialog(null,
@@ -733,6 +735,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
 				int row = this.getJTablePeople().getSelectedRow();
+				
+				row = getJTablePeople().convertRowIndexToModel(row);
 				if (row != -1) {
 					People people = this.getPeopleTableModel().getDomainObject(row);
 					jManageEditPeople = new JManageEditPeople(this, true, openMode, title, people);

@@ -897,6 +897,8 @@ private boolean checkRequiredFields(){
 
 		if (jxCreateDate == null){
 			jxCreateDate = new JXDatePicker();	
+			jxCreateDate.setName("createDate");
+			jxCreateDate.setInputVerifier(peopleVerifier);
 		}
 		
 		return jxCreateDate;
