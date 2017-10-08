@@ -66,7 +66,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	private JComboBox<People> cbPeople;
+	//private JComboBox<People> cbPeople;
+	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
 	
@@ -196,7 +197,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJComboPeople());
+		getJPanelFilter().add(this.getJTextFieldName(), getGridJTextFieldName());
 		
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
@@ -224,20 +225,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		initCbPeople();
-
-	}
-
-	public void initCbPeople() {
-
-		List<People> listPeople = peopleDAO.findAll();
 		
-		for (People p : listPeople) {
-			this.getJComboBoxPeople().addItem(p);
-		}
-		getJComboBoxPeople().setSelectedIndex(-1);
 
 	}
+
+	
 
 	/* FUNCIONES DEL GETCONTENTPANE */
 
@@ -305,20 +297,20 @@ public class JManagePeople extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JComboBox<People> getJComboBoxPeople() {
-		if (cbPeople == null) {
-			cbPeople = new JComboBox<People>();
-			
-			
-			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); //By default it selects first item, we don't want any selection
-		}
+	
+	private JTextField getJTextFieldName() {
+		if (tfName == null) {
+			if (tfName == null) {
+				tfName = new JTextField();
+				tfName.setColumns(10);
+			}
+			return tfName;}
 
-		return cbPeople;
+		return tfName;
 
 	}
 
-	private GridBagConstraints getGridJComboPeople() {
+	private GridBagConstraints getGridJTextFieldName() {
 
 		GridBagConstraints gbc_tfName = new GridBagConstraints();
 		gbc_tfName.insets = new Insets(0, 0, 0, 5);
@@ -661,21 +653,24 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	public void cleanFilter(){
 		this.getJTextFieldDni().setText("");
-		this.getJComboBoxPeople().setSelectedIndex(-1);
+		this.getJTextFieldName().setText("");
+		
 	}
 	
 	public void filterPeople() {
 		String filterDni = this.getJTextFieldDni().getText();
+		String filterName = this.getJTextFieldName().getText();
 		boolean filterActive = this.getCkActive().isSelected();
 		People filterPeople = new People();
 		if (filterDni != null && !filterDni.equals("")) {
 			filterPeople.setDni(filterDni);
 		}
 		
-		People selectedPeople = (People)this.getJComboBoxPeople().getSelectedItem();
-		if (selectedPeople != null && selectedPeople.getId()!=-1) {
-			filterPeople.setName(selectedPeople.getName());
+		if (filterName != null && !filterName.equals("")) {
+			filterPeople.setName(filterName);
 		}
+		
+		
 
 		filterPeople.setActive(filterActive);
 
