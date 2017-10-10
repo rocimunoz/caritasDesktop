@@ -78,7 +78,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JLabel lblDni;
 	private JTextField tfDni;
 	private JCheckBox ckActive;
-	private JComboBox<People> cbPeople = null;
+	//private JComboBox<People> cbPeople = null;
+	private JTextField tfName;
 	private JPanel jPanelContent = null;
 
 	private JPanel jPanelTable = null;
@@ -118,6 +119,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
+		
+		this.getJTextFieldDni().setText(this.people.getDni());
+		this.getJTextFieldName().setText(this.people.getName());
 		onFilterTicket(true);
 		
 	}
@@ -147,7 +151,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	public void initComponents() {
 
 		this.getCkActive().setSelected(true);
-		initCbPeople();
+		
 	}
 
 	public void addListeners() {
@@ -181,26 +185,11 @@ public class JManageTicket extends AbstractJInternalFrame {
 	
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
-		this.getJComboBoxPeople().setSelectedIndex(-1);
+		this.getJTextFieldName().setText("");
+		
 	}
 	
-	public void initCbPeople() {
-
-		List<People> listPeople = peopleDAO.findAll();
-
-		if (this.people!=null){
-			this.getJComboBoxPeople().addItem(this.people);
-			this.getJComboBoxPeople().setSelectedItem(this.people);
-		}
-		else{
-			for (People p : listPeople) {
-				this.getJComboBoxPeople().addItem(p);
-			}
-			getJComboBoxPeople().setSelectedIndex(-1);
-		}
-		
-
-	}
+	
 
 	public void createGUIComponents() {
 
@@ -214,7 +203,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
+		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 
@@ -358,17 +347,14 @@ public class JManageTicket extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JComboBox<People> getJComboBoxPeople() {
-		if (cbPeople == null) {
-			cbPeople = new JComboBox<People>();
+	private JTextField getJTextFieldName() {
+		if (tfName == null) {
+			tfName = new JTextField();
 
-			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); // By default it selects first item,
-											// we don't want any selection
-
+			
 		}
 
-		return cbPeople;
+		return tfName;
 
 	}
 
@@ -733,11 +719,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		People filterPeople = new People();
 		filterPeople.setActive(this.getCkActive().isSelected());
 		filterPeople.setDni(this.getJTextFieldDni().getText());
-		People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
-		if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
-			filterPeople.setName(selectedPeopleCombo.getName());
-			
-		}
+		filterPeople.setName(this.getJTextFieldName().getText());
 
 		List<Ticket> tickets = ticketDAO.findTicket(filterPeople);
 		if (tickets != null && !tickets.isEmpty()) {

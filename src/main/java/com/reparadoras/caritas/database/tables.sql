@@ -179,15 +179,18 @@ CREATE TABLE `c_program` (
   `ID_FAMILY` int(11) DEFAULT NULL,
   `ID_AUTHORIZATION_TYPE` int(11) DEFAULT NULL,
   `ID_JOB_SITUATION` int(11) DEFAULT NULL,
+  `ID_STUDIES` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idPeople` (`ID_PEOPLE`),
   KEY `program_authorization` (`ID_AUTHORIZATION_TYPE`),
   KEY `program_family` (`ID_FAMILY`),
   KEY `program_job_situation` (`ID_JOB_SITUATION`),
+  KEY `program_job_studies` (`ID_STUDIES`),
   CONSTRAINT `program_authorization` FOREIGN KEY (`ID_AUTHORIZATION_TYPE`) REFERENCES `c_authorization_type` (`ID`),
   CONSTRAINT `program_family` FOREIGN KEY (`ID_FAMILY`) REFERENCES `c_family` (`ID`),
   CONSTRAINT `program_job_situation` FOREIGN KEY (`ID_JOB_SITUATION`) REFERENCES `c_job_situation` (`ID`),
-  CONSTRAINT `program_people` FOREIGN KEY (`ID_PEOPLE`) REFERENCES `c_people` (`ID`)
+  CONSTRAINT `program_people` FOREIGN KEY (`ID_PEOPLE`) REFERENCES `c_people` (`ID`),
+  CONSTRAINT `program_studies` FOREIGN KEY (`ID_STUDIES`) REFERENCES `c_studies` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- TICKET

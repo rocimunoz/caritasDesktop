@@ -114,7 +114,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	private JComboBox<People> cbPeople;
+	//private JComboBox<People> cbPeople;
+	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
 	private JPanel jPanelContent = null;
@@ -171,6 +172,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.setTitle(title);
 
 		this.people = people;
+		
 
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -187,6 +189,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
+		
+		this.getJTextFieldName().setText(people.getName());
+		this.getJTextFieldDni().setText(people.getDni());
+		
 		onFilterProgram(true);
 
 		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
@@ -342,7 +348,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
+		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 		getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
@@ -377,10 +383,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		initCbPeople();
+		//initCbPeople();
 
 	}
 
+	/*
 	public void initCbPeople() {
 
 		List<People> listPeople = peopleDAO.findAll();
@@ -396,7 +403,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			getJComboBoxPeople().setSelectedIndex(-1);
 		}
 		
-	}
+	}*/
 
 	/* TABS */
 
@@ -516,17 +523,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JComboBox<People> getJComboBoxPeople() {
-		if (cbPeople == null) {
-			cbPeople = new JComboBox<People>();
-
-			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); // By default it selects first item,
-											// we don't want any selection
-
+	private JTextField getJTextFieldName() {
+		if (tfName == null) {
+			tfName = new JTextField();
 		}
 
-		return cbPeople;
+		return tfName;
 
 	}
 
@@ -838,7 +840,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
-		this.getJComboBoxPeople().setSelectedIndex(-1);
+		this.getJTextFieldName().setText("");
+		
 	}
 
 	public void cleanTabs() {
@@ -914,12 +917,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			People filterPeople = new People();
 			filterPeople.setActive(this.getCkActive().isSelected());
 			filterPeople.setDni(this.getJTextFieldDni().getText());
-			People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
-			if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
-				filterPeople.setName(selectedPeopleCombo.getName());
-				filterPeople.setFirstSurname(selectedPeopleCombo.getFirstSurname());
-			}
-
+			filterPeople.setName(this.getJTextFieldName().getText());
+			
 			List<Program> programs = programDAO.findProgram(filterPeople);
 			if (programs != null && !programs.isEmpty()) {
 				this.getProgramTableModel().clearTableModelData();
@@ -1498,7 +1497,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (rowIndex != -1) {
 			try {
 				Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
-				People people = (People) this.getJComboBoxPeople().getSelectedItem();
 				if (selectedProgram != null) {
 
 					if (selectedProgram.getFamily() != null) {

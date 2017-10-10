@@ -42,7 +42,8 @@
 				<where>
 				
 					<if test="name!=null and !name.equals('')">
-						name =  #{name}
+					<bind name="pattern_name" value="'%' + name + '%'" />
+						name like  #{pattern_name}
 					</if>
 					<if test="dni!=null">
 					<bind name="pattern" value="'%' + dni + '%'" />
