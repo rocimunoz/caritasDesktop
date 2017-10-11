@@ -7,6 +7,7 @@ import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.utils.JTextFieldLimit;
 import com.reparadoras.caritas.ui.utils.PeopleVerifier;
 
 import java.awt.GridBagLayout;
@@ -477,7 +478,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldName() {
 
 		if (txfName == null) {
-			txfName = new JTextField();
+			txfName = new JTextField(100);
 			txfName.setColumns(10);
 			txfName.setName("name");
 			// txfName.setInputVerifier(peopleVerifier);
@@ -526,7 +527,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldFirstSurname() {
 
 		if (txfFirstSurname == null) {
-			txfFirstSurname = new JTextField();
+			txfFirstSurname = new JTextField(100);
+			//txfFirstSurname.setDocument(new JTextFieldLimit(100));
 			txfFirstSurname.setColumns(10);
 			txfFirstSurname.setName("firstSurname");
 			// txfFirstSurname.setInputVerifier(peopleVerifier);
@@ -574,7 +576,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldSecondSurname() {
 
 		if (txfSecondSurname == null) {
-			txfSecondSurname = new JTextField();
+			txfSecondSurname = new JTextField(100);
 			txfSecondSurname.setColumns(10);
 			txfSecondSurname.setName("secondSurname");
 			// txfSecondSurname.setInputVerifier(peopleVerifier);
@@ -622,7 +624,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldDni() {
 
 		if (txfDni == null) {
-			txfDni = new JTextField();
+			txfDni = new JTextField(9);
 			txfDni.setColumns(10);
 		}
 
@@ -668,7 +670,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldPassport() {
 
 		if (txfPassport == null) {
-			txfPassport = new JTextField();
+			txfPassport = new JTextField(20);
 
 		}
 
@@ -742,7 +744,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldCountry() {
 
 		if (txfCountry == null) {
-			txfCountry = new JTextField();
+			txfCountry = new JTextField(100);
 
 		}
 
@@ -788,7 +790,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField getJTextFieldNationality() {
 
 		if (txfNationality == null) {
-			txfNationality = new JTextField();
+			txfNationality = new JTextField(100);
 
 		}
 

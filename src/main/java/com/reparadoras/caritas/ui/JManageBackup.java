@@ -25,11 +25,15 @@ import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
+import com.reparadoras.caritas.ui.JMainWindow.Task_BackupBBDD;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
@@ -52,6 +56,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingWorker;
+
 import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -66,6 +73,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -89,8 +97,15 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
+	
+	private StringBuffer sbuffer = new StringBuffer();
 
 	private JFileChooser jfc = null;
+	private JFrame frame = null;
+	private JPanel panel = null;
+	private JTextArea textArea = null;
+	private JScrollPane scroll = null;
+	private JLabel label = null;
 
 	private People selectedPeople;
 
@@ -131,16 +146,82 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 	}
 
+	
+	
 	public void importData(File file) {
 
-		readExcelFileXls(jfc.getSelectedFile());
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		frame = new JFrame();
+        panel = new JPanel();
+        label = new JLabel("Se esta realizando la copia de los datos, por favor espere unos instantes ... ");
+        textArea = new JTextArea();
+        textArea = new JTextArea(16, 58);
+        textArea.setEditable(false); // set textArea non-editable
+        scroll = new JScrollPane(textArea);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
+      
+        panel.add(label);
+        panel.add(scroll);
+      
+        frame.add(panel);
+        frame.pack();
+        frame.setSize(800,400);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        
+      
+        //frame.setDefaultCloseOperation(JFrame);
+        new Task_BackupBBDD(jfc.getSelectedFile()).execute();
+        
+        
+		
+		
+		
 
 	}
+	
+	  class Task_BackupBBDD extends SwingWorker<Void, String> {
 
-	public void readExcelFileXls(File file) {
+	        File file;
+	        public Task_BackupBBDD(File file) {
+	            this.file = file;
+	        }
+
+	        @Override
+	        protected void process(List<String> chunks) {
+	        	readExcelFileXls(this.file);
+	        }
+
+	        @Override
+	        protected Void doInBackground() throws Exception {
+
+	            publish("Cargando fichero .....");
+	            Thread.sleep(1000);
+	          
+
+	            return null;
+	        }
+
+	        @Override
+	        protected void done() {
+	            try {
+	                get();
+	                //JOptionPane.showMessageDialog(file.get, "Copia de seguridad realizada", "Success", JOptionPane.INFORMATION_MESSAGE);
+	                textArea.setText(sbuffer.toString());
+	                frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	            } catch (ExecutionException | InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	            
+	         
+	        }
+	    }
+
+	public  void readExcelFileXls(File file) {
 
 		try {
-			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			//this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			InputStream targetStream = new FileInputStream(file);
 			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
 
@@ -181,6 +262,8 @@ public class JManageBackup extends AbstractJInternalFrame {
 					familyDAO.insert(family);
 					peopleDAO.insert(people);
 					programDAO.insertExcel(program);
+					
+					sbuffer.append("Insertado registro: " + people.getName() + "\n");
 				}
 
 			}
@@ -191,7 +274,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 	}
 
-	public String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, String key, Program program) {
+	public  String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, String key, Program program) {
 
 		String primaryKey = key;
 		try {
