@@ -159,6 +159,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getBtnDeletePeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				onDeletePeople();
+				cleanFilter();
 				filterPeople();
 			}
 		});
@@ -681,7 +682,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		} else {
 			this.getPeopleTableModel().clearTableModelData();
-			JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+			//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 			
 		}
 

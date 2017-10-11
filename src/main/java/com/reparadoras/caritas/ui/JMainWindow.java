@@ -2,6 +2,7 @@ package com.reparadoras.caritas.ui;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -52,6 +54,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -321,7 +324,8 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblExit.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					System.exit(0);
+					createBackup();
+					
 				}
 			});
 			lblExit.addMouseMotionListener(new MouseMotionAdapter() {
@@ -431,6 +435,65 @@ public class JMainWindow extends AbstractJInternalFrame {
 	            
 	        }
 	 }
+	 
+
+	 public static void createBackup() {
+	        JFrame frame = new JFrame();
+	        JPanel panel = new JPanel();
+	        JLabel label = new JLabel("Realizando copia de seguridad...");
+	        JProgressBar jpb = new JProgressBar();
+	        jpb.setIndeterminate(true);
+	        panel.add(label);
+	        panel.add(jpb);
+	        frame.add(panel);
+	        frame.pack();
+	        frame.setSize(200,90);
+	        frame.setLocationRelativeTo(null);
+	        frame.setVisible(true);
+	        //frame.setDefaultCloseOperation(JFrame);
+	        new Task_BackupBBDD(label).execute();
+	    }
+
+	    static class Task_BackupBBDD extends SwingWorker<Void, String> {
+
+	        JLabel jlabel;
+	        public Task_BackupBBDD(JLabel jlabel) {
+	            this.jlabel = jlabel;
+	        }
+
+	        @Override
+	        protected void process(List<String> chunks) {
+	            jlabel.setText(chunks.get(chunks.size()-1)); // The last value in this array is all we care about.
+	            System.out.println(chunks.get(chunks.size()-1));
+	        }
+
+	        @Override
+	        protected Void doInBackground() throws Exception {
+
+	            publish("Loading Step 1...");
+	            Thread.sleep(1000);
+	            publish("Loading Step 2...");
+	            Thread.sleep(1000);
+	            publish("Loading Step 3...");
+	            Thread.sleep(1000);
+	            publish("Loading Step 4...");
+	            Thread.sleep(1000);
+
+	            return null;
+	        }
+
+	        @Override
+	        protected void done() {
+	            try {
+	                get();
+	                JOptionPane.showMessageDialog(jlabel.getParent(), "Copia de seguridad realizada", "Success", JOptionPane.INFORMATION_MESSAGE);
+	            } catch (ExecutionException | InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	            
+	          System.exit(0);
+	        }
+	    }
 }
 	
 	

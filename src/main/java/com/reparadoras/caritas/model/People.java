@@ -22,7 +22,7 @@ public class People implements Serializable{
     private Date reactivateDate;
     private String country;
     private String nationality;
-    private int yearToSpain;
+    private Integer yearToSpain;
     private String civilStatus;
   
     private Date dateBorn;
@@ -113,11 +113,11 @@ public class People implements Serializable{
 		this.nationality = nationality;
 	}
 
-	public int getYearToSpain() {
+	public Integer getYearToSpain() {
 		return yearToSpain;
 	}
 
-	public void setYearToSpain(int yearToSpain) {
+	public void setYearToSpain(Integer yearToSpain) {
 		this.yearToSpain = yearToSpain;
 	}
 

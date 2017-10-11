@@ -100,7 +100,7 @@
           <if test="passport != null">passport = #{passport},</if>
           <if test="nationality != null">nationality = #{nationality},</if>
           <if test="country != null">country = #{country},</if>
-          <if test="yearToSpain != null">year_to_spain = #{yearToSpain},</if>
+          year_to_spain = #{yearToSpain},
           <if test="createDate != null">create_date = #{createDate},</if>
           <if test="reactivateDate != null">reactivate_date = #{reactivateDate},</if>
           <if test="sex != null">sex = #{sex},</if>
