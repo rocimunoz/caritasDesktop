@@ -7,7 +7,6 @@ import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
-import com.reparadoras.caritas.ui.utils.JTextFieldLimit;
 import com.reparadoras.caritas.ui.utils.PeopleVerifier;
 
 import java.awt.GridBagLayout;

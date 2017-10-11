@@ -62,6 +62,8 @@ import javax.swing.SwingWorker;
 import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,7 +100,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
 	
-	private StringBuffer sbuffer = new StringBuffer();
+	//private StringBuffer sbuffer = new StringBuffer();
 
 	private JFileChooser jfc = null;
 	private JFrame frame = null;
@@ -106,6 +108,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private JTextArea textArea = null;
 	private JScrollPane scroll = null;
 	private JLabel label = null;
+	private JButton button = null;
 
 	private People selectedPeople;
 
@@ -159,26 +162,58 @@ public class JManageBackup extends AbstractJInternalFrame {
         textArea.setEditable(false); // set textArea non-editable
         scroll = new JScrollPane(textArea);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        button= new JButton("Aceptar");
         
+        
+        button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				frame.dispose();
+				
+			}
+		});
       
-        panel.add(label);
-        panel.add(scroll);
-      
+       
+       
+        
+        panel.setLayout(getGridContentPane());
+        
+        GridBagConstraints gbc_jPanelLabel = new GridBagConstraints();
+        gbc_jPanelLabel.insets = new Insets(0, 0, 5, 0);
+        gbc_jPanelLabel.weightx = 1.0;
+        gbc_jPanelLabel.weighty = 1.0;
+        gbc_jPanelLabel.fill = GridBagConstraints.NONE;
+        gbc_jPanelLabel.gridx = 0;
+        gbc_jPanelLabel.gridy = 0;
+        
+        GridBagConstraints gbc_jPanelTextArea = new GridBagConstraints();
+        gbc_jPanelTextArea.insets = new Insets(0, 0, 5, 0);
+        gbc_jPanelTextArea.weightx = 1.0;
+        gbc_jPanelTextArea.weighty = 1.0;
+        gbc_jPanelTextArea.fill = GridBagConstraints.BOTH;
+        gbc_jPanelTextArea.gridx = 0;
+        gbc_jPanelTextArea.gridy = 1;
+        
+        GridBagConstraints gbc_jPanelButton = new GridBagConstraints();
+        gbc_jPanelButton.insets = new Insets(0, 0, 5, 0);
+        gbc_jPanelButton.weightx = 1.0;
+        gbc_jPanelButton.weighty = 1.0;
+        gbc_jPanelButton.fill = GridBagConstraints.NONE;
+        gbc_jPanelButton.gridx = 0;
+        gbc_jPanelButton.gridy = 2;
+        
+        panel.add(label, gbc_jPanelLabel);
+        panel.add(scroll, gbc_jPanelTextArea);
+        panel.add(button, gbc_jPanelButton);
+        
         frame.add(panel);
         frame.pack();
         frame.setSize(800,400);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        
-      
-        //frame.setDefaultCloseOperation(JFrame);
+		
         new Task_BackupBBDD(jfc.getSelectedFile()).execute();
         
-        
-		
-		
-		
-
 	}
 	
 	  class Task_BackupBBDD extends SwingWorker<Void, String> {
@@ -208,7 +243,8 @@ public class JManageBackup extends AbstractJInternalFrame {
 	            try {
 	                get();
 	                //JOptionPane.showMessageDialog(file.get, "Copia de seguridad realizada", "Success", JOptionPane.INFORMATION_MESSAGE);
-	                textArea.setText(sbuffer.toString());
+	                
+	                
 	                frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	            } catch (ExecutionException | InterruptedException e) {
 	                e.printStackTrace();
@@ -220,6 +256,10 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 	public  void readExcelFileXls(File file) {
 
+		int countOK = 0;
+		int countKO = 0;
+		int countExist = 0;
+		int countTotal = 0;
 		try {
 			//this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			InputStream targetStream = new FileInputStream(file);
@@ -233,44 +273,80 @@ public class JManageBackup extends AbstractJInternalFrame {
 			// Recorremos las filas del documento
 			Iterator rows = sheet.rowIterator();
 			while (rows.hasNext()) {
-
 				HSSFRow row = (HSSFRow) rows.next();
-				if (row.getRowNum() >= 2) {
+				
+				try{
+					if (row.getRowNum() >= 2) {
+						countTotal++;
+						Iterator cells = row.cellIterator();
+						String key = "";
 
-					Iterator cells = row.cellIterator();
-					String key = "";
+						Program program = new Program();
+						People people = new People();
+						Family family = new Family();
+						Home home = new Home();
+						Address address = new Address();
+						home.setAddress(address);
+						family.setHome(home);
 
-					Program program = new Program();
-					People people = new People();
-					Family family = new Family();
-					Home home = new Home();
-					Address address = new Address();
-					home.setAddress(address);
-					family.setHome(home);
+						program.setPeople(people);
+						program.setFamily(family);
 
-					program.setPeople(people);
-					program.setFamily(family);
+						while (cells.hasNext()) {
+							HSSFCell cell = (HSSFCell) cells.next();
+							key = extractDataRow(cell, mapProgram, key, program);
 
-					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
-						key = extractDataRow(cell, mapProgram, key, program);
+						}
 
+						//Busco si ya existe 
+						
+						List<People> listPeopleExist = peopleDAO.findPeople(people);
+						if (listPeopleExist!=null && listPeopleExist.isEmpty()){
+							addressDAO.insert(address);
+							homeDAO.insert(home);
+							familyDAO.insert(family);
+							peopleDAO.insert(people);
+							programDAO.insertExcel(program);
+							textArea.append("Insertado registro: " + people.getName() + "\n");
+							countOK++;
+						}
+						else{
+							countExist++;
+							textArea.append("El registro "  + people.getName() +  " ya existe en BBDD. No se insertará \n");
+						}
+						
+						
+						
+						
+						
 					}
-
-					addressDAO.insert(address);
-					homeDAO.insert(home);
-					familyDAO.insert(family);
-					peopleDAO.insert(people);
-					programDAO.insertExcel(program);
-					
-					sbuffer.append("Insertado registro: " + people.getName() + "\n");
 				}
+				catch(Exception e){
+					logger.error("Se ha producido un error " + e.getMessage());
+					textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
+					countKO++;
+				}
+				
 
 			}
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
 			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
+			
 		}
+		
+		textArea.append("\n");
+		textArea.append("******************: " + "\n");
+		textArea.append("Resumen: " + "\n");
+		textArea.append("******************: " + "\n");
+		textArea.append("Registros totales leidos: " + countTotal+ "\n");
+		textArea.append("Registros insertados correctamente: " + countOK+ "\n");
+		textArea.append("Registros no insertados por errores : " + countKO+ "\n");
+		textArea.append("Registros no insertados por existir ya en Base de Datos : " + countExist+ "\n");
+		
+		
+		
+		
 
 	}
 
