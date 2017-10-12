@@ -103,6 +103,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
 	private IncomesDAO incomeDAO;
+	private ExpensesDAO expenseDAO;
 	
 	//private StringBuffer sbuffer = new StringBuffer();
 
@@ -139,6 +140,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		// getContentPane().setLayout(getGridContentPane());
 		getContentPane().add(getFileChooser());
@@ -323,6 +325,10 @@ public class JManageBackup extends AbstractJInternalFrame {
 								incomeDAO.insert(mapIncomes.get(key));
 							}
 							
+							if (mapExpenses.get(key)!=null){
+								mapExpenses.get(key).setProgram(mapProgram.get(key));
+								expenseDAO.insert(mapExpenses.get(key));
+							}
 							
 							textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
 							countOK++;
@@ -331,10 +337,6 @@ public class JManageBackup extends AbstractJInternalFrame {
 							countExist++;
 							textArea.append("El registro "  + mapProgram.get(key).getPeople().getName() +  " ya existe en BBDD. No se insertará \n");
 						}
-						
-						
-						
-						
 						
 					}
 				}
@@ -531,6 +533,29 @@ public class JManageBackup extends AbstractJInternalFrame {
 				break;
 			case 71:
 				mapIncomes.get(key).setEndDate(cell.getDateCellValue());
+				break;
+				
+			case 72:
+				if (mapExpenses.get(key) == null){
+					Expense expense = new Expense();
+					expense.setConcept(cell.getStringCellValue());
+					mapExpenses.put(key, expense);	
+				}else{
+					mapExpenses.get(key).setConcept(cell.getStringCellValue());
+				}
+				
+				break;
+			case 73:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					mapExpenses.get(key).setAmount(Integer.parseInt(cell.getStringCellValue()));
+				}
+				break;	
+			case 74:
+				mapExpenses.get(key).setRegularity(cell.getStringCellValue());;
+				break;
+			case 75:
+				mapExpenses.get(key).setEndDate(cell.getDateCellValue());
 				break;
 		
 		}
