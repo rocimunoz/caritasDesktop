@@ -17,12 +17,15 @@ import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
+import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.JMainWindow.Task_BackupBBDD;
@@ -99,6 +102,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private ProgramDAO programDAO;
 	private HomeDAO homeDAO;
 	private AddressDAO addressDAO;
+	private IncomesDAO incomeDAO;
 	
 	//private StringBuffer sbuffer = new StringBuffer();
 
@@ -133,6 +137,8 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
+		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		// getContentPane().setLayout(getGridContentPane());
 		getContentPane().add(getFileChooser());
@@ -140,11 +146,9 @@ public class JManageBackup extends AbstractJInternalFrame {
 		// int returnValue = getFileChooser().showSaveDialog(null);
 		int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
-
 			
 			importData(jfc.getSelectedFile());
 			
-
 		}
 
 	}
@@ -212,10 +216,23 @@ public class JManageBackup extends AbstractJInternalFrame {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 		
-        new Task_BackupBBDD(jfc.getSelectedFile()).execute();
+        
+        String extension = getFileExtension(jfc.getSelectedFile());
+		
+		if (extension!=null && (extension.equals("xls") || extension.equals("xlsx"))){
+			// new Task_BackupBBDD(jfc.getSelectedFile()).execute();
+			
+			readExcelFileXls(jfc.getSelectedFile());
+		}
+		else{
+			textArea.append("Lo siento, no es posible importar datos. El fichero " + jfc.getSelectedFile().getName() + " no es un fichero valido");
+		}
+        
+       
         
 	}
 	
+	/*
 	  class Task_BackupBBDD extends SwingWorker<Void, String> {
 
 	        File file;
@@ -252,7 +269,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 	            
 	         
 	        }
-	    }
+	    }*/
 
 	public  void readExcelFileXls(File file) {
 
@@ -269,6 +286,8 @@ public class JManageBackup extends AbstractJInternalFrame {
 			HSSFSheet sheet = workbook.getSheetAt(0);
 			List<String> data = new ArrayList<String>();
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
+			Map<String, Income> mapIncomes = new HashMap<String, Income>();
+			Map<String, Expense> mapExpenses = new HashMap<String, Expense>();
 
 			// Recorremos las filas del documento
 			Iterator rows = sheet.rowIterator();
@@ -281,38 +300,36 @@ public class JManageBackup extends AbstractJInternalFrame {
 						Iterator cells = row.cellIterator();
 						String key = "";
 
-						Program program = new Program();
-						People people = new People();
-						Family family = new Family();
-						Home home = new Home();
-						Address address = new Address();
-						home.setAddress(address);
-						family.setHome(home);
-
-						program.setPeople(people);
-						program.setFamily(family);
+						
 
 						while (cells.hasNext()) {
 							HSSFCell cell = (HSSFCell) cells.next();
-							key = extractDataRow(cell, mapProgram, key, program);
+							key = extractDataRow(cell, mapProgram, mapIncomes, mapExpenses, key);
 
 						}
 
 						//Busco si ya existe 
 						
-						List<People> listPeopleExist = peopleDAO.findPeople(people);
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(key).getPeople());
 						if (listPeopleExist!=null && listPeopleExist.isEmpty()){
-							addressDAO.insert(address);
-							homeDAO.insert(home);
-							familyDAO.insert(family);
-							peopleDAO.insert(people);
-							programDAO.insertExcel(program);
-							textArea.append("Insertado registro: " + people.getName() + "\n");
+							addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
+							homeDAO.insert(mapProgram.get(key).getFamily().getHome());
+							familyDAO.insert(mapProgram.get(key).getFamily());
+							peopleDAO.insert(mapProgram.get(key).getPeople());
+							programDAO.insertExcel(mapProgram.get(key));
+							if (mapIncomes.get(key)!=null){
+								mapIncomes.get(key).setProgram(mapProgram.get(key));
+								mapIncomes.get(key).setPeople(mapProgram.get(key).getPeople().getName());
+								incomeDAO.insert(mapIncomes.get(key));
+							}
+							
+							
+							textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
 							countOK++;
 						}
 						else{
 							countExist++;
-							textArea.append("El registro "  + people.getName() +  " ya existe en BBDD. No se insertará \n");
+							textArea.append("El registro "  + mapProgram.get(key).getPeople().getName() +  " ya existe en BBDD. No se insertará \n");
 						}
 						
 						
@@ -350,13 +367,25 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 	}
 
-	public  String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, String key, Program program) {
+	public  String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, Map<String, Income> mapIncomes, Map<String, Expense> mapExpenses, String key) {
 
+		Program program = new Program();
+		People people = new People();
+		Family family = new Family();
+		Home home = new Home();
+		Address address = new Address();
+		home.setAddress(address);
+		family.setHome(home);
+
+		program.setPeople(people);
+		program.setFamily(family);
+		
 		String primaryKey = key;
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
 				mapProgram.put(cell.getStringCellValue(), program);
+				
 				mapProgram.get(cell.getStringCellValue()).getPeople().setDni(cell.getStringCellValue());
 				primaryKey = cell.getStringCellValue();
 
@@ -418,21 +447,26 @@ public class JManageBackup extends AbstractJInternalFrame {
 				mapProgram.get(key).getFamily().getHome().getAddress().setStreet(cell.getStringCellValue());
 				break;
 			case 19:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				mapProgram.get(key).getFamily().getHome().getAddress().setGate(cell.getStringCellValue());
+				/*
 				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 					mapProgram.get(key).getFamily().getHome().getAddress().setGate(cell.getStringCellValue());
 				} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 					mapProgram.get(key).getFamily().getHome().getAddress()
 							.setGate(String.valueOf(cell.getNumericCellValue()));
-				}
+				}*/
 
 				break;
 			case 20:
 				mapProgram.get(key).getFamily().getHome().getAddress().setFloor(cell.getStringCellValue());
 				break;
 			case 21:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
 				mapProgram.get(key).getFamily().getHome().getAddress().setTelephone(cell.getStringCellValue());
 				break;
 			case 22:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
 				mapProgram.get(key).getFamily().getHome().getAddress().setTelephoneContact(cell.getStringCellValue());
 				break;
 			case 23:
@@ -477,9 +511,29 @@ public class JManageBackup extends AbstractJInternalFrame {
 				String nemonicStudies = cell.getStringCellValue();
 				Studies studies = getStudies(nemonicStudies);
 				mapProgram.get(key).setStudies(studies);
-
 				break;
-			}
+			case 69:
+				if (mapIncomes.get(key) == null){
+					Income income = new Income();
+					income.setConcept(cell.getStringCellValue());
+					mapIncomes.put(key, income);	
+				}else{
+					mapIncomes.get(key).setConcept(cell.getStringCellValue());
+				}
+				
+				break;
+			case 70:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					mapIncomes.get(key).setAmount(Integer.parseInt(cell.getStringCellValue()));
+				}
+				
+				break;
+			case 71:
+				mapIncomes.get(key).setEndDate(cell.getDateCellValue());
+				break;
+		
+		}
 
 		} catch (Exception e) {
 
@@ -634,6 +688,17 @@ public class JManageBackup extends AbstractJInternalFrame {
 		return jfc;
 
 	}
+	
+	private String getFileExtension(File file){
+		
+		String name = file.getName();
+	    try {
+	        return name.substring(name.lastIndexOf(".") + 1);
+	    } catch (Exception e) {
+	        return null;
+	    }
+	}
+	
 
 	private GridBagLayout getGridContentPane() {
 

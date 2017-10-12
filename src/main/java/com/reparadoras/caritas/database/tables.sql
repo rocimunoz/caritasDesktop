@@ -149,27 +149,27 @@ INSERT INTO C_STUDIES (ID, DESCRIPTION) VALUES (9, 'Universidad Diplomado');
 -- EXPENSE
 CREATE TABLE `c_expense` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `CONCEPT` varchar(20) DEFAULT NULL,
+  `CONCEPT` varchar(100) DEFAULT NULL,
   `AMOUNT` double DEFAULT NULL,
-  `REGULARITY` varchar(20) DEFAULT NULL,
+  `REGULARITY` varchar(100) DEFAULT NULL,
   `END_DATE` date DEFAULT NULL,
   `ID_PROGRAM` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `expense_program` (`ID_PROGRAM`),
-  CONSTRAINT `expense_program` FOREIGN KEY (`ID_PROGRAM`) REFERENCES `c_expense` (`ID`)
+  CONSTRAINT `expense_program` FOREIGN KEY (`ID_PROGRAM`) REFERENCES `c_program` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- INCOME
 CREATE TABLE `c_income` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `CONCEPT` varchar(20) DEFAULT NULL,
+  `CONCEPT` varchar(100) DEFAULT NULL,
   `AMOUNT` double DEFAULT NULL,
-  `people` varchar(20) DEFAULT NULL,
+  `people` varchar(100) DEFAULT NULL,
   `END_DATE` date DEFAULT NULL,
   `ID_PROGRAM` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `income_program` (`ID_PROGRAM`),
-  CONSTRAINT `income_program` FOREIGN KEY (`ID_PROGRAM`) REFERENCES `c_income` (`ID`)
+  CONSTRAINT `income_program` FOREIGN KEY (`ID_PROGRAM`) REFERENCES `c_program` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- PROGRAM 

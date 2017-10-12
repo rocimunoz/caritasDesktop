@@ -76,47 +76,7 @@
         <result property="description" column="description"/>
     </resultMap>
     
-     <select id="findAll" resultMap="ProgramResult">
-          SELECT PE.DNI, 
-               PE.NAME,
-               PE.FIRST_SURNAME,
-               PE.CREATE_DATE,
-               F.ID ID_FAMILY,
-               F.OTHER_INFO OTHER_INFO_FAMILY,
-               FT.ID ID_FAMILY_TYPE,
-               FT.DESCRIPTION DESCRIPTION_FAMILY_TYPE,
-               H.ID ID_HOME,
-               H.REG_HOLDING,
-               H.NUMBER_ROOMS,
-               H.NUMBER_PEOPLE,
-               H.NUMBER_FAMILIES,
-               H.OTHER_INFO OTHER_INFO_HOME,
-               A.ID ID_ADDRESS,
-               A.TOWN,
-               A.STREET,
-               A.GATE,
-               A.FLOOR,
-               A.TELEPHONE,
-               A.TELEPHONE_CONTACT,
-               A.POSTAL_CODE,
-               PR.ID ID_PROGRAM,
-               PR.ID_AUTHORIZATION_TYPE,
-               PR.ID_JOB_SITUATION,
-               PR.ID_STUDIES
-        FROM C_PEOPLE PE, 
-              C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
-              LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
-              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID,
-             C_FAMILY F,
-             C_FAMILY_TYPE FT,
-             C_HOME H,
-             C_ADDRESS A
-        WHERE PR.ID_PEOPLE = PE.id
-        AND PR.ID_FAMILY = F.ID
-        AND F.ID_FAMILY_TYPE = FT.ID
-        AND F.ID_HOME = H.ID
-        AND H.ID_ADDRESS = A.ID
-    </select>
+
     
     <select id="findProgram" parameterType="People" resultMap="ProgramResult">
         SELECT PE.DNI, 
@@ -148,16 +108,12 @@
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
               LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
-              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID,
-             C_FAMILY F,
-             C_FAMILY_TYPE FT,
-             C_HOME H,
-             C_ADDRESS A
+              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID
+              LEFT JOIN C_FAMILY F ON PR.ID_FAMILY = F.ID
+     		  LEFT JOIN C_FAMILY_TYPE FT ON F.ID_FAMILY_TYPE = FT.ID
+              LEFT JOIN C_HOME H ON F.ID_HOME = H.ID
+              LEFT JOIN C_ADDRESS A ON H.ID_ADDRESS = A.ID
         WHERE PR.ID_PEOPLE = PE.id
-        AND PR.ID_FAMILY = F.ID
-        AND F.ID_FAMILY_TYPE = FT.ID
-        AND F.ID_HOME = H.ID
-        AND H.ID_ADDRESS = A.ID
          <if test="id != null">
     		AND PE.ID = #{id}
   		</if>

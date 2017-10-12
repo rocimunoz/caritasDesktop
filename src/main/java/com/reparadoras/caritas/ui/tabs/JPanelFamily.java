@@ -435,17 +435,20 @@ public class JPanelFamily extends JPanel {
 	public void fillData(RelativeDAO relativeDAO, Family family) {
 
 		this.getJTextAreaFamilyOtherInfo().setText(family.getOtherInfo());
-		if (family.getFamilyType().getId() == 1) {
-			this.getJRadioAlone().setSelected(true);
-		} else if (family.getFamilyType().getId() == 2) {
-			this.getJRadioWithChildren().setSelected(true);
-		} else if (family.getFamilyType().getId() == 3) {
-			this.getJRadioNoChildren().setSelected(true);
-		} else if (family.getFamilyType().getId() == 4) {
-			this.getJRadioMono().setSelected(true);
-		} else if (family.getFamilyType().getId() == 5) {
-			this.getJRadioOther().setSelected(true);
+		if (family.getFamilyType()!=null){
+			if (family.getFamilyType().getId() == 1) {
+				this.getJRadioAlone().setSelected(true);
+			} else if (family.getFamilyType().getId() == 2) {
+				this.getJRadioWithChildren().setSelected(true);
+			} else if (family.getFamilyType().getId() == 3) {
+				this.getJRadioNoChildren().setSelected(true);
+			} else if (family.getFamilyType().getId() == 4) {
+				this.getJRadioMono().setSelected(true);
+			} else if (family.getFamilyType().getId() == 5) {
+				this.getJRadioOther().setSelected(true);
+			}
 		}
+		
 		
 		Relative relativeFilter = new Relative();
 		relativeFilter.setFamily(family);

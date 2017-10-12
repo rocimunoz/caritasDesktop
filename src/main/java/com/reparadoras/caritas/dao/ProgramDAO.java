@@ -81,19 +81,7 @@ public int update(Program program){
      return id;
  }
 
-public  List<Program> findAll(){
-	List<Program> list = null;
-    SqlSession session = sqlSessionFactory.openSession();
 
-    try {
-        list = session.selectList("Program.findAll");
-    } finally {
-        session.close();
-    }
-    System.out.println("findAll() --> "+list);
-    return list;
-
-}
 
 public  List<Program> findProgram(People people){
 	List<Program> list = null;

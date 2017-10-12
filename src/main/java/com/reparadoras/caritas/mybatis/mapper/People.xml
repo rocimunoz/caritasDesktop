@@ -87,7 +87,7 @@
         #{yearToSpain},
         #{createDate},
         #{reactivateDate}, 
-        1);
+        #{active});
     </insert>
     
     <update id="update" parameterType="People">
