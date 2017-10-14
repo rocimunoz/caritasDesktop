@@ -198,7 +198,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		try {
 
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				this.selectedExpense.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				this.selectedExpense.setAmount(Double.parseDouble(this.getJTextFieldAmount().getText()));
 			}
 
 			this.selectedExpense.setConcept(this.getJTextFieldConcept().getText());
@@ -220,7 +220,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 
 			Expense expense = new Expense();
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				expense.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				expense.setAmount(Double.parseDouble(this.getJTextFieldAmount().getText()));
 			}
 
 			expense.setConcept(this.getJTextFieldConcept().getText());

@@ -21,7 +21,7 @@ public class IncomesTableModel extends GenericDomainTableModel<Income>{
 		switch(columnIndex) {
         case 0: return String.class;
         case 1: return String.class;
-        case 2: return Integer.class;
+        case 2: return Double.class;
         case 3: return Date.class;
         
     }
@@ -47,7 +47,7 @@ public class IncomesTableModel extends GenericDomainTableModel<Income>{
         switch(columnIndex) {
             case 0: income.setPeople((String)aValue); break;
             case 1: income.setConcept((String)aValue);break;
-            case 2: income.setAmount((Integer)aValue); break;
+            case 2: income.setAmount((Double)aValue); break;
             case 3: income.setEndDate((Date)aValue); break;
            
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);

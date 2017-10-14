@@ -21,7 +21,7 @@ public class ExpensesTableModel extends GenericDomainTableModel<Expense>{
 	public Class<?> getColumnClass(int columnIndex) {
 		switch(columnIndex) {
         case 0: return String.class;
-        case 1: return Integer.class;
+        case 1: return Double.class;
         case 2: return String.class;
         case 3: return Date.class;
         
@@ -47,7 +47,7 @@ public class ExpensesTableModel extends GenericDomainTableModel<Expense>{
 		Expense expense = getDomainObject(rowIndex);
         switch(columnIndex) {
             case 0: expense.setConcept((String)aValue); break;
-            case 1: expense.setAmount((Integer)aValue);break;
+            case 1: expense.setAmount((Double)aValue);break;
             case 2: expense.setRegularity((String)aValue); break;
             case 3: expense.setEndDate((Date)aValue); break;
            

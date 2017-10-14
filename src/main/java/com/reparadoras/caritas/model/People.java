@@ -145,7 +145,7 @@ public class People implements Serializable{
 		this.sex = sex;
 	}
 
-	public boolean isActive() {
+	public Boolean isActive() {
 		return active;
 	}
 

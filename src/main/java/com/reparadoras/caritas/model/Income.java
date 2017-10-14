@@ -19,7 +19,7 @@ public class Income implements Serializable{
 	private Long id;
 	private String people;
 	private String concept;
-	private Integer amount;
+	private Double amount;
 	private Date endDate;
 	private Program program;
 	
@@ -35,18 +35,14 @@ public class Income implements Serializable{
 	public String getConcept() {
 		return concept;
 	}
-	public Integer getAmount() {
-		return amount;
-	}
+	
 	public Date getEndDate() {
 		return endDate;
 	}
 	public void setConcept(String concept) {
 		this.concept = concept;
 	}
-	public void setAmount(Integer amount) {
-		this.amount = amount;
-	}
+	
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
@@ -62,6 +58,14 @@ public class Income implements Serializable{
 	public void setProgram(Program program) {
 		this.program = program;
 	}
+	public Double getAmount() {
+		return amount;
+	}
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
+	
+	
 	
 	
 	

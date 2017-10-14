@@ -106,6 +106,7 @@
           <if test="sex != null">sex = #{sex},</if>
           <if test="active != null">active = #{active},</if>
           
+          
           </set>
         WHERE id = #{id} 
   	</update>

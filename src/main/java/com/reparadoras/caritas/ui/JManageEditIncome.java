@@ -183,7 +183,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		try {
 
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				this.selectedIncome.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				this.selectedIncome.setAmount(Double.parseDouble(this.getJTextFieldAmount().getText()));
 			}
 
 			this.selectedIncome.setConcept(this.getJTextFieldConcept().getText());
@@ -205,7 +205,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 			Income income = new Income();
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				income.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				income.setAmount(Double.parseDouble(this.getJTextFieldAmount().getText()));
 			}
 
 			income.setConcept(this.getJTextFieldConcept().getText());

@@ -304,6 +304,9 @@ public class JManageBackup extends AbstractJInternalFrame {
 						addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
 						homeDAO.insert(mapProgram.get(key).getFamily().getHome());
 						familyDAO.insert(mapProgram.get(key).getFamily());
+						if (mapProgram.get(key).getPeople().isActive() == null){
+							mapProgram.get(key).getPeople().setActive(false);
+						}
 						peopleDAO.insert(mapProgram.get(key).getPeople());
 						programDAO.insertExcel(mapProgram.get(key));
 						if (mapIncomes.get(key) != null) {
@@ -357,7 +360,8 @@ public class JManageBackup extends AbstractJInternalFrame {
 				}
 			} catch (Exception e) {
 
-				logger.error(e);
+				logger.error("Se ha producido un error al tratar los familiares " + e.getMessage());
+				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
 			}
 		}
 		
@@ -376,17 +380,23 @@ public class JManageBackup extends AbstractJInternalFrame {
 			try{
 				if (exist ==false){
 					//Si dni no esta en el set y existe en BBDD inserto relatives
-					List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
-					if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
-						
-						for (Relative relative : listRelatives) {
-							relative.setFamily(mapProgram.get(dni).getFamily());
-							relativeDAO.insert(relative);
+					
+					if (mapProgram.get(dni)!=null){
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
+							
+							for (Relative relative : listRelatives) {
+								relative.setFamily(mapProgram.get(dni).getFamily());
+								relativeDAO.insert(relative);
+							}
 						}
 					}
+					
+					
 				}
 			}catch(Exception e){
-				logger.error(e);
+				logger.error("Se ha producido un error " + e.getMessage());
+				textArea.append("Error tratando familiares del dni:  " + dni + "\n");
 			}
 			
 			
@@ -544,14 +554,26 @@ public class JManageBackup extends AbstractJInternalFrame {
 				mapProgram.get(key).getFamily().getHome().setRegHolding(cell.getStringCellValue());
 				break;
 			case 25:
-				mapProgram.get(key).getFamily().getHome().setNumberRooms(Integer.parseInt(cell.getStringCellValue()));
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					mapProgram.get(key).getFamily().getHome().setNumberRooms(Integer.parseInt(cell.getStringCellValue()));
+				}
+				
 				break;
 			case 26:
-				mapProgram.get(key).getFamily().getHome().setNumberPeople(Integer.parseInt(cell.getStringCellValue()));
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					mapProgram.get(key).getFamily().getHome().setNumberPeople(Integer.parseInt(cell.getStringCellValue()));
+				}
+				
 				break;
 			case 27:
-				mapProgram.get(key).getFamily().getHome()
-						.setNumberFamilies(Integer.parseInt(cell.getStringCellValue()));
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					mapProgram.get(key).getFamily().getHome()
+					.setNumberFamilies(Integer.parseInt(cell.getStringCellValue()));
+				}
+				
 				break;
 			case 28:
 				mapProgram.get(key).getFamily().getHome().setOtherInfo(cell.getStringCellValue());
@@ -593,7 +615,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 			case 35:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
-					mapIncomes.get(key).setAmount(Integer.parseInt(cell.getStringCellValue()));
+					mapIncomes.get(key).setAmount(Double.parseDouble(cell.getStringCellValue()));
 				}
 
 				break;
@@ -614,7 +636,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 			case 38:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
-					mapExpenses.get(key).setAmount(Integer.parseInt(cell.getStringCellValue()));
+					mapExpenses.get(key).setAmount(Double.parseDouble(cell.getStringCellValue()));
 				}
 				break;
 			case 39:
