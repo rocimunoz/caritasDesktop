@@ -373,18 +373,22 @@ public class JManageBackup extends AbstractJInternalFrame {
 			    	break;
 			    }
 			}
-		
-			if (exist ==false){
-				//Si dni no esta en el set y existe en BBDD inserto relatives
-				List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
-				if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
-					
-					for (Relative relative : listRelatives) {
-						relative.setFamily(mapProgram.get(dni).getFamily());
-						relativeDAO.insert(relative);
+			try{
+				if (exist ==false){
+					//Si dni no esta en el set y existe en BBDD inserto relatives
+					List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+					if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
+						
+						for (Relative relative : listRelatives) {
+							relative.setFamily(mapProgram.get(dni).getFamily());
+							relativeDAO.insert(relative);
+						}
 					}
 				}
+			}catch(Exception e){
+				logger.error(e);
 			}
+			
 			
 		});
 	}
