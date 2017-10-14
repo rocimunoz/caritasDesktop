@@ -29,7 +29,7 @@ public class People implements Serializable{
     
     private String sex;
     
-    private boolean active;
+    private Boolean active;
 
 	
 
@@ -149,7 +149,7 @@ public class People implements Serializable{
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 

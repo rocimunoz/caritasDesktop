@@ -75,9 +75,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -104,8 +106,9 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private AddressDAO addressDAO;
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
-	
-	//private StringBuffer sbuffer = new StringBuffer();
+	private RelativeDAO relativeDAO;
+
+	// private StringBuffer sbuffer = new StringBuffer();
 
 	private JFileChooser jfc = null;
 	private JFrame frame = null;
@@ -116,6 +119,13 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private JButton button = null;
 
 	private People selectedPeople;
+
+	public int countOK = 0;
+	public int countKO = 0;
+	public int countExist = 0;
+	public int countTotal = 0;
+	
+	private List<String> errorRegister = new ArrayList<String>();
 
 	public JManageBackup(JDesktopPane desktop) {
 
@@ -138,9 +148,11 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
+		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		// getContentPane().setLayout(getGridContentPane());
 		getContentPane().add(getFileChooser());
@@ -148,228 +160,285 @@ public class JManageBackup extends AbstractJInternalFrame {
 		// int returnValue = getFileChooser().showSaveDialog(null);
 		int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			
+
 			importData(jfc.getSelectedFile());
-			
+
 		}
 
 	}
 
-	
-	
 	public void importData(File file) {
 
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		frame = new JFrame();
-        panel = new JPanel();
-        label = new JLabel("Se esta realizando la copia de los datos, por favor espere unos instantes ... ");
-        textArea = new JTextArea();
-        textArea = new JTextArea(16, 58);
-        textArea.setEditable(false); // set textArea non-editable
-        scroll = new JScrollPane(textArea);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        button= new JButton("Aceptar");
-        
-        
-        button.addMouseListener(new MouseAdapter() {
+		panel = new JPanel();
+		label = new JLabel("Se esta realizando la copia de los datos, por favor espere unos instantes ... ");
+		textArea = new JTextArea();
+		textArea = new JTextArea(16, 58);
+		textArea.setEditable(false); // set textArea non-editable
+		scroll = new JScrollPane(textArea);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		button = new JButton("Aceptar");
+
+		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				frame.dispose();
-				
+
 			}
 		});
-      
-       
-       
-        
-        panel.setLayout(getGridContentPane());
-        
-        GridBagConstraints gbc_jPanelLabel = new GridBagConstraints();
-        gbc_jPanelLabel.insets = new Insets(0, 0, 5, 0);
-        gbc_jPanelLabel.weightx = 1.0;
-        gbc_jPanelLabel.weighty = 1.0;
-        gbc_jPanelLabel.fill = GridBagConstraints.NONE;
-        gbc_jPanelLabel.gridx = 0;
-        gbc_jPanelLabel.gridy = 0;
-        
-        GridBagConstraints gbc_jPanelTextArea = new GridBagConstraints();
-        gbc_jPanelTextArea.insets = new Insets(0, 0, 5, 0);
-        gbc_jPanelTextArea.weightx = 1.0;
-        gbc_jPanelTextArea.weighty = 1.0;
-        gbc_jPanelTextArea.fill = GridBagConstraints.BOTH;
-        gbc_jPanelTextArea.gridx = 0;
-        gbc_jPanelTextArea.gridy = 1;
-        
-        GridBagConstraints gbc_jPanelButton = new GridBagConstraints();
-        gbc_jPanelButton.insets = new Insets(0, 0, 5, 0);
-        gbc_jPanelButton.weightx = 1.0;
-        gbc_jPanelButton.weighty = 1.0;
-        gbc_jPanelButton.fill = GridBagConstraints.NONE;
-        gbc_jPanelButton.gridx = 0;
-        gbc_jPanelButton.gridy = 2;
-        
-        panel.add(label, gbc_jPanelLabel);
-        panel.add(scroll, gbc_jPanelTextArea);
-        panel.add(button, gbc_jPanelButton);
-        
-        frame.add(panel);
-        frame.pack();
-        frame.setSize(800,400);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-		
-        
-        String extension = getFileExtension(jfc.getSelectedFile());
-		
-		if (extension!=null && (extension.equals("xls") || extension.equals("xlsx"))){
+
+		panel.setLayout(getGridContentPane());
+
+		GridBagConstraints gbc_jPanelLabel = new GridBagConstraints();
+		gbc_jPanelLabel.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelLabel.weightx = 1.0;
+		gbc_jPanelLabel.weighty = 1.0;
+		gbc_jPanelLabel.fill = GridBagConstraints.NONE;
+		gbc_jPanelLabel.gridx = 0;
+		gbc_jPanelLabel.gridy = 0;
+
+		GridBagConstraints gbc_jPanelTextArea = new GridBagConstraints();
+		gbc_jPanelTextArea.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelTextArea.weightx = 1.0;
+		gbc_jPanelTextArea.weighty = 1.0;
+		gbc_jPanelTextArea.fill = GridBagConstraints.BOTH;
+		gbc_jPanelTextArea.gridx = 0;
+		gbc_jPanelTextArea.gridy = 1;
+
+		GridBagConstraints gbc_jPanelButton = new GridBagConstraints();
+		gbc_jPanelButton.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelButton.weightx = 1.0;
+		gbc_jPanelButton.weighty = 1.0;
+		gbc_jPanelButton.fill = GridBagConstraints.NONE;
+		gbc_jPanelButton.gridx = 0;
+		gbc_jPanelButton.gridy = 2;
+
+		panel.add(label, gbc_jPanelLabel);
+		panel.add(scroll, gbc_jPanelTextArea);
+		panel.add(button, gbc_jPanelButton);
+
+		frame.add(panel);
+		frame.pack();
+		frame.setSize(800, 400);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+
+		String extension = getFileExtension(jfc.getSelectedFile());
+
+		if (extension != null && (extension.equals("xls") || extension.equals("xlsx"))) {
 			// new Task_BackupBBDD(jfc.getSelectedFile()).execute();
-			
+
 			readExcelFileXls(jfc.getSelectedFile());
+		} else {
+			textArea.append("Lo siento, no es posible importar datos. El fichero " + jfc.getSelectedFile().getName()
+					+ " no es un fichero valido");
 		}
-		else{
-			textArea.append("Lo siento, no es posible importar datos. El fichero " + jfc.getSelectedFile().getName() + " no es un fichero valido");
-		}
-        
-       
-        
+
 	}
-	
-	/*
-	  class Task_BackupBBDD extends SwingWorker<Void, String> {
 
-	        File file;
-	        public Task_BackupBBDD(File file) {
-	            this.file = file;
-	        }
+	public void readExcelFileXls(File file) {
 
-	        @Override
-	        protected void process(List<String> chunks) {
-	        	readExcelFileXls(this.file);
-	        }
-
-	        @Override
-	        protected Void doInBackground() throws Exception {
-
-	            publish("Cargando fichero .....");
-	            Thread.sleep(1000);
-	          
-
-	            return null;
-	        }
-
-	        @Override
-	        protected void done() {
-	            try {
-	                get();
-	                //JOptionPane.showMessageDialog(file.get, "Copia de seguridad realizada", "Success", JOptionPane.INFORMATION_MESSAGE);
-	                
-	                
-	                frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	            } catch (ExecutionException | InterruptedException e) {
-	                e.printStackTrace();
-	            }
-	            
-	         
-	        }
-	    }*/
-
-	public  void readExcelFileXls(File file) {
-
-		int countOK = 0;
-		int countKO = 0;
-		int countExist = 0;
-		int countTotal = 0;
 		try {
-			//this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			// this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			InputStream targetStream = new FileInputStream(file);
 			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
 
 			// Acceso a la primera hoja del documento
 			HSSFSheet sheet = workbook.getSheetAt(0);
+
+			HSSFSheet sheetRelatives = workbook.getSheetAt(1);
+
 			List<String> data = new ArrayList<String>();
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
 			Map<String, Income> mapIncomes = new HashMap<String, Income>();
 			Map<String, Expense> mapExpenses = new HashMap<String, Expense>();
+			Map<String, List<Relative>> mapRelatives = new HashMap<String, List<Relative>>();
 
 			// Recorremos las filas del documento
 			Iterator rows = sheet.rowIterator();
-			while (rows.hasNext()) {
-				HSSFRow row = (HSSFRow) rows.next();
-				
-				try{
-					if (row.getRowNum() >= 2) {
-						countTotal++;
-						Iterator cells = row.cellIterator();
-						String key = "";
+			Iterator rowsRelatives = sheetRelatives.rowIterator();
 
-						
+			extractDataSheet_0(rows, mapProgram, mapIncomes, mapExpenses);
 
-						while (cells.hasNext()) {
-							HSSFCell cell = (HSSFCell) cells.next();
-							key = extractDataRow(cell, mapProgram, mapIncomes, mapExpenses, key);
+			extractDataSheet_1(rowsRelatives, mapRelatives, mapProgram);
 
-						}
-
-						//Busco si ya existe 
-						
-						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(key).getPeople());
-						if (listPeopleExist!=null && listPeopleExist.isEmpty()){
-							addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
-							homeDAO.insert(mapProgram.get(key).getFamily().getHome());
-							familyDAO.insert(mapProgram.get(key).getFamily());
-							peopleDAO.insert(mapProgram.get(key).getPeople());
-							programDAO.insertExcel(mapProgram.get(key));
-							if (mapIncomes.get(key)!=null){
-								mapIncomes.get(key).setProgram(mapProgram.get(key));
-								mapIncomes.get(key).setPeople(mapProgram.get(key).getPeople().getName());
-								incomeDAO.insert(mapIncomes.get(key));
-							}
-							
-							if (mapExpenses.get(key)!=null){
-								mapExpenses.get(key).setProgram(mapProgram.get(key));
-								expenseDAO.insert(mapExpenses.get(key));
-							}
-							
-							textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
-							countOK++;
-						}
-						else{
-							countExist++;
-							textArea.append("El registro "  + mapProgram.get(key).getPeople().getName() +  " ya existe en BBDD. No se insertará \n");
-						}
-						
-					}
-				}
-				catch(Exception e){
-					logger.error("Se ha producido un error " + e.getMessage());
-					textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
-					countKO++;
-				}
-				
-
-			}
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
 			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
-			
+
 		}
-		
+
 		textArea.append("\n");
 		textArea.append("******************: " + "\n");
 		textArea.append("Resumen: " + "\n");
 		textArea.append("******************: " + "\n");
-		textArea.append("Registros totales leidos: " + countTotal+ "\n");
-		textArea.append("Registros insertados correctamente: " + countOK+ "\n");
-		textArea.append("Registros no insertados por errores : " + countKO+ "\n");
-		textArea.append("Registros no insertados por existir ya en Base de Datos : " + countExist+ "\n");
-		
-		
-		
-		
+		textArea.append("Registros totales leidos: " + countTotal + "\n");
+		textArea.append("Registros insertados correctamente: " + countOK + "\n");
+		textArea.append("Registros no insertados por errores : " + countKO + "\n");
+		textArea.append("Registros no insertados por existir ya en Base de Datos : " + countExist + "\n");
 
 	}
 
-	public  String extractDataRow(HSSFCell cell, Map<String, Program> mapProgram, Map<String, Income> mapIncomes, Map<String, Expense> mapExpenses, String key) {
+	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram, Map<String, Income> mapIncomes,
+			Map<String, Expense> mapExpenses) {
+
+		while (itRows.hasNext()) {
+			HSSFRow row = (HSSFRow) itRows.next();
+
+			try {
+				if (row.getRowNum() >= 2) {
+					countTotal++;
+					Iterator cells = row.cellIterator();
+					String key = "";
+
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						key = extractDataRow_Sheet0(cell, mapProgram, mapIncomes, mapExpenses, key);
+					}
+
+					// Busco si ya existe
+
+					List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(key).getPeople());
+					if (listPeopleExist != null && listPeopleExist.isEmpty()) {
+						addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
+						homeDAO.insert(mapProgram.get(key).getFamily().getHome());
+						familyDAO.insert(mapProgram.get(key).getFamily());
+						peopleDAO.insert(mapProgram.get(key).getPeople());
+						programDAO.insertExcel(mapProgram.get(key));
+						if (mapIncomes.get(key) != null) {
+							mapIncomes.get(key).setProgram(mapProgram.get(key));
+							mapIncomes.get(key).setPeople(mapProgram.get(key).getPeople().getName());
+							incomeDAO.insert(mapIncomes.get(key));
+						}
+
+						if (mapExpenses.get(key) != null) {
+							mapExpenses.get(key).setProgram(mapProgram.get(key));
+							expenseDAO.insert(mapExpenses.get(key));
+						}
+
+						textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
+						countOK++;
+					} else {
+						countExist++;
+						textArea.append("El registro " + mapProgram.get(key).getPeople().getName()
+								+ " ya existe en BBDD. No se insertará \n");
+						errorRegister.add(mapProgram.get(key).getPeople().getDni());
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("Se ha producido un error " + e.getMessage());
+				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
+				countKO++;
+			}
+
+		}
+	}
+
+	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives, Map<String, Program> mapProgram) {
+
+		while (itRows.hasNext()) {
+			HSSFRow row = (HSSFRow) itRows.next();
+
+			try {
+				if (row.getRowNum() >= 2) {
+
+					Iterator cells = row.cellIterator();
+					String key = "";
+
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						key = extractDataRow_Sheet1(cell, mapRelatives, key);
+					}
+					
+					
+
+				}
+			} catch (Exception e) {
+
+				logger.error(e);
+			}
+		}
+		
+		mapRelatives.forEach((k,v)->{
+			  boolean exist = false;
+			String dni = k;
+			List<Relative> listRelatives = v;
+			//Si dni esta en el set, no inserto relatives
+			
+			for (String errorDni : errorRegister){
+			    if (dni.equals(errorDni)){
+			    	exist = true;
+			    	break;
+			    }
+			}
+		
+			if (exist ==false){
+				//Si dni no esta en el set y existe en BBDD inserto relatives
+				List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+				if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
+					
+					for (Relative relative : listRelatives) {
+						relative.setFamily(mapProgram.get(dni).getFamily());
+						relativeDAO.insert(relative);
+					}
+				}
+			}
+			
+		});
+	}
+
+	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
+
+		String primaryKey = key;
+		List<Relative> listRelatives = null;
+		Relative relative = null;
+		try {
+			switch (cell.getColumnIndex()) {
+			case 0:
+
+				if (mapRelatives.get(cell.getStringCellValue()) == null) {
+					listRelatives = new ArrayList();
+					relative = new Relative();
+					
+					listRelatives.add(relative);
+					mapRelatives.put(cell.getStringCellValue(), listRelatives);
+					primaryKey = cell.getStringCellValue();
+				} else {
+
+					mapRelatives.get(cell.getStringCellValue()).add(new Relative());
+					primaryKey = cell.getStringCellValue();
+				}
+				break;
+			case 2:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setRelationShip(cell.getStringCellValue());
+				break;
+			case 4:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setSurname(cell.getStringCellValue());
+				
+
+				break;
+			case 5:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setName(cell.getStringCellValue());
+
+				break;
+			case 6:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setDateBorn(cell.getDateCellValue());
+				break;
+			case 8:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setSituation(cell.getStringCellValue());
+				break;
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+
+		return primaryKey;
+	}
+
+	public String extractDataRow_Sheet0(HSSFCell cell, Map<String, Program> mapProgram, Map<String, Income> mapIncomes,
+			Map<String, Expense> mapExpenses, String key) {
 
 		Program program = new Program();
 		People people = new People();
@@ -381,13 +450,13 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 		program.setPeople(people);
 		program.setFamily(family);
-		
+
 		String primaryKey = key;
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
 				mapProgram.put(cell.getStringCellValue(), program);
-				
+
 				mapProgram.get(cell.getStringCellValue()).getPeople().setDni(cell.getStringCellValue());
 				primaryKey = cell.getStringCellValue();
 
@@ -451,13 +520,6 @@ public class JManageBackup extends AbstractJInternalFrame {
 			case 19:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				mapProgram.get(key).getFamily().getHome().getAddress().setGate(cell.getStringCellValue());
-				/*
-				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-					mapProgram.get(key).getFamily().getHome().getAddress().setGate(cell.getStringCellValue());
-				} else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-					mapProgram.get(key).getFamily().getHome().getAddress()
-							.setGate(String.valueOf(cell.getNumericCellValue()));
-				}*/
 
 				break;
 			case 20:
@@ -491,74 +553,75 @@ public class JManageBackup extends AbstractJInternalFrame {
 				mapProgram.get(key).getFamily().getHome().setOtherInfo(cell.getStringCellValue());
 
 				break;
-			case 64:
+			case 29:
 				String nemonic = cell.getStringCellValue();
 				FamilyType familyType = getFamilyType(nemonic);
 				mapProgram.get(key).getFamily().setFamilyType(familyType);
 
 				break;
-			case 66:
+			case 31:
 				String nemonicAuthorization = cell.getStringCellValue();
 				AuthorizationType authorizationType = getAuthorizationType(nemonicAuthorization);
 				mapProgram.get(key).setAuthorizationType(authorizationType);
 
 				break;
-			case 67:
+			case 32:
 				String nemonicJobSituation = cell.getStringCellValue();
 				JobSituation jobSituation = getJobSituation(nemonicJobSituation);
 				mapProgram.get(key).setJobSituation(jobSituation);
 
 				break;
-			case 68:
+			case 33:
 				String nemonicStudies = cell.getStringCellValue();
 				Studies studies = getStudies(nemonicStudies);
 				mapProgram.get(key).setStudies(studies);
 				break;
-			case 69:
-				if (mapIncomes.get(key) == null){
+			case 34:
+				if (mapIncomes.get(key) == null) {
 					Income income = new Income();
 					income.setConcept(cell.getStringCellValue());
-					mapIncomes.put(key, income);	
-				}else{
+					mapIncomes.put(key, income);
+				} else {
 					mapIncomes.get(key).setConcept(cell.getStringCellValue());
 				}
-				
+
 				break;
-			case 70:
+			case 35:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
 					mapIncomes.get(key).setAmount(Integer.parseInt(cell.getStringCellValue()));
 				}
-				
+
 				break;
-			case 71:
+			case 36:
 				mapIncomes.get(key).setEndDate(cell.getDateCellValue());
 				break;
-				
-			case 72:
-				if (mapExpenses.get(key) == null){
+
+			case 37:
+				if (mapExpenses.get(key) == null) {
 					Expense expense = new Expense();
 					expense.setConcept(cell.getStringCellValue());
-					mapExpenses.put(key, expense);	
-				}else{
+					mapExpenses.put(key, expense);
+				} else {
 					mapExpenses.get(key).setConcept(cell.getStringCellValue());
 				}
-				
+
 				break;
-			case 73:
+			case 38:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
 					mapExpenses.get(key).setAmount(Integer.parseInt(cell.getStringCellValue()));
 				}
-				break;	
-			case 74:
-				mapExpenses.get(key).setRegularity(cell.getStringCellValue());;
 				break;
-			case 75:
+			case 39:
+				mapExpenses.get(key).setRegularity(cell.getStringCellValue());
+				;
+				break;
+			case 40:
 				mapExpenses.get(key).setEndDate(cell.getDateCellValue());
 				break;
-		
-		}
+
+			}
 
 		} catch (Exception e) {
 
@@ -650,15 +713,14 @@ public class JManageBackup extends AbstractJInternalFrame {
 			sType.setDescription("Secundaria");
 		} else if (nemonic.equals("B")) {
 			sType.setDescription("Bachillerato");
-		}else if (nemonic.equals("FP-GM")) {
+		} else if (nemonic.equals("FP-GM")) {
 			sType.setDescription("FP-Grado Medio");
 		} else if (nemonic.equals("FP-GS")) {
 			sType.setDescription("FP-Grado Superior");
 		} else if (nemonic.equals("UL")) {
 			sType.setDescription("Universidad Diplomado");
-		} 
-		
-		
+		}
+
 		else
 			sType.setDescription("No sabe leer ni escribir");
 
@@ -713,17 +775,16 @@ public class JManageBackup extends AbstractJInternalFrame {
 		return jfc;
 
 	}
-	
-	private String getFileExtension(File file){
-		
+
+	private String getFileExtension(File file) {
+
 		String name = file.getName();
-	    try {
-	        return name.substring(name.lastIndexOf(".") + 1);
-	    } catch (Exception e) {
-	        return null;
-	    }
+		try {
+			return name.substring(name.lastIndexOf(".") + 1);
+		} catch (Exception e) {
+			return null;
+		}
 	}
-	
 
 	private GridBagLayout getGridContentPane() {
 

@@ -943,7 +943,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 					}
 
 				} else {
-					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+					//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 				}
 
 			}
