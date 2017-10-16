@@ -125,6 +125,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JCheckBox ckActive;
 	private JPanel jPanelActions = null;
 	private JButton btnSave = null;
+	private JButton btnPrint = null;
 	private JButton btnExit = null;
 	private JPanel jPanelGrid;
 	private JTable tableProgram = null;
@@ -230,7 +231,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		initComponents();
 		addListeners();
 
-		onFilterProgram(true);
+		onFilterProgram(false);
 
 		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
@@ -270,6 +271,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			public void actionPerformed(ActionEvent arg0) {
 
 				onSaveProgram();
+			}
+		});
+		
+		getJButtonPrint().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				
 			}
 		});
 
@@ -358,6 +366,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		getJPanelActions().add(getJButtonSave());
+		getJPanelActions().add(getJButtonPrint());
 
 		// Añado elementos del JPanelGrid
 		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
@@ -694,6 +703,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 
 		return btnSave;
+	}
+	
+	private JButton getJButtonPrint() {
+		if (btnPrint == null) {
+			btnPrint = new JButton("Imprimir");
+
+			btnPrint.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-save.png")));
+		}
+
+		return btnPrint;
 	}
 
 	/* FUNCIONES DEL PANEL DEL GRID */

@@ -335,7 +335,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			people.setNationality(this.getJTextFieldNationality().getText());
 			if (this.getJTextFieldYearToSpain().getText() != null
 					&& !this.getJTextFieldYearToSpain().getText().equals("")) {
-				people.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
+				people.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText().replace(".", "")));
 			}
 
 			people.setCreateDate(this.getJXCreateDate().getDate());
