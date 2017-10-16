@@ -198,6 +198,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
 		}
+		
+		this.getJButtonClean().setVisible(false);
+		this.getJButtonSearch().setVisible(false);
 
 	}
 

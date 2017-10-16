@@ -22,7 +22,9 @@
         <typeAlias alias="JobSituation" type="com.reparadoras.caritas.model.JobSituation"/>  
         <typeAlias alias="Studies" type="com.reparadoras.caritas.model.Studies"/>  
         <typeAlias alias="Income" type="com.reparadoras.caritas.model.Income"/> 
-        <typeAlias alias="Expense" type="com.reparadoras.caritas.model.Expense"/>             
+        <typeAlias alias="Expense" type="com.reparadoras.caritas.model.Expense"/>      
+        
+         <typeAlias alias="FilterTicket" type="com.reparadoras.caritas.filter.FilterTicket"/>         
     </typeAliases>
    
     <environments default="development">

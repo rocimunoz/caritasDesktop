@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -24,6 +25,7 @@ import javax.swing.event.InternalFrameEvent;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
@@ -693,8 +695,9 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 			int rowIndex = this.getJTablePeople().getSelectedRow();
 			//cuando ordeno pierde el orden. Solucion convertir la fila
-			rowIndex = getJTablePeople().convertRowIndexToModel(rowIndex);
+			
 			if (rowIndex != -1) {
+				rowIndex = getJTablePeople().convertRowIndexToModel(rowIndex);
 
 				if (JOptionPane.showConfirmDialog(null,
 						"Se eliminará la persona seleccionada, sus vales y su programa de atención primaria. ¿Está seguro?",
@@ -732,8 +735,9 @@ public class JManagePeople extends AbstractJInternalFrame {
 			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
 				int row = this.getJTablePeople().getSelectedRow();
 				
-				row = getJTablePeople().convertRowIndexToModel(row);
+				
 				if (row != -1) {
+					row = getJTablePeople().convertRowIndexToModel(row);
 					People people = this.getPeopleTableModel().getDomainObject(row);
 					jManageEditPeople = new JManageEditPeople(this, true, openMode, title, people);
 				} else {
@@ -762,10 +766,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 		int row = getJTablePeople().getSelectedRow();
 		
 		//cuando ordeno pierde el orden. Solucion convertir la fila
-		row = getJTablePeople().convertRowIndexToModel(row);
+		
 
 		
 		if (row != -1) {
+			row = getJTablePeople().convertRowIndexToModel(row);
 			People people = getPeopleTableModel().getDomainObject(row);
 
 			if (people != null) {
@@ -802,10 +807,15 @@ public class JManagePeople extends AbstractJInternalFrame {
 			People people = getPeopleTableModel().getDomainObject(row);
 
 			if (people != null) {
-
+				FilterTicket filterTicket = new FilterTicket();
+				filterTicket.setActive(people.isActive());
+				filterTicket.setDniPeople(people.getDni());
+				filterTicket.setNamePeople(people.getName());
+				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterTicket.setIdPeople(people.getId());
 				try {
 
-					jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, people);
+					jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, filterTicket);
 					this.desktop.add(jManageTicket);
 					jManageTicket.setMaximum(true);
 					jManageTicket.setMaximizable(true);

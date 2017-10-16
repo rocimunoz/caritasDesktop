@@ -233,7 +233,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	}
 	private JLabel getLblProgram() {
 		if (lblProgram == null) {
-			lblProgram = new JLabel("  Programa de Atención Primaria");
+			lblProgram = new JLabel("Informe Programa Atencion Primaria");
 			lblProgram.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
@@ -258,7 +258,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	}
 	private JLabel getLblTickets() {
 		if (lblTickets == null) {
-			lblTickets = new JLabel("  Gestión de Vales");
+			lblTickets = new JLabel("Informe Tickets/Vales");
 			lblTickets.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
@@ -445,7 +445,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	        jpb.setIndeterminate(true);
 	        panel.add(label);
 	        panel.add(jpb);
-	        frame.add(panel);
+	        frame.getContentPane().add(panel);
 	        frame.pack();
 	        frame.setSize(200,90);
 	        frame.setLocationRelativeTo(null);

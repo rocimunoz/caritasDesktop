@@ -53,9 +53,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JTextField txfDni;
 	private JLabel jLblPassport;
 	private JTextField txfPassport;
-	private JLabel jLblFirstSurname;
 	private JTextField txfFirstSurname;
-	private JLabel jLblSecondSurname;
 	private JTextField txfSecondSurname;
 	private JComboBox<String> jComboBoxSex;
 	private JLabel jLblSex;
@@ -84,6 +82,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JCheckBox jckActive;
 
 	private AbstractJInternalFrame jCicIFParent;
+	private JLabel jLblFirstSurname;
+	private JLabel jLblSecondSurname;
 
 	public JManageEditPeople(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
 			People people) throws Exception {
@@ -114,7 +114,6 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
-
 		getJPanelPersonalData().add(getJLabelFirstSurname(), getGridJLabelFirstSurname());
 		getJPanelPersonalData().add(getJTextFieldFirstSurname(), getGridJTextFieldFirstSurname());
 		getJPanelPersonalData().add(getJLabelSecondSurname(), getGridJLabelSecondSurname());
@@ -423,6 +422,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			jPanelPersonalData = new JPanel();
 			jPanelPersonalData.setBorder(
 					new TitledBorder(null, "Datos Personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			
 
 			((javax.swing.border.TitledBorder) jPanelPersonalData.getBorder())
 					.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
@@ -500,13 +500,13 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	}
 
+
 	private JLabel getJLabelFirstSurname() {
 
 		if (jLblFirstSurname == null) {
 			jLblFirstSurname = new JLabel("Primer Apellido");
 			jLblFirstSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
-			jLblFirstSurname.setMinimumSize(new Dimension(20, 14));
-			jLblFirstSurname.setMaximumSize(new Dimension(20, 14));
+			jLblFirstSurname.setPreferredSize(new Dimension(80, 25));
 
 		}
 
@@ -514,13 +514,13 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	}
 
 	private GridBagConstraints getGridJLabelFirstSurname() {
-		GridBagConstraints gbc_lblFirstSurname = new GridBagConstraints();
-		gbc_lblFirstSurname.anchor = GridBagConstraints.WEST;
-		gbc_lblFirstSurname.insets = new Insets(0, 15, 5, 5);
-		gbc_lblFirstSurname.gridx = 2;
-		gbc_lblFirstSurname.gridy = 0;
+		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.anchor = GridBagConstraints.WEST;
+		gbc_lblName.insets = new Insets(0, 20, 5, 5);
+		gbc_lblName.gridx = 2;
+		gbc_lblName.gridy = 0;
 
-		return gbc_lblFirstSurname;
+		return gbc_lblName;
 	}
 
 	private JTextField getJTextFieldFirstSurname() {
@@ -540,7 +540,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_txfFirstSurname = new GridBagConstraints();
 		gbc_txfFirstSurname.weightx = 1.0;
-		gbc_txfFirstSurname.insets = new Insets(0, 0, 5, 0);
+		gbc_txfFirstSurname.insets = new Insets(0, 0, 5, 5);
 		gbc_txfFirstSurname.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfFirstSurname.gridx = 3;
 		gbc_txfFirstSurname.gridy = 0;
@@ -554,8 +554,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (jLblSecondSurname == null) {
 			jLblSecondSurname = new JLabel("Segundo Apellido");
 			jLblSecondSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
-			jLblSecondSurname.setMinimumSize(new Dimension(20, 14));
-			jLblSecondSurname.setMaximumSize(new Dimension(20, 14));
+			jLblSecondSurname.setPreferredSize(new Dimension(80, 25));
 
 		}
 
@@ -563,14 +562,15 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	}
 
 	private GridBagConstraints getGridJLabelSecondSurname() {
-		GridBagConstraints gbc_lblSecondSurname = new GridBagConstraints();
-		gbc_lblSecondSurname.anchor = GridBagConstraints.WEST;
-		gbc_lblSecondSurname.insets = new Insets(0, 15, 5, 5);
-		gbc_lblSecondSurname.gridx = 4;
-		gbc_lblSecondSurname.gridy = 0;
+		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.anchor = GridBagConstraints.WEST;
+		gbc_lblName.insets = new Insets(0, 20, 5, 5);
+		gbc_lblName.gridx = 4;
+		gbc_lblName.gridy = 0;
 
-		return gbc_lblSecondSurname;
+		return gbc_lblName;
 	}
+	
 
 	private JTextField getJTextFieldSecondSurname() {
 
@@ -845,7 +845,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_txfYearToSpain = new GridBagConstraints();
 		gbc_txfYearToSpain.weightx = 1.0;
-		gbc_txfYearToSpain.insets = new Insets(0, 0, 5, 5);
+		gbc_txfYearToSpain.insets = new Insets(0, 0, 5, 0);
 		gbc_txfYearToSpain.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfYearToSpain.gridx = 5;
 		gbc_txfYearToSpain.gridy = 2;
@@ -870,7 +870,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_lblCreateDate = new GridBagConstraints();
 		gbc_lblCreateDate.anchor = GridBagConstraints.WEST;
-		gbc_lblCreateDate.insets = new Insets(0, 20, 5, 5);
+		gbc_lblCreateDate.insets = new Insets(0, 20, 0, 5);
 		gbc_lblCreateDate.gridx = 0;
 		gbc_lblCreateDate.gridy = 3;
 
@@ -892,7 +892,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_txfCreateDate = new GridBagConstraints();
 		gbc_txfCreateDate.weightx = 1.0;
-		gbc_txfCreateDate.insets = new Insets(0, 0, 5, 5);
+		gbc_txfCreateDate.insets = new Insets(0, 0, 0, 5);
 		gbc_txfCreateDate.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfCreateDate.gridx = 1;
 		gbc_txfCreateDate.gridy = 3;
@@ -917,7 +917,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_lblReactivateDate = new GridBagConstraints();
 		gbc_lblReactivateDate.anchor = GridBagConstraints.WEST;
-		gbc_lblReactivateDate.insets = new Insets(0, 20, 5, 5);
+		gbc_lblReactivateDate.insets = new Insets(0, 20, 0, 5);
 		gbc_lblReactivateDate.gridx = 2;
 		gbc_lblReactivateDate.gridy = 3;
 
@@ -938,7 +938,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 		GridBagConstraints gbc_txfReactivateDate = new GridBagConstraints();
 		gbc_txfReactivateDate.weightx = 1.0;
-		gbc_txfReactivateDate.insets = new Insets(0, 0, 5, 5);
+		gbc_txfReactivateDate.insets = new Insets(0, 0, 0, 5);
 		gbc_txfReactivateDate.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txfReactivateDate.gridx = 3;
 		gbc_txfReactivateDate.gridy = 3;
@@ -971,7 +971,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private GridBagConstraints getGridJCheckActive() {
 		GridBagConstraints gbcCheckActive = new GridBagConstraints();
 		gbcCheckActive.anchor = GridBagConstraints.WEST;
-		gbcCheckActive.insets = new Insets(0, 15, 5, 5);
+		gbcCheckActive.insets = new Insets(0, 15, 0, 5);
 		gbcCheckActive.gridx = 4;
 		gbcCheckActive.gridy = 3;
 		return gbcCheckActive;
@@ -1049,4 +1049,12 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		return gbc_btnCancel;
 	}
 
+	private JLabel getJLblFirstSurname() {
+		if (jLblFirstSurname == null) {
+			jLblFirstSurname = new JLabel("Primer Apellido");
+			jLblFirstSurname.setPreferredSize(new Dimension(80, 25));
+			jLblFirstSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jLblFirstSurname;
+	}
 }

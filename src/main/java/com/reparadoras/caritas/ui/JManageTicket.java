@@ -10,6 +10,7 @@ import java.beans.PropertyVetoException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import javax.swing.table.TableModel;
 
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
@@ -78,8 +80,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JLabel lblDni;
 	private JTextField tfDni;
 	private JCheckBox ckActive;
-	//private JComboBox<People> cbPeople = null;
+	private JLabel lblYear = null;
 	private JTextField tfName;
+	private JTextField tfYear;
 	private JPanel jPanelContent = null;
 
 	private JPanel jPanelTable = null;
@@ -90,7 +93,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
 	private JButton btnCleanPeople = null;
-	private People people = null;
+	private FilterTicket filterTicket = null;
 
 	private TicketDAO ticketDAO;
 	private PeopleDAO peopleDAO;
@@ -99,7 +102,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	 * @wbp.parser.constructor
 	 */
 	public JManageTicket(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
-			People people) {
+			FilterTicket filterTicket) {
 
 		super(jCicIFParent, modal);
 		this.setVisible(true);
@@ -111,7 +114,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		this.setResizable(true);
 		this.setTitle(title);
 
-		this.people = people;
+		this.filterTicket = filterTicket;
 
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -120,9 +123,16 @@ public class JManageTicket extends AbstractJInternalFrame {
 		initComponents();
 		addListeners();
 		
-		this.getJTextFieldDni().setText(this.people.getDni());
-		this.getJTextFieldName().setText(this.people.getName());
+		this.getJTextFieldDni().setText(this.filterTicket.getDniPeople());
+		this.getJTextFieldName().setText(this.filterTicket.getNamePeople());
+		if (this.filterTicket.getYearTicket()!=null){
+			this.getJTextFieldYear().setText(this.filterTicket.getYearTicket().toString());
+		}
+		
 		onFilterTicket(true);
+		
+		this.getJButtonSearch().setVisible(false);
+		this.getJButtonClean().setVisible(false);
 		
 	}
 
@@ -186,6 +196,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
+		this.getJTextFieldYear().setText("");
+		
 		
 	}
 	
@@ -204,6 +216,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
+		getJPanelFilter().add(getJLabelYear(), getGridJLabelYear());
+		getJPanelFilter().add(getJTextFieldYear(), getGridJTextFieldYear());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 
@@ -366,6 +380,46 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
 		gbc_tfName.gridy = 1;
+
+		return gbc_tfName;
+	}
+	
+	private JLabel getJLabelYear() {
+
+		if (lblYear == null) {
+			lblYear = new JLabel("Año ");
+			lblYear.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblYear;
+	}
+
+	private GridBagConstraints getGridJLabelYear() {
+		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.fill = GridBagConstraints.BOTH;
+		gbc_lblName.insets = new Insets(0, 5, 5, 5);
+		gbc_lblName.gridx = 0;
+		gbc_lblName.gridy = 2;
+
+		return gbc_lblName;
+	}
+
+	private JTextField getJTextFieldYear() {
+		if (tfYear == null) {
+			tfYear = new JTextField();
+		}
+
+		return tfYear;
+
+	}
+
+	private GridBagConstraints getGridJTextFieldYear() {
+
+		GridBagConstraints gbc_tfName = new GridBagConstraints();
+		gbc_tfName.insets = new Insets(0, 0, 5, 5);
+		gbc_tfName.weightx = 1.0;
+		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfName.gridx = 1;
+		gbc_tfName.gridy = 2;
 
 		return gbc_tfName;
 	}
@@ -716,19 +770,37 @@ public class JManageTicket extends AbstractJInternalFrame {
 	}
 
 	public void onFilterTicket(boolean create) {
-		People filterPeople = new People();
-		filterPeople.setActive(this.getCkActive().isSelected());
-		filterPeople.setDni(this.getJTextFieldDni().getText());
-		filterPeople.setName(this.getJTextFieldName().getText());
+		
+		
+		if (filterTicket == null){
+			filterTicket = new FilterTicket();
+		} 
+		filterTicket.setActive(this.getCkActive().isSelected());
+		filterTicket.setDniPeople(this.getJTextFieldDni().getText());
+		filterTicket.setNamePeople(this.getJTextFieldName().getText());
+		if (this.getJTextFieldYear().getText()!=null && !this.getJTextFieldYear().getText().equals("")){
+			filterTicket.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
+		}
+		
 
-		List<Ticket> tickets = ticketDAO.findTicket(filterPeople);
+		
+		
+		List<Ticket> tickets = ticketDAO.findTicket(filterTicket);
 		if (tickets != null && !tickets.isEmpty()) {
 			this.getTicketsPeopleTableModel().clearTableModelData();
 			this.getTicketsPeopleTableModel().addRows(tickets);
 
 		} else {
 			Ticket ticketNewReset = new Ticket();
-			ticketNewReset.setPeople(this.people);
+			People filterPeople = new People();
+			filterPeople.setDni(this.getJTextFieldDni().getText());
+			filterPeople.setName(this.getJTextFieldName().getText());
+			filterPeople.setId(filterTicket.getIdPeople());
+			People peopleTicket = peopleDAO.findPeopleById(filterPeople);
+			
+			ticketNewReset.setPeople(peopleTicket);
+			
+			ticketNewReset.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
 			if (create) {
 				if (JOptionPane.showConfirmDialog(this,
@@ -737,8 +809,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 				
 					ticketDAO.insert(ticketNewReset);
 					
-					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.people.getName() + " con todos los meses inicializados a 0");
+					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.getJTextFieldName().getName() + " con todos los meses inicializados a 0");
 					onFilterTicket(false);
+					this.cleanFilter();
 					
 					
 				}
