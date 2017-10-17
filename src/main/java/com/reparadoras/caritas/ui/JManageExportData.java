@@ -9,9 +9,11 @@ import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +47,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -207,8 +210,8 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 				dispose();
 
-				}
-			
+			}
+
 		});
 
 		getJButtonExportFile().addActionListener(new ActionListener() {
@@ -219,17 +222,17 @@ public class JManageExportData extends AbstractJInternalFrame {
 		});
 	}
 
-	 protected void saveToFile() {
-		    JFileChooser fileChooser = new JFileChooser();
-		    int retval = fileChooser.showSaveDialog(getJButtonExportFile());
-		    if (retval == JFileChooser.APPROVE_OPTION) {
-		      File file = fileChooser.getSelectedFile();
-		      if (file == null) {
-		        return;
-		      }
-		      readBBDDAndGenerateExcel();
-		    }
-		  }
+	protected void saveToFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		int retval = fileChooser.showSaveDialog(getJButtonExportFile());
+		if (retval == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			if (file == null) {
+				return;
+			}
+			readBBDDAndGenerateExcel(file);
+		}
+	}
 
 	public void createGUIComponents() {
 
@@ -282,7 +285,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		if (jPanelFile == null) {
 			jPanelFile = new JPanel();
 			jPanelFile.setBorder(null);
-			
+
 		}
 
 		return jPanelFile;
@@ -313,7 +316,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 			jPanelTData = new JPanel();
 			jPanelTData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resultado Importacion",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-			
+
 		}
 
 		return jPanelTData;
@@ -432,26 +435,10 @@ public class JManageExportData extends AbstractJInternalFrame {
 		return gbl_jPanelContent;
 	}
 
-
-
-
-	private String getFileExtension(File file) {
-
-		String name = file.getName();
-		try {
-			return name.substring(name.lastIndexOf(".") + 1);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	
-
-	public void readBBDDAndGenerateExcel() {
+	public void readBBDDAndGenerateExcel(File file) {
 
 		try {
-			
-			
+
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
 			Map<String, Income> mapIncomes = new HashMap<String, Income>();
 			Map<String, Expense> mapExpenses = new HashMap<String, Expense>();
@@ -460,16 +447,16 @@ public class JManageExportData extends AbstractJInternalFrame {
 			List<Program> listPrograms = programDAO.findProgram(new People());
 			for (Program program : listPrograms) {
 				String dni = program.getPeople().getDni();
-				if (dni!=null && !dni.equals("")){
+				if (dni != null && !dni.equals("")) {
 					mapProgram.put(dni, program);
-					
-					//TODO: incomes
-					//TODO: expesnes
-					//TODO: RELATIVES
+
+					// TODO: incomes
+					// TODO: expesnes
+					// TODO: RELATIVES
 				}
 			}
-			
-			generateExcel(mapProgram);
+
+			generateExcel(mapProgram, file);
 
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
@@ -488,11 +475,27 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 	}
 
-	public void generateExcel(Map<String, Program> mapProgram){
-		
-		
+	public void generateExcel(Map<String, Program> mapProgram, File destinationPath) {
+
+		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xlsx");
+		File fTemplate = new File(url.getPath());
+		FileInputStream excelFileTemplate;
+		try {
+			excelFileTemplate = new FileInputStream(fTemplate);
+			Workbook workbook = new XSSFWorkbook(excelFileTemplate);
+			FileOutputStream outputStream = new FileOutputStream(destinationPath.getPath());
+			workbook.write(outputStream);
+			workbook.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
-	
+
 	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram, Map<String, Income> mapIncomes,
 			Map<String, Expense> mapExpenses) {
 
