@@ -455,8 +455,8 @@ public class JManageExportData extends AbstractJInternalFrame {
 					// TODO: RELATIVES
 				}
 			}
-
-			generateExcel(mapProgram, file);
+			XSSFWorkbook clonedFile = cloneTemplateExcel(file);
+			generateExcel(mapProgram, clonedFile, file);
 
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
@@ -475,17 +475,19 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 	}
 
-	public void generateExcel(Map<String, Program> mapProgram, File destinationPath) {
-
+	public XSSFWorkbook cloneTemplateExcel(File destinationPath){
+		
 		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xlsx");
 		File fTemplate = new File(url.getPath());
 		FileInputStream excelFileTemplate;
+		XSSFWorkbook workbook = null;
 		try {
 			excelFileTemplate = new FileInputStream(fTemplate);
-			Workbook workbook = new XSSFWorkbook(excelFileTemplate);
+			workbook = new XSSFWorkbook(excelFileTemplate);
 			FileOutputStream outputStream = new FileOutputStream(destinationPath.getPath());
 			workbook.write(outputStream);
-			workbook.close();
+			
+			//workbook.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -493,6 +495,66 @@ public class JManageExportData extends AbstractJInternalFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return workbook;
+		
+	}
+	public void generateExcel(Map<String, Program> mapProgram, XSSFWorkbook workbook, File file) {
+
+		
+		try {
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			int rowNumber = 2;
+			XSSFRow row = sheet.createRow(rowNumber);
+			
+			for (String key : mapProgram.keySet()) {
+				
+				Program program = mapProgram.get(key);
+				XSSFCell cell = row.createCell(0);
+				cell.setCellValue(program.getPeople().getDni());
+				cell = row.createCell(1);
+				cell.setCellValue(program.getPeople().getPassport());
+				cell = row.createCell(2);
+				cell.setCellValue(program.getPeople().getCreateDate());
+				cell = row.createCell(3);
+				cell.setCellValue(program.getPeople().getReactivateDate());
+				cell = row.createCell(4);
+				if (program.getPeople().isActive()!=null && program.getPeople().isActive()){
+					cell.setCellValue("X");
+				}
+				cell = row.createCell(5);
+				cell.setCellValue(program.getPeople().getName());
+				cell = row.createCell(6);
+				cell.setCellValue(program.getPeople().getFirstSurname());
+				cell = row.createCell(7);
+				cell.setCellValue(program.getPeople().getSecondSurname());
+				cell = row.createCell(8);
+				cell.setCellValue(program.getPeople().getSex());
+				cell = row.createCell(9);
+				cell.setCellValue(program.getPeople().getDateBorn());
+				cell = row.createCell(10);
+				cell.setCellValue(program.getPeople().getCountry());
+				
+				
+				
+			    row = sheet.createRow(++rowNumber);
+				
+			}
+			
+			for (int c=0;c < 2; c++ ){
+			      XSSFCell cell = row.createCell(c);
+			      cell.setCellValue("Inserto en la celda " + c);
+			   }
+			
+			FileOutputStream fileOut = new FileOutputStream(file);
+			 
+			workbook.write(fileOut);
+			fileOut.flush();
+			fileOut.close(); 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 
 	}
 
