@@ -77,7 +77,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 	private JDesktopPane desktop = null;
 	private PeopleTableModel peopleTableModel = null;
-	
+
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
@@ -85,12 +85,12 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel lblRegPeople;
 	private JLabel lblProgram;
 	private JLabel lblTickets;
-	private JLabel lblImportExport;
+	private JLabel lblImport;
+	private JLabel lblExport;
 	private JPanel panel;
 	private JLabel lblExit;
 	private JPanel jPanelLogo;
 	private JLabel lblLogo;
-
 
 	public JMainWindow(JDesktopPane desktop) {
 		super(desktop);
@@ -102,27 +102,23 @@ public class JMainWindow extends AbstractJInternalFrame {
 		this.pack();
 		this.setResizable(true);
 		this.setClosable(true);
-		
+
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+
 		createGUIComponents();
 		initComponents();
 
-		
-		addInternalFrameListener(new InternalFrameAdapter(){
-            public void internalFrameClosing(InternalFrameEvent e) {
-               
-            }
-        });
+		addInternalFrameListener(new InternalFrameAdapter() {
+			public void internalFrameClosing(InternalFrameEvent e) {
 
-		
+			}
+		});
 
 	}
 
-	
-	public void createGUIComponents(){
+	public void createGUIComponents() {
 		getContentPane().setLayout(getGridContentPane());
 		GridBagConstraints gbc_jPanelMenu = new GridBagConstraints();
 		gbc_jPanelMenu.insets = new Insets(0, 0, 5, 0);
@@ -148,11 +144,10 @@ public class JMainWindow extends AbstractJInternalFrame {
 		gbc_jPanelLogo.gridy = 0;
 		getContentPane().add(getJPanelLogo(), gbc_jPanelLogo);
 	}
-	
-	public void initComponents(){
+
+	public void initComponents() {
 	}
-	
-	
+
 	/* FUNCIONES DEL GETCONTENTPANE */
 
 	private GridBagLayout getGridContentPane() {
@@ -163,13 +158,14 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		return gridBagLayout;
 	}
+
 	private JPanel getJPanelMenu() {
 		if (jPanelMenu == null) {
 			jPanelMenu = new JPanel();
 			jPanelMenu.setBackground(Color.WHITE);
 			GridBagLayout gbl_jPanelMenu = new GridBagLayout();
-			gbl_jPanelMenu.columnWeights = new double[]{1.0};
-			gbl_jPanelMenu.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+			gbl_jPanelMenu.columnWeights = new double[] { 1.0 };
+			gbl_jPanelMenu.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 			jPanelMenu.setLayout(gbl_jPanelMenu);
 			GridBagConstraints gbc_lblRegPeople = new GridBagConstraints();
 			gbc_lblRegPeople.insets = new Insets(20, 0, 20, 0);
@@ -186,7 +182,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			gbc_lblTickets.fill = GridBagConstraints.VERTICAL;
 			gbc_lblTickets.gridx = 0;
 			gbc_lblTickets.gridy = 2;
-			jPanelMenu.add(getLblTickets(), gbc_lblTickets);
+			// jPanelMenu.add(getLblTickets(), gbc_lblTickets);
 			GridBagConstraints gbc_lblProgram = new GridBagConstraints();
 			gbc_lblProgram.insets = new Insets(20, 0, 5, 20);
 			gbc_lblProgram.fill = GridBagConstraints.VERTICAL;
@@ -194,18 +190,27 @@ public class JMainWindow extends AbstractJInternalFrame {
 			gbc_lblProgram.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblProgram.gridx = 0;
 			gbc_lblProgram.gridy = 3;
-			jPanelMenu.add(getLblProgram(), gbc_lblProgram);
-			GridBagConstraints gbc_lblImportExport = new GridBagConstraints();
-			gbc_lblImportExport.insets = new Insets(20, 0, 5, 20);
-			gbc_lblImportExport.fill = GridBagConstraints.VERTICAL;
-			gbc_lblImportExport.weightx = 1.0;
-			gbc_lblImportExport.anchor = GridBagConstraints.NORTHWEST;
-			gbc_lblImportExport.gridx = 0;
-			gbc_lblImportExport.gridy = 4;
-			jPanelMenu.add(getLblImportExport(), gbc_lblImportExport);
+			// jPanelMenu.add(getLblProgram(), gbc_lblProgram);
+			GridBagConstraints gbc_lblImport = new GridBagConstraints();
+			gbc_lblImport.insets = new Insets(20, 0, 5, 20);
+			gbc_lblImport.fill = GridBagConstraints.VERTICAL;
+			gbc_lblImport.weightx = 1.0;
+			gbc_lblImport.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblImport.gridx = 0;
+			gbc_lblImport.gridy = 4;
+			jPanelMenu.add(getLblImportData(), gbc_lblImport);
+			GridBagConstraints gbc_lblExport = new GridBagConstraints();
+			gbc_lblExport.insets = new Insets(20, 0, 5, 20);
+			gbc_lblExport.fill = GridBagConstraints.VERTICAL;
+			gbc_lblExport.weightx = 1.0;
+			gbc_lblExport.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblExport.gridx = 0;
+			gbc_lblExport.gridy = 5;
+			jPanelMenu.add(getLblExportData(), gbc_lblExport);
 		}
 		return jPanelMenu;
 	}
+
 	private JLabel getLblRegPeople() {
 		if (lblRegPeople == null) {
 			lblRegPeople = new JLabel("  Fichero Registro Personas ");
@@ -227,10 +232,12 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblRegPeople.setBackground(Color.WHITE);
 			lblRegPeople.setBorder(null);
 			lblRegPeople.setHorizontalAlignment(SwingConstants.CENTER);
-			lblRegPeople.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+			lblRegPeople.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
 		}
 		return lblRegPeople;
 	}
+
 	private JLabel getLblProgram() {
 		if (lblProgram == null) {
 			lblProgram = new JLabel("Informe Programa Atencion Primaria");
@@ -247,7 +254,8 @@ public class JMainWindow extends AbstractJInternalFrame {
 				}
 			});
 			lblProgram.setHorizontalAlignment(SwingConstants.CENTER);
-			lblProgram.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+			lblProgram.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
 			lblProgram.setForeground(Color.BLACK);
 			lblProgram.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblProgram.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -256,13 +264,14 @@ public class JMainWindow extends AbstractJInternalFrame {
 		}
 		return lblProgram;
 	}
+
 	private JLabel getLblTickets() {
 		if (lblTickets == null) {
 			lblTickets = new JLabel("Informe Tickets/Vales");
 			lblTickets.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					//openWindow
+					// openWindow
 					openManageTicketPeopleWindow();
 				}
 			});
@@ -272,7 +281,8 @@ public class JMainWindow extends AbstractJInternalFrame {
 					lblTickets.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				}
 			});
-			lblTickets.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+			lblTickets.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
 			lblTickets.setForeground(Color.BLACK);
 			lblTickets.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblTickets.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -281,32 +291,61 @@ public class JMainWindow extends AbstractJInternalFrame {
 		}
 		return lblTickets;
 	}
-	
-	private JLabel getLblImportExport() {
-		if (lblImportExport == null) {
-			lblImportExport = new JLabel("   Importar/Exportar datos");
-			lblImportExport.addMouseListener(new MouseAdapter() {
+
+	private JLabel getLblImportData() {
+		if (lblImport == null) {
+			lblImport = new JLabel("  Importar datos");
+			lblImport.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					openManageBackup();
+					openManageImportBackup();
 				}
 			});
-			lblImportExport.addMouseMotionListener(new MouseMotionAdapter() {
+			lblImport.addMouseMotionListener(new MouseMotionAdapter() {
 				@Override
 				public void mouseMoved(MouseEvent arg0) {
-					lblImportExport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+					lblImport.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				}
 			});
-			lblImportExport.setHorizontalAlignment(SwingConstants.CENTER);
-			lblImportExport.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-backup-64.png")));
-			lblImportExport.setForeground(Color.BLACK);
-			lblImportExport.setFont(new Font("Verdana", Font.BOLD, 30));
-			lblImportExport.setHorizontalTextPosition(SwingConstants.RIGHT);
-			lblImportExport.setBackground(Color.WHITE);
-			lblImportExport.setBorder(null);
+			lblImport.setHorizontalAlignment(SwingConstants.CENTER);
+			lblImport.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-import-64.png")));
+			lblImport.setForeground(Color.BLACK);
+			lblImport.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblImport.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblImport.setBackground(Color.WHITE);
+			lblImport.setBorder(null);
 		}
-		return lblImportExport;
+		return lblImport;
 	}
+
+	private JLabel getLblExportData() {
+		if (lblExport == null) {
+			lblExport = new JLabel("  Exportar datos");
+			lblExport.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					openManageExportBackup();
+				}
+			});
+			lblExport.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblExport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
+			lblExport.setHorizontalAlignment(SwingConstants.CENTER);
+			lblExport.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-export-64.png")));
+			lblExport.setForeground(Color.BLACK);
+			lblExport.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblExport.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblExport.setBackground(Color.WHITE);
+			lblExport.setBorder(null);
+		}
+		return lblExport;
+	}
+
 	private JPanel getPanel() {
 		if (panel == null) {
 			panel = new JPanel();
@@ -318,6 +357,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 		}
 		return panel;
 	}
+
 	private JLabel getLblExit() {
 		if (lblExit == null) {
 			lblExit = new JLabel("Salir");
@@ -325,34 +365,33 @@ public class JMainWindow extends AbstractJInternalFrame {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
 					createBackup();
-					
+
 				}
 			});
 			lblExit.addMouseMotionListener(new MouseMotionAdapter() {
 				@Override
 				public void mouseMoved(MouseEvent arg0) {
-					
+
 					lblExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
-					
-					
+
 				}
 			});
 			lblExit.setFont(new Font("Verdana", Font.PLAIN, 18));
 			lblExit.setHorizontalTextPosition(SwingConstants.RIGHT);
 			lblExit.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-exit-64.png")));
-			
-			
+
 		}
 		return lblExit;
 	}
+
 	private JPanel getJPanelLogo() {
 		if (jPanelLogo == null) {
 			jPanelLogo = new JPanel();
 			jPanelLogo.setBackground(Color.WHITE);
 			GridBagLayout gbl_jPanelLogo = new GridBagLayout();
-			gbl_jPanelLogo.columnWeights = new double[]{0.0};
-			gbl_jPanelLogo.rowWeights = new double[]{0.0};
+			gbl_jPanelLogo.columnWeights = new double[] { 0.0 };
+			gbl_jPanelLogo.rowWeights = new double[] { 0.0 };
 			jPanelLogo.setLayout(gbl_jPanelLogo);
 			GridBagConstraints gbc_lblLogo = new GridBagConstraints();
 			gbc_lblLogo.fill = GridBagConstraints.HORIZONTAL;
@@ -362,6 +401,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 		}
 		return jPanelLogo;
 	}
+
 	private JLabel getLblLogo() {
 		if (lblLogo == null) {
 			lblLogo = new JLabel("");
@@ -371,131 +411,147 @@ public class JMainWindow extends AbstractJInternalFrame {
 		}
 		return lblLogo;
 	}
-	
-	
-	 private void openManageTicketPeopleWindow() {
-	        
-	        
-	        try {
-	        	JManageTicket jManageTicket = new JManageTicket(this.desktop);
-	        	desktop.add(jManageTicket);
-	        	
-	        	jManageTicket.setMaximum(true);
-	        	jManageTicket.setMaximizable(false);
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            
-	        }
-	    }
-	 
-	 private void openManagePeopleWindow() {
-	       
-	       
-	        try {
-	        	JManagePeople jManagePeople = new JManagePeople(this.desktop);
-	        	this.desktop.add(jManagePeople);
-	        	
-	        	jManagePeople.setMaximum(true);
-	        	jManagePeople.setMaximizable(false);
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            
-	        }
-	    }
-	 
-	 private void openManageProgramWindow() {
-	        
-	        
-	        try {
-	        	JManageProgram jManageProgram = new JManageProgram(this.desktop);
-	        	desktop.add(jManageProgram);
-	        	
-	        	jManageProgram.setMaximum(true);
-	        	jManageProgram.setMaximizable(false);
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            
-	        }
-	    }
-	 
-	 private void openManageBackup(){
-		 
-		 try {
-	        	JManageBackup jManageBackup = new JManageBackup(this.desktop);
-	        	desktop.add(jManageBackup);
-	        	
-	        	jManageBackup.setMaximum(false);
-	        	jManageBackup.setMaximizable(false);
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            
-	        }
-	 }
-	 
 
-	 public static void createBackup() {
-	        JFrame frame = new JFrame();
-	        JPanel panel = new JPanel();
-	        JLabel label = new JLabel("Realizando copia de seguridad...");
-	        JProgressBar jpb = new JProgressBar();
-	        jpb.setIndeterminate(true);
-	        panel.add(label);
-	        panel.add(jpb);
-	        frame.getContentPane().add(panel);
-	        frame.pack();
-	        frame.setSize(200,90);
-	        frame.setLocationRelativeTo(null);
-	        frame.setVisible(true);
-	        //frame.setDefaultCloseOperation(JFrame);
-	        new Task_BackupBBDD(label).execute();
-	    }
+	private void openManageTicketPeopleWindow() {
 
-	    static class Task_BackupBBDD extends SwingWorker<Void, String> {
+		try {
+			JManageTicket jManageTicket = new JManageTicket(this.desktop);
+			desktop.add(jManageTicket);
 
-	        JLabel jlabel;
-	        public Task_BackupBBDD(JLabel jlabel) {
-	            this.jlabel = jlabel;
-	        }
+			jManageTicket.setMaximum(true);
+			jManageTicket.setMaximizable(false);
 
-	        @Override
-	        protected void process(List<String> chunks) {
-	            jlabel.setText(chunks.get(chunks.size()-1)); // The last value in this array is all we care about.
-	            System.out.println(chunks.get(chunks.size()-1));
-	        }
+		} catch (Exception e) {
+			e.printStackTrace();
 
-	        @Override
-	        protected Void doInBackground() throws Exception {
+		}
+	}
 
-	            publish("Loading Step 1...");
-	            Thread.sleep(1000);
-	            publish("Loading Step 2...");
-	            Thread.sleep(1000);
-	            publish("Loading Step 3...");
-	            Thread.sleep(1000);
-	            publish("Loading Step 4...");
-	            Thread.sleep(1000);
+	private void openManagePeopleWindow() {
 
-	            return null;
-	        }
+		try {
+			JManagePeople jManagePeople = new JManagePeople(this.desktop);
+			this.desktop.add(jManagePeople);
 
-	        @Override
-	        protected void done() {
-	            try {
-	                get();
-	                JOptionPane.showMessageDialog(jlabel.getParent(), "Copia de seguridad realizada", "Success", JOptionPane.INFORMATION_MESSAGE);
-	            } catch (ExecutionException | InterruptedException e) {
-	                e.printStackTrace();
-	            }
-	            
-	          System.exit(0);
-	        }
-	    }
+			jManagePeople.setMaximum(true);
+			jManagePeople.setMaximizable(false);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	private void openManageProgramWindow() {
+
+		try {
+			JManageProgram jManageProgram = new JManageProgram(this.desktop);
+			desktop.add(jManageProgram);
+
+			jManageProgram.setMaximum(true);
+			jManageProgram.setMaximizable(false);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	private void openManageImportBackup() {
+
+		try {
+			/*
+			 * JManageBackup_backup jManageBackup = new
+			 * JManageBackup_backup(this.desktop); desktop.add(jManageBackup);
+			 * 
+			 * jManageBackup.setMaximum(false);
+			 * jManageBackup.setMaximizable(false);
+			 */
+			JManageImportData jManageImportData = new JManageImportData(this.desktop);
+			desktop.add(jManageImportData);
+			jManageImportData.setMaximum(true);
+			jManageImportData.setMaximizable(false);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	private void openManageExportBackup() {
+
+		try {
+			
+			JManageExportData jManageExportData = new JManageExportData(this.desktop);
+			desktop.add(jManageExportData);
+			jManageExportData.setMaximum(true);
+			jManageExportData.setMaximizable(false);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	public static void createBackup() {
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel("Realizando copia de seguridad...");
+		JProgressBar jpb = new JProgressBar();
+		jpb.setIndeterminate(true);
+		panel.add(label);
+		panel.add(jpb);
+		frame.getContentPane().add(panel);
+		frame.pack();
+		frame.setSize(200, 90);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		// frame.setDefaultCloseOperation(JFrame);
+		new Task_BackupBBDD(label).execute();
+	}
+
+	static class Task_BackupBBDD extends SwingWorker<Void, String> {
+
+		JLabel jlabel;
+
+		public Task_BackupBBDD(JLabel jlabel) {
+			this.jlabel = jlabel;
+		}
+
+		@Override
+		protected void process(List<String> chunks) {
+			jlabel.setText(chunks.get(chunks.size() - 1)); // The last value in
+															// this array is all
+															// we care about.
+			System.out.println(chunks.get(chunks.size() - 1));
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+
+			publish("Loading Step 1...");
+			Thread.sleep(1000);
+			publish("Loading Step 2...");
+			Thread.sleep(1000);
+			publish("Loading Step 3...");
+			Thread.sleep(1000);
+			publish("Loading Step 4...");
+			Thread.sleep(1000);
+
+			return null;
+		}
+
+		@Override
+		protected void done() {
+			try {
+				get();
+				JOptionPane.showMessageDialog(jlabel.getParent(), "Copia de seguridad realizada", "Success",
+						JOptionPane.INFORMATION_MESSAGE);
+			} catch (ExecutionException | InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			System.exit(0);
+		}
+	}
 }
-	
-	
-	
-
