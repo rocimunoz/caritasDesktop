@@ -1,13 +1,14 @@
-
+package com.reparadoras.caritas.ui.utils;
 
 
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPRow;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfPTableEventAfterSplit;
+import com.itextpdf.text.pdf.PdfPTableEventSplit;
 
 
-public class TableBorderEvent implements PdfPTableEventAfterSplit
+//public class TableBorderEvent implements PdfPTableEventAfterSplit
+public class TableBorderEvent implements PdfPTableEventSplit
 {
 
     protected int rowCount;

@@ -1,7 +1,6 @@
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.itextpdf.text.BadElementException;
+package com.reparadoras.caritas.ui.utils;
+
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -19,12 +18,13 @@ import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 
 
-
 public class HeaderFooterPageEvent extends PdfPageEventHelper
 {
 
-    private static Logger LOG = LoggerFactory.getLogger(HeaderFooterPageEvent.class);
-    private static final String IMG_VIESGO_LOGO = "/VAADIN/themes/viesgo/images/viesgo-distribucion-logo.png";
+    // private static Logger LOG =
+    // LoggerFactory.getLogger(HeaderFooterPageEvent.class);
+    // private static final String IMG_VIESGO_LOGO =
+    // "/VAADIN/themes/viesgo/images/viesgo-distribucion-logo.png";
 
     private static final float TOTAL_PAGES_TEMPLATE_WIDTH = 30;
     private static final float TOTAL_PAGES_TEMPLATE_HEIGHT = 16;
@@ -56,11 +56,11 @@ public class HeaderFooterPageEvent extends PdfPageEventHelper
 	try
 	{
 	    totalPages = Image.getInstance(totalPagesTemplate);
-	    totalPages.setRole(PdfName.ARTIFACT);
+	    // totalPages.setRole(PdfName.AA);
 	}
 	catch (DocumentException de)
 	{
-	    LOG.error(de.getMessage());
+	    // LOG.error(de.getMessage());
 	}
     }
 
@@ -74,14 +74,12 @@ public class HeaderFooterPageEvent extends PdfPageEventHelper
     private Image getViesgoLogo()
     {
 
-	try
-	{
-	    return Image.getInstance(VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + IMG_VIESGO_LOGO);
-	}
-	catch (BadElementException | IOException e)
-	{
-	    LOG.error(e.getMessage());
-	}
+	/*
+	 * try { // return //
+	 * Image.getInstance(VaadinService.getCurrent().getBaseDirectory().
+	 * getAbsolutePath() // + IMG_VIESGO_LOGO); } catch (BadElementException
+	 * | IOException e) { // LOG.error(e.getMessage()); }
+	 */
 
 	return null;
     }
@@ -131,7 +129,7 @@ public class HeaderFooterPageEvent extends PdfPageEventHelper
 	    footer.getDefaultCell().setBorder(Rectangle.TOP);
 	    footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
 
-	    footer.addCell(new Phrase(I18NUtil.getI18N().get("operations.pdf.page.number", writer.getPageNumber())));
+	    footer.addCell(new Phrase("pagina"));
 
 	    PdfPCell totalPageCount = new PdfPCell(totalPages);
 	    totalPageCount.setBorder(Rectangle.TOP);
@@ -139,13 +137,13 @@ public class HeaderFooterPageEvent extends PdfPageEventHelper
 	    footer.addCell(totalPageCount);
 
 	    PdfContentByte canvas = writer.getDirectContent();
-	    canvas.beginMarkedContentSequence(PdfName.ARTIFACT);
+	    canvas.beginMarkedContentSequence(PdfName.AA); // Artifact
 	    footer.writeSelectedRows(0, -1, FOOTER_TABLE_X_POSITION, FOOTER_TABLE_Y_POSITION, canvas);
 	    canvas.endMarkedContentSequence();
 	}
 	catch (DocumentException de)
 	{
-	    LOG.error(de.getMessage());
+	    // LOG.error(de.getMessage());
 	}
     }
 
