@@ -709,7 +709,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnPrint == null) {
 			btnPrint = new JButton("Imprimir");
 
-			btnPrint.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-save.png")));
+			btnPrint.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-print-32.png")));
 		}
 
 		return btnPrint;

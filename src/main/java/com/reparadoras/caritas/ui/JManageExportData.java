@@ -1,8 +1,58 @@
 package com.reparadoras.caritas.ui;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 
-import com.microsoft.schemas.office.visio.x2012.main.CellType;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+
+import java.awt.GridLayout;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
@@ -15,6 +65,8 @@ import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.StudiesDAO;
+import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Expense;
@@ -27,73 +79,68 @@ import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
+import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
-import com.reparadoras.caritas.ui.JMainWindow.Task_BackupBBDD;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.components.combobox.ComboBoxRenderer;
+import com.reparadoras.caritas.ui.components.datepicker.CaritasDatePickerCellEditor;
+import com.reparadoras.caritas.ui.components.table.ColumnGroup;
+import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
+import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
+import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.TicketsPeopleTableModel;
 
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
+import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
+import java.awt.Dimension;
 
-import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingWorker;
-
-import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyVetoException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-@SuppressWarnings("serial")
+import java.awt.FlowLayout;
 
-public class JManageBackup extends AbstractJInternalFrame {
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
+import java.awt.Font;
+import javax.swing.UIManager;
+import java.awt.SystemColor;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 
-	static final Logger logger = Logger.getLogger(JManageBackup.class);
+public class JManageExportData extends AbstractJInternalFrame {
+
+	private static final long serialVersionUID = 1L;
+
+	static final Logger logger = Logger.getLogger(JManageExportData.class);
 
 	private JDesktopPane desktop = null;
+	private JPanel jPanelFile = null;
+
+	private JPanel jPanelContent = null;
+
+	private JPanel jPanelTData = null;
+	private JButton btnExit = null;
+	private JButton btnImportFile = null;
+	private JFileChooser jfc = null;
+	private JTextArea textArea = null;
+	private JScrollPane scroll = null;
+
 	private PeopleDAO peopleDAO;
 
 	private FamilyDAO familyDAO;
@@ -108,35 +155,31 @@ public class JManageBackup extends AbstractJInternalFrame {
 	private ExpensesDAO expenseDAO;
 	private RelativeDAO relativeDAO;
 
-	// private StringBuffer sbuffer = new StringBuffer();
-
-	private JFileChooser jfc = null;
-	private JFrame frame = null;
-	private JPanel panel = null;
-	private JTextArea textArea = null;
-	private JScrollPane scroll = null;
-	private JLabel label = null;
-	private JButton button = null;
-
-	private People selectedPeople;
-
 	public int countOK = 0;
 	public int countKO = 0;
 	public int countExist = 0;
 	public int countTotal = 0;
-	
+
 	private List<String> errorRegister = new ArrayList<String>();
 
-	public JManageBackup(JDesktopPane desktop) {
+	/**
+	 * @wbp.parser.constructor
+	 */
 
+	public JManageExportData(JDesktopPane desktop) {
 		super(desktop);
 		this.desktop = desktop;
-		this.setTitle("Gestion Personas");
-		this.setVisible(true);
-
-		this.pack();
-		this.setResizable(false);
+		this.moveToFront();
 		this.setClosable(true);
+		this.setMaximizable(true);
+		this.setResizable(true);
+		this.setTitle(title);
+		this.setVisible(true);
+		this.pack();
+
+		createGUIComponents();
+		initComponents();
+		addListener();
 
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -151,121 +194,273 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
-		// getContentPane().setLayout(getGridContentPane());
-		getContentPane().add(getFileChooser());
+	}
 
-		// int returnValue = getFileChooser().showSaveDialog(null);
-		int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
-		if (returnValue == JFileChooser.APPROVE_OPTION) {
-
-			importData(jfc.getSelectedFile());
-
-		}
+	public void initComponents() {
 
 	}
 
-	public void importData(File file) {
+	public void addListener() {
 
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		frame = new JFrame();
-		panel = new JPanel();
-		label = new JLabel("Se esta realizando la copia de los datos, por favor espere unos instantes ... ");
-		textArea = new JTextArea();
-		textArea = new JTextArea(16, 58);
-		textArea.setEditable(false); // set textArea non-editable
-		scroll = new JScrollPane(textArea);
-		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		button = new JButton("Aceptar");
+		this.getJButtonExit().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				frame.dispose();
+				dispose();
 
 			}
+
 		});
 
-		panel.setLayout(getGridContentPane());
+		getJButtonExportFile().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 
-		GridBagConstraints gbc_jPanelLabel = new GridBagConstraints();
-		gbc_jPanelLabel.insets = new Insets(0, 0, 5, 0);
-		gbc_jPanelLabel.weightx = 1.0;
-		gbc_jPanelLabel.weighty = 1.0;
-		gbc_jPanelLabel.fill = GridBagConstraints.NONE;
-		gbc_jPanelLabel.gridx = 0;
-		gbc_jPanelLabel.gridy = 0;
+				saveToFile();
+			}
+		});
+	}
 
-		GridBagConstraints gbc_jPanelTextArea = new GridBagConstraints();
-		gbc_jPanelTextArea.insets = new Insets(0, 0, 5, 0);
-		gbc_jPanelTextArea.weightx = 1.0;
-		gbc_jPanelTextArea.weighty = 1.0;
-		gbc_jPanelTextArea.fill = GridBagConstraints.BOTH;
-		gbc_jPanelTextArea.gridx = 0;
-		gbc_jPanelTextArea.gridy = 1;
-
-		GridBagConstraints gbc_jPanelButton = new GridBagConstraints();
-		gbc_jPanelButton.insets = new Insets(0, 0, 5, 0);
-		gbc_jPanelButton.weightx = 1.0;
-		gbc_jPanelButton.weighty = 1.0;
-		gbc_jPanelButton.fill = GridBagConstraints.NONE;
-		gbc_jPanelButton.gridx = 0;
-		gbc_jPanelButton.gridy = 2;
-
-		panel.add(label, gbc_jPanelLabel);
-		panel.add(scroll, gbc_jPanelTextArea);
-		panel.add(button, gbc_jPanelButton);
-
-		frame.add(panel);
-		frame.pack();
-		frame.setSize(800, 400);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-
-		String extension = getFileExtension(jfc.getSelectedFile());
-
-		if (extension != null && (extension.equals("xls") || extension.equals("xlsx"))) {
-			// new Task_BackupBBDD(jfc.getSelectedFile()).execute();
-
-			readExcelFileXls(jfc.getSelectedFile());
-		} else {
-			textArea.append("Lo siento, no es posible importar datos. El fichero " + jfc.getSelectedFile().getName()
-					+ " no es un fichero valido");
+	protected void saveToFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		int retval = fileChooser.showSaveDialog(getJButtonExportFile());
+		if (retval == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			if (file == null) {
+				return;
+			}
+			readBBDDAndGenerateExcel(file);
 		}
+	}
+
+	public void createGUIComponents() {
+
+		getContentPane().setLayout(getGridContentPane());
+		// getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
+
+		// Añado elementos del JPanelFilter
+		getJPanelFile().setLayout(getGridLayoutJPanelFile());
+		getJPanelData().setLayout(getGridLayoutJPanelData());
+
+		getJPanelFile().add(getJButtonExit(), getGridButtonExit());
+		getJPanelFile().add(getJButtonExportFile(), getGridButtonImportFile());
+
+		getJPanelData().add(getJScrollPane(), getGridJScrollPane());
+
+		// Añado elementos del JPanelContent
+		getContentPane().add(getJPanelContent(), getGridJPanelContent());
+		getJPanelContent().setLayout(getGridLayoutJPanelContent());
+
+		getJPanelContent().add(getJPanelFile(), getGridJPanelFile());
+		getJPanelContent().add(getJPanelData(), getGridJPanelData());
 
 	}
 
-	public void readExcelFileXls(File file) {
+	/* FUNCIONES DEL GETCONTENTPANE */
+
+	private GridBagLayout getGridContentPane() {
+
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0 };
+		gridBagLayout.rowHeights = new int[] { 0 };
+		gridBagLayout.columnWeights = new double[] { 1.0 };
+		gridBagLayout.rowWeights = new double[] { 0.0, 1.0 };
+
+		return gridBagLayout;
+	}
+
+	/* FUNCIONES DEL PANEL DE FILTRO */
+
+	private GridBagLayout getGridLayoutJPanelFile() {
+
+		GridBagLayout gbl_jPanelFilter = new GridBagLayout();
+		gbl_jPanelFilter.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+		gbl_jPanelFilter.rowWeights = new double[] { 0.0 };
+
+		return gbl_jPanelFilter;
+	}
+
+	private JPanel getJPanelFile() {
+		if (jPanelFile == null) {
+			jPanelFile = new JPanel();
+			jPanelFile.setBorder(null);
+
+		}
+
+		return jPanelFile;
+	}
+
+	private GridBagConstraints getGridJPanelFile() {
+		GridBagConstraints gbc_jPanelFilter = new GridBagConstraints();
+		gbc_jPanelFilter.weightx = 1.0;
+		gbc_jPanelFilter.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelFilter.fill = GridBagConstraints.BOTH;
+		gbc_jPanelFilter.gridx = 0;
+		gbc_jPanelFilter.gridy = 0;
+
+		return gbc_jPanelFilter;
+	}
+
+	private GridBagLayout getGridLayoutJPanelData() {
+
+		GridBagLayout gbl_jPanelFilter = new GridBagLayout();
+		gbl_jPanelFilter.columnWeights = new double[] { 0.0 };
+		gbl_jPanelFilter.rowWeights = new double[] { 0.0 };
+
+		return gbl_jPanelFilter;
+	}
+
+	private JPanel getJPanelData() {
+		if (jPanelTData == null) {
+			jPanelTData = new JPanel();
+			jPanelTData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resultado Importacion",
+					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+
+		}
+
+		return jPanelTData;
+	}
+
+	private GridBagConstraints getGridJPanelData() {
+		GridBagConstraints gbc_jPanelFilter = new GridBagConstraints();
+		gbc_jPanelFilter.weighty = 1.0;
+		gbc_jPanelFilter.weightx = 1.0;
+		gbc_jPanelFilter.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelFilter.fill = GridBagConstraints.BOTH;
+		gbc_jPanelFilter.gridx = 0;
+		gbc_jPanelFilter.gridy = 1;
+
+		return gbc_jPanelFilter;
+	}
+
+	private JScrollPane getJScrollPane() {
+		if (scroll == null) {
+			textArea = new JTextArea();
+			textArea.setEditable(false); // set textArea non-editable
+			scroll = new JScrollPane(textArea);
+			scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		}
+
+		return scroll;
+	}
+
+	private GridBagConstraints getGridJScrollPane() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.weighty = 1.0;
+		gbc_btnExit.weightx = 1.0;
+		gbc_btnExit.fill = GridBagConstraints.BOTH;
+		gbc_btnExit.gridx = 0;
+		gbc_btnExit.gridy = 0;
+
+		return gbc_btnExit;
+	}
+
+	private JButton getJButtonExit() {
+		if (btnExit == null) {
+			btnExit = new JButton("Salir al menu");
+
+			btnExit.setHorizontalAlignment(SwingConstants.RIGHT);
+
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+		}
+
+		return btnExit;
+	}
+
+	private GridBagConstraints getGridButtonExit() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.gridx = 3;
+		gbc_btnExit.gridy = 0;
+
+		return gbc_btnExit;
+	}
+
+	private JButton getJButtonExportFile() {
+		if (btnImportFile == null) {
+			btnImportFile = new JButton("Pincha para exportar");
+
+			btnImportFile.setHorizontalAlignment(SwingConstants.RIGHT);
+
+			// btnImportFile.setIcon(new
+			// ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+		}
+
+		return btnImportFile;
+	}
+
+	private GridBagConstraints getGridButtonImportFile() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.gridx = 2;
+		gbc_btnExit.gridy = 0;
+
+		return gbc_btnExit;
+	}
+
+	/* FUNCIONES DEL PANEL DE CONTENIDO */
+
+	private JPanel getJPanelContent() {
+		if (jPanelContent == null) {
+			jPanelContent = new JPanel();
+			jPanelContent.setBorder(new LineBorder(new Color(0, 0, 0)));
+		}
+		return jPanelContent;
+
+	}
+
+	private GridBagConstraints getGridJPanelContent() {
+
+		GridBagConstraints gbc_jPanelContent = new GridBagConstraints();
+		gbc_jPanelContent.weighty = 1.0;
+		gbc_jPanelContent.weightx = 1.0;
+		gbc_jPanelContent.anchor = GridBagConstraints.NORTH;
+		gbc_jPanelContent.fill = GridBagConstraints.BOTH;
+		gbc_jPanelContent.insets = new Insets(0, 0, 5, 0);
+		gbc_jPanelContent.gridx = 0;
+		gbc_jPanelContent.gridy = 1;
+
+		return gbc_jPanelContent;
+	}
+
+	private GridBagLayout getGridLayoutJPanelContent() {
+		GridBagLayout gbl_jPanelContent = new GridBagLayout();
+		gbl_jPanelContent.columnWeights = new double[] { 0.0 };
+		gbl_jPanelContent.rowWeights = new double[] { 0.0, 0.0 };
+		return gbl_jPanelContent;
+	}
+
+	public void readBBDDAndGenerateExcel(File file) {
 
 		try {
-			// this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			InputStream targetStream = new FileInputStream(file);
-			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
 
-			// Acceso a la primera hoja del documento
-			HSSFSheet sheet = workbook.getSheetAt(0);
-
-			HSSFSheet sheetRelatives = workbook.getSheetAt(1);
-
-			List<String> data = new ArrayList<String>();
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
 			Map<String, Income> mapIncomes = new HashMap<String, Income>();
 			Map<String, Expense> mapExpenses = new HashMap<String, Expense>();
 			Map<String, List<Relative>> mapRelatives = new HashMap<String, List<Relative>>();
 
-			// Recorremos las filas del documento
-			Iterator rows = sheet.rowIterator();
-			Iterator rowsRelatives = sheetRelatives.rowIterator();
+			List<Program> listPrograms = programDAO.findProgram(new People());
+			for (Program program : listPrograms) {
+				String dni = program.getPeople().getDni();
+				if (dni != null && !dni.equals("")) {
+					mapProgram.put(dni, program);
 
-			extractDataSheet_0(rows, mapProgram, mapIncomes, mapExpenses);
-
-			extractDataSheet_1(rowsRelatives, mapRelatives, mapProgram);
+					// TODO: incomes
+					// TODO: expesnes
+					// TODO: RELATIVES
+				}
+			}
+			XSSFWorkbook clonedFile = cloneTemplateExcel(file);
+			generateExcel(mapProgram, clonedFile, file);
 
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
-			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
+			logger.error("Se ha producido un error en la exportacion de datos  " + e.getMessage());
 
 		}
 
@@ -277,6 +472,89 @@ public class JManageBackup extends AbstractJInternalFrame {
 		textArea.append("Registros insertados correctamente: " + countOK + "\n");
 		textArea.append("Registros no insertados por errores : " + countKO + "\n");
 		textArea.append("Registros no insertados por existir ya en Base de Datos : " + countExist + "\n");
+
+	}
+
+	public XSSFWorkbook cloneTemplateExcel(File destinationPath){
+		
+		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xlsx");
+		File fTemplate = new File(url.getPath());
+		FileInputStream excelFileTemplate;
+		XSSFWorkbook workbook = null;
+		try {
+			excelFileTemplate = new FileInputStream(fTemplate);
+			workbook = new XSSFWorkbook(excelFileTemplate);
+			FileOutputStream outputStream = new FileOutputStream(destinationPath.getPath());
+			workbook.write(outputStream);
+			
+			//workbook.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return workbook;
+		
+	}
+	public void generateExcel(Map<String, Program> mapProgram, XSSFWorkbook workbook, File file) {
+
+		
+		try {
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			int rowNumber = 2;
+			XSSFRow row = sheet.createRow(rowNumber);
+			
+			for (String key : mapProgram.keySet()) {
+				
+				Program program = mapProgram.get(key);
+				XSSFCell cell = row.createCell(0);
+				cell.setCellValue(program.getPeople().getDni());
+				cell = row.createCell(1);
+				cell.setCellValue(program.getPeople().getPassport());
+				cell = row.createCell(2);
+				cell.setCellValue(program.getPeople().getCreateDate());
+				cell = row.createCell(3);
+				cell.setCellValue(program.getPeople().getReactivateDate());
+				cell = row.createCell(4);
+				if (program.getPeople().isActive()!=null && program.getPeople().isActive()){
+					cell.setCellValue("X");
+				}
+				cell = row.createCell(5);
+				cell.setCellValue(program.getPeople().getName());
+				cell = row.createCell(6);
+				cell.setCellValue(program.getPeople().getFirstSurname());
+				cell = row.createCell(7);
+				cell.setCellValue(program.getPeople().getSecondSurname());
+				cell = row.createCell(8);
+				cell.setCellValue(program.getPeople().getSex());
+				cell = row.createCell(9);
+				cell.setCellValue(program.getPeople().getDateBorn());
+				cell = row.createCell(10);
+				cell.setCellValue(program.getPeople().getCountry());
+				
+				
+				
+			    row = sheet.createRow(++rowNumber);
+				
+			}
+			
+			for (int c=0;c < 2; c++ ){
+			      XSSFCell cell = row.createCell(c);
+			      cell.setCellValue("Inserto en la celda " + c);
+			   }
+			
+			FileOutputStream fileOut = new FileOutputStream(file);
+			 
+			workbook.write(fileOut);
+			fileOut.flush();
+			fileOut.close(); 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 
 	}
 
@@ -304,7 +582,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 						addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
 						homeDAO.insert(mapProgram.get(key).getFamily().getHome());
 						familyDAO.insert(mapProgram.get(key).getFamily());
-						if (mapProgram.get(key).getPeople().isActive() == null){
+						if (mapProgram.get(key).getPeople().isActive() == null) {
 							mapProgram.get(key).getPeople().setActive(false);
 						}
 						peopleDAO.insert(mapProgram.get(key).getPeople());
@@ -339,7 +617,8 @@ public class JManageBackup extends AbstractJInternalFrame {
 		}
 	}
 
-	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives, Map<String, Program> mapProgram) {
+	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives,
+			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
 			HSSFRow row = (HSSFRow) itRows.next();
@@ -354,8 +633,6 @@ public class JManageBackup extends AbstractJInternalFrame {
 						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow_Sheet1(cell, mapRelatives, key);
 					}
-					
-					
 
 				}
 			} catch (Exception e) {
@@ -364,42 +641,41 @@ public class JManageBackup extends AbstractJInternalFrame {
 				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
 			}
 		}
-		
-		mapRelatives.forEach((k,v)->{
-			  boolean exist = false;
+
+		mapRelatives.forEach((k, v) -> {
+			boolean exist = false;
 			String dni = k;
 			List<Relative> listRelatives = v;
-			//Si dni esta en el set, no inserto relatives
-			
-			for (String errorDni : errorRegister){
-			    if (dni.equals(errorDni)){
-			    	exist = true;
-			    	break;
-			    }
+			// Si dni esta en el set, no inserto relatives
+
+			for (String errorDni : errorRegister) {
+				if (dni.equals(errorDni)) {
+					exist = true;
+					break;
+				}
 			}
-			try{
-				if (exist ==false){
-					//Si dni no esta en el set y existe en BBDD inserto relatives
-					
-					if (mapProgram.get(dni)!=null){
+			try {
+				if (exist == false) {
+					// Si dni no esta en el set y existe en BBDD inserto
+					// relatives
+
+					if (mapProgram.get(dni) != null) {
 						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
-							
+
 							for (Relative relative : listRelatives) {
 								relative.setFamily(mapProgram.get(dni).getFamily());
 								relativeDAO.insert(relative);
 							}
 						}
 					}
-					
-					
+
 				}
-			}catch(Exception e){
+			} catch (Exception e) {
 				logger.error("Se ha producido un error " + e.getMessage());
 				textArea.append("Error tratando familiares del dni:  " + dni + "\n");
 			}
-			
-			
+
 		});
 	}
 
@@ -415,7 +691,7 @@ public class JManageBackup extends AbstractJInternalFrame {
 				if (mapRelatives.get(cell.getStringCellValue()) == null) {
 					listRelatives = new ArrayList();
 					relative = new Relative();
-					
+
 					listRelatives.add(relative);
 					mapRelatives.put(cell.getStringCellValue(), listRelatives);
 					primaryKey = cell.getStringCellValue();
@@ -426,22 +702,26 @@ public class JManageBackup extends AbstractJInternalFrame {
 				}
 				break;
 			case 2:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setRelationShip(cell.getStringCellValue());
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setRelationShip(cell.getStringCellValue());
 				break;
 			case 4:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setSurname(cell.getStringCellValue());
-				
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setSurname(cell.getStringCellValue());
 
 				break;
 			case 5:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setName(cell.getStringCellValue());
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setName(cell.getStringCellValue());
 
 				break;
 			case 6:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setDateBorn(cell.getDateCellValue());
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setDateBorn(cell.getDateCellValue());
 				break;
 			case 8:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size()-1).setSituation(cell.getStringCellValue());
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setSituation(cell.getStringCellValue());
 				break;
 			}
 		} catch (Exception e) {
@@ -555,25 +835,27 @@ public class JManageBackup extends AbstractJInternalFrame {
 				break;
 			case 25:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
-					mapProgram.get(key).getFamily().getHome().setNumberRooms(Integer.parseInt(cell.getStringCellValue()));
+				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
+					mapProgram.get(key).getFamily().getHome()
+							.setNumberRooms(Integer.parseInt(cell.getStringCellValue()));
 				}
-				
+
 				break;
 			case 26:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
-					mapProgram.get(key).getFamily().getHome().setNumberPeople(Integer.parseInt(cell.getStringCellValue()));
+				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
+					mapProgram.get(key).getFamily().getHome()
+							.setNumberPeople(Integer.parseInt(cell.getStringCellValue()));
 				}
-				
+
 				break;
 			case 27:
 				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
 					mapProgram.get(key).getFamily().getHome()
-					.setNumberFamilies(Integer.parseInt(cell.getStringCellValue()));
+							.setNumberFamilies(Integer.parseInt(cell.getStringCellValue()));
 				}
-				
+
 				break;
 			case 28:
 				mapProgram.get(key).getFamily().getHome().setOtherInfo(cell.getStringCellValue());
@@ -655,6 +937,37 @@ public class JManageBackup extends AbstractJInternalFrame {
 		}
 
 		return primaryKey;
+
+	}
+
+	public void readExcelFileXlsx(File file) {
+
+		XSSFWorkbook workbook;
+		try {
+			workbook = new XSSFWorkbook(file);
+			// Acceso a la primera hoja del documento
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			List<String> data = new ArrayList<String>();
+
+			// Recorremos las filas del documento
+			Iterator rows = sheet.rowIterator();
+			while (rows.hasNext()) {
+				XSSFRow row = (XSSFRow) rows.next();
+				Iterator cells = row.cellIterator();
+				while (cells.hasNext()) {
+					XSSFCell cell = (XSSFCell) cells.next();
+					if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+						data.add(cell.getRichStringCellValue().getString());
+					}
+				}
+			}
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -752,75 +1065,6 @@ public class JManageBackup extends AbstractJInternalFrame {
 
 		return studiesDAO.findStudies(sType);
 
-	}
-
-	public void readExcelFileXlsx(File file) {
-
-		XSSFWorkbook workbook;
-		try {
-			workbook = new XSSFWorkbook(file);
-			// Acceso a la primera hoja del documento
-			XSSFSheet sheet = workbook.getSheetAt(0);
-			List<String> data = new ArrayList<String>();
-
-			// Recorremos las filas del documento
-			Iterator rows = sheet.rowIterator();
-			while (rows.hasNext()) {
-				XSSFRow row = (XSSFRow) rows.next();
-				Iterator cells = row.cellIterator();
-				while (cells.hasNext()) {
-					XSSFCell cell = (XSSFCell) cells.next();
-					if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-						data.add(cell.getRichStringCellValue().getString());
-					}
-				}
-			}
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private JFileChooser getFileChooser() {
-		if (jfc == null) {
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("XLS files", "xls");
-			FileNameExtensionFilter filter2 = new FileNameExtensionFilter("XLSX files", "xlsx");
-
-			jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-			jfc.setDialogTitle("Elige un fichero para importar: ");
-			jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			jfc.addChoosableFileFilter(filter);
-			jfc.addChoosableFileFilter(filter2);
-
-		}
-
-		return jfc;
-
-	}
-
-	private String getFileExtension(File file) {
-
-		String name = file.getName();
-		try {
-			return name.substring(name.lastIndexOf(".") + 1);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	private GridBagLayout getGridContentPane() {
-
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0 };
-		gridBagLayout.rowHeights = new int[] { 0 };
-		gridBagLayout.columnWeights = new double[] { 1.0 };
-		gridBagLayout.rowWeights = new double[] { 0.0, 1.0 };
-
-		return gridBagLayout;
 	}
 
 }
