@@ -21,7 +21,9 @@
     </resultMap>
  
     
-    
+   <select id="findAllRelatives" parameterType="Relative" resultMap="RelativeResult">
+       SELECT * FROM C_RELATIVE
+    </select>
  	
     
     <select id="findRelative" parameterType="Relative" resultMap="RelativeResult">

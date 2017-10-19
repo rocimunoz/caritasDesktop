@@ -23,6 +23,20 @@ public RelativeDAO(SqlSessionFactory sqlSessionFactory){
 }
 
 
+public  List<Relative> findAllRelatives(){
+	List<Relative> relatives = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+    	relatives = session.selectList("Relative.findAllRelatives");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAllRelatives() --> ");
+    return relatives;
+
+}
+
 public  List<Relative> findRelative(Relative relativeFilter){
 	List<Relative> relatives = null;
     SqlSession session = sqlSessionFactory.openSession();

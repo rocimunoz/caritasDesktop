@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.reparadoras.caritas.filter.FilterProgram;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
@@ -83,12 +84,12 @@ public int update(Program program){
 
 
 
-public  List<Program> findProgram(People people){
+public  List<Program> findProgram(FilterProgram filter){
 	List<Program> list = null;
     SqlSession session = sqlSessionFactory.openSession();
 
     try {
-        list = session.selectList("Program.findProgram", people);
+        list = session.selectList("Program.findProgram", filter);
     } finally {
         session.close();
     }

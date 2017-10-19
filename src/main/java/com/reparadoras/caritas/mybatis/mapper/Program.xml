@@ -78,7 +78,7 @@
     
 
     
-    <select id="findProgram" parameterType="People" resultMap="ProgramResult">
+    <select id="findProgram" parameterType="FilterProgram" resultMap="ProgramResult">
         SELECT PE.DNI, 
                PE.NAME,
                PE.FIRST_SURNAME,
@@ -117,7 +117,7 @@
          <if test="id != null">
     		AND PE.ID = #{id}
   		</if>
-  		<if test="name != null and !name.equals('')">
+  		<if test="namePeople != null and !namePeople.equals('')">
   		<bind name="pattern_name" value="'%' + name + '%'" />
     		AND PE.NAME like #{pattern_name}
   		</if>
@@ -130,6 +130,9 @@
   		</if>
   		<if test="active != null">
     		AND PE.ACTIVE = #{active}
+  		</if>
+  		<if test="idFamily!= null">
+    		AND F.ID = #{idFamily}
   		</if>
       
     </select>

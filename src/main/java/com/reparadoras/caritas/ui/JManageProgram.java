@@ -44,6 +44,7 @@ import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterProgram;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Expense;
@@ -936,12 +937,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		try {
 
-			People filterPeople = new People();
-			filterPeople.setActive(this.getCkActive().isSelected());
-			filterPeople.setDni(this.getJTextFieldDni().getText());
-			filterPeople.setName(this.getJTextFieldName().getText());
 			
-			List<Program> programs = programDAO.findProgram(filterPeople);
+			FilterProgram filterProgram = new FilterProgram();
+			filterProgram.setActive(this.getCkActive().isSelected());
+			filterProgram.setDni(this.getJTextFieldDni().getText());
+			filterProgram.setNamePeople(this.getJTextFieldName().getText());
+			
+			List<Program> programs = programDAO.findProgram(filterProgram);
 			if (programs != null && !programs.isEmpty()) {
 				this.getProgramTableModel().clearTableModelData();
 				this.getProgramTableModel().addRows(programs);
@@ -959,7 +961,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 						JOptionPane.showMessageDialog(this,
 								"Se ha generado un Programa de Atención Primaria para el usuario "
-										+ filterPeople.getName() + " con todos los datos vacios.");
+										+ filterProgram.getNamePeople() + " con todos los datos vacios.");
 					} else {
 						dispose();
 					}
