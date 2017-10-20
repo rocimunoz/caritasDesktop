@@ -15,7 +15,7 @@
     </resultMap>
     
     <resultMap id="FamilyResult" type="Family">
-        <result property="id" column="id"/>
+        <result property="id" column="id_family"/>
         <result property="otherInfo" column="other_info"/>      
         
     </resultMap>

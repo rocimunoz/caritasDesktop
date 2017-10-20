@@ -433,13 +433,17 @@ public class JManageExportData extends AbstractJInternalFrame {
 				}
 			}
 			XSSFWorkbook workbookCloned = cloneTemplateExcel(file);
-			FileOutputStream fileExported = generateSheetProgram(mapProgram, workbookCloned, file);
-			generateSheetRelatives(mapRelatives, workbookCloned, fileExported);
-			generateSheetIncomes(mapIncomes, workbookCloned, fileExported);
-			generateSheetExpenses(mapExpenses, workbookCloned, fileExported);
+			 generateSheetProgram(mapProgram, workbookCloned, file);
+			generateSheetRelatives(mapRelatives, workbookCloned, file);
+			//generateSheetIncomes(mapIncomes, workbookCloned, file);
+			//generateSheetExpenses(mapExpenses, workbookCloned, file);
 
-			fileExported.flush();
-			fileExported.close();
+			FileOutputStream fileOut = new FileOutputStream(file);
+
+			workbookCloned.write(fileOut);
+			
+			fileOut.flush();
+			fileOut.close();
 
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
@@ -494,11 +498,56 @@ public class JManageExportData extends AbstractJInternalFrame {
 	}
 
 	public void generateSheetRelatives(Map<String, List<Relative>> mapRelatives, XSSFWorkbook workbook,
-			FileOutputStream file) {
+			File file) {
 
+		try{
+			XSSFSheet sheet = workbook.getSheetAt(1);
+			int rowNumber = 2;
+			XSSFRow row = sheet.createRow(rowNumber);
+			for (String key : mapRelatives.keySet()) {
+				
+				List<Relative> listRelatives = mapRelatives.get(key);
+				for (Relative relative : listRelatives) {
+					
+					XSSFCell cell = row.createCell(0);
+					cell.setCellValue(key);
+					cell = row.createCell(1);
+					cell.setCellValue("");
+					cell = row.createCell(2);
+					cell.setCellValue(relative.getRelationShip());
+					cell = row.createCell(3);
+					cell.setCellValue("");
+					cell = row.createCell(4);
+					cell.setCellValue(relative.getSurname());
+					cell = row.createCell(5);
+					cell.setCellValue(relative.getName());
+					cell = row.createCell(6);
+					cell.setCellValue(relative.getDateBorn());
+					cell = row.createCell(7);
+					cell.setCellValue("");
+					cell = row.createCell(8);
+					cell.setCellValue(relative.getSituation());
+					
+				row = sheet.createRow(++rowNumber);
+
+					
+					
+				}
+		}
+			
+			
+
+		
+		
+			
+		}catch(Exception e){
+			// TODO Auto-generated catch block
+						e.printStackTrace();
+						
+		}
 	}
 
-	public FileOutputStream generateSheetProgram(Map<String, Program> mapProgram, XSSFWorkbook workbook, File file) {
+	public void generateSheetProgram(Map<String, Program> mapProgram, XSSFWorkbook workbook, File file) {
 
 		try {
 			XSSFSheet sheet = workbook.getSheetAt(0);
@@ -543,52 +592,51 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 				cell = row.createCell(16);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getTown());
+				
 				cell = row.createCell(17);
-				cell.setCellValue(program.getFamily().getHome().getAddress().getTown());
-				cell = row.createCell(18);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getPostalCode());
-				cell = row.createCell(19);
+				cell = row.createCell(18);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getStreet());
-				cell = row.createCell(20);
+				cell = row.createCell(19);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getGate());
-				cell = row.createCell(21);
+				cell = row.createCell(20);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getFloor());
-				cell = row.createCell(22);
+				cell = row.createCell(21);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getTelephone());
-				cell = row.createCell(23);
+				cell = row.createCell(22);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getTelephoneContact());
 				// home type
-				cell = row.createCell(24);
+				cell = row.createCell(23);
 				cell.setCellValue("");
-				cell = row.createCell(25);
+				cell = row.createCell(24);
 				cell.setCellValue(program.getFamily().getHome().getRegHolding());
-				cell = row.createCell(26);
+				cell = row.createCell(25);
 				cell.setCellValue(program.getFamily().getHome().getNumberRooms());
-				cell = row.createCell(27);
+				cell = row.createCell(26);
 				cell.setCellValue(program.getFamily().getHome().getNumberPeople());
-				cell = row.createCell(28);
+				cell = row.createCell(27);
 				cell.setCellValue(program.getFamily().getHome().getNumberFamilies());
-				cell = row.createCell(29);
+				cell = row.createCell(28);
 				cell.setCellValue(program.getFamily().getHome().getOtherInfo());
 				// Family Type
+				cell = row.createCell(29);
+				cell.setCellValue(getNemonicFamilyType(program.getFamily().getFamilyType())); //todo : nemonic
 				cell = row.createCell(30);
-				cell.setCellValue(getNemonicFamilyType(program.getFamily().getFamilyType()));
-				cell = row.createCell(31);
 				cell.setCellValue(program.getFamily().getOtherInfo());
 				// Tipo Autorizacion
-				cell = row.createCell(32);
+				cell = row.createCell(31);
 				if (program.getAuthorizationType() != null) {
 					cell.setCellValue(getNemonicAuthorizationType(program.getAuthorizationType()));
 				}
 
 				// Situacion Laboral
-				cell = row.createCell(33);
+				cell = row.createCell(32);
 				if (program.getJobSituation() != null) {
 					cell.setCellValue(getNemonicJobSituation(program.getJobSituation()));
 				}
 
 				// Estudios
-				cell = row.createCell(34);
+				cell = row.createCell(33);
 				if (program.getStudies() != null) {
 					cell.setCellValue(getNemonicStudies(program.getStudies()));
 				}
@@ -597,21 +645,20 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 			}
 
-			FileOutputStream fileOut = new FileOutputStream(file);
+			
 
-			workbook.write(fileOut);
-
-			return fileOut;
+			
 			// fileOut.flush();
 			// fileOut.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			
 		}
 
 	}
 
+	/*
 	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives,
 			Map<String, Program> mapProgram) {
 
@@ -672,8 +719,9 @@ public class JManageExportData extends AbstractJInternalFrame {
 			}
 
 		});
-	}
+	}*/
 
+	/*
 	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
 
 		String primaryKey = key;
@@ -724,8 +772,9 @@ public class JManageExportData extends AbstractJInternalFrame {
 		}
 
 		return primaryKey;
-	}
+	}*/
 
+	/*
 	public void readExcelFileXlsx(File file) {
 
 		XSSFWorkbook workbook;
@@ -755,7 +804,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 			e.printStackTrace();
 		}
 
-	}
+	}*/
 
 	public String getNemonicFamilyType(FamilyType familyType) {
 		try {

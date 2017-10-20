@@ -118,7 +118,7 @@
     		AND PE.ID = #{id}
   		</if>
   		<if test="namePeople != null and !namePeople.equals('')">
-  		<bind name="pattern_name" value="'%' + name + '%'" />
+  		<bind name="pattern_name" value="'%' + namePeople + '%'" />
     		AND PE.NAME like #{pattern_name}
   		</if>
   		<if test="firstSurname != null">
