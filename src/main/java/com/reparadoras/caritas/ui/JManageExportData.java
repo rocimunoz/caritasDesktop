@@ -87,14 +87,10 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 	private PeopleDAO peopleDAO;
 
-	private FamilyDAO familyDAO;
-	private FamilyTypeDAO familyTypeDAO;
-	private AuthorizationTypeDAO authorizationTypeDAO;
-	private JobSituationDAO jobSituationDAO;
-	private StudiesDAO studiesDAO;
+
+	
 	private ProgramDAO programDAO;
-	private HomeDAO homeDAO;
-	private AddressDAO addressDAO;
+	
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
 	private RelativeDAO relativeDAO;
@@ -127,14 +123,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		familyTypeDAO = new FamilyTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-
-		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -402,46 +391,71 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 			List<Program> listPrograms = programDAO.findProgram(new FilterProgram());
 			List<Relative> listRelatives = relativeDAO.findAllRelatives();
+			List<Income> listIncomes = incomeDAO.findAllIncomes();
+			List<Expense> listExpenses = expenseDAO.findAllExpenses();
 			for (Program program : listPrograms) {
 				String dni = program.getPeople().getDni();
 				if (dni != null && !dni.equals("")) {
 					mapProgram.put(dni, program);
 
-					// TODO: incomes
-					// TODO: expesnes
-					
 				}
 			}
-			
+
 			for (Relative relative : listRelatives) {
 				Family family = relative.getFamily();
 				FilterProgram filter = new FilterProgram();
 				filter.setIdFamily(family.getId());
 				List<Program> programs = programDAO.findProgram(filter);
-				if (programs!=null && !programs.isEmpty() && programs.size()== 1){
+				if (programs != null && !programs.isEmpty() && programs.size() == 1) {
 					Program programRelatives = programs.get(0);
 					String dni = programRelatives.getPeople().getDni();
-					//TODO
-					
-					if (mapRelatives.get(dni)!=null){
+
+					if (mapRelatives.get(dni) != null) {
 						mapRelatives.get(dni).add(relative);
-					}else{
+					} else {
 						List<Relative> relatives = new ArrayList<>();
 						relatives.add(relative);
 						mapRelatives.put(dni, relatives);
 					}
 				}
 			}
+
+			for (Income income : listIncomes) {
+				String dni = income.getProgram().getPeople().getDni();
+
+				if (mapIncomes.get(dni) != null) {
+					mapIncomes.get(dni).add(income);
+				} else {
+					List<Income> incomes = new ArrayList<>();
+					incomes.add(income);
+					mapIncomes.put(dni, incomes);
+				}
+
+			}
+			
+			for (Expense expense : listExpenses) {
+				String dni = expense.getProgram().getPeople().getDni();
+
+				if (mapExpenses.get(dni) != null) {
+					mapExpenses.get(dni).add(expense);
+				} else {
+					List<Expense> expenses = new ArrayList<>();
+					expenses.add(expense);
+					mapExpenses.put(dni, expenses);
+				}
+
+			}
+
 			XSSFWorkbook workbookCloned = cloneTemplateExcel(file);
-			 generateSheetProgram(mapProgram, workbookCloned, file);
+			generateSheetProgram(mapProgram, workbookCloned, file);
 			generateSheetRelatives(mapRelatives, workbookCloned, file);
-			//generateSheetIncomes(mapIncomes, workbookCloned, file);
-			//generateSheetExpenses(mapExpenses, workbookCloned, file);
+			generateSheetIncomes(mapIncomes, workbookCloned, file);
+			generateSheetExpenses(mapExpenses, workbookCloned, file);
 
 			FileOutputStream fileOut = new FileOutputStream(file);
 
 			workbookCloned.write(fileOut);
-			
+
 			fileOut.flush();
 			fileOut.close();
 
@@ -487,28 +501,85 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 	}
 
-	public void generateSheetIncomes(Map<String, List<Income>> mapIncomes, XSSFWorkbook workbook,
-			FileOutputStream file) {
+	public void generateSheetIncomes(Map<String, List<Income>> mapIncomes, XSSFWorkbook workbook, File file) {
 
+		try {
+			XSSFSheet sheet = workbook.getSheetAt(2);
+			int rowNumber = 2;
+			XSSFRow row = sheet.createRow(rowNumber);
+			for (String key : mapIncomes.keySet()) {
+
+				List<Income> listIncomes = mapIncomes.get(key);
+				for (Income income : listIncomes) {
+
+					XSSFCell cell = row.createCell(0);
+					cell.setCellValue(key);
+					cell = row.createCell(1);
+					cell.setCellValue("");
+					cell = row.createCell(2);
+					cell.setCellValue(income.getConcept());
+					cell = row.createCell(3);
+					cell.setCellValue(income.getAmount());
+					cell = row.createCell(4);
+					cell.setCellValue(income.getEndDate());
+
+					row = sheet.createRow(++rowNumber);
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}
 	}
 
-	public void generateSheetExpenses(Map<String, List<Expense>> mapExpenses, XSSFWorkbook workbook,
-			FileOutputStream file) {
+	public void generateSheetExpenses(Map<String, List<Expense>> mapExpenses, XSSFWorkbook workbook, File file) {
 
+		try {
+			XSSFSheet sheet = workbook.getSheetAt(3);
+			int rowNumber = 2;
+			XSSFRow row = sheet.createRow(rowNumber);
+			for (String key : mapExpenses.keySet()) {
+
+				List<Expense> listExpense = mapExpenses.get(key);
+				for (Expense expense : listExpense) {
+
+					XSSFCell cell = row.createCell(0);
+					cell.setCellValue(key);
+					cell = row.createCell(1);
+					cell.setCellValue("");
+					cell = row.createCell(2);
+					cell.setCellValue(expense.getConcept());
+					cell = row.createCell(3);
+					cell.setCellValue(expense.getAmount());
+					cell = row.createCell(4);
+					cell.setCellValue(expense.getRegularity());
+					cell = row.createCell(5);
+					cell.setCellValue(expense.getEndDate());
+
+					row = sheet.createRow(++rowNumber);
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}
 	}
 
-	public void generateSheetRelatives(Map<String, List<Relative>> mapRelatives, XSSFWorkbook workbook,
-			File file) {
+	public void generateSheetRelatives(Map<String, List<Relative>> mapRelatives, XSSFWorkbook workbook, File file) {
 
-		try{
+		try {
 			XSSFSheet sheet = workbook.getSheetAt(1);
 			int rowNumber = 2;
 			XSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapRelatives.keySet()) {
-				
+
 				List<Relative> listRelatives = mapRelatives.get(key);
 				for (Relative relative : listRelatives) {
-					
+
 					XSSFCell cell = row.createCell(0);
 					cell.setCellValue(key);
 					cell = row.createCell(1);
@@ -527,23 +598,16 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell.setCellValue("");
 					cell = row.createCell(8);
 					cell.setCellValue(relative.getSituation());
-					
-				row = sheet.createRow(++rowNumber);
 
-					
-					
+					row = sheet.createRow(++rowNumber);
+
 				}
-		}
-			
-			
+			}
 
-		
-		
-			
-		}catch(Exception e){
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-						e.printStackTrace();
-						
+			e.printStackTrace();
+
 		}
 	}
 
@@ -592,7 +656,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 				cell = row.createCell(16);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getTown());
-				
+
 				cell = row.createCell(17);
 				cell.setCellValue(program.getFamily().getHome().getAddress().getPostalCode());
 				cell = row.createCell(18);
@@ -620,7 +684,9 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getFamily().getHome().getOtherInfo());
 				// Family Type
 				cell = row.createCell(29);
-				cell.setCellValue(getNemonicFamilyType(program.getFamily().getFamilyType())); //todo : nemonic
+				cell.setCellValue(getNemonicFamilyType(program.getFamily().getFamilyType())); // todo
+																								// :
+																								// nemonic
 				cell = row.createCell(30);
 				cell.setCellValue(program.getFamily().getOtherInfo());
 				// Tipo Autorizacion
@@ -645,166 +711,17 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 			}
 
-			
-
-			
 			// fileOut.flush();
 			// fileOut.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 		}
 
 	}
 
-	/*
-	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives,
-			Map<String, Program> mapProgram) {
-
-		while (itRows.hasNext()) {
-			HSSFRow row = (HSSFRow) itRows.next();
-
-			try {
-				if (row.getRowNum() >= 2) {
-
-					Iterator cells = row.cellIterator();
-					String key = "";
-
-					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
-						key = extractDataRow_Sheet1(cell, mapRelatives, key);
-					}
-
-				}
-			} catch (Exception e) {
-
-				logger.error("Se ha producido un error al tratar los familiares " + e.getMessage());
-				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
-			}
-		}
-
-		mapRelatives.forEach((k, v) -> {
-			boolean exist = false;
-			String dni = k;
-			List<Relative> listRelatives = v;
-			// Si dni esta en el set, no inserto relatives
-
-			for (String errorDni : errorRegister) {
-				if (dni.equals(errorDni)) {
-					exist = true;
-					break;
-				}
-			}
-			try {
-				if (exist == false) {
-					// Si dni no esta en el set y existe en BBDD inserto
-					// relatives
-
-					if (mapProgram.get(dni) != null) {
-						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
-						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
-
-							for (Relative relative : listRelatives) {
-								relative.setFamily(mapProgram.get(dni).getFamily());
-								relativeDAO.insert(relative);
-							}
-						}
-					}
-
-				}
-			} catch (Exception e) {
-				logger.error("Se ha producido un error " + e.getMessage());
-				textArea.append("Error tratando familiares del dni:  " + dni + "\n");
-			}
-
-		});
-	}*/
-
-	/*
-	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
-
-		String primaryKey = key;
-		List<Relative> listRelatives = null;
-		Relative relative = null;
-		try {
-			switch (cell.getColumnIndex()) {
-			case 0:
-
-				if (mapRelatives.get(cell.getStringCellValue()) == null) {
-					listRelatives = new ArrayList();
-					relative = new Relative();
-
-					listRelatives.add(relative);
-					mapRelatives.put(cell.getStringCellValue(), listRelatives);
-					primaryKey = cell.getStringCellValue();
-				} else {
-
-					mapRelatives.get(cell.getStringCellValue()).add(new Relative());
-					primaryKey = cell.getStringCellValue();
-				}
-				break;
-			case 2:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setRelationShip(cell.getStringCellValue());
-				break;
-			case 4:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setSurname(cell.getStringCellValue());
-
-				break;
-			case 5:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setName(cell.getStringCellValue());
-
-				break;
-			case 6:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setDateBorn(cell.getDateCellValue());
-				break;
-			case 8:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setSituation(cell.getStringCellValue());
-				break;
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-
-		return primaryKey;
-	}*/
-
-	/*
-	public void readExcelFileXlsx(File file) {
-
-		XSSFWorkbook workbook;
-		try {
-			workbook = new XSSFWorkbook(file);
-			// Acceso a la primera hoja del documento
-			XSSFSheet sheet = workbook.getSheetAt(0);
-			List<String> data = new ArrayList<String>();
-
-			// Recorremos las filas del documento
-			Iterator rows = sheet.rowIterator();
-			while (rows.hasNext()) {
-				XSSFRow row = (XSSFRow) rows.next();
-				Iterator cells = row.cellIterator();
-				while (cells.hasNext()) {
-					XSSFCell cell = (XSSFCell) cells.next();
-					if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-						data.add(cell.getRichStringCellValue().getString());
-					}
-				}
-			}
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}*/
+	
 
 	public String getNemonicFamilyType(FamilyType familyType) {
 		try {

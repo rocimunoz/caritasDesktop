@@ -24,6 +24,20 @@ public IncomesDAO(SqlSessionFactory sqlSessionFactory){
 }
 
 
+public  List<Income> findAllIncomes(){
+	List<Income> incomes = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+    	incomes = session.selectList("Income.findAllIncomes");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAllIncomes() --> ");
+    return incomes;
+
+}
+
 public  List<Income> findIncomes(Income incomeFilter){
 	List<Income> incomes = null;
     SqlSession session = sqlSessionFactory.openSession();

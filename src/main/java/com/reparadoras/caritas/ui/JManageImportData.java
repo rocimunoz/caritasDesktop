@@ -503,21 +503,34 @@ public class JManageImportData extends AbstractJInternalFrame {
 			HSSFSheet sheet = workbook.getSheetAt(0);
 
 			HSSFSheet sheetRelatives = workbook.getSheetAt(1);
+			HSSFSheet sheetIncomes = workbook.getSheetAt(2);
+			HSSFSheet sheetExpenses = workbook.getSheetAt(3);
+			
 
 			List<String> data = new ArrayList<String>();
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
-			Map<String, Income> mapIncomes = new HashMap<String, Income>();
-			Map<String, Expense> mapExpenses = new HashMap<String, Expense>();
+			Map<String, List<Income>> mapIncomes = new HashMap<String, List<Income>>();
+			Map<String, List<Expense>> mapExpenses = new HashMap<String, List<Expense>>();
 			Map<String, List<Relative>> mapRelatives = new HashMap<String, List<Relative>>();
 
 			// Recorremos las filas del documento
 			Iterator rows = sheet.rowIterator();
 			Iterator rowsRelatives = sheetRelatives.rowIterator();
+			Iterator rowsIncomes = sheetIncomes.rowIterator();
+			Iterator rowsExpenses = sheetExpenses.rowIterator();
 
-			extractDataSheet_0(rows, mapProgram, mapIncomes, mapExpenses);
+			//Extraemos los datos del programa
+			extractDataSheet_0(rows, mapProgram);
 
+			//Extraemos los datos de familiares
 			extractDataSheet_1(rowsRelatives, mapRelatives, mapProgram);
 
+			//Extraemos los datos de ingresos
+			extractDataSheet_2(rowsIncomes, mapIncomes, mapProgram);
+			
+			//Extraemos los datos de gastos
+			extractDataSheet_3(rowsExpenses, mapExpenses, mapProgram);
+			
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
 			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
@@ -535,8 +548,9 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 	}
 
-	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram, Map<String, Income> mapIncomes,
-			Map<String, Expense> mapExpenses) {
+	/************************************** GENERAMOS LA PRIMERA HOJA DE PROGRAMA ***************************************/
+	
+	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
 			HSSFRow row = (HSSFRow) itRows.next();
@@ -549,7 +563,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 					while (cells.hasNext()) {
 						HSSFCell cell = (HSSFCell) cells.next();
-						key = extractDataRow_Sheet0(cell, mapProgram, mapIncomes, mapExpenses, key);
+						key = extractDataRow_Sheet0(cell, mapProgram, key);
 					}
 
 					// Busco si ya existe
@@ -564,6 +578,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 						}
 						peopleDAO.insert(mapProgram.get(key).getPeople());
 						programDAO.insertExcel(mapProgram.get(key));
+						/*
 						if (mapIncomes.get(key) != null) {
 							mapIncomes.get(key).setProgram(mapProgram.get(key));
 							mapIncomes.get(key).setPeople(mapProgram.get(key).getPeople().getName());
@@ -573,7 +588,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 						if (mapExpenses.get(key) != null) {
 							mapExpenses.get(key).setProgram(mapProgram.get(key));
 							expenseDAO.insert(mapExpenses.get(key));
-						}
+						}*/
 
 						textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
 						countOK++;
@@ -593,123 +608,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		}
 	}
-
-	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives,
-			Map<String, Program> mapProgram) {
-
-		while (itRows.hasNext()) {
-			HSSFRow row = (HSSFRow) itRows.next();
-
-			try {
-				if (row.getRowNum() >= 2) {
-
-					Iterator cells = row.cellIterator();
-					String key = "";
-
-					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
-						key = extractDataRow_Sheet1(cell, mapRelatives, key);
-					}
-
-				}
-			} catch (Exception e) {
-
-				logger.error("Se ha producido un error al tratar los familiares " + e.getMessage());
-				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
-			}
-		}
-
-		mapRelatives.forEach((k, v) -> {
-			boolean exist = false;
-			String dni = k;
-			List<Relative> listRelatives = v;
-			// Si dni esta en el set, no inserto relatives
-
-			for (String errorDni : errorRegister) {
-				if (dni.equals(errorDni)) {
-					exist = true;
-					break;
-				}
-			}
-			try {
-				if (exist == false) {
-					// Si dni no esta en el set y existe en BBDD inserto
-					// relatives
-
-					if (mapProgram.get(dni) != null) {
-						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
-						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
-
-							for (Relative relative : listRelatives) {
-								relative.setFamily(mapProgram.get(dni).getFamily());
-								relativeDAO.insert(relative);
-							}
-						}
-					}
-
-				}
-			} catch (Exception e) {
-				logger.error("Se ha producido un error " + e.getMessage());
-				textArea.append("Error tratando familiares del dni:  " + dni + "\n");
-			}
-
-		});
-	}
-
-	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
-
-		String primaryKey = key;
-		List<Relative> listRelatives = null;
-		Relative relative = null;
-		try {
-			switch (cell.getColumnIndex()) {
-			case 0:
-
-				if (mapRelatives.get(cell.getStringCellValue()) == null) {
-					listRelatives = new ArrayList();
-					relative = new Relative();
-
-					listRelatives.add(relative);
-					mapRelatives.put(cell.getStringCellValue(), listRelatives);
-					primaryKey = cell.getStringCellValue();
-				} else {
-
-					mapRelatives.get(cell.getStringCellValue()).add(new Relative());
-					primaryKey = cell.getStringCellValue();
-				}
-				break;
-			case 2:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setRelationShip(cell.getStringCellValue());
-				break;
-			case 4:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setSurname(cell.getStringCellValue());
-
-				break;
-			case 5:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setName(cell.getStringCellValue());
-
-				break;
-			case 6:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setDateBorn(cell.getDateCellValue());
-				break;
-			case 8:
-				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setSituation(cell.getStringCellValue());
-				break;
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-
-		return primaryKey;
-	}
-
-	public String extractDataRow_Sheet0(HSSFCell cell, Map<String, Program> mapProgram, Map<String, Income> mapIncomes,
-			Map<String, Expense> mapExpenses, String key) {
+	
+	public String extractDataRow_Sheet0(HSSFCell cell, Map<String, Program> mapProgram,String key) {
 
 		Program program = new Program();
 		People people = new People();
@@ -861,51 +761,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 				Studies studies = getStudies(nemonicStudies);
 				mapProgram.get(key).setStudies(studies);
 				break;
-			case 34:
-				if (mapIncomes.get(key) == null) {
-					Income income = new Income();
-					income.setConcept(cell.getStringCellValue());
-					mapIncomes.put(key, income);
-				} else {
-					mapIncomes.get(key).setConcept(cell.getStringCellValue());
-				}
-
-				break;
-			case 35:
-				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
-					mapIncomes.get(key).setAmount(Double.parseDouble(cell.getStringCellValue()));
-				}
-
-				break;
-			case 36:
-				mapIncomes.get(key).setEndDate(cell.getDateCellValue());
-				break;
-
-			case 37:
-				if (mapExpenses.get(key) == null) {
-					Expense expense = new Expense();
-					expense.setConcept(cell.getStringCellValue());
-					mapExpenses.put(key, expense);
-				} else {
-					mapExpenses.get(key).setConcept(cell.getStringCellValue());
-				}
-
-				break;
-			case 38:
-				cell.setCellType(Cell.CELL_TYPE_STRING);
-				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
-					mapExpenses.get(key).setAmount(Double.parseDouble(cell.getStringCellValue()));
-				}
-				break;
-			case 39:
-				mapExpenses.get(key).setRegularity(cell.getStringCellValue());
-				;
-				break;
-			case 40:
-				mapExpenses.get(key).setEndDate(cell.getDateCellValue());
-				break;
-
+			
 			}
 
 		} catch (Exception e) {
@@ -916,7 +772,249 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return primaryKey;
 
 	}
+	
+	
+	/************************************** GENERAMOS LA SEGUNDA HOJA DE FAMILIARES ***************************************/
+	
+	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives,
+			Map<String, Program> mapProgram) {
 
+		while (itRows.hasNext()) {
+			HSSFRow row = (HSSFRow) itRows.next();
+
+			try {
+				if (row.getRowNum() >= 2) {
+
+					Iterator cells = row.cellIterator();
+					String key = "";
+
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						key = extractDataRow_Sheet1(cell, mapRelatives, key);
+					}
+
+				}
+			} catch (Exception e) {
+
+				logger.error("Se ha producido un error al tratar los familiares " + e.getMessage());
+				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
+			}
+		}
+
+		mapRelatives.forEach((k, v) -> {
+			boolean exist = false;
+			String dni = k;
+			List<Relative> listRelatives = v;
+			// Si dni esta en el set, no inserto relatives
+
+			for (String errorDni : errorRegister) {
+				if (dni.equals(errorDni)) {
+					exist = true;
+					break;
+				}
+			}
+			try {
+				if (exist == false) {
+					// Si dni no esta en el set y existe en BBDD inserto
+					// relatives
+
+					if (mapProgram.get(dni) != null) {
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
+
+							for (Relative relative : listRelatives) {
+								relative.setFamily(mapProgram.get(dni).getFamily());
+								relativeDAO.insert(relative);
+							}
+						}
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("Se ha producido un error " + e.getMessage());
+				textArea.append("Error tratando familiares del dni:  " + dni + "\n");
+			}
+
+		});
+	}
+
+	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
+
+		String primaryKey = key;
+		List<Relative> listRelatives = null;
+		Relative relative = null;
+		try {
+			switch (cell.getColumnIndex()) {
+			case 0:
+
+				if (mapRelatives.get(cell.getStringCellValue()) == null) {
+					listRelatives = new ArrayList();
+					relative = new Relative();
+
+					listRelatives.add(relative);
+					mapRelatives.put(cell.getStringCellValue(), listRelatives);
+					primaryKey = cell.getStringCellValue();
+				} else {
+
+					mapRelatives.get(cell.getStringCellValue()).add(new Relative());
+					primaryKey = cell.getStringCellValue();
+				}
+				break;
+			case 2:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setRelationShip(cell.getStringCellValue());
+				break;
+			case 4:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setSurname(cell.getStringCellValue());
+
+				break;
+			case 5:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setName(cell.getStringCellValue());
+
+				break;
+			case 6:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setDateBorn(cell.getDateCellValue());
+				break;
+			case 8:
+				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
+						.setSituation(cell.getStringCellValue());
+				break;
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+
+		return primaryKey;
+	}
+
+	
+	/************************************** GENERAMOS LA TERCERA HOJA DE INGRESOS ***************************************/
+	
+	public void extractDataSheet_2(Iterator itRows, Map<String, List<Income>> mapIncomes,
+			Map<String, Program> mapProgram) {
+
+		while (itRows.hasNext()) {
+			HSSFRow row = (HSSFRow) itRows.next();
+
+			try {
+				if (row.getRowNum() >= 2) {
+
+					Iterator cells = row.cellIterator();
+					String key = "";
+
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						//key = extractDataRow_Sheet1(cell, mapIncomes, key);
+					}
+
+				}
+			} catch (Exception e) {
+
+				logger.error("Se ha producido un error al tratar los familiares " + e.getMessage());
+				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
+			}
+		}
+
+		mapIncomes.forEach((k, v) -> {
+			boolean exist = false;
+			String dni = k;
+			List<Income> listIncomes = v;
+			// Si dni esta en el set, no inserto relatives
+
+			for (String errorDni : errorRegister) {
+				if (dni.equals(errorDni)) {
+					exist = true;
+					break;
+				}
+			}
+			try {
+				if (exist == false) {
+					// Si dni no esta en el set y existe en BBDD inserto
+					// relatives
+
+					if (mapProgram.get(dni) != null) {
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
+
+							//Insert incomes
+						}
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("Se ha producido un error " + e.getMessage());
+				textArea.append("Error tratando ingresos del dni:  " + dni + "\n");
+			}
+
+		});
+	}
+
+	/************************************** GENERAMOS LA CUARTA HOJA DE GASTOS ***************************************/
+	
+	public void extractDataSheet_3(Iterator itRows, Map<String, List<Expense>> mapExpenses,
+			Map<String, Program> mapProgram) {
+
+		while (itRows.hasNext()) {
+			HSSFRow row = (HSSFRow) itRows.next();
+
+			try {
+				if (row.getRowNum() >= 2) {
+
+					Iterator cells = row.cellIterator();
+					String key = "";
+
+					while (cells.hasNext()) {
+						HSSFCell cell = (HSSFCell) cells.next();
+						//key = extractDataRow_Sheet1(cell, mapIncomes, key);
+					}
+
+				}
+			} catch (Exception e) {
+
+				logger.error("Se ha producido un error al tratar los gastos " + e.getMessage());
+				textArea.append("Error insertando la fila " + row.getRowNum() + "\n");
+			}
+		}
+
+		mapExpenses.forEach((k, v) -> {
+			boolean exist = false;
+			String dni = k;
+			List<Expense> listIncomes = v;
+			// Si dni esta en el set, no inserto relatives
+
+			for (String errorDni : errorRegister) {
+				if (dni.equals(errorDni)) {
+					exist = true;
+					break;
+				}
+			}
+			try {
+				if (exist == false) {
+					// Si dni no esta en el set y existe en BBDD inserto
+					// relatives
+
+					if (mapProgram.get(dni) != null) {
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
+
+							//Insert expenses
+						}
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("Se ha producido un error " + e.getMessage());
+				textArea.append("Error tratando ingresos del dni:  " + dni + "\n");
+			}
+
+		});
+	}
+	
+	
+	
 	public void readExcelFileXlsx(File file) {
 
 		XSSFWorkbook workbook;

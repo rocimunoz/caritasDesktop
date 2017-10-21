@@ -24,6 +24,19 @@ public ExpensesDAO(SqlSessionFactory sqlSessionFactory){
     this.sqlSessionFactory = sqlSessionFactory;
 }
 
+public  List<Expense> findAllExpenses(){
+	List<Expense> expenses = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+    	expenses = session.selectList("Expense.findAllExpenses");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAllExpenses() --> ");
+    return expenses;
+
+}
 
 public  List<Expense> findExpenses(Expense expenseFilter){
 	List<Expense> expenses = null;
