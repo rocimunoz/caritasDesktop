@@ -86,6 +86,7 @@ import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
 import com.reparadoras.caritas.ui.components.table.TicketsPeopleTableModel;
+import com.reparadoras.caritas.ui.utils.Constants;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -441,31 +442,9 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return gbl_jPanelContent;
 	}
 
-	/* FUNCIONES DEL PANEL JTABLE */
+	
 
-	private GridBagConstraints getGridJPanelTable() {
-		GridBagConstraints gbc_jPanelTable = new GridBagConstraints();
-		gbc_jPanelTable.weighty = 1.0;
-		gbc_jPanelTable.weightx = 1.0;
-		gbc_jPanelTable.fill = GridBagConstraints.BOTH;
-		gbc_jPanelTable.anchor = GridBagConstraints.WEST;
-		gbc_jPanelTable.gridx = 0;
-		gbc_jPanelTable.gridy = 1;
-
-		return gbc_jPanelTable;
-
-	}
-
-	private GridBagLayout getGridLayoutJPanelTable() {
-
-		GridBagLayout gbl_jPanelTable = new GridBagLayout();
-		gbl_jPanelTable.columnWidths = new int[] { 1 };
-		gbl_jPanelTable.rowHeights = new int[] { 1 };
-		gbl_jPanelTable.columnWeights = new double[] { Double.MIN_VALUE };
-		gbl_jPanelTable.rowWeights = new double[] { Double.MIN_VALUE };
-
-		return gbl_jPanelTable;
-	}
+	
 
 	private String getFileExtension(File file) {
 
@@ -482,7 +461,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		String extension = getFileExtension(jfc.getSelectedFile());
 
 		if (extension != null && (extension.equals("xls") || extension.equals("xlsx"))) {
-			// new Task_BackupBBDD(jfc.getSelectedFile()).execute();
+			
 
 			readExcelFileXls(jfc.getSelectedFile());
 		} else {
@@ -576,19 +555,9 @@ public class JManageImportData extends AbstractJInternalFrame {
 						if (mapProgram.get(key).getPeople().isActive() == null) {
 							mapProgram.get(key).getPeople().setActive(false);
 						}
-						peopleDAO.insert(mapProgram.get(key).getPeople());
-						programDAO.insertExcel(mapProgram.get(key));
-						/*
-						if (mapIncomes.get(key) != null) {
-							mapIncomes.get(key).setProgram(mapProgram.get(key));
-							mapIncomes.get(key).setPeople(mapProgram.get(key).getPeople().getName());
-							incomeDAO.insert(mapIncomes.get(key));
-						}
-
-						if (mapExpenses.get(key) != null) {
-							mapExpenses.get(key).setProgram(mapProgram.get(key));
-							expenseDAO.insert(mapExpenses.get(key));
-						}*/
+						//peopleDAO.insert(mapProgram.get(key).getPeople());
+						//programDAO.insertExcel(mapProgram.get(key));
+						
 
 						textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
 						countOK++;
@@ -626,14 +595,25 @@ public class JManageImportData extends AbstractJInternalFrame {
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
-				mapProgram.put(cell.getStringCellValue(), program);
+				if (!cell.getStringCellValue().equals("")){
+					mapProgram.put(cell.getStringCellValue(), program);
 
-				mapProgram.get(cell.getStringCellValue()).getPeople().setDni(cell.getStringCellValue());
-				primaryKey = cell.getStringCellValue();
+					mapProgram.get(cell.getStringCellValue()).getPeople().setDni(cell.getStringCellValue());
+					primaryKey = cell.getStringCellValue();
+				}
+				
 
 				break;
 			case 1:
-				mapProgram.get(key).getPeople().setPassport(cell.getStringCellValue());
+				if (primaryKey!=null){
+					mapProgram.get(key).getPeople().setPassport(cell.getStringCellValue());
+				}else{
+					mapProgram.put(cell.getStringCellValue(), program);
+
+					mapProgram.get(cell.getStringCellValue()).getPeople().setPassport(cell.getStringCellValue());
+					primaryKey = cell.getStringCellValue();
+				}
+				
 				break;
 			case 2:
 
@@ -740,25 +720,25 @@ public class JManageImportData extends AbstractJInternalFrame {
 				break;
 			case 29:
 				String nemonic = cell.getStringCellValue();
-				FamilyType familyType = getFamilyType(nemonic);
+				FamilyType familyType = familyTypeDAO.findFamilyType(Constants.getFamilyType(nemonic));
 				mapProgram.get(key).getFamily().setFamilyType(familyType);
 
 				break;
 			case 31:
 				String nemonicAuthorization = cell.getStringCellValue();
-				AuthorizationType authorizationType = getAuthorizationType(nemonicAuthorization);
+				AuthorizationType authorizationType = authorizationTypeDAO.findAuthorizationType(Constants.getAuthorizationType(nemonicAuthorization));
 				mapProgram.get(key).setAuthorizationType(authorizationType);
 
 				break;
 			case 32:
 				String nemonicJobSituation = cell.getStringCellValue();
-				JobSituation jobSituation = getJobSituation(nemonicJobSituation);
+				JobSituation jobSituation = jobSituationDAO.findJobSituation(Constants.getJobSituation(nemonicJobSituation));
 				mapProgram.get(key).setJobSituation(jobSituation);
 
 				break;
 			case 33:
 				String nemonicStudies = cell.getStringCellValue();
-				Studies studies = getStudies(nemonicStudies);
+				Studies studies = studiesDAO.findStudies(Constants.getStudies(nemonicStudies));
 				mapProgram.get(key).setStudies(studies);
 				break;
 			
@@ -767,6 +747,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 
 			logger.error(e);
+			throw e;
 		}
 
 		return primaryKey;
@@ -792,6 +773,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow_Sheet1(cell, mapRelatives, key);
 					}
+					
+				
 
 				}
 			} catch (Exception e) {
@@ -822,10 +805,11 @@ public class JManageImportData extends AbstractJInternalFrame {
 						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
+							/*
 							for (Relative relative : listRelatives) {
 								relative.setFamily(mapProgram.get(dni).getFamily());
 								relativeDAO.insert(relative);
-							}
+							}*/
 						}
 					}
 
@@ -885,6 +869,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			}
 		} catch (Exception e) {
 			logger.error(e);
+			throw e;
 		}
 
 		return primaryKey;
@@ -907,7 +892,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 					while (cells.hasNext()) {
 						HSSFCell cell = (HSSFCell) cells.next();
-						//key = extractDataRow_Sheet1(cell, mapIncomes, key);
+						key = extractDataRow_Sheet2(cell, mapIncomes, key);
 					}
 
 				}
@@ -952,6 +937,45 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 
+	public String extractDataRow_Sheet2(HSSFCell cell, Map<String, List<Income>> mapIncomes, String key){
+		String primaryKey = key;
+		List<Income> listIncomes = null;
+		Income income = null;
+		try {
+			switch (cell.getColumnIndex()) {
+			case 0:
+
+				if (mapIncomes.get(cell.getStringCellValue()) == null) {
+					listIncomes = new ArrayList();
+					income = new Income();
+
+					listIncomes.add(income);
+					mapIncomes.put(cell.getStringCellValue(), listIncomes);
+					primaryKey = cell.getStringCellValue();
+				} else {
+
+					mapIncomes.get(cell.getStringCellValue()).add(new Income());
+					primaryKey = cell.getStringCellValue();
+				}
+				break;
+			case 2:
+				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1).setConcept(cell.getStringCellValue());
+				break;
+			case 3:
+				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1).setAmount(cell.getNumericCellValue());
+				break;
+			case 4:
+				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1).setEndDate(cell.getDateCellValue());
+				break;
+			}
+		} catch (Exception e) {
+			logger.error(e);
+			throw e;
+		}
+
+		return primaryKey;
+	}
+	
 	/************************************** GENERAMOS LA CUARTA HOJA DE GASTOS ***************************************/
 	
 	public void extractDataSheet_3(Iterator itRows, Map<String, List<Expense>> mapExpenses,
@@ -968,7 +992,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 					while (cells.hasNext()) {
 						HSSFCell cell = (HSSFCell) cells.next();
-						//key = extractDataRow_Sheet1(cell, mapIncomes, key);
+						key = extractDataRow_Sheet3(cell, mapExpenses, key);
 					}
 
 				}
@@ -1013,6 +1037,47 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 	
+	public String extractDataRow_Sheet3(HSSFCell cell, Map<String, List<Expense>> mapExpenses, String key){
+		String primaryKey = key;
+		List<Expense> listExpenses = null;
+		Expense expense = null;
+		try {
+			switch (cell.getColumnIndex()) {
+			case 0:
+
+				if (mapExpenses.get(cell.getStringCellValue()) == null) {
+					listExpenses = new ArrayList();
+					expense = new Expense();
+
+					listExpenses.add(expense);
+					mapExpenses.put(cell.getStringCellValue(), listExpenses);
+					primaryKey = cell.getStringCellValue();
+				} else {
+
+					mapExpenses.get(cell.getStringCellValue()).add(new Expense());
+					primaryKey = cell.getStringCellValue();
+				}
+				break;
+			case 2:
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setConcept(cell.getStringCellValue());
+				break;
+			case 3:
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setAmount(cell.getNumericCellValue());
+				break;
+			case 4:
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setRegularity(cell.getStringCellValue());
+				break;
+			case 5:
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setEndDate(cell.getDateCellValue());
+				break;
+			}
+		} catch (Exception e) {
+			logger.error(e);
+			throw e;
+		}
+
+		return primaryKey;
+	}
 	
 	
 	public void readExcelFileXlsx(File file) {
@@ -1046,100 +1111,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 	}
 
-	public FamilyType getFamilyType(String nemonic) {
-		FamilyType fType = new FamilyType();
-		if (nemonic.equals("S")) {
-			fType.setDescription("Sola");
-
-		} else if (nemonic.equals("PCH")) {
-			fType.setDescription("Pareja con Hijos");
-
-		} else if (nemonic.equals("PSH")) {
-			fType.setDescription("Pareja sin Hijos");
-		} else if (nemonic.equals("M")) {
-			fType.setDescription("Monoparental");
-		} else if (nemonic.equals("O")) {
-			fType.setDescription("Otra");
-		} else
-			fType.setDescription("Sola");
-
-		return familyTypeDAO.findFamilyType(fType);
-
-	}
-
-	public AuthorizationType getAuthorizationType(String nemonic) {
-		AuthorizationType aType = new AuthorizationType();
-		if (nemonic.equals("AR")) {
-			aType.setDescription("Autorización Residencia");
-
-		} else if (nemonic.equals("ART")) {
-			aType.setDescription("Autorización Residencia y Trabajo");
-
-		} else if (nemonic.equals("E")) {
-			aType.setDescription("Estudios");
-		} else if (nemonic.equals("T")) {
-			aType.setDescription("Turismo");
-		} else if (nemonic.equals("R")) {
-			aType.setDescription("Refugiado");
-		} else
-			aType.setDescription("Autorización Residencia");
-
-		return authorizationTypeDAO.findAuthorizationType(aType);
-
-	}
-
-	public JobSituation getJobSituation(String nemonic) {
-		JobSituation jType = new JobSituation();
-		if (nemonic.equals("P")) {
-			jType.setDescription("Parado");
-
-		} else if (nemonic.equals("TN")) {
-			jType.setDescription("Con Trabajo Normalizado");
-
-		} else if (nemonic.equals("TM")) {
-			jType.setDescription("Con Trabajo Marginal o Economia Sumergida");
-		} else if (nemonic.equals("Ama de casa")) {
-			jType.setDescription("Labores del hogar (ama de casa)");
-		} else if (nemonic.equals("Pe")) {
-			jType.setDescription("Pensionista o Jubilado");
-		} else if (nemonic.equals("O")) {
-			jType.setDescription("Otros inactivos (estudiantes, menores");
-		} else
-			jType.setDescription("Parado");
-
-		return jobSituationDAO.findJobSituation(jType);
-
-	}
-
-	public Studies getStudies(String nemonic) {
-		Studies sType = new Studies();
-		if (nemonic.equals("NLE")) {
-			sType.setDescription("No sabe leer ni escribir");
-
-		} else if (nemonic.equals("SLE")) {
-			sType.setDescription("Sólo sabe leer y escribir");
-
-		} else if (nemonic.equals("I")) {
-			sType.setDescription("Infanil");
-		} else if (nemonic.equals("P")) {
-			sType.setDescription("Primaria");
-		} else if (nemonic.equals("S")) {
-			sType.setDescription("Secundaria");
-		} else if (nemonic.equals("B")) {
-			sType.setDescription("Bachillerato");
-		} else if (nemonic.equals("FP-GM")) {
-			sType.setDescription("FP-Grado Medio");
-		} else if (nemonic.equals("FP-GS")) {
-			sType.setDescription("FP-Grado Superior");
-		} else if (nemonic.equals("UL")) {
-			sType.setDescription("Universidad Diplomado");
-		}
-
-		else
-			sType.setDescription("No sabe leer ni escribir");
-
-		return studiesDAO.findStudies(sType);
-
-	}
+	
+	
 
 }

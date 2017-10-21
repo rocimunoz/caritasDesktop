@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -30,11 +31,15 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -66,6 +71,7 @@ import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
+import com.reparadoras.caritas.ui.utils.Constants;
 
 public class JManageExportData extends AbstractJInternalFrame {
 
@@ -81,23 +87,19 @@ public class JManageExportData extends AbstractJInternalFrame {
 	private JPanel jPanelTData = null;
 	private JButton btnExit = null;
 	private JButton btnImportFile = null;
-	private JFileChooser jfc = null;
+	private JLabel lblInfo = null;
+
 	private JTextArea textArea = null;
 	private JScrollPane scroll = null;
 
-	private PeopleDAO peopleDAO;
-
-
-	
 	private ProgramDAO programDAO;
-	
+
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
 	private RelativeDAO relativeDAO;
 
 	public int countOK = 0;
 	public int countKO = 0;
-	public int countExist = 0;
 	public int countTotal = 0;
 
 	private List<String> errorRegister = new ArrayList<String>();
@@ -121,10 +123,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		initComponents();
 		addListener();
 
-		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
-
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
@@ -160,12 +159,19 @@ public class JManageExportData extends AbstractJInternalFrame {
 	protected void saveToFile() {
 
 		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL FILES", "xlsx");
+		fileChooser.setFileFilter(filter);
 		int retval = fileChooser.showSaveDialog(getJButtonExportFile());
 		if (retval == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			if (file == null) {
 				return;
 			}
+			
+			if(!file.getAbsolutePath().endsWith(".xlsx")){
+				file = new File(fileChooser.getSelectedFile() + ".xlsx");
+			}
+			
 			readBBDDAndGenerateExcel(file);
 		}
 	}
@@ -173,7 +179,6 @@ public class JManageExportData extends AbstractJInternalFrame {
 	public void createGUIComponents() {
 
 		getContentPane().setLayout(getGridContentPane());
-		// getContentPane().add(getJPanelFilter(), this.getGridJPanelFilter());
 
 		// Añado elementos del JPanelFilter
 		getJPanelFile().setLayout(getGridLayoutJPanelFile());
@@ -181,6 +186,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 		getJPanelFile().add(getJButtonExit(), getGridButtonExit());
 		getJPanelFile().add(getJButtonExportFile(), getGridButtonImportFile());
+		getJPanelFile().add(this.getJLabelInfo(), this.getGridLabelInfo());
 
 		getJPanelData().add(getJScrollPane(), getGridJScrollPane());
 
@@ -253,7 +259,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 		if (jPanelTData == null) {
 			jPanelTData = new JPanel();
-			jPanelTData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resultado Importacion",
+			jPanelTData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resultado Exportación",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 
 		}
@@ -325,15 +331,31 @@ public class JManageExportData extends AbstractJInternalFrame {
 	private JButton getJButtonExportFile() {
 
 		if (btnImportFile == null) {
-			btnImportFile = new JButton("Pincha para exportar");
+			btnImportFile = new JButton("Exportar");
 
 			btnImportFile.setHorizontalAlignment(SwingConstants.RIGHT);
-
-			// btnImportFile.setIcon(new
-			// ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
 		}
 
 		return btnImportFile;
+	}
+
+	private GridBagConstraints getGridLabelInfo() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.gridx = 1;
+		gbc_btnExit.gridy = 0;
+
+		return gbc_btnExit;
+	}
+
+	private JLabel getJLabelInfo() {
+
+		if (lblInfo == null) {
+			lblInfo = new JLabel("Seleccione una ruta  para guardar la exportacion: ");
+		}
+
+		return lblInfo;
 	}
 
 	private GridBagConstraints getGridButtonImportFile() {
@@ -389,62 +411,13 @@ public class JManageExportData extends AbstractJInternalFrame {
 			Map<String, List<Expense>> mapExpenses = new HashMap<String, List<Expense>>();
 			Map<String, List<Relative>> mapRelatives = new HashMap<String, List<Relative>>();
 
-			List<Program> listPrograms = programDAO.findProgram(new FilterProgram());
-			List<Relative> listRelatives = relativeDAO.findAllRelatives();
-			List<Income> listIncomes = incomeDAO.findAllIncomes();
-			List<Expense> listExpenses = expenseDAO.findAllExpenses();
-			for (Program program : listPrograms) {
-				String dni = program.getPeople().getDni();
-				if (dni != null && !dni.equals("")) {
-					mapProgram.put(dni, program);
+			mapProgram = fillMapProgram();
 
-				}
-			}
+			mapRelatives = fillMapRelatives();
 
-			for (Relative relative : listRelatives) {
-				Family family = relative.getFamily();
-				FilterProgram filter = new FilterProgram();
-				filter.setIdFamily(family.getId());
-				List<Program> programs = programDAO.findProgram(filter);
-				if (programs != null && !programs.isEmpty() && programs.size() == 1) {
-					Program programRelatives = programs.get(0);
-					String dni = programRelatives.getPeople().getDni();
+			mapIncomes = fillMapIncomes();
 
-					if (mapRelatives.get(dni) != null) {
-						mapRelatives.get(dni).add(relative);
-					} else {
-						List<Relative> relatives = new ArrayList<>();
-						relatives.add(relative);
-						mapRelatives.put(dni, relatives);
-					}
-				}
-			}
-
-			for (Income income : listIncomes) {
-				String dni = income.getProgram().getPeople().getDni();
-
-				if (mapIncomes.get(dni) != null) {
-					mapIncomes.get(dni).add(income);
-				} else {
-					List<Income> incomes = new ArrayList<>();
-					incomes.add(income);
-					mapIncomes.put(dni, incomes);
-				}
-
-			}
-			
-			for (Expense expense : listExpenses) {
-				String dni = expense.getProgram().getPeople().getDni();
-
-				if (mapExpenses.get(dni) != null) {
-					mapExpenses.get(dni).add(expense);
-				} else {
-					List<Expense> expenses = new ArrayList<>();
-					expenses.add(expense);
-					mapExpenses.put(dni, expenses);
-				}
-
-			}
+			mapExpenses = fillMapExpenses();
 
 			XSSFWorkbook workbookCloned = cloneTemplateExcel(file);
 			generateSheetProgram(mapProgram, workbookCloned, file);
@@ -470,14 +443,103 @@ public class JManageExportData extends AbstractJInternalFrame {
 		textArea.append("Resumen: " + "\n");
 		textArea.append("******************: " + "\n");
 		textArea.append("Registros totales leidos: " + countTotal + "\n");
-		textArea.append("Registros insertados correctamente: " + countOK + "\n");
-		textArea.append("Registros no insertados por errores : " + countKO + "\n");
-		textArea.append("Registros no insertados por existir ya en Base de Datos : " + countExist + "\n");
+		textArea.append("Registros exportados correctamente: " + countOK + "\n");
+		textArea.append("Registros no exportados por errores : " + countKO + "\n");
+		textArea.append("Ruta destino del fichero exportado : " + file.getAbsolutePath() + "\n");
 
+	}
+
+	public Map<String, Program> fillMapProgram() {
+
+		List<Program> listPrograms = programDAO.findProgram(new FilterProgram());
+		Map<String, Program> mapProgram = new HashMap<String, Program>();
+		for (Program program : listPrograms) {
+			String dni = program.getPeople().getDni();
+			String passport = program.getPeople().getPassport();
+			if (dni != null && !dni.equals("")) {
+				mapProgram.put(dni, program);
+
+			} else if (passport != null && !passport.equals("")) {
+				mapProgram.put(passport, program);
+			}
+			else{
+				System.out.println("registro no exportable");
+			}
+		}
+
+		return mapProgram;
+	}
+
+	public Map<String, List<Relative>> fillMapRelatives() {
+
+		List<Relative> listRelatives = relativeDAO.findAllRelatives();
+		Map<String, List<Relative>> mapRelatives = new HashMap<String, List<Relative>>();
+		
+		for (Relative relative : listRelatives) {
+			Family family = relative.getFamily();
+			FilterProgram filter = new FilterProgram();
+			filter.setIdFamily(family.getId());
+			List<Program> programs = programDAO.findProgram(filter);
+			if (programs != null && !programs.isEmpty() && programs.size() == 1) {
+				Program programRelatives = programs.get(0);
+				String dni = programRelatives.getPeople().getDni();
+
+				if (mapRelatives.get(dni) != null) {
+					mapRelatives.get(dni).add(relative);
+				} else {
+					List<Relative> relatives = new ArrayList<>();
+					relatives.add(relative);
+					mapRelatives.put(dni, relatives);
+				}
+			}
+		}
+		return mapRelatives;
+	}
+	
+	public Map<String, List<Income>> fillMapIncomes() {
+
+		List<Income> listIncomes = incomeDAO.findAllIncomes();
+		Map<String, List<Income>> mapIncomes = new HashMap<String, List<Income>>();
+		
+		for (Income income : listIncomes) {
+			String dni = income.getProgram().getPeople().getDni();
+
+			if (mapIncomes.get(dni) != null) {
+				mapIncomes.get(dni).add(income);
+			} else {
+				List<Income> incomes = new ArrayList<>();
+				incomes.add(income);
+				mapIncomes.put(dni, incomes);
+			}
+
+		}
+		return mapIncomes;
+	}
+	
+	public Map<String, List<Expense>> fillMapExpenses() {
+		List<Expense> listExpenses = expenseDAO.findAllExpenses();
+		
+		Map<String, List<Expense>> mapExpenses = new HashMap<String, List<Expense>>();
+		
+		for (Expense expense : listExpenses) {
+			String dni = expense.getProgram().getPeople().getDni();
+
+			if (mapExpenses.get(dni) != null) {
+				mapExpenses.get(dni).add(expense);
+			} else {
+				List<Expense> expenses = new ArrayList<>();
+				expenses.add(expense);
+				mapExpenses.put(dni, expenses);
+			}
+
+		}
+		return mapExpenses;
 	}
 
 	public XSSFWorkbook cloneTemplateExcel(File destinationPath) {
 
+		
+		
 		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xlsx");
 		File fTemplate = new File(url.getPath());
 		FileInputStream excelFileTemplate;
@@ -521,6 +583,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell = row.createCell(3);
 					cell.setCellValue(income.getAmount());
 					cell = row.createCell(4);
+					cell.setCellStyle(getCellStyleDate(workbook));
 					cell.setCellValue(income.getEndDate());
 
 					row = sheet.createRow(++rowNumber);
@@ -556,6 +619,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell = row.createCell(4);
 					cell.setCellValue(expense.getRegularity());
 					cell = row.createCell(5);
+					cell.setCellStyle(getCellStyleDate(workbook));
 					cell.setCellValue(expense.getEndDate());
 
 					row = sheet.createRow(++rowNumber);
@@ -593,6 +657,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell = row.createCell(5);
 					cell.setCellValue(relative.getName());
 					cell = row.createCell(6);
+					cell.setCellStyle(getCellStyleDate(workbook));
 					cell.setCellValue(relative.getDateBorn());
 					cell = row.createCell(7);
 					cell.setCellValue("");
@@ -614,6 +679,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 	public void generateSheetProgram(Map<String, Program> mapProgram, XSSFWorkbook workbook, File file) {
 
 		try {
+			countTotal = mapProgram.size();
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			int rowNumber = 2;
 			XSSFRow row = sheet.createRow(rowNumber);
@@ -626,8 +692,11 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell = row.createCell(1);
 				cell.setCellValue(program.getPeople().getPassport());
 				cell = row.createCell(2);
+				cell.setCellStyle(getCellStyleDate(workbook));
 				cell.setCellValue(program.getPeople().getCreateDate());
+
 				cell = row.createCell(3);
+				cell.setCellStyle(getCellStyleDate(workbook));
 				cell.setCellValue(program.getPeople().getReactivateDate());
 				cell = row.createCell(4);
 				if (program.getPeople().isActive() != null && program.getPeople().isActive()) {
@@ -642,6 +711,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell = row.createCell(8);
 				cell.setCellValue(program.getPeople().getSex());
 				cell = row.createCell(9);
+				cell.setCellStyle(getCellStyleDate(workbook));
 				cell.setCellValue(program.getPeople().getDateBorn());
 				cell = row.createCell(10);
 				cell.setCellValue(program.getPeople().getCountry());
@@ -684,30 +754,31 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getFamily().getHome().getOtherInfo());
 				// Family Type
 				cell = row.createCell(29);
-				cell.setCellValue(getNemonicFamilyType(program.getFamily().getFamilyType())); // todo
-																								// :
-																								// nemonic
+				cell.setCellValue(Constants.getNemonicFamilyType(program.getFamily().getFamilyType())); // todo
+				// :
+				// nemonic
 				cell = row.createCell(30);
 				cell.setCellValue(program.getFamily().getOtherInfo());
 				// Tipo Autorizacion
 				cell = row.createCell(31);
 				if (program.getAuthorizationType() != null) {
-					cell.setCellValue(getNemonicAuthorizationType(program.getAuthorizationType()));
+					cell.setCellValue(Constants.getNemonicAuthorizationType(program.getAuthorizationType()));
 				}
 
 				// Situacion Laboral
 				cell = row.createCell(32);
 				if (program.getJobSituation() != null) {
-					cell.setCellValue(getNemonicJobSituation(program.getJobSituation()));
+					cell.setCellValue(Constants.getNemonicJobSituation(program.getJobSituation()));
 				}
 
 				// Estudios
 				cell = row.createCell(33);
 				if (program.getStudies() != null) {
-					cell.setCellValue(getNemonicStudies(program.getStudies()));
+					cell.setCellValue(Constants.getNemonicStudies(program.getStudies()));
 				}
 
 				row = sheet.createRow(++rowNumber);
+				countOK++;
 
 			}
 
@@ -716,104 +787,18 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			countKO++;
 
 		}
 
 	}
 
-	
+	public CellStyle getCellStyleDate(XSSFWorkbook workbook) {
+		CellStyle cellStyle = workbook.createCellStyle();
+		CreationHelper createHelper = workbook.getCreationHelper();
+		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
 
-	public String getNemonicFamilyType(FamilyType familyType) {
-		try {
-			if (familyType.getDescription().equals("Sola")) {
-				return "S";
-			} else if (familyType.getDescription().equals("Pareja con Hijos")) {
-				return "PCH";
-			} else if (familyType.getDescription().equals("Pareja sin Hijos")) {
-				return "PSH";
-			} else if (familyType.getDescription().equals("Monoparental")) {
-				return "M";
-			} else if (familyType.getDescription().equals("Otra")) {
-				return "O";
-			} else {
-				return "S";
-			}
-		} catch (Exception e) {
-			return "S";
-		}
-
-	}
-
-	public String getNemonicAuthorizationType(AuthorizationType aType) {
-		try {
-			if (aType.getDescription().equals("Autorización Residencia")) {
-				return "AR";
-			} else if (aType.getDescription().equals("Autorización Residencia y Trabajo")) {
-				return "ART";
-			} else if (aType.getDescription().equals("Estudios")) {
-				return "E";
-			} else if (aType.getDescription().equals("Turismo")) {
-				return "T";
-			} else if (aType.getDescription().equals("Refugiado")) {
-				return "R";
-			} else {
-				return "AR";
-			}
-		} catch (Exception e) {
-			return "AR";
-		}
-
-	}
-
-	public String getNemonicJobSituation(JobSituation jType) {
-
-		try {
-			if (jType.getDescription().equals("Parado")) {
-				return "P";
-			} else if (jType.getDescription().equals("Con Trabajo Normalizado")) {
-				return "TN";
-			} else if (jType.getDescription().equals("Con Trabajo Marginal o Economia Sumergida")) {
-				return "TM";
-			} else if (jType.getDescription().equals("Labores del hogar (ama de casa)")) {
-				return "Ama de casa";
-			} else if (jType.getDescription().equals("Pensionista o Jubilado")) {
-				return "Pe";
-			} else if (jType.getDescription().equals("Otros inactivos (estudiantes, menores")) {
-				return "O";
-			} else
-				return "P";
-
-		} catch (Exception e) {
-			return "P";
-		}
-	}
-
-	public String getNemonicStudies(Studies sType) {
-		try {
-			if (sType.getDescription().equals("No sabe leer ni escribir")) {
-				return "NLE";
-			} else if (sType.getDescription().equals("Sólo sabe leer y escribir")) {
-				return "SLE";
-			} else if (sType.getDescription().equals("Infanil")) {
-				return "I";
-			} else if (sType.getDescription().equals("Primaria")) {
-				return "P";
-			} else if (sType.getDescription().equals("Secundaria")) {
-				return "S";
-			} else if (sType.getDescription().equals("Bachillerato")) {
-				return "B";
-			} else if (sType.getDescription().equals("FP-Grado Medio")) {
-				return "FP-GM";
-			} else if (sType.getDescription().equals("FP-Grado Superior")) {
-				return "FP-GS";
-			} else if (sType.getDescription().equals("Universidad Diplomado")) {
-				return "UL";
-			} else
-				return "NLE";
-		} catch (Exception e) {
-			return "NLE";
-		}
-
+		return cellStyle;
 	}
 
 }

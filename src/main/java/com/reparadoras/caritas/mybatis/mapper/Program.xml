@@ -19,9 +19,15 @@
         <result property="id" column="id"/>
         <result property="name" column="name"/>  
         <result property="firstSurname" column="first_surname"/>
-        <result property="dni" column="dni"/>  
+        <result property="dni" column="dni"/>
+        <result property="passport" column="passport"/>    
         <result property="active" column="active"/>
         <result property="createDate" column="create_date"/>
+         <result property="reactivateDate" column="reactivate_date"/>
+        <result property="country" column="country"/>
+        <result property="nationality" column="nationality"/>
+        <result property="yearToSpain" column="year_to_spain"/>
+        <result property="sex" column="sex"/>
     </resultMap>
     
     <resultMap id="FamilyResult" type="Family">
@@ -80,9 +86,16 @@
     
     <select id="findProgram" parameterType="FilterProgram" resultMap="ProgramResult">
         SELECT PE.DNI, 
+        	   PE.PASSPORT,
                PE.NAME,
                PE.FIRST_SURNAME,
                PE.CREATE_DATE,
+               PE.ACTIVE,
+               PE.REACTIVATE_DATE,
+               PE.COUNTRY,
+               PE.NATIONALITY,
+               PE.YEAR_TO_SPAIN,
+               PE.SEX,
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,
                FT.ID ID_FAMILY_TYPE,
