@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -75,6 +77,7 @@ import com.reparadoras.caritas.ui.tabs.JPanelFamily;
 import com.reparadoras.caritas.ui.tabs.JPanelHome;
 import com.reparadoras.caritas.ui.tabs.JPanelJobSituation;
 import com.reparadoras.caritas.ui.tabs.JPanelStudies;
+import com.reparadoras.caritas.ui.utils.pdf.PdfExporter;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -86,6 +89,7 @@ import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import java.awt.FlowLayout;
@@ -278,7 +282,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJButtonPrint().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				
+				onExportPdf();
 			}
 		});
 
@@ -1515,6 +1519,41 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
+	public void onExportPdf(){
+		
+	
+			try{
+					PdfExporter exporter = new PdfExporter();
+					
+					JFileChooser fileChooser = new JFileChooser();
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf");
+					fileChooser.setFileFilter(filter);
+					int retval = fileChooser.showSaveDialog(getJButtonPrint());
+					if (retval == JFileChooser.APPROVE_OPTION) {
+						File file = fileChooser.getSelectedFile();
+						if (file == null) {
+							return;
+						}
+						
+						if(!file.getAbsolutePath().endsWith(".pdf")){
+							file = new File(fileChooser.getSelectedFile() + ".pdf");
+						}
+						
+						exporter.export(new Program(), file);
+						
+						
+					}
+					
+			
+				
+				
+			}catch(Exception e){
+				JOptionPane.showMessageDialog(null, "Error");
+				return;
+			}
+		
+	}
+	
 	public void onSaveProgram() {
 
 		int rowIndex = this.getJTableProgram().getSelectedRow();
