@@ -803,7 +803,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		JManageTicket jManageTicket = null;
 		int row = getJTablePeople().getSelectedRow();
 		if (row != -1) {
-
+			row = getJTablePeople().convertRowIndexToModel(row);
 			People people = getPeopleTableModel().getDomainObject(row);
 
 			if (people != null) {
