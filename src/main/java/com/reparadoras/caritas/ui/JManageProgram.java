@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.itextpdf.text.DocumentException;
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
@@ -119,7 +121,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	//private JComboBox<People> cbPeople;
+	// private JComboBox<People> cbPeople;
 	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
@@ -178,7 +180,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.setTitle(title);
 
 		this.people = people;
-		
 
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -195,16 +196,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
-		
+
 		this.getJTextFieldName().setText(people.getName());
 		this.getJTextFieldDni().setText(people.getDni());
-		
+
 		onFilterProgram(true);
 
 		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
 		}
-		
+
 		this.getJButtonClean().setVisible(false);
 		this.getJButtonSearch().setVisible(false);
 
@@ -278,7 +279,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				onSaveProgram();
 			}
 		});
-		
+
 		getJButtonPrint().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -392,7 +393,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("SITUACION ECONOMICA", getJPanelEconomicSituation());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
-		
 
 		getJtabPane1().setBackgroundAt(0, Color.WHITE);
 
@@ -400,27 +400,22 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		//initCbPeople();
+		// initCbPeople();
 
 	}
 
 	/*
-	public void initCbPeople() {
-
-		List<People> listPeople = peopleDAO.findAll();
-
-		if (this.people!=null){
-			this.getJComboBoxPeople().addItem(this.people);
-			this.getJComboBoxPeople().setSelectedItem(this.people);
-		}
-		else{
-			for (People p : listPeople) {
-				this.getJComboBoxPeople().addItem(p);
-			}
-			getJComboBoxPeople().setSelectedIndex(-1);
-		}
-		
-	}*/
+	 * public void initCbPeople() {
+	 * 
+	 * List<People> listPeople = peopleDAO.findAll();
+	 * 
+	 * if (this.people!=null){ this.getJComboBoxPeople().addItem(this.people);
+	 * this.getJComboBoxPeople().setSelectedItem(this.people); } else{ for
+	 * (People p : listPeople) { this.getJComboBoxPeople().addItem(p); }
+	 * getJComboBoxPeople().setSelectedIndex(-1); }
+	 * 
+	 * }
+	 */
 
 	/* TABS */
 
@@ -709,12 +704,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		return btnSave;
 	}
-	
+
 	private JButton getJButtonPrint() {
 		if (btnPrint == null) {
 			btnPrint = new JButton("Imprimir");
 
-			btnPrint.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-print-32.png")));
+			btnPrint.setIcon(
+					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-print-32.png")));
 		}
 
 		return btnPrint;
@@ -784,11 +780,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 			tableProgram = new JTable(getProgramTableModel());
 			tableProgram.setAutoCreateRowSorter(true);
 			tableProgram.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			
+
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 			tableProgram.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
-			
+
 			tableProgram.setRowMargin(5);
 			tableProgram.setRowHeight(30);
 			tableProgram.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
@@ -800,7 +796,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramTableModel getProgramTableModel() {
 
 		if (programTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre","Apellidos", "Fecha Creacion" };
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos", "Fecha Creacion" };
 			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -868,7 +864,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
-		
+
 	}
 
 	public void cleanTabs() {
@@ -941,12 +937,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		try {
 
-			
 			FilterProgram filterProgram = new FilterProgram();
 			filterProgram.setActive(this.getCkActive().isSelected());
 			filterProgram.setDni(this.getJTextFieldDni().getText());
 			filterProgram.setNamePeople(this.getJTextFieldName().getText());
-			
+
 			List<Program> programs = programDAO.findProgram(filterProgram);
 			if (programs != null && !programs.isEmpty()) {
 				this.getProgramTableModel().clearTableModelData();
@@ -955,7 +950,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			} else {
 				cleanTabs();
 				if (create) {
-					
+
 					if (JOptionPane.showConfirmDialog(this,
 							"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?",
 							"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -971,7 +966,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 					}
 
 				} else {
-					//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+					// JOptionPane.showMessageDialog(this, "No existen registros
+					// para los datos de búsqueda");
 				}
 
 			}
@@ -1365,11 +1361,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
 
 		}
-		if (!description.equals("")){
+		if (!description.equals("")) {
 			aTypeFilter.setDescription(description);
 			selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
 		}
-		
+
 	}
 
 	public void onSaveJobSituation(Program selectedProgram) {
@@ -1392,11 +1388,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelJobSituation().getjRadioOthers().getText();
 		}
 
-		if (!description.equals("")){
+		if (!description.equals("")) {
 			jsFilter.setDescription(description);
 			selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
 		}
-		
+
 	}
 
 	public void onSaveStudies(Program selectedProgram) {
@@ -1424,13 +1420,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} else if (this.getJPanelStudies().getjRadioUniversity().isSelected()) {
 			description = getJPanelStudies().getjRadioUniversity().getText();
 		}
-		
-		if (!description.equals("")){
+
+		if (!description.equals("")) {
 			studiesFilter.setDescription(description);
 			selectedProgram.setStudies(studiesDAO.findStudies(studiesFilter));
 		}
 
-		
 	}
 
 	public void onSaveIncomes(Program selectedProgram) {
@@ -1519,41 +1514,44 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
-	public void onExportPdf(){
-		
-	
-			try{
-					PdfExporter exporter = new PdfExporter();
-					
-					JFileChooser fileChooser = new JFileChooser();
-					FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf");
-					fileChooser.setFileFilter(filter);
-					int retval = fileChooser.showSaveDialog(getJButtonPrint());
-					if (retval == JFileChooser.APPROVE_OPTION) {
-						File file = fileChooser.getSelectedFile();
-						if (file == null) {
-							return;
-						}
-						
-						if(!file.getAbsolutePath().endsWith(".pdf")){
-							file = new File(fileChooser.getSelectedFile() + ".pdf");
-						}
-						
-						exporter.export(new Program(), file);
-						
-						
+	public void onExportPdf() {
+
+		int rowIndex = this.getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
+
+			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
+			if (selectedProgram != null) {
+
+				PdfExporter exporter = new PdfExporter();
+
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf");
+				fileChooser.setFileFilter(filter);
+				int retval = fileChooser.showSaveDialog(getJButtonPrint());
+				if (retval == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					if (file == null) {
+						return;
 					}
-					
-			
-				
-				
-			}catch(Exception e){
-				JOptionPane.showMessageDialog(null, "Error");
-				return;
+
+					if (!file.getAbsolutePath().endsWith(".pdf")) {
+						file = new File(fileChooser.getSelectedFile() + ".pdf");
+					}
+					try {
+						exporter.export(selectedProgram, file);
+					} catch (DocumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
 			}
-		
+		}
 	}
-	
+
 	public void onSaveProgram() {
 
 		int rowIndex = this.getJTableProgram().getSelectedRow();
@@ -1574,10 +1572,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveIncomes(selectedProgram);
 						onSaveExpenses(selectedProgram);
 
-						if (selectedProgram.getJobSituation()!=null || selectedProgram.getAuthorizationType()!=null || selectedProgram.getStudies()!=null){
+						if (selectedProgram.getJobSituation() != null || selectedProgram.getAuthorizationType() != null
+								|| selectedProgram.getStudies() != null) {
 							programDAO.update(selectedProgram);
 						}
-						
 
 					}
 

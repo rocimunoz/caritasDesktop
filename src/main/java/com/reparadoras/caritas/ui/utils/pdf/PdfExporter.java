@@ -1,8 +1,10 @@
 package com.reparadoras.caritas.ui.utils.pdf;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -26,6 +28,10 @@ import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.reparadoras.caritas.CaritasGUI;
+import com.reparadoras.caritas.model.Address;
+import com.reparadoras.caritas.model.Family;
+import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.Program;
 
 public class PdfExporter {
@@ -47,165 +53,265 @@ public class PdfExporter {
 	private static final int TABLES_COL_NUMBER = 4;
 	private static final int RESOLUTION_DATA_TABLE_COL_NUMBER = 2;
 	private static final Font TITLE_FONT = new Font(FontFamily.HELVETICA, 20, Font.NORMAL);
-	private static final Font TABLE_HEADER_FONT = new
-	Font(FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
-	private static final Font TABLE_CELL_HEADER_FONT = new
-	Font(FontFamily.HELVETICA, 9, Font.BOLD);
-	private static final Font TABLE_CELL_FONT = new
-	Font(FontFamily.HELVETICA, 9, Font.NORMAL);
-	
-	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
-            Font.BOLD);
-    private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-            Font.NORMAL, BaseColor.RED);
-    private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
-            Font.BOLD);
-    private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-            Font.BOLD);
+	private static final Font TITLE_12_FONT = new Font(FontFamily.HELVETICA, 12, Font.NORMAL);
+	private static final Font TITLE_10_FONT_BOLD = new Font(FontFamily.HELVETICA, 10, Font.BOLD);
+	private static final Font TITLE_10_FONT = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
+	private static final Font TABLE_HEADER_FONT = new Font(FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
+	private static final Font TABLE_CELL_HEADER_FONT = new Font(FontFamily.HELVETICA, 9, Font.BOLD);
+	private static final Font TABLE_CELL_FONT = new Font(FontFamily.HELVETICA, 9, Font.NORMAL);
+
+	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.RED);
+	private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
+	private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
 	public File export(Program program, File file) throws DocumentException, IOException {
-		HeaderFooterPageEvent event = new HeaderFooterPageEvent();
-		//Document document = new Document(PageSize.A4, DOCUMENT_MARGIN_LEFT, DOCUMENT_MARGIN_RIGHT, DOCUMENT_MARGIN_TOP + event.getTableHeight(), DOCUMENT_MARGIN_BOTTOM);
-		
-		 Document document = new Document();
-         PdfWriter.getInstance(document, new FileOutputStream(file));
-         document.open();
-         addMetaData(document);
-         addTitlePage(document);
-         addContent(document);
-         document.close();
-		
-		
+
+		try {
+			HeaderFooterPageEvent event = new HeaderFooterPageEvent();
+			// Document document = new Document(PageSize.A4,
+			// DOCUMENT_MARGIN_LEFT, DOCUMENT_MARGIN_RIGHT, DOCUMENT_MARGIN_TOP
+			// + event.getTableHeight(), DOCUMENT_MARGIN_BOTTOM);
+
+			Document document = new Document();
+			PdfWriter.getInstance(document, new FileOutputStream(file));
+			document.open();
+			addMetaData(document);
+			addTitlePage(document);
+			// addContent(document);
+			addAddress(document, program.getFamily().getHome().getAddress());
+			addHome(document, program.getFamily().getHome());
+			addFamily(document, program.getFamily());
+			document.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
 		return file;
 	}
-	
-	private  void addMetaData(Document document) {
-        document.addTitle("My first PDF");
-        document.addSubject("Using iText");
-        document.addKeywords("Java, PDF, iText");
-        document.addAuthor("Lars Vogel");
-        document.addCreator("Lars Vogel");
-    }
-	
-	private static void addTitlePage(Document document)
-            throws DocumentException {
-        Paragraph preface = new Paragraph();
-        // We add one empty line
-        addEmptyLine(preface, 1);
-        // Lets write a big header
-        preface.add(new Paragraph("Programa de Atención Primaria", catFont));
-        addEmptyLine(preface, 1);
-      
-        preface.add(new Paragraph(
-                "This document is a preliminary version and not subject to your license agreement or any other agreement with vogella.com ;-).",
-                redFont));
 
-        document.add(preface);
-        // Start a new page
-        document.newPage();
-    }
-
-	
-	private static void addContent(Document document) throws DocumentException {
-        Anchor anchor = new Anchor("First Chapter", catFont);
-        anchor.setName("First Chapter");
-
-        // Second parameter is the number of the chapter
-        Chapter catPart = new Chapter(new Paragraph(anchor), 1);
-
-        Paragraph subPara = new Paragraph("Subcategory 1", subFont);
-        Section subCatPart = catPart.addSection(subPara);
-        subCatPart.add(new Paragraph("Hello"));
-
-        subPara = new Paragraph("Subcategory 2", subFont);
-        subCatPart = catPart.addSection(subPara);
-        subCatPart.add(new Paragraph("Paragraph 1"));
-        subCatPart.add(new Paragraph("Paragraph 2"));
-        subCatPart.add(new Paragraph("Paragraph 3"));
-
-        // add a list
-        createList(subCatPart);
-        Paragraph paragraph = new Paragraph();
-        addEmptyLine(paragraph, 5);
-        subCatPart.add(paragraph);
-
-        // add a table
-        createTable(subCatPart);
-
-        // now add all this to the document
-        document.add(catPart);
-
-        // Next section
-        anchor = new Anchor("Second Chapter", catFont);
-        anchor.setName("Second Chapter");
-
-        // Second parameter is the number of the chapter
-        catPart = new Chapter(new Paragraph(anchor), 1);
-
-        subPara = new Paragraph("Subcategory", subFont);
-        subCatPart = catPart.addSection(subPara);
-        subCatPart.add(new Paragraph("This is a very important message"));
-
-        // now add all this to the document
-        document.add(catPart);
-
-    }
-	
-	private static void createTable(Section subCatPart)
-            throws BadElementException {
-        PdfPTable table = new PdfPTable(3);
-
-        // t.setBorderColor(BaseColor.GRAY);
-        // t.setPadding(4);
-        // t.setSpacing(4);
-        // t.setBorderWidth(1);
-
-        PdfPCell c1 = new PdfPCell(new Phrase("Table Header 1"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Table Header 2"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Table Header 3"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-        table.setHeaderRows(1);
-
-        table.addCell("1.0");
-        table.addCell("1.1");
-        table.addCell("1.2");
-        table.addCell("2.1");
-        table.addCell("2.2");
-        table.addCell("2.3");
-
-        subCatPart.add(table);
-
-    }
-	
-	private static void createList(Section subCatPart) {
-        List list = new List(true, false, 10);
-        list.add(new ListItem("First point"));
-        list.add(new ListItem("Second point"));
-        list.add(new ListItem("Third point"));
-        subCatPart.add(list);
-    }
-	
-	private static void addEmptyLine(Paragraph paragraph, int number) {
-        for (int i = 0; i < number; i++) {
-            paragraph.add(new Paragraph(" "));
-        }
-    }
-	
-	private PdfPCell getImageCell(byte[] imageByteArray) throws IOException, BadElementException {
-		//Image image = Image.getInstance(imageUtils.getResizedImageByteArrayFromByteArray(imageByteArray));
-		//image.scalePercent(70);
-		Paragraph p = new Paragraph();
-		//p.add(new Chunk(image, 0, 0, true));
-		return new PdfPCell(p);
+	private void addMetaData(Document document) {
+		document.addTitle("My first PDF");
+		document.addSubject("Using iText");
+		document.addKeywords("Java, PDF, iText");
+		document.addAuthor("Lars Vogel");
+		document.addCreator("Lars Vogel");
 	}
 
+	private void addTitlePage(Document document) throws DocumentException, MalformedURLException, IOException {
+		Paragraph paragraph = new Paragraph();
+		paragraph.setAlignment(Paragraph.ALIGN_RIGHT);
+		// We add one empty line
+		addEmptyLine(paragraph, 1);
+		// Lets write a big header
+		paragraph.add(new Paragraph("Nº SICCE _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("F. ALTA _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("NOMBRE _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("APELLIDOS _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("DNI/NIE _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("F.NACIMIENTO _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("PAIS ORIGEN _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("AÑO LLEGADA ESPAÑA _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("PROYECTO _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("ATIENDE _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("CÁRITAS PARROQUIAL _____________________", TITLE_12_FONT));
+		addEmptyLine(paragraph, 1);
+		addEmptyLine(paragraph, 1);
+
+		Image img = Image.getInstance(PdfExporter.class.getResource("/com/reparadoras/images/logo2.png"));
+		img.setAlignment(Paragraph.ALIGN_CENTER);
+
+		document.add(paragraph);
+		document.add(img);
+		// Start a new page
+		document.newPage();
+	}
+
+	private void addAddress(Document document, Address address) throws DocumentException {
+
+		Paragraph paragraph = new Paragraph();
+		// paragraph.setAlignment(Paragraph.ALIGN_RIGHT);
+		paragraph.add(new Paragraph("DIRECCION", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("Municipio: " + getNullRepresentation(address.getTown()), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Calle:  " + getNullRepresentation(address.getStreet()), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Portal: " + address.getGate(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Piso y Mano:  " + address.getFloor(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Tfno. domicilio  " + address.getTelephone(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Tfno. contacto  " + address.getTelephoneContact(), TITLE_10_FONT));
+		addEmptyLine(paragraph, 1);
+		document.add(paragraph);
+		
+		// Lets write a big header
+	}
+
+	
+
+	private void addHome(Document document, Home home) throws DocumentException {
+
+		Paragraph paragraph = new Paragraph();
+
+		paragraph.add(new Paragraph("DATOS VIVIENDA", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraph, 1);
+		paragraph.add(new Paragraph("Tipo: " + "", TITLE_10_FONT));
+		paragraph.add(new Paragraph("Régimen Tenencia:  " + getNullRepresentation(home.getRegHolding()), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Número Habitaciones:  " + getIntNullRepresentation(home.getNumberRooms()),TITLE_10_FONT));
+		paragraph.add(new Paragraph("Número personas que residen:  " + getIntNullRepresentation(home.getNumberPeople()),TITLE_10_FONT));
+		paragraph.add(new Paragraph("Número familias nucleares:  " + getIntNullRepresentation(home.getNumberFamilies()),TITLE_10_FONT));
+		paragraph.add(new Paragraph("Otros datos:  " + getNullRepresentation(home.getOtherInfo()), TITLE_10_FONT));
+		addEmptyLine(paragraph, 1);
+		document.add(paragraph);
+		
+		// Lets write a big header
+	}
+	
+	private void addFamily(Document document, Family family) throws DocumentException {
+
+		Paragraph paragraph = new Paragraph();
+
+		paragraph.add(new Paragraph("COMPOSICIÓN FAMILIAR", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraph, 1);
+		
+		
+		// Second parameter is the number of the chapter
+		Anchor anchor = new Anchor("First Chapter", catFont);
+		anchor.setName("First Chapter");
+				Chapter catPart = new Chapter(new Paragraph(anchor), 1);
+
+				Paragraph subPara = new Paragraph("Subcategory 1", subFont);
+				Section subCatPart = catPart.addSection(subPara);
+				subCatPart.add(new Paragraph("Hello"));
+
+				subPara = new Paragraph("Subcategory 2", subFont);
+				subCatPart = catPart.addSection(subPara);
+				subCatPart.add(new Paragraph("Paragraph 1"));
+				subCatPart.add(new Paragraph("Paragraph 2"));
+				subCatPart.add(new Paragraph("Paragraph 3"));
+
+				
+				addEmptyLine(paragraph, 5);
+				subCatPart.add(paragraph);
+
+				// add a table
+				createTable(subCatPart);
+		
+		
+		
+		addEmptyLine(paragraph, 1);
+		document.add(subCatPart);
+		
+		// Lets write a big header
+	}
+
+	private static void addContent(Document document) throws DocumentException {
+		Anchor anchor = new Anchor("First Chapter", catFont);
+		anchor.setName("First Chapter");
+
+		// Second parameter is the number of the chapter
+		Chapter catPart = new Chapter(new Paragraph(anchor), 1);
+
+		Paragraph subPara = new Paragraph("Subcategory 1", subFont);
+		Section subCatPart = catPart.addSection(subPara);
+		subCatPart.add(new Paragraph("Hello"));
+
+		subPara = new Paragraph("Subcategory 2", subFont);
+		subCatPart = catPart.addSection(subPara);
+		subCatPart.add(new Paragraph("Paragraph 1"));
+		subCatPart.add(new Paragraph("Paragraph 2"));
+		subCatPart.add(new Paragraph("Paragraph 3"));
+
+		// add a list
+		createList(subCatPart);
+		Paragraph paragraph = new Paragraph();
+		addEmptyLine(paragraph, 5);
+		subCatPart.add(paragraph);
+
+		// add a table
+		createTable(subCatPart);
+
+		// now add all this to the document
+		document.add(catPart);
+
+		// Next section
+		anchor = new Anchor("Second Chapter", catFont);
+		anchor.setName("Second Chapter");
+
+		// Second parameter is the number of the chapter
+		catPart = new Chapter(new Paragraph(anchor), 1);
+
+		subPara = new Paragraph("Subcategory", subFont);
+		subCatPart = catPart.addSection(subPara);
+		subCatPart.add(new Paragraph("This is a very important message"));
+
+		// now add all this to the document
+		document.add(catPart);
+
+	}
+
+	private static void createTable(Section subCatPart) throws BadElementException {
+		PdfPTable table = new PdfPTable(3);
+
+		// t.setBorderColor(BaseColor.GRAY);
+		// t.setPadding(4);
+		// t.setSpacing(4);
+		// t.setBorderWidth(1);
+
+		PdfPCell c1 = new PdfPCell(new Phrase("Table Header 1"));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(c1);
+
+		c1 = new PdfPCell(new Phrase("Table Header 2"));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(c1);
+
+		c1 = new PdfPCell(new Phrase("Table Header 3"));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(c1);
+		table.setHeaderRows(1);
+
+		table.addCell("1.0");
+		table.addCell("1.1");
+		table.addCell("1.2");
+		table.addCell("2.1");
+		table.addCell("2.2");
+		table.addCell("2.3");
+
+		subCatPart.add(table);
+
+	}
+
+	private static void createList(Section subCatPart) {
+		List list = new List(true, false, 10);
+		list.add(new ListItem("First point"));
+		list.add(new ListItem("Second point"));
+		list.add(new ListItem("Third point"));
+		subCatPart.add(list);
+	}
+
+	private static void addEmptyLine(Paragraph paragraph, int number) {
+		for (int i = 0; i < number; i++) {
+			paragraph.add(new Paragraph(" "));
+		}
+	}
+
+	private PdfPCell getImageCell(byte[] imageByteArray) throws IOException, BadElementException {
+		// Image image =
+		// Image.getInstance(imageUtils.getResizedImageByteArrayFromByteArray(imageByteArray));
+		// image.scalePercent(70);
+		Paragraph p = new Paragraph();
+		// p.add(new Chunk(image, 0, 0, true));
+		return new PdfPCell(p);
+	}
 
 	private PdfPTable createTable(Integer colNumber) {
 		PdfPTable table = new PdfPTable(colNumber);
@@ -243,6 +349,22 @@ public class PdfExporter {
 		Integer g = Integer.valueOf(hexColor.substring(3, 5), 16);
 		Integer b = Integer.valueOf(hexColor.substring(5, 7), 16);
 		return new BaseColor(r, g, b);
+	}
+	
+	private String getNullRepresentation(String method) {
+		if (method!=null && !method.equals("")) {
+			return method;
+		} else {
+			return "";
+		}
+	}
+
+	private String getIntNullRepresentation(int method) {
+		if (method == 0) {
+			return "";
+		} else {
+			return String.valueOf(method);
+		}
 	}
 
 }
