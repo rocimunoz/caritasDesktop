@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BadElementException;
@@ -19,20 +21,25 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.List;
+
 import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.reparadoras.caritas.CaritasGUI;
+import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Relative;
+import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 
 public class PdfExporter {
 
@@ -65,9 +72,14 @@ public class PdfExporter {
 	private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
 	private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
+	private RelativeDAO relativeDAO;
+
 	public File export(Program program, File file) throws DocumentException, IOException {
 
 		try {
+
+			relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+
 			HeaderFooterPageEvent event = new HeaderFooterPageEvent();
 			// Document document = new Document(PageSize.A4,
 			// DOCUMENT_MARGIN_LEFT, DOCUMENT_MARGIN_RIGHT, DOCUMENT_MARGIN_TOP
@@ -151,11 +163,9 @@ public class PdfExporter {
 		paragraph.add(new Paragraph("Tfno. contacto  " + address.getTelephoneContact(), TITLE_10_FONT));
 		addEmptyLine(paragraph, 1);
 		document.add(paragraph);
-		
+
 		// Lets write a big header
 	}
-
-	
 
 	private void addHome(Document document, Home home) throws DocumentException {
 
@@ -164,51 +174,123 @@ public class PdfExporter {
 		paragraph.add(new Paragraph("DATOS VIVIENDA", TITLE_10_FONT_BOLD));
 		addEmptyLine(paragraph, 1);
 		paragraph.add(new Paragraph("Tipo: " + "", TITLE_10_FONT));
-		paragraph.add(new Paragraph("Régimen Tenencia:  " + getNullRepresentation(home.getRegHolding()), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Número Habitaciones:  " + getIntNullRepresentation(home.getNumberRooms()),TITLE_10_FONT));
-		paragraph.add(new Paragraph("Número personas que residen:  " + getIntNullRepresentation(home.getNumberPeople()),TITLE_10_FONT));
-		paragraph.add(new Paragraph("Número familias nucleares:  " + getIntNullRepresentation(home.getNumberFamilies()),TITLE_10_FONT));
+		paragraph
+				.add(new Paragraph("Régimen Tenencia:  " + getNullRepresentation(home.getRegHolding()), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Número Habitaciones:  " + getIntNullRepresentation(home.getNumberRooms()),
+				TITLE_10_FONT));
+		paragraph.add(new Paragraph("Número personas que residen:  " + getIntNullRepresentation(home.getNumberPeople()),
+				TITLE_10_FONT));
+		paragraph.add(new Paragraph("Número familias nucleares:  " + getIntNullRepresentation(home.getNumberFamilies()),
+				TITLE_10_FONT));
 		paragraph.add(new Paragraph("Otros datos:  " + getNullRepresentation(home.getOtherInfo()), TITLE_10_FONT));
 		addEmptyLine(paragraph, 1);
 		document.add(paragraph);
-		
+
 		// Lets write a big header
 	}
-	
-	private void addFamily(Document document, Family family) throws DocumentException {
 
-		Paragraph paragraph = new Paragraph();
+	private void addFamily(Document document, Family family) throws DocumentException, IOException {
 
-		paragraph.add(new Paragraph("COMPOSICIÓN FAMILIAR", TITLE_10_FONT_BOLD));
-		addEmptyLine(paragraph, 1);
+		List<Relative> relatives = new ArrayList<Relative>();
+		relatives = family.getRelatives();
+
+		Relative relativeFilter = new Relative();
+		relativeFilter.setFamily(family);
+		relatives = relativeDAO.findRelative(relativeFilter);
+
+		Paragraph paragraphtitulo = new Paragraph();
+
+		paragraphtitulo.add(new Paragraph("COMPOSICIÓN FAMILIAR", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraphtitulo, 1);
+
+		PdfPTable table = new PdfPTable(5);
+		table.setTotalWidth(new float[] { 100, 100, 100, 100, 100 });
+		table.setLockedWidth(true);
+
+		// first row
+		PdfPCell cell = new PdfPCell(new Phrase("PARENTESCO", TITLE_10_FONT_BOLD));
+		cell.setFixedHeight(30);
+		cell.setBorder(Rectangle.BOX);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(cell);
+		// second row
+		cell = new PdfPCell(new Phrase("APELLIDOS", TITLE_10_FONT_BOLD));
+		cell.setFixedHeight(30);
+		cell.setBorder(Rectangle.BOX);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(cell);
+
+		// third row
+		cell = new PdfPCell(new Phrase("NOMBRE", TITLE_10_FONT_BOLD));
+		cell.setFixedHeight(30);
+		cell.setBorder(Rectangle.BOX);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(cell);
+
+		// third row
+		cell = new PdfPCell(new Phrase("F.NAC", TITLE_10_FONT_BOLD));
+		cell.setFixedHeight(30);
+		cell.setBorder(Rectangle.BOX);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(cell);
+
+		// third row
+		cell = new PdfPCell(new Phrase("SITUACION", TITLE_10_FONT_BOLD));
+		cell.setFixedHeight(30);
+		cell.setBorder(Rectangle.BOX);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		table.addCell(cell);
+		table.setHeaderRows(1);
+		if (relatives != null && !relatives.isEmpty()) {
+
+			for (Relative relative : relatives) {
+				cell = new PdfPCell(new Phrase(relative.getRelationShip(), TITLE_10_FONT));
+				cell.setFixedHeight(30);
+				cell.setBorder(Rectangle.BOX);
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell);
+				cell = new PdfPCell(new Phrase(relative.getSurname(), TITLE_10_FONT));
+				cell.setFixedHeight(30);
+				cell.setBorder(Rectangle.BOX);
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell);
+				cell = new PdfPCell(new Phrase(relative.getName(), TITLE_10_FONT));
+				cell.setFixedHeight(30);
+				cell.setBorder(Rectangle.BOX);
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell);
+				cell = new PdfPCell(new Phrase("Fecha", TITLE_10_FONT));
+				cell.setFixedHeight(30);
+				cell.setBorder(Rectangle.BOX);
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell);
+				cell = new PdfPCell(new Phrase(relative.getSituation(), TITLE_10_FONT));
+				cell.setFixedHeight(30);
+				cell.setBorder(Rectangle.BOX);
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				table.addCell(cell);
+			}
+		}
+
+		Paragraph paragrap = new Paragraph();
+
+		paragrap.add(new Paragraph("Otros datos " + family.getOtherInfo(), TITLE_10_FONT_BOLD));
+
+		//BaseFont base = BaseFont.createFont("C:\\Winodws\\fonts\\wingding_0.ttf", BaseFont.IDENTITY_H, false);
+		//Font font = new Font(base, 16f, Font.BOLD);
+		//char checked='\u00FE';
+		//char unchecked='\u00A8';
 		
 		
-		// Second parameter is the number of the chapter
-		Anchor anchor = new Anchor("First Chapter", catFont);
-		anchor.setName("First Chapter");
-				Chapter catPart = new Chapter(new Paragraph(anchor), 1);
+		document.add(paragraphtitulo);
 
-				Paragraph subPara = new Paragraph("Subcategory 1", subFont);
-				Section subCatPart = catPart.addSection(subPara);
-				subCatPart.add(new Paragraph("Hello"));
+		document.add(table);
 
-				subPara = new Paragraph("Subcategory 2", subFont);
-				subCatPart = catPart.addSection(subPara);
-				subCatPart.add(new Paragraph("Paragraph 1"));
-				subCatPart.add(new Paragraph("Paragraph 2"));
-				subCatPart.add(new Paragraph("Paragraph 3"));
-
-				
-				addEmptyLine(paragraph, 5);
-				subCatPart.add(paragraph);
-
-				// add a table
-				createTable(subCatPart);
+		document.add(paragrap);
 		
+		//document.add(new Paragraph(String.valueOf(checked),font));
 		
-		
-		addEmptyLine(paragraph, 1);
-		document.add(subCatPart);
+		//document.add(new Paragraph(String.valueOf(unchecked),font));
 		
 		// Lets write a big header
 	}
@@ -231,7 +313,7 @@ public class PdfExporter {
 		subCatPart.add(new Paragraph("Paragraph 3"));
 
 		// add a list
-		createList(subCatPart);
+		// createList(subCatPart);
 		Paragraph paragraph = new Paragraph();
 		addEmptyLine(paragraph, 5);
 		subCatPart.add(paragraph);
@@ -290,14 +372,6 @@ public class PdfExporter {
 
 	}
 
-	private static void createList(Section subCatPart) {
-		List list = new List(true, false, 10);
-		list.add(new ListItem("First point"));
-		list.add(new ListItem("Second point"));
-		list.add(new ListItem("Third point"));
-		subCatPart.add(list);
-	}
-
 	private static void addEmptyLine(Paragraph paragraph, int number) {
 		for (int i = 0; i < number; i++) {
 			paragraph.add(new Paragraph(" "));
@@ -350,9 +424,9 @@ public class PdfExporter {
 		Integer b = Integer.valueOf(hexColor.substring(5, 7), 16);
 		return new BaseColor(r, g, b);
 	}
-	
+
 	private String getNullRepresentation(String method) {
-		if (method!=null && !method.equals("")) {
+		if (method != null && !method.equals("")) {
 			return method;
 		} else {
 			return "";
