@@ -444,7 +444,7 @@ private void addAuthorizationType(Document document, AuthorizationType atype) th
 				indocumentado= new Phrase(this.getCheckFalse(noTab,indocumentadoCaption));
 				irregular= new Phrase(this.getCheckFalse(noTab,irregularCaption));
 			} else if (atypeBBDD.getDescription().equals("Autorización Residencia y Trabajo")) {
-				regular = new Phrase(this.getCheckTrue(tab,regularCaption));
+				regular = new Phrase(this.getCheckTrue(noTab,regularCaption));
 				residencia= new Phrase(this.getCheckFalse(tab,residenciaCaption));
 				residenciaTrabajo= new Phrase(this.getCheckTrue(tab,residenciaTrabajoCaption));
 				estudios= new Phrase(this.getCheckFalse(tab,estudiosCaption));
