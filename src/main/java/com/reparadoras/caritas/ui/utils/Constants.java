@@ -79,7 +79,7 @@ public  class Constants {
 				return "NLE";
 			} else if (sType.getDescription().equals("Sólo sabe leer y escribir")) {
 				return "SLE";
-			} else if (sType.getDescription().equals("Infanil")) {
+			} else if (sType.getDescription().equals("Infantil")) {
 				return "I";
 			} else if (sType.getDescription().equals("Primaria")) {
 				return "P";
