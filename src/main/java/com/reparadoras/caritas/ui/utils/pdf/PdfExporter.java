@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Color;
+
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
@@ -28,14 +30,22 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.BaseField;
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfBorderDictionary;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfFormField;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.RadioCheckField;
 import com.reparadoras.caritas.CaritasGUI;
+import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.model.Address;
+import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Family;
+import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
@@ -73,27 +83,30 @@ public class PdfExporter {
 	private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
 	private RelativeDAO relativeDAO;
+	private AuthorizationTypeDAO authorizationTypeDAO;
 
 	public File export(Program program, File file) throws DocumentException, IOException {
 
 		try {
 
 			relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+			authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 			HeaderFooterPageEvent event = new HeaderFooterPageEvent();
-			// Document document = new Document(PageSize.A4,
-			// DOCUMENT_MARGIN_LEFT, DOCUMENT_MARGIN_RIGHT, DOCUMENT_MARGIN_TOP
-			// + event.getTableHeight(), DOCUMENT_MARGIN_BOTTOM);
 
 			Document document = new Document();
-			PdfWriter.getInstance(document, new FileOutputStream(file));
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+
 			document.open();
+
 			addMetaData(document);
 			addTitlePage(document);
 			// addContent(document);
 			addAddress(document, program.getFamily().getHome().getAddress());
 			addHome(document, program.getFamily().getHome());
 			addFamily(document, program.getFamily());
+			addFamilyType(document, program.getFamily());
+			addAuthorizationType(document, program.getAuthorizationType());
 			document.close();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -272,27 +285,251 @@ public class PdfExporter {
 			}
 		}
 
-		Paragraph paragrap = new Paragraph();
-
-		paragrap.add(new Paragraph("Otros datos " + family.getOtherInfo(), TITLE_10_FONT_BOLD));
-
-		//BaseFont base = BaseFont.createFont("C:\\Winodws\\fonts\\wingding_0.ttf", BaseFont.IDENTITY_H, false);
-		//Font font = new Font(base, 16f, Font.BOLD);
-		//char checked='\u00FE';
-		//char unchecked='\u00A8';
-		
-		
 		document.add(paragraphtitulo);
 
 		document.add(table);
 
+	}
+
+	private void addFamilyType(Document document, Family family) throws DocumentException, IOException {
+
+		Paragraph paragraphtitulo = new Paragraph();
+
+		paragraphtitulo.add(new Paragraph("Tipo de familia", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraphtitulo, 1);
+
+		PdfPTable tableChecks = new PdfPTable(5);
+		tableChecks.setWidthPercentage(100);
+
+		Phrase sola = null;
+		Phrase parejaHijos = null;
+		Phrase parejaSinHijos = null ;
+		Phrase monoparental = null; 
+		Phrase otra = null ; 
+
+		if (family.getFamilyType() != null) {
+			FamilyType type = family.getFamilyType();
+			if (type.getDescription().equals("Sola")) {
+				sola = new Phrase(this.getCheckTrue("","SOLA"));
+				parejaHijos= new Phrase(this.getCheckFalse("","PAREJA CON HIJOS"));
+				parejaSinHijos= new Phrase(this.getCheckFalse("","PAREJA SIN HIJOS"));
+				monoparental= new Phrase(this.getCheckFalse("","MONOPARENTAL"));
+				otra= new Phrase(this.getCheckFalse("","OTRA"));
+			} else if (type.getDescription().equals("Pareja con Hijos")) {
+				sola= new Phrase(this.getCheckFalse("","SOLA"));
+				parejaHijos= new Phrase(this.getCheckTrue("","PAREJA CON HIJOS"));
+				parejaSinHijos= new Phrase(this.getCheckFalse("","PAREJA SIN HIJOS"));
+				monoparental= new Phrase(this.getCheckFalse("","MONOPARENTAL"));
+				otra= new Phrase(this.getCheckFalse("","OTRA"));
+			} else if (type.getDescription().equals("Pareja sin Hijos")) {
+				sola= new Phrase(this.getCheckFalse("","SOLA"));
+				parejaHijos= new Phrase(this.getCheckFalse("","PAREJA CON HIJOS"));
+				parejaSinHijos= new Phrase(this.getCheckTrue("","PAREJA SIN HIJOS"));
+				monoparental= new Phrase(this.getCheckFalse("","MONOPARENTAL"));
+				otra= new Phrase(this.getCheckFalse("","OTRA"));
+			} else if (type.getDescription().equals("Monoparental")) {
+				sola= new Phrase(this.getCheckFalse("","SOLA"));
+				parejaHijos= new Phrase(this.getCheckFalse("","PAREJA CON HIJOS"));
+				parejaSinHijos= new Phrase(this.getCheckFalse("","PAREJA SIN HIJOS"));
+				monoparental= new Phrase(this.getCheckTrue("", "MONOPARENTAL"));
+				otra = new Phrase(this.getCheckFalse("","OTRA"));
+			} else if (type.getDescription().equals("Otra")) {
+				sola= new Phrase(this.getCheckFalse("","SOLA"));
+				parejaHijos= new Phrase(this.getCheckFalse("","PAREJA CON HIJOS"));
+				parejaSinHijos= new Phrase(this.getCheckFalse("","PAREJA SIN HIJOS"));
+				monoparental= new Phrase(this.getCheckFalse("","MONOPARENTAL"));
+				otra= new Phrase(this.getCheckTrue("","SOLA"));
+			}
+		}
+
+		// Sola
+		PdfPCell cellCheckTypeFamily = new PdfPCell();
+		cellCheckTypeFamily = new PdfPCell(sola);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		// Pareja Con hijos
+		cellCheckTypeFamily = new PdfPCell(parejaHijos);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		// Pareja Sin hijos
+		cellCheckTypeFamily = new PdfPCell(parejaSinHijos);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		// Monoparental
+		cellCheckTypeFamily = new PdfPCell(monoparental);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		// otra
+		cellCheckTypeFamily = new PdfPCell(otra);
+		cellCheckTypeFamily.setFixedHeight(30);
+		cellCheckTypeFamily.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cellCheckTypeFamily.setBorder(Rectangle.NO_BORDER);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+		
+
+		Paragraph paragrap = new Paragraph();
+
+		paragrap.add(new Paragraph("Otros datos:  " + getNullRepresentation(family.getOtherInfo()), TITLE_10_FONT));
+
+		addEmptyLine(paragrap, 1);
+
+		document.add(paragraphtitulo);
+		document.add(tableChecks);
 		document.add(paragrap);
+
 		
-		//document.add(new Paragraph(String.valueOf(checked),font));
+
+	}
+	
+	private void addAuthorizationType(Document document, AuthorizationType atype) throws DocumentException, IOException{
 		
-		//document.add(new Paragraph(String.valueOf(unchecked),font));
 		
-		// Lets write a big header
+		
+		Paragraph paragraphtitulo = new Paragraph();
+
+		paragraphtitulo.add(new Paragraph("TIPO DE AUTORIZACIÓN", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraphtitulo, 1);
+
+		
+
+		Phrase regular = null;
+		Phrase residencia = null;
+		Phrase residenciaTrabajo = null ;
+		Phrase estudios = null; 
+		Phrase turismo = null ; 
+		Phrase refugiado = null;
+		Phrase indocumentado = null;
+		Phrase irregular = null;
+		
+		String tab = "     ";
+		String noTab ="";
+
+		if (atype != null) {
+			AuthorizationType atypeFilter = new AuthorizationType();
+			atypeFilter.setId(atype.getId());
+			AuthorizationType atypeBBDD = authorizationTypeDAO.findAuthorizationType(atypeFilter);
+			if (atypeBBDD.getDescription().equals("Autorización Residencia")) {
+				regular = new Phrase(this.getCheckTrue(noTab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckTrue(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckFalse(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckFalse(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckFalse(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckFalse(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckFalse(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckFalse(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			} else if (atypeBBDD.getDescription().equals("Autorización Residencia y Trabajo")) {
+				regular = new Phrase(this.getCheckTrue(tab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckFalse(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckTrue(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckFalse(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckFalse(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckFalse(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckFalse(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckFalse(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			} else if (atypeBBDD.getDescription().equals("Estudios")) {
+				regular = new Phrase(this.getCheckTrue(noTab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckFalse(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckFalse(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckTrue(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckFalse(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckFalse(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckFalse(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckFalse(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			} else if (atypeBBDD.getDescription().equals("Turismo")) {
+				regular = new Phrase(this.getCheckTrue(noTab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckFalse(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckFalse(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckFalse(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckTrue(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckFalse(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckFalse(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckFalse(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			} else if (atypeBBDD.getDescription().equals("Refugiado")) {
+				regular = new Phrase(this.getCheckTrue(noTab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckFalse(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckFalse(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckFalse(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckFalse(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckTrue(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckFalse(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckFalse(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			} else if (atypeBBDD.getDescription().equals("Indocumentado")) {
+				regular = new Phrase(this.getCheckFalse(noTab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckFalse(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckFalse(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckFalse(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckFalse(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckFalse(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckTrue(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckFalse(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			}
+			else if (atypeBBDD.getDescription().equals("Irregular")) {
+				regular = new Phrase(this.getCheckFalse(noTab,"SITUACION ADMTVA. REGULAR"));
+				residencia= new Phrase(this.getCheckFalse(tab,"AUTORIZACION RESIDENCIA"));
+				residenciaTrabajo= new Phrase(this.getCheckFalse(tab,"AUT. RESIDENCIA Y TRABAJO"));
+				estudios= new Phrase(this.getCheckFalse(tab,"ESTUDIOS"));
+				turismo= new Phrase(this.getCheckFalse(tab,"TURISMO"));
+				refugiado= new Phrase(this.getCheckFalse(tab,"REFUGIADO"));
+				indocumentado= new Phrase(this.getCheckFalse(noTab,"INDOCUMENTADO"));
+				irregular= new Phrase(this.getCheckTrue(noTab,"SITUACIÓN ADMTVA IRREGULAR"));
+			}
+		}
+
+		PdfPTable tableChecks = new PdfPTable(1);
+		tableChecks.setWidthPercentage(100);
+		
+		PdfPCell cellCheckTypeFamily = new PdfPCell();
+		cellCheckTypeFamily = new PdfPCell(regular);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+		cellCheckTypeFamily = new PdfPCell(residencia);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		
+		cellCheckTypeFamily = new PdfPCell(residenciaTrabajo);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		
+		cellCheckTypeFamily = new PdfPCell(estudios);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		
+		cellCheckTypeFamily = new PdfPCell(turismo);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+		cellCheckTypeFamily = new PdfPCell(refugiado);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+		cellCheckTypeFamily = new PdfPCell(indocumentado);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+		cellCheckTypeFamily = new PdfPCell(irregular);
+		setCellStyleTableNoBorder(cellCheckTypeFamily);
+		tableChecks.addCell(cellCheckTypeFamily);
+		
+
+		document.add(paragraphtitulo);
+		document.add(tableChecks);
+		
 	}
 
 	private static void addContent(Document document) throws DocumentException {
@@ -439,6 +676,46 @@ public class PdfExporter {
 		} else {
 			return String.valueOf(method);
 		}
+	}
+
+	private Paragraph getCheckTrue(String tab, String message) throws DocumentException, IOException {
+
+		String path = PdfExporter.class.getResource("/com/reparadoras/caritas/ui/utils/pdf/WINGDING.TTF").getPath();
+		BaseFont base = BaseFont.createFont(path, BaseFont.IDENTITY_H, false);
+
+		Font font = new Font(base, 12f, Font.NORMAL);
+		char checked = '\u00FE';
+		char unchecked = '\u00A8';
+		Paragraph paragraphTabulacion = new Paragraph(tab);
+		Paragraph paragraph =new Paragraph(String.valueOf(checked), font);
+		Paragraph paragraphMessage = new Paragraph(" " + message, TITLE_10_FONT);
+		paragraph.add(paragraphMessage);
+		paragraphTabulacion.add(paragraph);
+		return paragraphTabulacion;
+
+	}
+
+	private Paragraph getCheckFalse(String tab, String message) throws DocumentException, IOException {
+		String path = PdfExporter.class.getResource("/com/reparadoras/caritas/ui/utils/pdf/WINGDING.TTF").getPath();
+		BaseFont base = BaseFont.createFont(path, BaseFont.IDENTITY_H, false);
+
+		Font font = new Font(base, 12f, Font.NORMAL);
+		char checked = '\u00FE';
+		char unchecked = '\u00A8';
+		Paragraph paragraphTabulacion = new Paragraph(tab);
+		Paragraph paragraph =new Paragraph(String.valueOf(unchecked), font);
+		Paragraph paragraphMessage = new Paragraph(" " + message, TITLE_10_FONT);
+		paragraph.add(paragraphMessage);
+		paragraphTabulacion.add(paragraph);
+		return paragraphTabulacion;
+	}
+	
+	private PdfPCell setCellStyleTableNoBorder(PdfPCell cell){
+		cell.setFixedHeight(30);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+		
 	}
 
 }
