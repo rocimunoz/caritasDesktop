@@ -1539,12 +1539,19 @@ public class JManageProgram extends AbstractJInternalFrame {
 					}
 					try {
 						exporter.export(selectedProgram, file);
+						
+						JOptionPane.showMessageDialog(null, "Se ha generado el pdf correctamente.");
+						
 					} catch (DocumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
+								"Generacion PDF", JOptionPane.ERROR_MESSAGE);
+						logger.info(e);
+						
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						
+						JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
+								"Generacion PDF", JOptionPane.ERROR_MESSAGE);
+						logger.info(e);
 					}
 
 				}

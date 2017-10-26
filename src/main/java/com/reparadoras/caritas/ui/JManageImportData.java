@@ -38,10 +38,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -476,14 +473,14 @@ public class JManageImportData extends AbstractJInternalFrame {
 		try {
 			// this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			InputStream targetStream = new FileInputStream(file);
-			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
+			XSSFWorkbook workbook = new XSSFWorkbook(targetStream);
 
 			// Acceso a la primera hoja del documento
-			HSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet = workbook.getSheetAt(0);
 
-			HSSFSheet sheetRelatives = workbook.getSheetAt(1);
-			HSSFSheet sheetIncomes = workbook.getSheetAt(2);
-			HSSFSheet sheetExpenses = workbook.getSheetAt(3);
+			XSSFSheet sheetRelatives = workbook.getSheetAt(1);
+			XSSFSheet sheetIncomes = workbook.getSheetAt(2);
+			XSSFSheet sheetExpenses = workbook.getSheetAt(3);
 			
 
 			List<String> data = new ArrayList<String>();
@@ -532,7 +529,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			HSSFRow row = (HSSFRow) itRows.next();
+			XSSFRow row = (XSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -541,7 +538,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
+						XSSFCell cell = (XSSFCell) cells.next();
 						key = extractDataRow_Sheet0(cell, mapProgram, key);
 					}
 
@@ -555,8 +552,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 						if (mapProgram.get(key).getPeople().isActive() == null) {
 							mapProgram.get(key).getPeople().setActive(false);
 						}
-						//peopleDAO.insert(mapProgram.get(key).getPeople());
-						//programDAO.insertExcel(mapProgram.get(key));
+						peopleDAO.insert(mapProgram.get(key).getPeople());
+						programDAO.insertExcel(mapProgram.get(key));
 						
 
 						textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
@@ -578,7 +575,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		}
 	}
 	
-	public String extractDataRow_Sheet0(HSSFCell cell, Map<String, Program> mapProgram,String key) {
+	public String extractDataRow_Sheet0(XSSFCell cell, Map<String, Program> mapProgram,String key) {
 
 		Program program = new Program();
 		People people = new People();
@@ -761,7 +758,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			HSSFRow row = (HSSFRow) itRows.next();
+			XSSFRow row = (XSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -770,7 +767,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
+						XSSFCell cell = (XSSFCell) cells.next();
 						key = extractDataRow_Sheet1(cell, mapRelatives, key);
 					}
 					
@@ -822,7 +819,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 
-	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
+	public String extractDataRow_Sheet1(XSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
 
 		String primaryKey = key;
 		List<Relative> listRelatives = null;
@@ -882,7 +879,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			HSSFRow row = (HSSFRow) itRows.next();
+			XSSFRow row = (XSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -891,7 +888,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
+						XSSFCell cell = (XSSFCell) cells.next();
 						key = extractDataRow_Sheet2(cell, mapIncomes, key);
 					}
 
@@ -937,7 +934,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 
-	public String extractDataRow_Sheet2(HSSFCell cell, Map<String, List<Income>> mapIncomes, String key){
+	public String extractDataRow_Sheet2(XSSFCell cell, Map<String, List<Income>> mapIncomes, String key){
 		String primaryKey = key;
 		List<Income> listIncomes = null;
 		Income income = null;
@@ -982,7 +979,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			HSSFRow row = (HSSFRow) itRows.next();
+			XSSFRow row = (XSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -991,7 +988,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						HSSFCell cell = (HSSFCell) cells.next();
+						XSSFCell cell = (XSSFCell) cells.next();
 						key = extractDataRow_Sheet3(cell, mapExpenses, key);
 					}
 
@@ -1037,7 +1034,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 	
-	public String extractDataRow_Sheet3(HSSFCell cell, Map<String, List<Expense>> mapExpenses, String key){
+	public String extractDataRow_Sheet3(XSSFCell cell, Map<String, List<Expense>> mapExpenses, String key){
 		String primaryKey = key;
 		List<Expense> listExpenses = null;
 		Expense expense = null;

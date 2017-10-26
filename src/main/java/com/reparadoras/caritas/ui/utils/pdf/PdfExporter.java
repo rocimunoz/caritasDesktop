@@ -5,12 +5,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Color;
 
 import com.itextpdf.text.Anchor;
@@ -40,86 +42,87 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.RadioCheckField;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 import com.reparadoras.caritas.CaritasGUI;
 import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
+import com.reparadoras.caritas.dao.ExpensesDAO;
+import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.JobSituationDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
+import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
+import com.reparadoras.caritas.ui.JManageProgram;
 
 public class PdfExporter {
 
-	// private static final Log LOG = LogFactory.getLog(PdfExporter.class);
+	static final Logger logger = Logger.getLogger(JManageProgram.class);
 
 	private static final String PDF_EXTENSION = ".pdf";
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-	private static final String OBSERVATION_TYPES_SEPARATOR = "|";
-	private static final float DOCUMENT_MARGIN_LEFT = 36;
-	private static final float DOCUMENT_MARGIN_RIGHT = 36;
-	private static final float DOCUMENT_MARGIN_TOP = 10;
-	private static final float DOCUMENT_MARGIN_BOTTOM = 50;
-	private static final String TABLE_HEADER_BACKGROUND_COLOR = "#E2001A";
-	private static final String TABLE_CELL_HEADER_BACKGROUND_COLOR = "#EDEDED";
-	private static final float MINIMUN_HEIGHT_CELLS = 20;
-	private static final float SPACING_BEFORE_TABLE = 10;
-	private static final float SPACING_AFTER_TABLE = 20;
-	private static final int TABLES_COL_NUMBER = 4;
-	private static final int RESOLUTION_DATA_TABLE_COL_NUMBER = 2;
-	private static final Font TITLE_FONT = new Font(FontFamily.HELVETICA, 20, Font.NORMAL);
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	
+
+
 	private static final Font TITLE_12_FONT = new Font(FontFamily.HELVETICA, 12, Font.NORMAL);
 	private static final Font TITLE_10_FONT_BOLD = new Font(FontFamily.HELVETICA, 10, Font.BOLD);
 	private static final Font TITLE_10_FONT = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
-	private static final Font TABLE_HEADER_FONT = new Font(FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
-	private static final Font TABLE_CELL_HEADER_FONT = new Font(FontFamily.HELVETICA, 9, Font.BOLD);
-	private static final Font TABLE_CELL_FONT = new Font(FontFamily.HELVETICA, 9, Font.NORMAL);
+	
 
-	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.RED);
-	private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
-	private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+
 
 	private RelativeDAO relativeDAO;
 	private AuthorizationTypeDAO authorizationTypeDAO;
 	private JobSituationDAO jobSituationDAO;
 	private StudiesDAO studiesDAO;
+	private IncomesDAO incomesDAO;
+	private ExpensesDAO expensesDAO;
 
 	public File export(Program program, File file) throws DocumentException, IOException {
 
+		
+		
 		try {
 
 			relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 			authorizationTypeDAO = new AuthorizationTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 			jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 			studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-
-			HeaderFooterPageEvent event = new HeaderFooterPageEvent();
+			expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+			incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 			Document document = new Document();
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+			PdfWriter.getInstance(document, new FileOutputStream(file));
 
 			document.open();
 
 			addMetaData(document);
 			addTitlePage(document);
-			addAddress(document, program.getFamily().getHome().getAddress());
-			addHome(document, program.getFamily().getHome());
+			
+			addAddressAndHome(document, program.getFamily().getHome());
+			
+			
 			addFamily(document, program.getFamily());
 			addFamilyType(document, program.getFamily());
 			addAuthorizationType(document, program.getAuthorizationType());
 			addJobSituation(document, program.getJobSituation());
 			addStudies(document, program.getStudies());
+			addIncomes(document, program);
+			addExpenses(document, program);
 			document.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e);
+			throw e;
 		}
 
 		return file;
@@ -136,9 +139,9 @@ public class PdfExporter {
 	private void addTitlePage(Document document) throws DocumentException, MalformedURLException, IOException {
 		Paragraph paragraph = new Paragraph();
 		paragraph.setAlignment(Paragraph.ALIGN_RIGHT);
-		// We add one empty line
+		
 		addEmptyLine(paragraph, 1);
-		// Lets write a big header
+		
 		paragraph.add(new Paragraph("Nº SICCE _____________________", TITLE_12_FONT));
 		addEmptyLine(paragraph, 1);
 		paragraph.add(new Paragraph("F. ALTA _____________________", TITLE_12_FONT));
@@ -168,49 +171,56 @@ public class PdfExporter {
 
 		document.add(paragraph);
 		document.add(img);
-		// Start a new page
+		
 		document.newPage();
 	}
 
-	private void addAddress(Document document, Address address) throws DocumentException {
+	private void addAddressAndHome(Document document, Home home) throws DocumentException {
 
 		Paragraph paragraph = new Paragraph();
-		// paragraph.setAlignment(Paragraph.ALIGN_RIGHT);
+		
 		paragraph.add(new Paragraph("DIRECCION", TITLE_10_FONT_BOLD));
 		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("Municipio: " + getNullRepresentation(address.getTown()), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Calle:  " + getNullRepresentation(address.getStreet()), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Portal: " + address.getGate(), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Piso y Mano:  " + address.getFloor(), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Tfno. domicilio  " + address.getTelephone(), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Tfno. contacto  " + address.getTelephoneContact(), TITLE_10_FONT));
-		addEmptyLine(paragraph, 1);
-		document.add(paragraph);
+		paragraph.add(new Paragraph("Municipio: " + getNullRepresentation(home.getAddress().getTown()), TITLE_10_FONT));
+		
+		paragraph.add(new Paragraph("Calle:  " + getNullRepresentation(home.getAddress().getStreet()), TITLE_10_FONT));
+	
+		paragraph.add(new Paragraph("Portal: " + home.getAddress().getGate(), TITLE_10_FONT));
+		
+		paragraph.add(new Paragraph("Piso y Mano:  " + home.getAddress().getFloor(), TITLE_10_FONT));
+		
+		paragraph.add(new Paragraph("Tfno. domicilio  " + home.getAddress().getTelephone(), TITLE_10_FONT));
+		
+		paragraph.add(new Paragraph("Tfno. contacto  " + home.getAddress().getTelephoneContact(), TITLE_10_FONT));
+		addEmptyLine(paragraph,1);
+		
+		
+		
+		Paragraph paragraphHome = new Paragraph();
 
-		// Lets write a big header
+		paragraphHome.add(new Paragraph("DATOS VIVIENDA", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraphHome, 1);
+		paragraphHome.add(new Paragraph("Tipo: " + "", TITLE_10_FONT));
+		
+		paragraphHome.add(new Paragraph("Régimen Tenencia:  " + getNullRepresentation(home.getRegHolding()), TITLE_10_FONT));
+		
+		paragraphHome.add(new Paragraph("Número Habitaciones:  " + getIntNullRepresentation(home.getNumberRooms()),TITLE_10_FONT));
+		
+		paragraphHome.add(new Paragraph("Número personas que residen:  " + getIntNullRepresentation(home.getNumberPeople()),TITLE_10_FONT));
+		
+		paragraphHome.add(new Paragraph("Número familias nucleares:  " + getIntNullRepresentation(home.getNumberFamilies()),TITLE_10_FONT));
+		
+		paragraphHome.add(new Paragraph("Otros datos:  " + getNullRepresentation(home.getOtherInfo()), TITLE_10_FONT));
+		addEmptyLine(paragraphHome,1);
+		
+		document.add(paragraph);
+		
+		document.add(paragraphHome);
+
+		
 	}
 
-	private void addHome(Document document, Home home) throws DocumentException {
-
-		Paragraph paragraph = new Paragraph();
-
-		paragraph.add(new Paragraph("DATOS VIVIENDA", TITLE_10_FONT_BOLD));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("Tipo: " + "", TITLE_10_FONT));
-		paragraph
-				.add(new Paragraph("Régimen Tenencia:  " + getNullRepresentation(home.getRegHolding()), TITLE_10_FONT));
-		paragraph.add(new Paragraph("Número Habitaciones:  " + getIntNullRepresentation(home.getNumberRooms()),
-				TITLE_10_FONT));
-		paragraph.add(new Paragraph("Número personas que residen:  " + getIntNullRepresentation(home.getNumberPeople()),
-				TITLE_10_FONT));
-		paragraph.add(new Paragraph("Número familias nucleares:  " + getIntNullRepresentation(home.getNumberFamilies()),
-				TITLE_10_FONT));
-		paragraph.add(new Paragraph("Otros datos:  " + getNullRepresentation(home.getOtherInfo()), TITLE_10_FONT));
-		addEmptyLine(paragraph, 1);
-		document.add(paragraph);
-
-		// Lets write a big header
-	}
+	
 
 	private void addFamily(Document document, Family family) throws DocumentException, IOException {
 
@@ -227,70 +237,52 @@ public class PdfExporter {
 		addEmptyLine(paragraphtitulo, 1);
 
 		PdfPTable table = new PdfPTable(5);
-		table.setTotalWidth(new float[] { 100, 100, 100, 100, 100 });
+		table.setTotalWidth(new float[] { 100, 100, 100, 100, 100});
 		table.setLockedWidth(true);
 
 		// first row
 		PdfPCell cell = new PdfPCell(new Phrase("PARENTESCO", TITLE_10_FONT_BOLD));
-		cell.setFixedHeight(30);
-		cell.setBorder(Rectangle.BOX);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 		// second row
 		cell = new PdfPCell(new Phrase("APELLIDOS", TITLE_10_FONT_BOLD));
-		cell.setFixedHeight(30);
-		cell.setBorder(Rectangle.BOX);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 
 		// third row
 		cell = new PdfPCell(new Phrase("NOMBRE", TITLE_10_FONT_BOLD));
-		cell.setFixedHeight(30);
-		cell.setBorder(Rectangle.BOX);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 
 		// third row
 		cell = new PdfPCell(new Phrase("F.NAC", TITLE_10_FONT_BOLD));
-		cell.setFixedHeight(30);
-		cell.setBorder(Rectangle.BOX);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 
 		// third row
 		cell = new PdfPCell(new Phrase("SITUACION", TITLE_10_FONT_BOLD));
-		cell.setFixedHeight(30);
-		cell.setBorder(Rectangle.BOX);
-		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 		table.setHeaderRows(1);
 		if (relatives != null && !relatives.isEmpty()) {
 
 			for (Relative relative : relatives) {
 				cell = new PdfPCell(new Phrase(relative.getRelationShip(), TITLE_10_FONT));
-				cell.setFixedHeight(30);
-				cell.setBorder(Rectangle.BOX);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
 				cell = new PdfPCell(new Phrase(relative.getSurname(), TITLE_10_FONT));
-				cell.setFixedHeight(30);
-				cell.setBorder(Rectangle.BOX);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
 				cell = new PdfPCell(new Phrase(relative.getName(), TITLE_10_FONT));
-				cell.setFixedHeight(30);
-				cell.setBorder(Rectangle.BOX);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
-				cell = new PdfPCell(new Phrase("Fecha", TITLE_10_FONT));
-				cell.setFixedHeight(30);
-				cell.setBorder(Rectangle.BOX);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				
+				
+				cell = new PdfPCell(new Phrase(sdf.format(relative.getDateBorn()), TITLE_10_FONT));
+				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
 				cell = new PdfPCell(new Phrase(relative.getSituation(), TITLE_10_FONT));
-				cell.setFixedHeight(30);
-				cell.setBorder(Rectangle.BOX);
-				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
 			}
 		}
@@ -316,6 +308,7 @@ public class PdfExporter {
 		Phrase parejaSinHijos = null ;
 		Phrase monoparental = null; 
 		Phrase otra = null ; 
+		Phrase noDisponible = null;
 
 		if (family.getFamilyType() != null) {
 			FamilyType type = family.getFamilyType();
@@ -350,39 +343,48 @@ public class PdfExporter {
 				monoparental= new Phrase(this.getCheckFalse("","MONOPARENTAL"));
 				otra= new Phrase(this.getCheckTrue("","SOLA"));
 			}
+			
+			
+			
+		}else{
+			sola= new Phrase(this.getCheckFalse("","SOLA"));
+			parejaHijos= new Phrase(this.getCheckFalse("","PAREJA CON HIJOS"));
+			parejaSinHijos= new Phrase(this.getCheckFalse("","PAREJA SIN HIJOS"));
+			monoparental= new Phrase(this.getCheckFalse("","MONOPARENTAL"));
+			otra= new Phrase(this.getCheckFalse("","SOLA"));
 		}
 
 		// Sola
-		PdfPCell cellCheckTypeFamily = new PdfPCell();
-		cellCheckTypeFamily = new PdfPCell(sola);
-		setCellStyleTableNoBorder(cellCheckTypeFamily);
-		tableChecks.addCell(cellCheckTypeFamily);
-		
+					PdfPCell cellCheckTypeFamily = new PdfPCell();
+					cellCheckTypeFamily = new PdfPCell(sola);
+					setCellStyleTableNoBorder(cellCheckTypeFamily);
+					tableChecks.addCell(cellCheckTypeFamily);
+					
 
-		// Pareja Con hijos
-		cellCheckTypeFamily = new PdfPCell(parejaHijos);
-		setCellStyleTableNoBorder(cellCheckTypeFamily);
-		tableChecks.addCell(cellCheckTypeFamily);
-		
+					// Pareja Con hijos
+					cellCheckTypeFamily = new PdfPCell(parejaHijos);
+					setCellStyleTableNoBorder(cellCheckTypeFamily);
+					tableChecks.addCell(cellCheckTypeFamily);
+					
 
-		// Pareja Sin hijos
-		cellCheckTypeFamily = new PdfPCell(parejaSinHijos);
-		setCellStyleTableNoBorder(cellCheckTypeFamily);
-		tableChecks.addCell(cellCheckTypeFamily);
-		
+					// Pareja Sin hijos
+					cellCheckTypeFamily = new PdfPCell(parejaSinHijos);
+					setCellStyleTableNoBorder(cellCheckTypeFamily);
+					tableChecks.addCell(cellCheckTypeFamily);
+					
 
-		// Monoparental
-		cellCheckTypeFamily = new PdfPCell(monoparental);
-		setCellStyleTableNoBorder(cellCheckTypeFamily);
-		tableChecks.addCell(cellCheckTypeFamily);
-		
+					// Monoparental
+					cellCheckTypeFamily = new PdfPCell(monoparental);
+					setCellStyleTableNoBorder(cellCheckTypeFamily);
+					tableChecks.addCell(cellCheckTypeFamily);
+					
 
-		// otra
-		cellCheckTypeFamily = new PdfPCell(otra);
-		cellCheckTypeFamily.setFixedHeight(30);
-		cellCheckTypeFamily.setVerticalAlignment(Element.ALIGN_MIDDLE);
-		cellCheckTypeFamily.setBorder(Rectangle.NO_BORDER);
-		tableChecks.addCell(cellCheckTypeFamily);
+					// otra
+					cellCheckTypeFamily = new PdfPCell(otra);
+					cellCheckTypeFamily.setFixedHeight(30);
+					cellCheckTypeFamily.setVerticalAlignment(Element.ALIGN_MIDDLE);
+					cellCheckTypeFamily.setBorder(Rectangle.NO_BORDER);
+					tableChecks.addCell(cellCheckTypeFamily);
 		
 		
 
@@ -500,6 +502,16 @@ private void addAuthorizationType(Document document, AuthorizationType atype) th
 				irregular= new Phrase(this.getCheckTrue(noTab,irregularCaption));
 			}
 		}
+		else{
+			regular = new Phrase(this.getCheckFalse(noTab,regularCaption));
+			residencia= new Phrase(this.getCheckFalse(tab,residenciaCaption));
+			residenciaTrabajo= new Phrase(this.getCheckFalse(tab,residenciaTrabajoCaption));
+			estudios= new Phrase(this.getCheckFalse(tab,estudiosCaption));
+			turismo= new Phrase(this.getCheckFalse(tab,turismoCaption));
+			refugiado= new Phrase(this.getCheckFalse(tab,refugiadoCaption));
+			indocumentado= new Phrase(this.getCheckFalse(noTab,indocumentadoCaption));
+			irregular= new Phrase(this.getCheckFalse(noTab,irregularCaption));
+		}
 
 		List<Phrase> listaCeldas =new ArrayList<Phrase>();
 		listaCeldas.addAll(Arrays.asList(regular, residencia, residenciaTrabajo, estudios, turismo, refugiado, indocumentado, irregular));
@@ -590,6 +602,13 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 			pensionista= new Phrase(this.getCheckFalse(noTab,pensionistaCaption));
 			otro= new Phrase(this.getCheckTrue(noTab,otroCaption));
 		}
+	}else{
+		parado = new Phrase(this.getCheckFalse(noTab,paradoCaption));
+		tNormalizado= new Phrase(this.getCheckFalse(noTab,tNormalizadoCaption));
+		tMarginal= new Phrase(this.getCheckFalse(noTab,tMarginalCaption));
+		hogar= new Phrase(this.getCheckFalse(noTab,hogarCaption));
+		pensionista= new Phrase(this.getCheckFalse(noTab,pensionistaCaption));
+		otro= new Phrase(this.getCheckFalse(noTab,otroCaption));
 	}
 
 	PdfPTable tableChecks = new PdfPTable(1);
@@ -734,6 +753,16 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 				fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
 				universidad= new Phrase(this.getCheckTrue(noTab,universidadCaption));
 			}
+		}else{
+			noLee = new Phrase(this.getCheckFalse(noTab,noLeeCaption));
+			lee= new Phrase(this.getCheckFalse(noTab,leeCaption));
+			infantil= new Phrase(this.getCheckFalse(noTab,infantilCaption));
+			primaria= new Phrase(this.getCheckFalse(noTab,primariaCaption));
+			secundaria= new Phrase(this.getCheckFalse(noTab,secundariaCaption));
+			bachillerato= new Phrase(this.getCheckFalse(noTab,bachilleratoCaption));
+			fpMedio= new Phrase(this.getCheckFalse(noTab,fpMedioCaption));
+			fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
+			universidad= new Phrase(this.getCheckFalse(noTab,universidadCaption));
 		}
 
 		PdfPTable tableChecks = new PdfPTable(2);
@@ -753,136 +782,187 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 		document.add(tableChecks);
 		
 	}
+	
+private void addIncomes(Document document, Program program) throws DocumentException, IOException{
+		
+		Double totalIncomes = 0.0;
+	
+		Paragraph paragraphtitulo = new Paragraph();
 
-	private static void addContent(Document document) throws DocumentException {
-		Anchor anchor = new Anchor("First Chapter", catFont);
-		anchor.setName("First Chapter");
+		paragraphtitulo.add(new Paragraph("SITUACIÓN ECONÓMICA", TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraphtitulo, 1);
+		
+		Paragraph subtitulo = new Paragraph();
 
-		// Second parameter is the number of the chapter
-		Chapter catPart = new Chapter(new Paragraph(anchor), 1);
+		subtitulo.add(new Paragraph("INGRESOS", TITLE_10_FONT));
+		addEmptyLine(subtitulo, 1);
+		
+		PdfPTable tableIncomes = new PdfPTable(4);
+		tableIncomes.setTotalWidth(new float[] { 120, 120, 120, 120 });
+		tableIncomes.setLockedWidth(true);
 
-		Paragraph subPara = new Paragraph("Subcategory 1", subFont);
-		Section subCatPart = catPart.addSection(subPara);
-		subCatPart.add(new Paragraph("Hello"));
+		// first row
+		PdfPCell cell = new PdfPCell(new Phrase("PERSONA", TITLE_10_FONT_BOLD));
+		setCellStyleTableWithBorder(cell);
+		tableIncomes.addCell(cell);
+		// second row
+		cell = new PdfPCell(new Phrase("CONCEPTO", TITLE_10_FONT_BOLD));
+		setCellStyleTableWithBorder(cell);
+		tableIncomes.addCell(cell);
 
-		subPara = new Paragraph("Subcategory 2", subFont);
-		subCatPart = catPart.addSection(subPara);
-		subCatPart.add(new Paragraph("Paragraph 1"));
-		subCatPart.add(new Paragraph("Paragraph 2"));
-		subCatPart.add(new Paragraph("Paragraph 3"));
+		// third row
+		cell = new PdfPCell(new Phrase("CANTIDAD", TITLE_10_FONT_BOLD));
+		setCellStyleTableWithBorder(cell);
+		tableIncomes.addCell(cell);
 
-		// add a list
-		// createList(subCatPart);
-		Paragraph paragraph = new Paragraph();
-		addEmptyLine(paragraph, 5);
-		subCatPart.add(paragraph);
+		// third row
+		cell = new PdfPCell(new Phrase("FECHA FIN", TITLE_10_FONT_BOLD));
+		setCellStyleTableWithBorder(cell);
+		tableIncomes.addCell(cell);
 
-		// add a table
-		createTable(subCatPart);
+		
+		tableIncomes.setHeaderRows(1);
+		Income incomesFilter = new Income();
+		incomesFilter.setProgram(program);
+		List<Income> incomes = incomesDAO.findIncomes(incomesFilter);
+		if (incomes != null && !incomes.isEmpty()) {
 
-		// now add all this to the document
-		document.add(catPart);
+			for (Income income : incomes) {
+				cell = new PdfPCell(new Phrase(income.getPeople(), TITLE_10_FONT));
+				setCellStyleTableWithBorder(cell);
+				tableIncomes.addCell(cell);
+				cell = new PdfPCell(new Phrase(income.getConcept(), TITLE_10_FONT));
+				setCellStyleTableWithBorder(cell);
+				tableIncomes.addCell(cell);
+				String amount = income.getAmount()!=null?String.valueOf(income.getAmount()):"";
+				if (income.getAmount()!=null){
+					totalIncomes = totalIncomes + income.getAmount();
+				}
+				cell = new PdfPCell(new Phrase(amount, TITLE_10_FONT));
+				setCellStyleTableWithBorder(cell);
+				tableIncomes.addCell(cell);
+				String endDate = income.getEndDate()!=null?sdf.format(income.getEndDate()):"";
+				cell = new PdfPCell(new Phrase(endDate, TITLE_10_FONT));
+				setCellStyleTableWithBorder(cell);
+				tableIncomes.addCell(cell);
+				
+			}
+		}
 
-		// Next section
-		anchor = new Anchor("Second Chapter", catFont);
-		anchor.setName("Second Chapter");
+		Paragraph paragraphTotal = new Paragraph();
 
-		// Second parameter is the number of the chapter
-		catPart = new Chapter(new Paragraph(anchor), 1);
+		paragraphTotal.add(new Paragraph("INGRESOS TOTALES: " + String.valueOf(totalIncomes), TITLE_10_FONT_BOLD));
+		addEmptyLine(paragraphTotal, 1);
+		
+		document.add(paragraphtitulo);
+		
+		document.add(subtitulo);
 
-		subPara = new Paragraph("Subcategory", subFont);
-		subCatPart = catPart.addSection(subPara);
-		subCatPart.add(new Paragraph("This is a very important message"));
+		document.add(tableIncomes);
+		
+		document.add(paragraphTotal);
+		
+}
 
-		// now add all this to the document
-		document.add(catPart);
+private void addExpenses(Document document, Program program) throws DocumentException, IOException{
+	
+	Double totalExpenses = 0.0;
+	
+	Paragraph subtitulo = new Paragraph();
 
+	subtitulo.add(new Paragraph("GASTOS", TITLE_10_FONT));
+	addEmptyLine(subtitulo, 1);
+	
+	PdfPTable tableExpenses = new PdfPTable(4);
+	tableExpenses.setTotalWidth(new float[] { 120, 120, 120, 120 });
+	tableExpenses.setLockedWidth(true);
+
+	// first row
+	PdfPCell cell = new PdfPCell(new Phrase("CONCEPTO", TITLE_10_FONT_BOLD));
+	setCellStyleTableWithBorder(cell);
+	tableExpenses.addCell(cell);
+	// second row
+	cell = new PdfPCell(new Phrase("CANTIDAD", TITLE_10_FONT_BOLD));
+	setCellStyleTableWithBorder(cell);
+	tableExpenses.addCell(cell);
+
+	// third row
+	cell = new PdfPCell(new Phrase("PERIODICIDAD", TITLE_10_FONT_BOLD));
+	setCellStyleTableWithBorder(cell);
+	tableExpenses.addCell(cell);
+
+	// third row
+	cell = new PdfPCell(new Phrase("FECHA FIN", TITLE_10_FONT_BOLD));
+	setCellStyleTableWithBorder(cell);
+	tableExpenses.addCell(cell);
+
+	
+	tableExpenses.setHeaderRows(1);
+	Expense expenseFilter = new Expense();
+	expenseFilter.setProgram(program);
+	List<Expense> expenses = expensesDAO.findExpenses(expenseFilter);
+	if (expenses != null && !expenses.isEmpty()) {
+
+		for (Expense expense : expenses) {
+			cell = new PdfPCell(new Phrase(expense.getConcept(), TITLE_10_FONT));
+			setCellStyleTableWithBorder(cell);
+			tableExpenses.addCell(cell);
+			String amount = expense.getAmount()!=null?String.valueOf(expense.getAmount()):"";
+			if (expense.getAmount()!=null){
+				totalExpenses = totalExpenses + expense.getAmount();
+			}
+			cell = new PdfPCell(new Phrase(amount, TITLE_10_FONT));
+			setCellStyleTableWithBorder(cell);
+			tableExpenses.addCell(cell);
+			cell = new PdfPCell(new Phrase(expense.getRegularity(), TITLE_10_FONT));
+			setCellStyleTableWithBorder(cell);
+			tableExpenses.addCell(cell);
+			String endDate = expense.getEndDate()!=null?sdf.format(expense.getEndDate()):"";
+			cell = new PdfPCell(new Phrase(endDate, TITLE_10_FONT));
+			setCellStyleTableWithBorder(cell);
+			tableExpenses.addCell(cell);
+		}
 	}
 
-	private static void createTable(Section subCatPart) throws BadElementException {
-		PdfPTable table = new PdfPTable(3);
+	Paragraph paragraphTotal = new Paragraph();
 
-		// t.setBorderColor(BaseColor.GRAY);
-		// t.setPadding(4);
-		// t.setSpacing(4);
-		// t.setBorderWidth(1);
+	paragraphTotal.add(new Paragraph("GASTOS TOTALES: " + String.valueOf(totalExpenses), TITLE_10_FONT_BOLD));
+	addEmptyLine(paragraphTotal, 1);
+	
+	document.add(subtitulo);
 
-		PdfPCell c1 = new PdfPCell(new Phrase("Table Header 1"));
-		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(c1);
+	document.add(tableExpenses);
+	
+	document.add(paragraphTotal);
+	
+}
 
-		c1 = new PdfPCell(new Phrase("Table Header 2"));
-		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(c1);
 
-		c1 = new PdfPCell(new Phrase("Table Header 3"));
-		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-		table.addCell(c1);
-		table.setHeaderRows(1);
+	
 
-		table.addCell("1.0");
-		table.addCell("1.1");
-		table.addCell("1.2");
-		table.addCell("2.1");
-		table.addCell("2.2");
-		table.addCell("2.3");
-
-		subCatPart.add(table);
-
+	private  void addEmptyLine(Paragraph paragraph, int number) {
+		for (int i = 0; i < number; i++) {
+			paragraph.add(new Paragraph(" "));
+		}
 	}
-
-	private static void addEmptyLine(Paragraph paragraph, int number) {
+	
+	private  void addEmptyLinePhrase(Phrase paragraph, int number) {
 		for (int i = 0; i < number; i++) {
 			paragraph.add(new Paragraph(" "));
 		}
 	}
 
-	private PdfPCell getImageCell(byte[] imageByteArray) throws IOException, BadElementException {
-		// Image image =
-		// Image.getInstance(imageUtils.getResizedImageByteArrayFromByteArray(imageByteArray));
-		// image.scalePercent(70);
-		Paragraph p = new Paragraph();
-		// p.add(new Chunk(image, 0, 0, true));
-		return new PdfPCell(p);
-	}
+	
 
-	private PdfPTable createTable(Integer colNumber) {
-		PdfPTable table = new PdfPTable(colNumber);
-		table.setWidthPercentage(100);
-		table.setTableEvent(new TableBorderEvent());
-		return table;
-	}
+	
 
-	private PdfPCell createCellHeader(String title, Integer colspan) {
-		PdfPCell cell = new PdfPCell(new Phrase(title, TABLE_HEADER_FONT));
-		cell.setMinimumHeight(MINIMUN_HEIGHT_CELLS);
-		cell.setColspan(colspan);
-		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		cell.setBackgroundColor(getBaseColorFromHex(TABLE_HEADER_BACKGROUND_COLOR));
-		return cell;
-	}
+	
 
-	private PdfPCell createCellParagraph(String text) {
-		PdfPCell cell = new PdfPCell(new Phrase(text, TABLE_CELL_FONT));
-		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		cell.setMinimumHeight(20);
-		return cell;
-	}
+	
 
-	private PdfPCell createCellDataHeader(String title) {
-		PdfPCell cell = new PdfPCell(new Phrase(title, TABLE_CELL_HEADER_FONT));
-		cell.setVerticalAlignment(Element.ALIGN_TOP);
-		cell.setMinimumHeight(20);
-		cell.setBackgroundColor(getBaseColorFromHex(TABLE_CELL_HEADER_BACKGROUND_COLOR));
-		return cell;
-	}
+	
 
-	private BaseColor getBaseColorFromHex(String hexColor) {
-		Integer r = Integer.valueOf(hexColor.substring(1, 3), 16);
-		Integer g = Integer.valueOf(hexColor.substring(3, 5), 16);
-		Integer b = Integer.valueOf(hexColor.substring(5, 7), 16);
-		return new BaseColor(r, g, b);
-	}
+	
 
 	private String getNullRepresentation(String method) {
 		if (method != null && !method.equals("")) {
@@ -936,6 +1016,14 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 		cell.setFixedHeight(30);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setBorder(Rectangle.NO_BORDER);
+		return cell;
+		
+	}
+	
+	private PdfPCell setCellStyleTableWithBorder(PdfPCell cell){
+		cell.setFixedHeight(30);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setBorder(Rectangle.BOX);
 		return cell;
 		
 	}

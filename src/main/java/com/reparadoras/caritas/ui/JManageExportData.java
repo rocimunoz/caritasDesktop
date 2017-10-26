@@ -754,9 +754,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getFamily().getHome().getOtherInfo());
 				// Family Type
 				cell = row.createCell(29);
-				cell.setCellValue(Constants.getNemonicFamilyType(program.getFamily().getFamilyType())); // todo
-				// :
-				// nemonic
+				cell.setCellValue(Constants.getNemonicFamilyType(program.getFamily().getFamilyType())); 
 				cell = row.createCell(30);
 				cell.setCellValue(program.getFamily().getOtherInfo());
 				// Tipo Autorizacion
