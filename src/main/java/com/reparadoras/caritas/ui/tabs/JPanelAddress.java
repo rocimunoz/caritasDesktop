@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Arrays;
 
@@ -50,6 +51,8 @@ public class JPanelAddress extends JPanel {
 	private JXDatePicker datePickerCensus;
 	private JLabel lblPlace;
 	private JTextField tfPlace;
+	private JLabel lblPostalCode;
+	private JFormattedTextField tfPostalCode;
 
 	public JPanelAddress() {
 
@@ -81,6 +84,8 @@ public class JPanelAddress extends JPanel {
 		getJPanelAddress().add(this.getJXDatePickerCensus(), this.getGridJXDatePickerCensus());
 		getJPanelAddress().add(this.getJLabelPlace(), this.getGridJLabelPlace());
 		getJPanelAddress().add(this.getJTextFieldPlace(), this.getGridJTextFieldPlace());
+		getJPanelAddress().add(this.getJLabelPostalCode(), this.getGridJLabelPostalCode());
+		getJPanelAddress().add(this.getJTextFieldPostalCode(), this.getGridJTextFieldPostalCode());
 
 	}
 
@@ -425,6 +430,49 @@ public class JPanelAddress extends JPanel {
 
 		return gbc_tfPlace;
 	}
+	
+	public JLabel getJLabelPostalCode() {
+
+		if (lblPostalCode == null) {
+			lblPostalCode = new JLabel("Codigo Postal:  ");
+			lblPostalCode.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblPostalCode;
+	}
+
+	public GridBagConstraints getGridJLabelPostalCode() {
+		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
+		gbc_lblPlace.anchor = GridBagConstraints.WEST;
+		gbc_lblPlace.insets = new Insets(10, 5, 0, 5);
+		gbc_lblPlace.gridx = 0;
+		gbc_lblPlace.gridy = 4;
+
+		return gbc_lblPlace;
+	}
+
+	public JFormattedTextField getJTextFieldPostalCode() {
+		if (tfPostalCode == null) {
+			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			numberFormat.setMinimumIntegerDigits(0);
+			
+			tfPostalCode = new JFormattedTextField(numberFormat);
+			tfPostalCode.setColumns(10);
+		}
+		return tfPostalCode;
+	}
+
+	public GridBagConstraints getGridJTextFieldPostalCode() {
+
+		GridBagConstraints gbc_tfPlace = new GridBagConstraints();
+		gbc_tfPlace.weightx = 1.0;
+		gbc_tfPlace.anchor = GridBagConstraints.NORTH;
+		gbc_tfPlace.insets = new Insets(10, 0, 5, 20);
+		gbc_tfPlace.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfPlace.gridx = 1;
+		gbc_tfPlace.gridy = 4;
+
+		return gbc_tfPlace;
+	}
 
 	public GridBagLayout getGridLayoutAddress() {
 		GridBagLayout gbl_LaoutAddress = new GridBagLayout();
@@ -451,6 +499,8 @@ public class JPanelAddress extends JPanel {
 		this.getJTextFieldTelephone().setText("");
 		this.getJTextFieldTelephoneContact().setText("");
 		this.getJTextFieldTown().setText("");
+		this.getJTextFieldPostalCode().setText("");
+		this.getJXDatePickerCensus().setDate(null);
 
 	}
 
@@ -459,11 +509,13 @@ public class JPanelAddress extends JPanel {
 		
 		this.getJTextFieldFloor().setText(address.getFloor());
 		this.getJTextFieldGate().setText(address.getGate());
-		// this.getJPanelAddress().getJTextFieldPlace().setText();
 		this.getJTextFieldStreet().setText(address.getStreet());
 		this.getJTextFieldTelephone().setText(address.getTelephone());
 		this.getJTextFieldTelephoneContact().setText(address.getTelephoneContact());
 		this.getJTextFieldTown().setText(address.getTown());
+		this.getJTextFieldPostalCode().setText(address.getPostalCode());
+		this.getJTextFieldPlace().setText(address.getPlace());
+		this.getJXDatePickerCensus().setDate(address.getCensus());
 
 	}
 

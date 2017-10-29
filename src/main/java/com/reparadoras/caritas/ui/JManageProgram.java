@@ -55,6 +55,7 @@ import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.People;
@@ -1309,7 +1310,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
 			home.setOtherInfo(getJPanelHome().getJTextAreaOtherInfo().getText());
 			home.setRegHolding((String) getJPanelHome().getJComboBoxRegHolding().getSelectedItem());
-
+			
+			
+			HomeType hType = (HomeType) (getJPanelHome().getJTextFieldTypeHouse().getSelectedItem());
+			
+			
+			home.setHomeType(hType);
 			homeDAO.update(home);
 
 		} catch (Exception e) {
@@ -1322,7 +1328,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		try {
 			address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
 			address.setGate(getJPanelAddress().getJTextFieldGate().getText());
-			// address.setPostalCode(getJPanelAddress().getjtextfield);
+			address.setPostalCode(getJPanelAddress().getJTextFieldPostalCode().getText());
 			address.setStreet(getJPanelAddress().getJTextFieldStreet().getText());
 			address.setTelephone(getJPanelAddress().getJTextFieldTelephone().getText());
 			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());

@@ -22,10 +22,18 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
+import com.reparadoras.caritas.dao.AddressDAO;
+import com.reparadoras.caritas.dao.ExpensesDAO;
+import com.reparadoras.caritas.dao.FamilyDAO;
+import com.reparadoras.caritas.dao.HomeDAO;
+import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
+import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterProgram;
 import com.reparadoras.caritas.filter.FilterTicket;
+import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
@@ -91,6 +99,15 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
+	private FamilyDAO familyDAO;
+	private AddressDAO addressDAO;
+	private HomeDAO homeDAO;
+	private ExpensesDAO expensesDAO;
+	private IncomesDAO incomesDAO;
+	private RelativeDAO relativesDAO;
+	
+	
+	
 
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
@@ -110,6 +127,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		relativesDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 
 		createGUIComponents();
 		initComponents();
@@ -705,8 +729,17 @@ public class JManagePeople extends AbstractJInternalFrame {
 					People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
 
 					if (selectedPeople != null) {
+						FilterProgram filter = new FilterProgram();
+						filter.setIdPeople(selectedPeople.getId());
+						List<Program> listPrograms = programDAO.findProgram(filter);
+						Program programToDelete = listPrograms.get(0);
+						Family familyToDelete = programToDelete.getFamily();
 						ticketDAO.delete(selectedPeople);
+						//expensesDAO.delete(xx);
+						//incomesDAO.delete(income);
+						
 						programDAO.delete(selectedPeople);
+						
 						peopleDAO.delete(selectedPeople);
 					}
 					

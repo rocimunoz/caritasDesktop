@@ -2,12 +2,12 @@ package com.reparadoras.caritas.ui.utils;
 
 import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.FamilyType;
+import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.Studies;
 
-public  class Constants {
+public class Constants {
 
-	
 	public static String getNemonicFamilyType(FamilyType familyType) {
 		try {
 			if (familyType.getDescription().equals("Sola")) {
@@ -100,7 +100,7 @@ public  class Constants {
 		}
 
 	}
-	
+
 	public static AuthorizationType getAuthorizationType(String nemonic) {
 		AuthorizationType aType = new AuthorizationType();
 		if (nemonic.equals("AR")) {
@@ -119,7 +119,7 @@ public  class Constants {
 			aType.setDescription("Autorización Residencia");
 
 		return aType;
-		//return authorizationTypeDAO.findAuthorizationType(aType);
+		// return authorizationTypeDAO.findAuthorizationType(aType);
 
 	}
 
@@ -143,7 +143,7 @@ public  class Constants {
 			jType.setDescription("Parado");
 
 		return jType;
-		//return jobSituationDAO.findJobSituation(jType);
+		// return jobSituationDAO.findJobSituation(jType);
 
 	}
 
@@ -175,12 +175,10 @@ public  class Constants {
 			sType.setDescription("No sabe leer ni escribir");
 
 		return sType;
-		//return studiesDAO.findStudies(sType);
+		// return studiesDAO.findStudies(sType);
 
-		
-		
 	}
-	
+
 	public static FamilyType getFamilyType(String nemonic) {
 		FamilyType fType = new FamilyType();
 		if (nemonic.equals("S")) {
@@ -199,7 +197,27 @@ public  class Constants {
 			fType.setDescription("Sola");
 
 		return fType;
-		//return familyTypeDAO.findFamilyType(fType);
+		// return familyTypeDAO.findFamilyType(fType);
+
+	}
+
+	public static HomeType getHomeType(String nemonic) {
+		HomeType hType = new HomeType();
+		if (nemonic.equals("S")) {
+			hType.setDescription("Piso");
+
+		} else if (nemonic.equals("PCH")) {
+			hType.setDescription("Familiar");
+
+		} else if (nemonic.equals("PSH")) {
+			hType.setDescription("Habitación");
+		} else if (nemonic.equals("M")) {
+			hType.setDescription("Estudio");
+		} else
+			hType.setDescription("Piso");
+
+		return hType;
+		// return familyTypeDAO.findFamilyType(fType);
 
 	}
 

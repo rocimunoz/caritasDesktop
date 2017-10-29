@@ -741,7 +741,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getFamily().getHome().getAddress().getTelephoneContact());
 				// home type
 				cell = row.createCell(23);
-				cell.setCellValue("");
+				cell.setCellValue(program.getFamily().getHome().getHomeType().getDescription());
 				cell = row.createCell(24);
 				cell.setCellValue(program.getFamily().getHome().getRegHolding());
 				cell = row.createCell(25);

@@ -52,6 +52,7 @@ import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
+import com.reparadoras.caritas.dao.HomeTypeDAO;
 import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.JobSituationDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
@@ -66,6 +67,7 @@ import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.People;
@@ -144,6 +146,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 	private StudiesDAO studiesDAO;
 	private ProgramDAO programDAO;
 	private HomeDAO homeDAO;
+	private HomeTypeDAO homeTypeDAO;
 	private AddressDAO addressDAO;
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
@@ -184,6 +187,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		studiesDAO = new StudiesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		homeTypeDAO = new HomeTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -204,8 +208,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 				dispose();
 
-				}
-			
+			}
+
 		});
 
 		getJButtonImportFile().addActionListener(new ActionListener() {
@@ -289,7 +293,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		if (jPanelFile == null) {
 			jPanelFile = new JPanel();
 			jPanelFile.setBorder(null);
-			
+
 		}
 
 		return jPanelFile;
@@ -320,7 +324,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			jPanelTData = new JPanel();
 			jPanelTData.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resultado Importacion",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
-			
+
 		}
 
 		return jPanelTData;
@@ -439,10 +443,6 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return gbl_jPanelContent;
 	}
 
-	
-
-	
-
 	private String getFileExtension(File file) {
 
 		String name = file.getName();
@@ -458,7 +458,6 @@ public class JManageImportData extends AbstractJInternalFrame {
 		String extension = getFileExtension(jfc.getSelectedFile());
 
 		if (extension != null && (extension.equals("xls") || extension.equals("xlsx"))) {
-			
 
 			readExcelFileXls(jfc.getSelectedFile());
 		} else {
@@ -481,7 +480,6 @@ public class JManageImportData extends AbstractJInternalFrame {
 			XSSFSheet sheetRelatives = workbook.getSheetAt(1);
 			XSSFSheet sheetIncomes = workbook.getSheetAt(2);
 			XSSFSheet sheetExpenses = workbook.getSheetAt(3);
-			
 
 			List<String> data = new ArrayList<String>();
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
@@ -495,18 +493,18 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Iterator rowsIncomes = sheetIncomes.rowIterator();
 			Iterator rowsExpenses = sheetExpenses.rowIterator();
 
-			//Extraemos los datos del programa
+			// Extraemos los datos del programa
 			extractDataSheet_0(rows, mapProgram);
 
-			//Extraemos los datos de familiares
+			// Extraemos los datos de familiares
 			extractDataSheet_1(rowsRelatives, mapRelatives, mapProgram);
 
-			//Extraemos los datos de ingresos
+			// Extraemos los datos de ingresos
 			extractDataSheet_2(rowsIncomes, mapIncomes, mapProgram);
-			
-			//Extraemos los datos de gastos
+
+			// Extraemos los datos de gastos
 			extractDataSheet_3(rowsExpenses, mapExpenses, mapProgram);
-			
+
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
 			logger.error("Se ha producido un error en la importacion de datos  " + e.getMessage());
@@ -524,8 +522,10 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 	}
 
-	/************************************** GENERAMOS LA PRIMERA HOJA DE PROGRAMA ***************************************/
-	
+	/**************************************
+	 * GENERAMOS LA PRIMERA HOJA DE PROGRAMA
+	 ***************************************/
+
 	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
@@ -543,26 +543,26 @@ public class JManageImportData extends AbstractJInternalFrame {
 					}
 
 					// Busco si ya existe
+					if (key != null && !key.equals("")) {
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(key).getPeople());
+						if (listPeopleExist != null && listPeopleExist.isEmpty()) {
+							addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
+							homeDAO.insert(mapProgram.get(key).getFamily().getHome());
+							familyDAO.insert(mapProgram.get(key).getFamily());
+							if (mapProgram.get(key).getPeople().isActive() == null) {
+								mapProgram.get(key).getPeople().setActive(false);
+							}
+							peopleDAO.insert(mapProgram.get(key).getPeople());
+							programDAO.insertExcel(mapProgram.get(key));
 
-					List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(key).getPeople());
-					if (listPeopleExist != null && listPeopleExist.isEmpty()) {
-						addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
-						homeDAO.insert(mapProgram.get(key).getFamily().getHome());
-						familyDAO.insert(mapProgram.get(key).getFamily());
-						if (mapProgram.get(key).getPeople().isActive() == null) {
-							mapProgram.get(key).getPeople().setActive(false);
+							textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
+							countOK++;
+						} else {
+							countExist++;
+							textArea.append("El registro " + mapProgram.get(key).getPeople().getName()
+									+ " ya existe en BBDD. No se insertará \n");
+							errorRegister.add(mapProgram.get(key).getPeople().getDni());
 						}
-						peopleDAO.insert(mapProgram.get(key).getPeople());
-						programDAO.insertExcel(mapProgram.get(key));
-						
-
-						textArea.append("Insertado registro: " + mapProgram.get(key).getPeople().getName() + "\n");
-						countOK++;
-					} else {
-						countExist++;
-						textArea.append("El registro " + mapProgram.get(key).getPeople().getName()
-								+ " ya existe en BBDD. No se insertará \n");
-						errorRegister.add(mapProgram.get(key).getPeople().getDni());
 					}
 
 				}
@@ -574,8 +574,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		}
 	}
-	
-	public String extractDataRow_Sheet0(XSSFCell cell, Map<String, Program> mapProgram,String key) {
+
+	public String extractDataRow_Sheet0(XSSFCell cell, Map<String, Program> mapProgram, String key) {
 
 		Program program = new Program();
 		People people = new People();
@@ -592,25 +592,24 @@ public class JManageImportData extends AbstractJInternalFrame {
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
-				if (!cell.getStringCellValue().equals("")){
+				if (!cell.getStringCellValue().equals("")) {
 					mapProgram.put(cell.getStringCellValue(), program);
 
 					mapProgram.get(cell.getStringCellValue()).getPeople().setDni(cell.getStringCellValue());
 					primaryKey = cell.getStringCellValue();
 				}
-				
 
 				break;
 			case 1:
-				if (primaryKey!=null){
+				if (primaryKey != null) {
 					mapProgram.get(key).getPeople().setPassport(cell.getStringCellValue());
-				}else{
+				} else {
 					mapProgram.put(cell.getStringCellValue(), program);
 
 					mapProgram.get(cell.getStringCellValue()).getPeople().setPassport(cell.getStringCellValue());
 					primaryKey = cell.getStringCellValue();
 				}
-				
+
 				break;
 			case 2:
 
@@ -659,8 +658,9 @@ public class JManageImportData extends AbstractJInternalFrame {
 				mapProgram.get(key).getFamily().getHome().getAddress().setTown(cell.getStringCellValue());
 				break;
 			case 17:
+				cell.setCellType(Cell.CELL_TYPE_STRING);
 				mapProgram.get(key).getFamily().getHome().getAddress()
-						.setPostalCode(String.valueOf(cell.getNumericCellValue()));
+						.setPostalCode(String.valueOf(cell.getStringCellValue()));
 				break;
 			case 18:
 				mapProgram.get(key).getFamily().getHome().getAddress().setStreet(cell.getStringCellValue());
@@ -682,7 +682,15 @@ public class JManageImportData extends AbstractJInternalFrame {
 				mapProgram.get(key).getFamily().getHome().getAddress().setTelephoneContact(cell.getStringCellValue());
 				break;
 			case 23:
-				// mapProgram.get(key).getFamily().getHome().setHomeType(homeType);
+
+				String description = cell.getStringCellValue();
+				HomeType hFilter = new HomeType();
+				hFilter.setDescription(cell.getStringCellValue());
+				HomeType homeTypeBBDD = homeTypeDAO.findHomeType(hFilter);
+				if (homeTypeBBDD != null) {
+					mapProgram.get(key).getFamily().getHome().setHomeType(homeTypeBBDD);
+				}
+
 				break;
 			case 24:
 				mapProgram.get(key).getFamily().getHome().setRegHolding(cell.getStringCellValue());
@@ -691,7 +699,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
 					mapProgram.get(key).getFamily().getHome()
-							.setNumberRooms(Integer.parseInt(cell.getStringCellValue()));
+							.setNumberRooms((int) Double.parseDouble(cell.getStringCellValue()));
 				}
 
 				break;
@@ -699,7 +707,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
 					mapProgram.get(key).getFamily().getHome()
-							.setNumberPeople(Integer.parseInt(cell.getStringCellValue()));
+							.setNumberPeople((int) Double.parseDouble(cell.getStringCellValue()));
 				}
 
 				break;
@@ -707,7 +715,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				if (cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
 					mapProgram.get(key).getFamily().getHome()
-							.setNumberFamilies(Integer.parseInt(cell.getStringCellValue()));
+							.setNumberFamilies((int) Double.parseDouble(cell.getStringCellValue()));
 				}
 
 				break;
@@ -723,13 +731,15 @@ public class JManageImportData extends AbstractJInternalFrame {
 				break;
 			case 31:
 				String nemonicAuthorization = cell.getStringCellValue();
-				AuthorizationType authorizationType = authorizationTypeDAO.findAuthorizationType(Constants.getAuthorizationType(nemonicAuthorization));
+				AuthorizationType authorizationType = authorizationTypeDAO
+						.findAuthorizationType(Constants.getAuthorizationType(nemonicAuthorization));
 				mapProgram.get(key).setAuthorizationType(authorizationType);
 
 				break;
 			case 32:
 				String nemonicJobSituation = cell.getStringCellValue();
-				JobSituation jobSituation = jobSituationDAO.findJobSituation(Constants.getJobSituation(nemonicJobSituation));
+				JobSituation jobSituation = jobSituationDAO
+						.findJobSituation(Constants.getJobSituation(nemonicJobSituation));
 				mapProgram.get(key).setJobSituation(jobSituation);
 
 				break;
@@ -738,7 +748,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 				Studies studies = studiesDAO.findStudies(Constants.getStudies(nemonicStudies));
 				mapProgram.get(key).setStudies(studies);
 				break;
-			
+
 			}
 
 		} catch (Exception e) {
@@ -750,10 +760,11 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return primaryKey;
 
 	}
-	
-	
-	/************************************** GENERAMOS LA SEGUNDA HOJA DE FAMILIARES ***************************************/
-	
+
+	/**************************************
+	 * GENERAMOS LA SEGUNDA HOJA DE FAMILIARES
+	 ***************************************/
+
 	public void extractDataSheet_1(Iterator itRows, Map<String, List<Relative>> mapRelatives,
 			Map<String, Program> mapProgram) {
 
@@ -770,8 +781,6 @@ public class JManageImportData extends AbstractJInternalFrame {
 						XSSFCell cell = (XSSFCell) cells.next();
 						key = extractDataRow_Sheet1(cell, mapRelatives, key);
 					}
-					
-				
 
 				}
 			} catch (Exception e) {
@@ -803,10 +812,10 @@ public class JManageImportData extends AbstractJInternalFrame {
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
 							/*
-							for (Relative relative : listRelatives) {
-								relative.setFamily(mapProgram.get(dni).getFamily());
-								relativeDAO.insert(relative);
-							}*/
+							 * for (Relative relative : listRelatives) {
+							 * relative.setFamily(mapProgram.get(dni).getFamily(
+							 * )); relativeDAO.insert(relative); }
+							 */
 						}
 					}
 
@@ -872,9 +881,10 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return primaryKey;
 	}
 
-	
-	/************************************** GENERAMOS LA TERCERA HOJA DE INGRESOS ***************************************/
-	
+	/**************************************
+	 * GENERAMOS LA TERCERA HOJA DE INGRESOS
+	 ***************************************/
+
 	public void extractDataSheet_2(Iterator itRows, Map<String, List<Income>> mapIncomes,
 			Map<String, Program> mapProgram) {
 
@@ -921,7 +931,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
-							//Insert incomes
+							// Insert incomes
 						}
 					}
 
@@ -934,7 +944,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 
-	public String extractDataRow_Sheet2(XSSFCell cell, Map<String, List<Income>> mapIncomes, String key){
+	public String extractDataRow_Sheet2(XSSFCell cell, Map<String, List<Income>> mapIncomes, String key) {
 		String primaryKey = key;
 		List<Income> listIncomes = null;
 		Income income = null;
@@ -956,13 +966,16 @@ public class JManageImportData extends AbstractJInternalFrame {
 				}
 				break;
 			case 2:
-				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1).setConcept(cell.getStringCellValue());
+				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1)
+						.setConcept(cell.getStringCellValue());
 				break;
 			case 3:
-				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1).setAmount(cell.getNumericCellValue());
+				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1)
+						.setAmount(cell.getNumericCellValue());
 				break;
 			case 4:
-				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1).setEndDate(cell.getDateCellValue());
+				mapIncomes.get(primaryKey).get(mapIncomes.get(primaryKey).size() - 1)
+						.setEndDate(cell.getDateCellValue());
 				break;
 			}
 		} catch (Exception e) {
@@ -972,9 +985,11 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		return primaryKey;
 	}
-	
-	/************************************** GENERAMOS LA CUARTA HOJA DE GASTOS ***************************************/
-	
+
+	/**************************************
+	 * GENERAMOS LA CUARTA HOJA DE GASTOS
+	 ***************************************/
+
 	public void extractDataSheet_3(Iterator itRows, Map<String, List<Expense>> mapExpenses,
 			Map<String, Program> mapProgram) {
 
@@ -1021,7 +1036,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
-							//Insert expenses
+							// Insert expenses
 						}
 					}
 
@@ -1033,8 +1048,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		});
 	}
-	
-	public String extractDataRow_Sheet3(XSSFCell cell, Map<String, List<Expense>> mapExpenses, String key){
+
+	public String extractDataRow_Sheet3(XSSFCell cell, Map<String, List<Expense>> mapExpenses, String key) {
 		String primaryKey = key;
 		List<Expense> listExpenses = null;
 		Expense expense = null;
@@ -1056,16 +1071,20 @@ public class JManageImportData extends AbstractJInternalFrame {
 				}
 				break;
 			case 2:
-				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setConcept(cell.getStringCellValue());
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1)
+						.setConcept(cell.getStringCellValue());
 				break;
 			case 3:
-				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setAmount(cell.getNumericCellValue());
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1)
+						.setAmount(cell.getNumericCellValue());
 				break;
 			case 4:
-				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setRegularity(cell.getStringCellValue());
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1)
+						.setRegularity(cell.getStringCellValue());
 				break;
 			case 5:
-				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1).setEndDate(cell.getDateCellValue());
+				mapExpenses.get(primaryKey).get(mapExpenses.get(primaryKey).size() - 1)
+						.setEndDate(cell.getDateCellValue());
 				break;
 			}
 		} catch (Exception e) {
@@ -1075,8 +1094,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		return primaryKey;
 	}
-	
-	
+
 	public void readExcelFileXlsx(File file) {
 
 		XSSFWorkbook workbook;
@@ -1107,8 +1125,5 @@ public class JManageImportData extends AbstractJInternalFrame {
 		}
 
 	}
-
-	
-	
 
 }
