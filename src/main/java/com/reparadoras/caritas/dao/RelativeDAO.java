@@ -97,6 +97,20 @@ public int delete(Relative relative){
      return id;
  }
 
+public int deleteByFamily(Family family){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Relative.deleteByFamily", family);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
 
 
 

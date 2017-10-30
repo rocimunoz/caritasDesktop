@@ -42,6 +42,9 @@
         AND F.ID_HOME = H.ID
     </select>
     
+     <delete id="delete" parameterType="Family">
+    	DELETE FROM C_FAMILY WHERE id = #{id}
+    </delete>
     
     
  	<insert id="insert" parameterType="Family" useGeneratedKeys="true" keyProperty="id">

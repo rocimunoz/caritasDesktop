@@ -9,6 +9,7 @@ import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
+import com.reparadoras.caritas.model.Program;
 
 public class AddressDAO {
 
@@ -48,6 +49,20 @@ public int insert(Address address){
          session.close();
      }
      System.out.println("insert("+address+") --> "+address.getId());
+     return id;
+ }
+
+public int delete(Address address){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Address.delete", address);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
      return id;
  }
 

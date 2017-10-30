@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1310,11 +1311,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
 			home.setOtherInfo(getJPanelHome().getJTextAreaOtherInfo().getText());
 			home.setRegHolding((String) getJPanelHome().getJComboBoxRegHolding().getSelectedItem());
-			
-			
+
 			HomeType hType = (HomeType) (getJPanelHome().getJTextFieldTypeHouse().getSelectedItem());
-			
-			
+
 			home.setHomeType(hType);
 			homeDAO.update(home);
 
@@ -1545,18 +1544,26 @@ public class JManageProgram extends AbstractJInternalFrame {
 					}
 					try {
 						exporter.export(selectedProgram, file);
-						
+
 						JOptionPane.showMessageDialog(null, "Se ha generado el pdf correctamente.");
-						
+
 					} catch (DocumentException e) {
-						JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
-								"Generacion PDF", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this,
+								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
+								JOptionPane.ERROR_MESSAGE);
 						logger.info(e);
-						
+
+					} catch (FileNotFoundException e) {
+
+						JOptionPane.showMessageDialog(this,
+								"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
+								JOptionPane.ERROR_MESSAGE);
+						logger.info(e);
 					} catch (IOException e) {
-						
-						JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
-								"Generacion PDF", JOptionPane.ERROR_MESSAGE);
+
+						JOptionPane.showMessageDialog(this,
+								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
+								JOptionPane.ERROR_MESSAGE);
 						logger.info(e);
 					}
 

@@ -200,7 +200,12 @@ public class PdfExporter {
 
 		paragraphHome.add(new Paragraph("DATOS VIVIENDA", TITLE_10_FONT_BOLD));
 		addEmptyLine(paragraphHome, 1);
-		paragraphHome.add(new Paragraph("Tipo: " + "", TITLE_10_FONT));
+		if (home.getHomeType()!=null){
+			paragraphHome.add(new Paragraph("Tipo: " + getNullRepresentation(home.getHomeType().getDescription()), TITLE_10_FONT));
+		}else{
+			paragraphHome.add(new Paragraph("Tipo: " + "", TITLE_10_FONT));
+		}
+		
 		
 		paragraphHome.add(new Paragraph("Régimen Tenencia:  " + getNullRepresentation(home.getRegHolding()), TITLE_10_FONT));
 		
@@ -703,7 +708,7 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 				fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
 				universidad= new Phrase(this.getCheckFalse(noTab,universidadCaption));
 			} else if (studiesBBDD.getDescription().equals("Secundaria")) {
-				noLee = new Phrase(this.getCheckTrue(noTab,noLeeCaption));
+				noLee = new Phrase(this.getCheckFalse(noTab,noLeeCaption));
 				lee= new Phrase(this.getCheckFalse(noTab,leeCaption));
 				infantil= new Phrase(this.getCheckFalse(noTab,infantilCaption));
 				primaria= new Phrase(this.getCheckFalse(noTab,primariaCaption));

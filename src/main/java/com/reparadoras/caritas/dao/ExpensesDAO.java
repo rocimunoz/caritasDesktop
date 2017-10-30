@@ -84,6 +84,20 @@ public int insert(Expense expense){
      return id;
  }
 
+public int deleteByProgram(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Expense.deleteByProgram", program);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
 public int delete(Expense expense){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();

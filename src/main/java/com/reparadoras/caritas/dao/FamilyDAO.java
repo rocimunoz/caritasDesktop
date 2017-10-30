@@ -49,12 +49,12 @@ public int insert(Family family){
      return id;
  }
 
-public int delete(int idFamily){
+public int delete(Family family){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();
 
      try {
-         session.delete("Family.delete", idFamily);
+         session.delete("Family.delete", family);
      } finally {
          session.commit();
          session.close();

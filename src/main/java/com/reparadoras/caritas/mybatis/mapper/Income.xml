@@ -23,6 +23,12 @@
        <result property="dni" column="dni"/> 
     </resultMap>
  
+  <delete id="deleteByProgram" parameterType="Program">
+    	DELETE FROM C_INCOME WHERE id_program = #{id}
+    </delete>
+    
+   
+ 
  <select id="findAllIncomes" parameterType="Income" resultMap="IncomeResult">
        SELECT * FROM C_INCOME I, C_PROGRAM P, C_PEOPLE PE
        WHERE I.ID_PROGRAM = P.ID

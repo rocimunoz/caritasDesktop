@@ -127,11 +127,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+	
+		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		relativesDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 
@@ -733,14 +735,22 @@ public class JManagePeople extends AbstractJInternalFrame {
 						filter.setIdPeople(selectedPeople.getId());
 						List<Program> listPrograms = programDAO.findProgram(filter);
 						Program programToDelete = listPrograms.get(0);
-						Family familyToDelete = programToDelete.getFamily();
+						
 						ticketDAO.delete(selectedPeople);
-						//expensesDAO.delete(xx);
-						//incomesDAO.delete(income);
-						
+						expensesDAO.deleteByProgram(programToDelete);
+						incomesDAO.deleteByProgram(programToDelete);
 						programDAO.delete(selectedPeople);
-						
 						peopleDAO.delete(selectedPeople);
+						
+						Family familyToDelete = programToDelete.getFamily();
+						relativesDAO.deleteByFamily(familyToDelete);
+						familyDAO.delete(familyToDelete);
+						homeDAO.delete(familyToDelete.getHome());
+						addressDAO.delete(familyToDelete.getHome().getAddress());
+						
+						
+						
+						
 					}
 					
 					

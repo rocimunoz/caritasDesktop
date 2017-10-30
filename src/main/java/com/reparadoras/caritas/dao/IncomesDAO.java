@@ -24,6 +24,20 @@ public IncomesDAO(SqlSessionFactory sqlSessionFactory){
 }
 
 
+public int delete(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Income.delete", program);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
 public  List<Income> findAllIncomes(){
 	List<Income> incomes = null;
     SqlSession session = sqlSessionFactory.openSession();
@@ -90,6 +104,20 @@ public int delete(Income income){
 
      try {
          session.delete("Income.delete", income);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
+public int deleteByProgram(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Income.deleteByProgram", program);
      } finally {
          session.commit();
          session.close();

@@ -35,6 +35,10 @@
     	DELETE FROM C_RELATIVE WHERE id = #{id}
     </delete>
     
+    <delete id="deleteByFamily" parameterType="Family">
+    	DELETE FROM C_RELATIVE WHERE id_family = #{id}
+    </delete>
+    
     
     
  	<insert id="insert" parameterType="Relative" useGeneratedKeys="true" keyProperty="id">

@@ -19,7 +19,9 @@
 
 	</resultMap>
 
-	
+	 <delete id="delete" parameterType="Address">
+    	DELETE FROM C_ADDRESS WHERE id = #{id}
+    </delete>
 
 	<select id="findAll" resultMap="AddressResult">
 		SELECT * FROM C_ADDRESS;

@@ -409,7 +409,10 @@ public void initCombos(){
 		this.getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
 		this.getJTextAreaOtherInfo().setText(home.getOtherInfo());
 		this.getJComboBoxRegHolding().setSelectedItem(home.getRegHolding());
-		this.getJTextFieldTypeHouse().setSelectedIndex(home.getHomeType().getId() -1); //marranada
+		if (home.getHomeType()!=null){
+			this.getJTextFieldTypeHouse().setSelectedIndex(home.getHomeType().getId() -1); //marranada
+		}
+		
 	}
 	
 	

@@ -34,6 +34,10 @@
         <result property="description" column="description_home_type"/>
     </resultMap>
 
+ <delete id="delete" parameterType="Home">
+    	DELETE FROM C_HOME WHERE id = #{id}
+    </delete>
+
 	<select id="findAll" resultMap="HomeResult">
 		SELECT * FROM C_HOME;
 	</select>
