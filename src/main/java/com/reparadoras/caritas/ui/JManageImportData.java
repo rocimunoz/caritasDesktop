@@ -194,7 +194,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
@@ -827,11 +827,11 @@ public class JManageImportData extends AbstractJInternalFrame {
 						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
-							/*
-							 * for (Relative relative : listRelatives) {
-							 * relative.setFamily(mapProgram.get(dni).getFamily(
-							 * )); relativeDAO.insert(relative); }
-							 */
+							for (Relative relative : listRelatives) {
+								relative.setFamily(mapProgram.get(dni).getFamily());
+								relativeDAO.insert(relative);
+							}
+
 						}
 					}
 
@@ -948,6 +948,12 @@ public class JManageImportData extends AbstractJInternalFrame {
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
 							// Insert incomes
+							// Insert expenses
+							for (Income income : listIncomes) {
+								income.setProgram(mapProgram.get(dni));
+								incomeDAO.insert(income);
+							}
+							
 						}
 					}
 
@@ -1034,7 +1040,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		mapExpenses.forEach((k, v) -> {
 			boolean exist = false;
 			String dni = k;
-			List<Expense> listIncomes = v;
+			List<Expense> listExpenses = v;
 			// Si dni esta en el set, no inserto relatives
 
 			for (String errorDni : errorRegister) {
@@ -1053,6 +1059,10 @@ public class JManageImportData extends AbstractJInternalFrame {
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
 							// Insert expenses
+							for (Expense expense : listExpenses) {
+								expense.setProgram(mapProgram.get(dni));
+								expenseDAO.insert(expense);
+							}
 						}
 					}
 
