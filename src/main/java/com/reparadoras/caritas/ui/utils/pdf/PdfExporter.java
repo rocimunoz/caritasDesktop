@@ -185,13 +185,13 @@ public class PdfExporter {
 		
 		paragraph.add(new Paragraph("Calle:  " + getNullRepresentation(home.getAddress().getStreet()), TITLE_10_FONT));
 	
-		paragraph.add(new Paragraph("Portal: " + home.getAddress().getGate(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Portal: " + getNullRepresentation(home.getAddress().getGate()), TITLE_10_FONT));
 		
-		paragraph.add(new Paragraph("Piso y Mano:  " + home.getAddress().getFloor(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Piso y Mano:  " + getNullRepresentation(home.getAddress().getFloor()), TITLE_10_FONT));
 		
-		paragraph.add(new Paragraph("Tfno. domicilio  " + home.getAddress().getTelephone(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Tfno. domicilio  " + getNullRepresentation(home.getAddress().getTelephone()), TITLE_10_FONT));
 		
-		paragraph.add(new Paragraph("Tfno. contacto  " + home.getAddress().getTelephoneContact(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Tfno. contacto  " + getNullRepresentation(home.getAddress().getTelephoneContact()), TITLE_10_FONT));
 		addEmptyLine(paragraph,1);
 		
 		
@@ -268,7 +268,7 @@ public class PdfExporter {
 		cell = new PdfPCell(new Phrase("SITUACION", TITLE_10_FONT_BOLD));
 		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
-		table.setHeaderRows(1);
+		//table.setHeaderRows(1);
 		if (relatives != null && !relatives.isEmpty()) {
 
 			for (Relative relative : relatives) {
@@ -290,12 +290,24 @@ public class PdfExporter {
 				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
 			}
+		}else{
+			createEmptyCells(5, table);
+			
 		}
 
 		document.add(paragraphtitulo);
 
 		document.add(table);
 
+	}
+	
+	private void createEmptyCells(int num, PdfPTable table ){
+		
+		for (int i=0;i<num;i++){
+			PdfPCell cell = new PdfPCell(new Phrase("", TITLE_10_FONT));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+		}
 	}
 
 	private void addFamilyType(Document document, Family family) throws DocumentException, IOException {
@@ -852,6 +864,8 @@ private void addIncomes(Document document, Program program) throws DocumentExcep
 				tableIncomes.addCell(cell);
 				
 			}
+		}else{
+			this.createEmptyCells(4, tableIncomes);
 		}
 
 		Paragraph paragraphTotal = new Paragraph();
@@ -927,6 +941,8 @@ private void addExpenses(Document document, Program program) throws DocumentExce
 			setCellStyleTableWithBorder(cell);
 			tableExpenses.addCell(cell);
 		}
+	}else{
+		this.createEmptyCells(4, tableExpenses);
 	}
 
 	Paragraph paragraphTotal = new Paragraph();

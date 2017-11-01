@@ -27,6 +27,7 @@ import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.IncomesDAO;
+import com.reparadoras.caritas.dao.OtherInfoDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
@@ -105,6 +106,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private ExpensesDAO expensesDAO;
 	private IncomesDAO incomesDAO;
 	private RelativeDAO relativesDAO;
+	private OtherInfoDAO otherInfoDAO;
 	
 	
 	
@@ -135,6 +137,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 		relativesDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		
 
 		createGUIComponents();
@@ -747,6 +750,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 						familyDAO.delete(familyToDelete);
 						homeDAO.delete(familyToDelete.getHome());
 						addressDAO.delete(familyToDelete.getHome().getAddress());
+						otherInfoDAO.delete(programToDelete.getOtherInfo());
 						
 						
 						

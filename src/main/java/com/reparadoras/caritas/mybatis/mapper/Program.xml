@@ -12,6 +12,7 @@
         <association property="authorizationType" resultMap="AuthorizationTypeResult"/>
         <association property="jobSituation" resultMap="JobSituationResult"/>
         <association property="studies" resultMap="StudiesResult"/>
+        <association property="otherInfo" resultMap="OtherInfoResult"/>
        
     </resultMap>
     
@@ -90,6 +91,14 @@
         <result property="description" column="description"/>
     </resultMap>
     
+    <resultMap id="OtherInfoResult" type="OtherInfo">
+		<result property="id" column="id_other_info" />
+		<result property="institutions" column="institutions" />
+		<result property="demand" column="demand" />
+		<result property="description" column="description" />
+		<result property="actuations" column="actuations" />
+	</resultMap>
+    
 
     
     <select id="findProgram" parameterType="FilterProgram" resultMap="ProgramResult">
@@ -127,11 +136,17 @@
                PR.ID ID_PROGRAM,
                PR.ID_AUTHORIZATION_TYPE,
                PR.ID_JOB_SITUATION,
-               PR.ID_STUDIES
+               PR.ID_STUDIES,
+               OI.ID ID_OTHER_INFO,
+               OI.INSTITUTIONS,
+               OI.DEMAND,
+               OI.DESCRIPTION,
+               OI.ACTUATIONS
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
               LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
               LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID
+              LEFT JOIN C_OTHER_INFO OI ON   PR.ID_OTHER_INFO = OI.ID
               LEFT JOIN C_FAMILY F ON PR.ID_FAMILY = F.ID
      		  LEFT JOIN C_FAMILY_TYPE FT ON F.ID_FAMILY_TYPE = FT.ID
               LEFT JOIN C_HOME H ON F.ID_HOME = H.ID
@@ -168,8 +183,8 @@
     
     <insert id="insert" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_PROGRAM 
-        	(ID_PEOPLE, ID_FAMILY) 
-        VALUES (#{people.id}, #{family.id})
+        	(ID_PEOPLE, ID_FAMILY, ID_OTHER_INFO) 
+        VALUES (#{people.id}, #{family.id}, #{otherInfo.id})
     </insert>
     
     <insert id="insert-excel" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
@@ -184,6 +199,7 @@
           <if test="authorizationType != null">id_authorization_type = #{authorizationType.id},</if>
           <if test="studies != null">id_studies = #{studies.id},</if>
            <if test="jobSituation != null">id_job_situation = #{jobSituation.id},</if>
+           <if test="otherInfo != null">id_other_info = #{otherInfo.id},</if>
           
           </set>
         WHERE id = #{id} 

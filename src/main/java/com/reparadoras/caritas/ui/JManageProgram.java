@@ -44,6 +44,7 @@ import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.JobSituationDAO;
+import com.reparadoras.caritas.dao.OtherInfoDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
@@ -59,6 +60,7 @@ import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
+import com.reparadoras.caritas.model.OtherInfo;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
@@ -80,6 +82,7 @@ import com.reparadoras.caritas.ui.tabs.JPanelEconomicSituation;
 import com.reparadoras.caritas.ui.tabs.JPanelFamily;
 import com.reparadoras.caritas.ui.tabs.JPanelHome;
 import com.reparadoras.caritas.ui.tabs.JPanelJobSituation;
+import com.reparadoras.caritas.ui.tabs.JPanelOtherInfo;
 import com.reparadoras.caritas.ui.tabs.JPanelStudies;
 import com.reparadoras.caritas.ui.utils.pdf.PdfExporter;
 
@@ -152,6 +155,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private StudiesDAO studiesDAO;
 	private IncomesDAO incomesDAO;
 	private ExpensesDAO expensesDAO;
+	private OtherInfoDAO otherInfoDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
@@ -161,6 +165,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JPanel jPanelStudies;
 	private JPanel jPanelJobSituation;
 	private JPanel jPanelEconomicSituation;
+	private JPanel jPanelOtherInfo;
 
 	private People people = null;
 
@@ -195,6 +200,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -393,6 +400,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("SITUACION LABORAL", getJPanelJobSituation());
 		getJtabPane1().add("ESTUDIOS", getJPanelStudies());
 		getJtabPane1().add("SITUACION ECONOMICA", getJPanelEconomicSituation());
+		getJtabPane1().add("OTROS DATOS", getJPanelOtherInfo());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
 
@@ -402,22 +410,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		// initCbPeople();
-
+		
 	}
 
-	/*
-	 * public void initCbPeople() {
-	 * 
-	 * List<People> listPeople = peopleDAO.findAll();
-	 * 
-	 * if (this.people!=null){ this.getJComboBoxPeople().addItem(this.people);
-	 * this.getJComboBoxPeople().setSelectedItem(this.people); } else{ for
-	 * (People p : listPeople) { this.getJComboBoxPeople().addItem(p); }
-	 * getJComboBoxPeople().setSelectedIndex(-1); }
-	 * 
-	 * }
-	 */
+	
 
 	/* TABS */
 
@@ -468,6 +464,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelEconomicSituation = new JPanelEconomicSituation();
 		}
 		return (JPanelEconomicSituation) jPanelEconomicSituation;
+	}
+	
+	private JPanelOtherInfo getJPanelOtherInfo() {
+		if (jPanelOtherInfo == null) {
+			jPanelOtherInfo = new JPanelOtherInfo();
+		}
+		return (JPanelOtherInfo) jPanelOtherInfo;
 	}
 
 	/* FUNCIONES DEL GETCONTENTPANE */
@@ -877,6 +880,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.getJPanelJobSituation().cleanJobSituation();
 		this.getJPanelStudies().cleanStudies();
 		this.getJPanelEconomicSituation().cleanGrids();
+		this.getJPanelOtherInfo().cleanInfo();
 
 	}
 
@@ -896,7 +900,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 			AuthorizationType aType = selectedProgram.getAuthorizationType();
 			JobSituation jobSituation = selectedProgram.getJobSituation();
 			Studies studies = selectedProgram.getStudies();
-
+			OtherInfo otherInfo = selectedProgram.getOtherInfo();
+			
+			
 			this.getJPanelAddress().fillData(address);
 			this.getJPanelHome().fillData(home);
 			this.getJPanelFamily().fillData(relativeDAO, family);
@@ -904,6 +910,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			this.getJPanelJobSituation().fillData(jobSituation);
 			this.getJPanelStudies().fillData(studies);
 			this.getJPanelEconomicSituation().fillData(incomesDAO, expensesDAO, selectedProgram);
+			this.getJPanelOtherInfo().fillData(otherInfo);
 
 			logger.info("FillDataProgram: campos rellenos");
 		} else {
@@ -928,7 +935,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 		family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 		familyDAO.insert(family);
 
+		OtherInfo otherInfo = new OtherInfo();
+		otherInfoDAO.insert(otherInfo);
+		
 		programNewReset.setFamily(family);
+		programNewReset.setOtherInfo(otherInfo);
 		programNewReset.setPeople(filterPeople);
 
 		programDAO.insert(programNewReset);
@@ -1339,6 +1350,24 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 
 	}
+	
+	public void onSaveOtherInfo(OtherInfo otherInfo) throws Exception {
+		try {
+			
+			if (otherInfo!=null){
+				otherInfo.setActuations(getJPanelOtherInfo().getJTextAreaActuations().getText());
+				otherInfo.setDemand(getJPanelOtherInfo().getJTextAreaDemand().getText());
+				otherInfo.setDescription(getJPanelOtherInfo().getJTextAreaDescription().getText());
+				otherInfo.setInstitutions(getJPanelOtherInfo().getJTextAreaInstitutions().getText());
+				otherInfoDAO.update(otherInfo);
+			}
+			
+		} catch (Exception e) {
+			logger.info(e);
+			throw new Exception();
+		}
+
+	}
 
 	public void onSaveAuthorizationType(Program selectedProgram) {
 		AuthorizationType aTypeFilter = new AuthorizationType();
@@ -1591,6 +1620,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveStudies(selectedProgram);
 						onSaveIncomes(selectedProgram);
 						onSaveExpenses(selectedProgram);
+						onSaveOtherInfo(selectedProgram.getOtherInfo());
 
 						if (selectedProgram.getJobSituation() != null || selectedProgram.getAuthorizationType() != null
 								|| selectedProgram.getStudies() != null) {

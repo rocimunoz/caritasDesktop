@@ -19,6 +19,7 @@ public class Program implements Serializable{
     private AuthorizationType authorizationType;
     private JobSituation jobSituation;
     private Studies studies;
+    private OtherInfo otherInfo;
     
     
 	
@@ -58,6 +59,14 @@ public class Program implements Serializable{
 	public void setStudies(Studies studies) {
 		this.studies = studies;
 	}
+	public OtherInfo getOtherInfo() {
+		return otherInfo;
+	}
+	public void setOtherInfo(OtherInfo otherInfo) {
+		this.otherInfo = otherInfo;
+	}
+	
+	
 	
 	
 	
