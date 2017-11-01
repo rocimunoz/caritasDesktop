@@ -774,6 +774,23 @@ public class JManageExportData extends AbstractJInternalFrame {
 				if (program.getStudies() != null) {
 					cell.setCellValue(Constants.getNemonicStudies(program.getStudies()));
 				}
+				if (program.getOtherInfo()!=null){
+					cell = row.createCell(34);
+					cell.setCellValue(program.getOtherInfo().getInstitutions());
+					cell = row.createCell(35);
+					cell.setCellValue(program.getOtherInfo().getDemand());
+					cell = row.createCell(36);
+					cell.setCellValue("");
+					cell = row.createCell(37);
+					cell.setCellValue("");
+					cell = row.createCell(38);
+					cell.setCellValue("");
+					cell = row.createCell(39);
+					cell.setCellValue("");
+					cell = row.createCell(40);
+					cell.setCellValue(program.getOtherInfo().getActuations());
+				}
+				
 
 				row = sheet.createRow(++rowNumber);
 				countOK++;

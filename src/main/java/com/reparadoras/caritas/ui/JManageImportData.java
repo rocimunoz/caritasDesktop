@@ -55,6 +55,7 @@ import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.HomeTypeDAO;
 import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.JobSituationDAO;
+import com.reparadoras.caritas.dao.OtherInfoDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
@@ -70,6 +71,7 @@ import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
+import com.reparadoras.caritas.model.OtherInfo;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
@@ -148,6 +150,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 	private HomeDAO homeDAO;
 	private HomeTypeDAO homeTypeDAO;
 	private AddressDAO addressDAO;
+	private OtherInfoDAO otherInfoDAO;
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
 	private RelativeDAO relativeDAO;
@@ -190,6 +193,8 @@ public class JManageImportData extends AbstractJInternalFrame {
 		homeTypeDAO = new HomeTypeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
+		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
@@ -549,6 +554,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 							addressDAO.insert(mapProgram.get(key).getFamily().getHome().getAddress());
 							homeDAO.insert(mapProgram.get(key).getFamily().getHome());
 							familyDAO.insert(mapProgram.get(key).getFamily());
+							otherInfoDAO.insert(mapProgram.get(key).getOtherInfo());
 							if (mapProgram.get(key).getPeople().isActive() == null) {
 								mapProgram.get(key).getPeople().setActive(false);
 							}
@@ -580,11 +586,12 @@ public class JManageImportData extends AbstractJInternalFrame {
 		Program program = new Program();
 		People people = new People();
 		Family family = new Family();
+		OtherInfo otherInfo = new OtherInfo();
 		Home home = new Home();
 		Address address = new Address();
 		home.setAddress(address);
 		family.setHome(home);
-
+		program.setOtherInfo(otherInfo);
 		program.setPeople(people);
 		program.setFamily(family);
 
@@ -747,6 +754,15 @@ public class JManageImportData extends AbstractJInternalFrame {
 				String nemonicStudies = cell.getStringCellValue();
 				Studies studies = studiesDAO.findStudies(Constants.getStudies(nemonicStudies));
 				mapProgram.get(key).setStudies(studies);
+				break;
+			case 34:
+				mapProgram.get(key).getOtherInfo().setInstitutions(cell.getStringCellValue());
+				break;
+			case 35:
+				mapProgram.get(key).getOtherInfo().setDemand(cell.getStringCellValue());
+				break;
+			case 40:
+				mapProgram.get(key).getOtherInfo().setActuations(cell.getStringCellValue());
 				break;
 
 			}

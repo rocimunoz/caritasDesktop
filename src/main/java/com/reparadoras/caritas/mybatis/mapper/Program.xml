@@ -95,7 +95,7 @@
 		<result property="id" column="id_other_info" />
 		<result property="institutions" column="institutions" />
 		<result property="demand" column="demand" />
-		<result property="description" column="description" />
+		<result property="description" column="description_other" />
 		<result property="actuations" column="actuations" />
 	</resultMap>
     
@@ -140,7 +140,7 @@
                OI.ID ID_OTHER_INFO,
                OI.INSTITUTIONS,
                OI.DEMAND,
-               OI.DESCRIPTION,
+               OI.DESCRIPTION DESCRIPTION_OTHER,
                OI.ACTUATIONS
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID

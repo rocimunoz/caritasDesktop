@@ -58,6 +58,7 @@ import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
+import com.reparadoras.caritas.model.OtherInfo;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
@@ -119,6 +120,7 @@ public class PdfExporter {
 			addStudies(document, program.getStudies());
 			addIncomes(document, program);
 			addExpenses(document, program);
+			addOtherInfo(document, program.getOtherInfo());
 			document.close();
 		} catch (Exception e) {
 			logger.error(e);
@@ -955,6 +957,40 @@ private void addExpenses(Document document, Program program) throws DocumentExce
 	document.add(tableExpenses);
 	
 	document.add(paragraphTotal);
+	
+}
+
+
+private void addOtherInfo(Document document, OtherInfo info) throws DocumentException{
+	
+	Paragraph paragraph = new Paragraph();
+	
+	paragraph.add(new Paragraph("INSTITUCIONES POR LAS QUE HAN PASADO (fecha, persona, institución, demanda, respuesta obtenida ...)", TITLE_10_FONT_BOLD));
+	addEmptyLine(paragraph, 1);
+	paragraph.add(new Paragraph(getNullRepresentation(info.getInstitutions()), TITLE_10_FONT));
+	
+	addEmptyLine(paragraph,1);
+	
+	paragraph.add(new Paragraph("DEMANDA QUE REALIZA A CARITAS", TITLE_10_FONT_BOLD));
+	addEmptyLine(paragraph, 1);
+	paragraph.add(new Paragraph(getNullRepresentation(info.getDemand()), TITLE_10_FONT));
+	
+	addEmptyLine(paragraph,1);
+	
+	paragraph.add(new Paragraph("DESCRIPCIÓN SITUACIÓN / VALORACIÓN PERSONAL", TITLE_10_FONT_BOLD));
+	addEmptyLine(paragraph, 1);
+	paragraph.add(new Paragraph(getNullRepresentation(info.getDescription()), TITLE_10_FONT));
+	
+	addEmptyLine(paragraph,1);
+	
+	paragraph.add(new Paragraph("ACTUACIONES", TITLE_10_FONT_BOLD));
+	addEmptyLine(paragraph, 1);
+	paragraph.add(new Paragraph(getNullRepresentation(info.getActuations()), TITLE_10_FONT));
+	
+	addEmptyLine(paragraph,1);
+	
+	document.add(paragraph);
+	
 	
 }
 
