@@ -30,14 +30,7 @@ public class JobSituationVerifier extends InputVerifier {
 				state = true;
 		}
 		
-		if (name.equals("situation")) {
-			String text = ((JTextField) input).getText().trim();
-			if (text.isEmpty()) {
-				message = "Revisar los campos introducidos. La situacion no puede estar vacía";
-				state = false;
-			} else
-				state = true;
-		}
+	
 		if (name.equals("relationShip")) {
 			String text = ((JTextField) input).getText().trim();
 			if (text.isEmpty()) {

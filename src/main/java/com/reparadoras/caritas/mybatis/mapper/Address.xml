@@ -16,6 +16,8 @@
 		<result property="telephone" column="telephone" />
 		<result property="telephoneContact" column="telephone_contact" />
 		<result property="postalCode" column="postal_code" />
+		<result property="census" column="census" />
+		<result property="place" column="place" />
 
 	</resultMap>
 
@@ -30,7 +32,7 @@
 
 	<insert id="insert" parameterType="Address" useGeneratedKeys="true"
 		keyProperty="id">
-		INSERT INTO C_ADDRESS (town, street, gate, floor, telephone, telephone_contact, postal_code)
+		INSERT INTO C_ADDRESS (town, street, gate, floor, telephone, telephone_contact, postal_code, census, place)
 		VALUES (
 		#{town},
 		#{street},
@@ -38,7 +40,9 @@
 		#{floor},
 		#{telephone},
 		#{telephoneContact},
-		#{postalCode}
+		#{postalCode},
+		#{census},
+		#{place}
 		);
 	</insert>
 
@@ -52,6 +56,8 @@
 			<if test="telephone != null">telephone = #{telephone},</if>
 			<if test="telephoneContact != null">telephone_contact = #{telephoneContact},</if>
 			<if test="postalCode">postal_code = #{postalCode},</if>
+			<if test="census">census = #{census},</if>
+			<if test="place">place = #{place},</if>
 		</set>
 		WHERE id = #{id}
 	</update>

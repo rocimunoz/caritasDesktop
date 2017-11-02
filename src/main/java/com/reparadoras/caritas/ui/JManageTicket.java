@@ -679,7 +679,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 		Calendar calendarMaxNovember = new GregorianCalendar(2017,10,30);
 		Calendar calendarMinDecember = new GregorianCalendar(2017,11,01);
 		Calendar calendarMaxDecember = new GregorianCalendar(2017,11,31);
-		datePickerJanuary.setLowerBound(calendarMinJanuary.getTime());
+		
+		/*datePickerJanuary.setLowerBound(calendarMinJanuary.getTime());
 		datePickerJanuary.setUpperBound(calendarMaxJanuary.getTime());
 		datePickerFebruary.setLowerBound(calendarMinFebruary.getTime());
 		datePickerFebruary.setUpperBound(calendarMaxFebruary.getTime());
@@ -702,7 +703,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		datePickerNovember.setLowerBound(calendarMinNovember.getTime());
 		datePickerNovember.setUpperBound(calendarMaxNovember.getTime());
 		datePickerDecember.setLowerBound(calendarMinDecember.getTime());
-		datePickerDecember.setUpperBound(calendarMaxDecember.getTime());
+		datePickerDecember.setUpperBound(calendarMaxDecember.getTime());*/
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 		januaryColumn.setCellEditor(datePickerJanuary);

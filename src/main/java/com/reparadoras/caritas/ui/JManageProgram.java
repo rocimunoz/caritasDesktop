@@ -1037,7 +1037,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 
 			if (relative.getSituation() != null) {
-				if (!editedRelative.getSituation().equals(relative.getSituation())) {
+				
+				if (editedRelative.getSituation()!=null && !editedRelative.getSituation().equals(relative.getSituation())) {
 					editedRelative.setSituation(relative.getSituation());
 				}
 			} else {
@@ -1343,6 +1344,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			address.setTelephone(getJPanelAddress().getJTextFieldTelephone().getText());
 			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());
 			address.setTown(getJPanelAddress().getJTextFieldTown().getText());
+			address.setCensus(getJPanelAddress().getJXDatePickerCensus().getDate());
+			address.setPlace(getJPanelAddress().getJTextFieldPlace().getText());
 			addressDAO.update(address);
 		} catch (Exception e) {
 			logger.info(e);
