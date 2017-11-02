@@ -25,6 +25,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
+import org.apache.log4j.Logger;
+
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
@@ -74,6 +76,8 @@ import java.awt.event.MouseMotionAdapter;
 public class JMainWindow extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	static final Logger logger = Logger.getLogger(JMainWindow.class);
 
 	private JDesktopPane desktop = null;
 	private PeopleTableModel peopleTableModel = null;
@@ -119,6 +123,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	}
 
 	public void createGUIComponents() {
+		logger.info("Creando ...");
 		getContentPane().setLayout(getGridContentPane());
 		GridBagConstraints gbc_jPanelMenu = new GridBagConstraints();
 		gbc_jPanelMenu.insets = new Insets(0, 0, 5, 0);
@@ -405,7 +410,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblLogo() {
 		if (lblLogo == null) {
 			lblLogo = new JLabel("");
-			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo2.PNG")));
+			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo_splash.PNG")));
 			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
 			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		}
