@@ -534,14 +534,14 @@ public class JMainWindow extends AbstractJInternalFrame {
 		@Override
 		protected Void doInBackground() throws Exception {
 
-			publish("Loading Step 1...");
+			/*publish("Loading Step 1...");
 			Thread.sleep(1000);
 			publish("Loading Step 2...");
 			Thread.sleep(1000);
 			publish("Loading Step 3...");
 			Thread.sleep(1000);
 			publish("Loading Step 4...");
-			Thread.sleep(1000);
+			Thread.sleep(1000);*/
 
 			return null;
 		}
@@ -550,8 +550,8 @@ public class JMainWindow extends AbstractJInternalFrame {
 		protected void done() {
 			try {
 				get();
-				JOptionPane.showMessageDialog(jlabel.getParent(), "Copia de seguridad realizada", "Success",
-						JOptionPane.INFORMATION_MESSAGE);
+				/*JOptionPane.showMessageDialog(jlabel.getParent(), "Copia de seguridad realizada", "Success",
+						JOptionPane.INFORMATION_MESSAGE);*/
 			} catch (ExecutionException | InterruptedException e) {
 				e.printStackTrace();
 			}
