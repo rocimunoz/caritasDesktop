@@ -887,7 +887,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void fillDataProgram() {
 
 		cleanTabs();
-
+		logger.info("Rellenando campos programa ....");
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -920,7 +920,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void onCreateProgramFirstTime(People filterPeople) {
 		Program programNewReset = new Program();
-
+		logger.info("Creando programa ...");
 		Address address = new Address();
 		addressDAO.insert(address);
 
@@ -949,7 +949,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onFilterProgram(boolean create) {
 
 		try {
-
+			logger.info("Filtrando programa ...");
 			FilterProgram filterProgram = new FilterProgram();
 			filterProgram.setActive(this.getCkActive().isSelected());
 			filterProgram.setDni(this.getJTextFieldDni().getText());
@@ -1009,7 +1009,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void editRelative(Relative relative, Integer rowIndex) {
-
+		logger.info("Editando relative ...");
 		Relative editedRelative = getJPanelFamily().getRelativesTableModel().getDomainObject(rowIndex);
 		if (editedRelative != null) {
 			if (relative.getName() != null) {
@@ -1058,7 +1058,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void deleteRelative() {
-
+		logger.info("Borrando relative ...");
 		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -1071,7 +1071,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openEditRelative(int openMode, String title, Family family, Integer index) {
-
+		logger.info("Abriendo ventana edicion relatives ...");
 		JManageEditRelative jManageEditRelative = null;
 		try {
 
@@ -1118,6 +1118,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void addIncome(Income income) {
 
+		logger.info("Añadiendo ingresos ...");
 		this.getJPanelEconomicSituation().getIncomesTableModel().addRow(income);
 
 	}
@@ -1127,7 +1128,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void deleteIncome() {
-
+		logger.info("Borrando ingresos ...");
 		int rowIndex = getJPanelEconomicSituation().getJTableIncomes().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -1140,7 +1141,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openEditIncome(int openMode, String title, Family family, Integer index) {
-
+		logger.info("Abriendo ventana edicion ingresos ...");
 		JManageEditIncome jManageEditIncome = null;
 		try {
 
@@ -1173,7 +1174,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openExpense(int mode) {
-
+		
 		int rowIndex = getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
@@ -1185,7 +1186,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void addExpense(Expense expense) {
-
+		logger.info("Añadiendo gastos ...");
 		this.getJPanelEconomicSituation().getExpensesTableModel().addRow(expense);
 
 	}
@@ -1195,7 +1196,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void deleteExpense() {
-
+		logger.info("Borrando gastos ...");
 		int rowIndex = getJPanelEconomicSituation().getJTableExpenses().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -1208,7 +1209,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openEditExpense(int openMode, String title, Family family, Integer index) {
-
+		logger.info("Abrir ventana edicion gastos ...");
 		JManageEditExpense jManageEditexpense = null;
 		try {
 
@@ -1242,6 +1243,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void onSaveRelatives(Family family) {
 
+		logger.info("Guardando relatives ...");
 		List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();
 		Relative relativeFilter = new Relative();
 		relativeFilter.setFamily(family);
@@ -1286,6 +1288,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveFamily(Family family) throws Exception {
 
 		try {
+			logger.info("Guardando familia ...");
 			family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
 
 			String description = "";
@@ -1317,7 +1320,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveHome(Home home) throws Exception {
 
 		try {
-
+			logger.info("Guardando vivienda ...");
 			home.setNumberFamilies((Integer) getJPanelHome().getJComboNumberFamilies().getSelectedItem());
 			home.setNumberPeople((Integer) getJPanelHome().getJComboNumberPeople().getSelectedItem());
 			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
@@ -1337,6 +1340,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void onSaveAddress(Address address) throws Exception {
 		try {
+			logger.info("Guardando dirección ...");
 			address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
 			address.setGate(getJPanelAddress().getJTextFieldGate().getText());
 			address.setPostalCode(getJPanelAddress().getJTextFieldPostalCode().getText());
@@ -1356,7 +1360,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	
 	public void onSaveOtherInfo(OtherInfo otherInfo) throws Exception {
 		try {
-			
+			logger.info("Guardando otra info ...");
 			if (otherInfo!=null){
 				otherInfo.setActuations(getJPanelOtherInfo().getJTextAreaActuations().getText());
 				otherInfo.setDemand(getJPanelOtherInfo().getJTextAreaDemand().getText());
@@ -1375,6 +1379,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveAuthorizationType(Program selectedProgram) {
 		AuthorizationType aTypeFilter = new AuthorizationType();
 		String description = "";
+		logger.info("Guardando tipo de autorizacion ...");
 		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()) {
 			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioResidence().getText();
@@ -1408,7 +1413,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveJobSituation(Program selectedProgram) {
 		JobSituation jsFilter = new JobSituation();
 		String description = "";
-
+		logger.info("Guardando situación laboral ...");
 		if (this.getJPanelJobSituation().getjRadioUnemployee().isSelected()) {
 			description = getJPanelJobSituation().getjRadioUnemployee().getText();
 
@@ -1435,7 +1440,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveStudies(Program selectedProgram) {
 		Studies studiesFilter = new Studies();
 		String description = "";
-
+		logger.info("Guardando estudios ...");
 		if (this.getJPanelStudies().getjRadioNoReadNoWrite().isSelected()) {
 			description = getJPanelStudies().getjRadioNoReadNoWrite().getText();
 
@@ -1471,7 +1476,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		Income incomeFilter = new Income();
 		incomeFilter.setProgram(selectedProgram);
 		List<Income> listIncomesBBDD = incomesDAO.findIncomes(incomeFilter);
-
+		logger.info("Guardando Ingresos ...");
 		// Insert and Updates
 		for (Income income : listIncomes) {
 			if (income.getId() != null) {
@@ -1514,7 +1519,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		Expense expenseFilter = new Expense();
 		expenseFilter.setProgram(selectedProgram);
 		List<Expense> listExpenseBBDD = expensesDAO.findExpenses(expenseFilter);
-
+		logger.info("Guardando Gastos ...");
 		// Insert and Updates
 		for (Expense expense : listExpenses) {
 			if (expense.getId() != null) {
@@ -1555,7 +1560,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
-
+			logger.info("Exportando PDF ...");
 			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
 			if (selectedProgram != null) {
 
@@ -1605,10 +1610,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void onSaveProgram() {
-
+		
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			try {
+				logger.info("Guardando datos ...");
 				Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
 				if (selectedProgram != null) {
 
