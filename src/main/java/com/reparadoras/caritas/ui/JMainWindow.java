@@ -87,6 +87,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private TicketDAO ticketDAO;
 	private JPanel jPanelMenu;
 	private JLabel lblRegPeople;
+	private JLabel lblMonthlyReport;
 	private JLabel lblProgram;
 	private JLabel lblTickets;
 	private JLabel lblImport;
@@ -98,6 +99,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 	public JMainWindow(JDesktopPane desktop) {
 		super(desktop);
+		setMaximizable(true);
 		getContentPane().setBackground(Color.WHITE);
 		this.desktop = desktop;
 		this.setTitle("Gestion Personas");
@@ -178,8 +180,16 @@ public class JMainWindow extends AbstractJInternalFrame {
 			gbc_lblRegPeople.fill = GridBagConstraints.VERTICAL;
 			gbc_lblRegPeople.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblRegPeople.gridx = 0;
-			gbc_lblRegPeople.gridy = 1;
+			gbc_lblRegPeople.gridy = 0;
 			jPanelMenu.add(getLblRegPeople(), gbc_lblRegPeople);
+			GridBagConstraints gbc_lblMonthlyReport = new GridBagConstraints();
+			gbc_lblMonthlyReport.insets = new Insets(20, 0, 20, 0);
+			gbc_lblMonthlyReport.weightx = 1.0;
+			gbc_lblMonthlyReport.fill = GridBagConstraints.VERTICAL;
+			gbc_lblMonthlyReport.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblMonthlyReport.gridx = 0;
+			gbc_lblMonthlyReport.gridy = 1;
+			jPanelMenu.add(getLblMonthlyReport(), gbc_lblMonthlyReport);
 			GridBagConstraints gbc_lblTickets = new GridBagConstraints();
 			gbc_lblTickets.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblTickets.insets = new Insets(20, 0, 20, 0);
@@ -241,6 +251,33 @@ public class JMainWindow extends AbstractJInternalFrame {
 					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
 		}
 		return lblRegPeople;
+	}
+	
+	private JLabel getLblMonthlyReport() {
+		if (lblMonthlyReport == null) {
+			lblMonthlyReport = new JLabel("  Informe Mensual Cáritas ");
+			lblMonthlyReport.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					openManageMonthlyReportWindow();
+				}
+			});
+			lblMonthlyReport.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblMonthlyReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
+			lblMonthlyReport.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblMonthlyReport.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblMonthlyReport.setForeground(Color.BLACK);
+			lblMonthlyReport.setBackground(Color.WHITE);
+			lblMonthlyReport.setBorder(null);
+			lblMonthlyReport.setHorizontalAlignment(SwingConstants.CENTER);
+			lblMonthlyReport.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-report-64.png")));
+		}
+		return lblMonthlyReport;
 	}
 
 	private JLabel getLblProgram() {
@@ -440,6 +477,25 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 			jManagePeople.setMaximum(true);
 			jManagePeople.setMaximizable(false);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+	
+	private void openManageMonthlyReportWindow() {
+
+		try {
+			JManageMonthlyReport jManageMonthlyReport = new JManageMonthlyReport(this.desktop);
+			this.desktop.add(jManageMonthlyReport);
+
+		
+			jManageMonthlyReport.setMaximizable(false);
+			jManageMonthlyReport.moveToFront();
+			jManageMonthlyReport.setMaximum(true);
+			jManageMonthlyReport.setMaximizable(false);
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
