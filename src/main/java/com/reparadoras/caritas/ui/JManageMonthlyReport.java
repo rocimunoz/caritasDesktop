@@ -637,7 +637,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 	
 	public List<MonthlyReport> filterData() {
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		
 		List<MonthlyReport> listReport = new ArrayList<MonthlyReport>();
 		Map<String, MonthlyReport> mapData = new HashMap<String, MonthlyReport>();
