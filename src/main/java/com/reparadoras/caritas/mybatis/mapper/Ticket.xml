@@ -88,6 +88,43 @@
   		<if test="active != null">
     		AND PE.ACTIVE = #{active}
   		</if>
+  		<if test="pointsJanuary != null">
+    		AND T.POINTS_JANUARY > 0
+  		</if>
+  		<if test="pointsFebruary != null">
+    		AND T.POINTS_FEBRUARY > 0
+  		</if>
+  		<if test="pointsMarch != null">
+    		AND T.POINTS_MARCH > 0
+  		</if>
+  		<if test="pointsApril != null">
+    		AND T.POINTS_APRIL > 0
+  		</if>
+  		<if test="pointsMay != null">
+    		AND T.POINTS_MAY > 0
+  		</if>
+  		<if test="pointsJune != null">
+    		AND T.POINTS_JUNE > 0
+  		</if>
+  		<if test="pointsJuly != null">
+    		AND T.POINTS_JULY > 0
+  		</if>
+  		<if test="pointsAugust != null">
+    		AND T.POINTS_AUGUST > 0
+  		</if>
+  		<if test="pointsSeptember != null">
+    		AND T.POINTS_SEPTEMBER > 0
+  		</if>
+  		<if test="pointsOctober != null">
+    		AND T.POINTS_OCTOBER > 0
+  		</if>
+  		<if test="pointsNovember != null">
+    		AND T.POINTS_NOVEMBER > 0
+  		</if>
+  		<if test="pointsDecember != null">
+    		AND T.POINTS_DECEMBER > 0
+  		</if>
+  		
       
     </select>
     
