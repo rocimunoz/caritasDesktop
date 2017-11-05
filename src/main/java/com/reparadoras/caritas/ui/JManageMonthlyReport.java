@@ -649,7 +649,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		filterTicket.setYearTicket(Integer.parseInt(filterYear));
 		filterTicket.setActive(filterActive);
 		
-		String dateAtention = "";
+		
 		
 		switch(filterMonth){
 		case "Enero":
@@ -704,8 +704,6 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				if (listPrograms!=null && !listPrograms.isEmpty()){
 					program = listPrograms.get(0);
 					people = program.getPeople();
-				}
-				if (mapData.get(dni)!=null){
 					
 					MonthlyReport report = mapData.get(dni);
 					report.setAtencion(getAttentionTicket(filterMonth, ticket));
@@ -715,23 +713,24 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 					report.setNacionalidad(people.getNationality());
 					report.setNombre(people.getName());
 					report.setSexo(people.getSex());
+					report.setAnyoLlegada(String.valueOf(people.getYearToSpain()));
+					report.setDemandas(program.getOtherInfo().getDemand());
+					report.setDocumentacion(people.getDni());
+					report.setDomicilio(program.getFamily().getHome().getAddress().getStreet());
+					report.setEstudios(program.getStudies().getDescription());
+					report.setNumPersonas(String.valueOf(program.getFamily().getHome().getNumberPeople()));
+					report.setSituacionLaboral(program.getJobSituation().getDescription());
+					report.setTipoAutorizacion(program.getAuthorizationType().getDescription());
+					report.setTipoFamilia(program.getFamily().getFamilyType().getDescription());
 					
-					
-				}
-				else{
-					MonthlyReport report = new MonthlyReport();
-					report.setAtencion(getAttentionTicket(filterMonth, ticket));
-					report.setAtencion(getAttentionTicket(filterMonth, ticket));
-					report.setApellidos(people.getFirstSurname() +  " " + people.getSecondSurname());
-					report.setEstadoCivil(people.getCivilStatus());
-					report.setFechaNacimiento(sdf.format(people.getDateBorn()));
-					report.setNacionalidad(people.getNationality());
-					report.setNombre(people.getName());
-					report.setSexo(people.getSex());
 					mapData.put(dni, report);
+					
 				}
 			}
 		}
+		
+		
+		//TODO: return list
 		
 		return listReport;
 
