@@ -17,9 +17,10 @@
     </resultMap>
     
      <resultMap id="PeopleResult" type="People">
-        <result property="id" column="id"/>
+        <result property="id" column="id_people"/>
         <result property="name" column="name"/>  
         <result property="firstSurname" column="first_surname"/>
+         <result property="secondSurname" column="second_surname"/>
         <result property="dni" column="dni"/>
         <result property="passport" column="passport"/>    
         <result property="active" column="active"/>
@@ -106,6 +107,7 @@
         	   PE.PASSPORT,
                PE.NAME,
                PE.FIRST_SURNAME,
+               PE.SECOND_SURNAME,
                PE.CREATE_DATE,
                PE.ACTIVE,
                PE.REACTIVATE_DATE,
@@ -155,8 +157,8 @@
               LEFT JOIN C_HOME_TYPE HT ON H.ID_HOME_TYPE = HT.ID
               LEFT JOIN C_ADDRESS A ON H.ID_ADDRESS = A.ID
         WHERE PR.ID_PEOPLE = PE.id
-         <if test="id != null">
-    		AND PE.ID = #{id}
+         <if test="idPeople != null">
+    		AND PE.ID = #{idPeople}
   		</if>
   		<if test="namePeople != null and !namePeople.equals('')">
   		<bind name="pattern_name" value="'%' + namePeople + '%'" />
