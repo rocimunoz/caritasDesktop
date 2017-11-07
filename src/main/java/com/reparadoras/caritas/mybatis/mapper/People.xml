@@ -17,6 +17,7 @@
         <result property="sex" column="sex"/>   
         <result property="active" column="active"/>
         <result property="createDate" column="create_date"/>
+        <result property="dateBorn" column="date_born"/>
         <result property="reactivateDate" column="reactivate_date"/>
         <result property="country" column="country"/>
         <result property="nationality" column="nationality"/>
@@ -49,6 +50,10 @@
 					<bind name="pattern" value="'%' + dni + '%'" />
 					AND	dni like #{pattern}
 					</if>
+					<if test="passport!=null">
+					<bind name="pattern_passport" value="'%' + passport + '%'" />
+					AND	passport like #{pattern_passport}
+					</if>
 					<if test="active!=null">
 					AND	active = #{active}
 					</if>
@@ -74,6 +79,7 @@
         year_to_spain,
         create_date,
         reactivate_date, 
+        date_born,
         active) 
         VALUES (
         #{name},
@@ -87,6 +93,7 @@
         #{yearToSpain},
         #{createDate},
         #{reactivateDate}, 
+         #{dateBorn}, 
         #{active});
     </insert>
     
@@ -102,6 +109,7 @@
           <if test="country != null">country = #{country},</if>
           year_to_spain = #{yearToSpain},
           <if test="createDate != null">create_date = #{createDate},</if>
+           <if test="dateBorn != null">date_born = #{dateBorn},</if>
           <if test="reactivateDate != null">reactivate_date = #{reactivateDate},</if>
           <if test="sex != null">sex = #{sex},</if>
           <if test="active != null">active = #{active},</if>

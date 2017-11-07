@@ -76,8 +76,9 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
+	private JLabel lblPassport = null;
+	private JTextField tfPassport;
 	private JLabel lblName = null;
-	//private JComboBox<People> cbPeople;
 	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
@@ -226,6 +227,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
+		getJPanelFilter().add(getJLabelPassport(), getGridJLabelPassport());
+		getJPanelFilter().add(getJTextFieldPassport(), getGridJTextFieldPassport());
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
@@ -324,7 +327,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_lblName.anchor = GridBagConstraints.WEST;
 		gbc_lblName.insets = new Insets(0, 5, 0, 5);
 		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 1;
+		gbc_lblName.gridy = 2;
 
 		return gbc_lblName;
 	}
@@ -349,7 +352,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_tfName.weightx = 1.0;
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
-		gbc_tfName.gridy = 1;
+		gbc_tfName.gridy = 2;
 
 		return gbc_tfName;
 	}
@@ -392,6 +395,45 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
+	
+	private JLabel getJLabelPassport() {
+		if (lblPassport == null) {
+			lblPassport = new JLabel("Pasaporte:");
+			lblPassport.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblPassport;
+	}
+
+	private GridBagConstraints getGridJLabelPassport() {
+		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.anchor = GridBagConstraints.WEST;
+		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDni.gridx = 0;
+		gbc_lblDni.gridy = 1;
+
+		return gbc_lblDni;
+	}
+
+	private JTextField getJTextFieldPassport() {
+		if (tfPassport == null) {
+			tfPassport = new JTextField();
+			tfPassport.setColumns(10);
+		}
+		return tfPassport;
+	}
+
+	private GridBagConstraints getGridJTextFieldPassport() {
+
+		GridBagConstraints gbc_tfDni = new GridBagConstraints();
+		gbc_tfDni.weightx = 1.0;
+		gbc_tfDni.anchor = GridBagConstraints.NORTH;
+		gbc_tfDni.insets = new Insets(0, 0, 5, 5);
+		gbc_tfDni.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfDni.gridx = 1;
+		gbc_tfDni.gridy = 1;
+
+		return gbc_tfDni;
+	}
 
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
@@ -428,7 +470,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		GridBagConstraints gbc_btnSearchPeople = new GridBagConstraints();
 		gbc_btnSearchPeople.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSearchPeople.gridx = 2;
-		gbc_btnSearchPeople.gridy = 1;
+		gbc_btnSearchPeople.gridy = 2;
 
 		return gbc_btnSearchPeople;
 	}
@@ -449,7 +491,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_btnCleanPeople.anchor = GridBagConstraints.WEST;
 		gbc_btnCleanPeople.insets = new Insets(0, 0, 0, 5);
 		gbc_btnCleanPeople.gridx = 3;
-		gbc_btnCleanPeople.gridy = 1;
+		gbc_btnCleanPeople.gridy = 2;
 
 		return gbc_btnCleanPeople;
 	}
@@ -470,7 +512,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_btnExit.anchor = GridBagConstraints.EAST;
 		gbc_btnExit.insets = new Insets(0, 0, 0, 20);
 		gbc_btnExit.gridx = 3;
-		gbc_btnExit.gridy = 1;
+		gbc_btnExit.gridy = 2;
 
 		return gbc_btnExit;
 	}
@@ -674,7 +716,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private PeopleTableModel getPeopleTableModel() {
 
 		if (peopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "DNI", "NOMBRE", "APELLIDO 1", "APELLIDO 2" };
+			Object[] columnIdentifiers = new Object[] { "DNI", "PASAPORTE","NOMBRE", "APELLIDO 1", "APELLIDO 2" };
 			peopleTableModel = new PeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -686,16 +728,22 @@ public class JManagePeople extends AbstractJInternalFrame {
 	public void cleanFilter(){
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
+		this.getJTextFieldPassport().setText("");
 		
 	}
 	
 	public void filterPeople() {
 		String filterDni = this.getJTextFieldDni().getText();
 		String filterName = this.getJTextFieldName().getText();
+		String filterPassport = this.getJTextFieldPassport().getText();
 		boolean filterActive = this.getCkActive().isSelected();
 		People filterPeople = new People();
 		if (filterDni != null && !filterDni.equals("")) {
 			filterPeople.setDni(filterDni);
+		}
+		
+		if (filterPassport != null && !filterPassport.equals("")) {
+			filterPeople.setPassport(filterPassport);
 		}
 		
 		if (filterName != null && !filterName.equals("")) {

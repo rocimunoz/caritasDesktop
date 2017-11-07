@@ -70,6 +70,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 	private JFormattedTextField txfYearToSpain;
 	private JLabel jLblCreateDate;
 	private JXDatePicker jxCreateDate;
+	private JLabel jLblDateBorn;
+	private JXDatePicker jxDateBorn;
 	private JLabel jLblReactivateDate;
 	private JXDatePicker jxReactivateDate;
 
@@ -139,6 +141,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJLabelReactivateDate(), getGridJLabelReactivateDate());
 		getJPanelPersonalData().add(getJXReactivateDate(), getGridJXReactivateDate());
 		getJPanelPersonalData().add(getJckActive(), getGridJCheckActive());
+		getJPanelPersonalData().add(getJLabelDateBorn(), getGridJLabelDateBorn());
+		getJPanelPersonalData().add(getJXDateBorn(), getGridJXDateBorn());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
 
@@ -215,6 +219,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJXReactivateDate().setEditable(false);
 			this.getJXReactivateDate().setDate(this.selectedPeople.getReactivateDate());
 			this.getJckActive().setEnabled(false);
+			this.getJXDateBorn().setDate(this.selectedPeople.getDateBorn());
 
 			this.getJButtonAccept().setVisible(false);
 			this.getJButtonCancel().setText("Salir");
@@ -260,6 +265,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.getJXCreateDate().setDate(this.selectedPeople.getCreateDate());
 			this.getJXReactivateDate().setDate(this.selectedPeople.getReactivateDate());
 			this.getJckActive().setSelected(this.selectedPeople.isActive());
+			this.getJXDateBorn().setDate(this.selectedPeople.getDateBorn());
 
 		} else if (mode == JWindowParams.IMODE_INSERT) {
 			this.getJckActive().setSelected(true);
@@ -311,6 +317,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 			this.selectedPeople.setCreateDate(this.getJXCreateDate().getDate());
 			this.selectedPeople.setReactivateDate(this.getJXReactivateDate().getDate());
+			this.selectedPeople.setDateBorn(this.getJXDateBorn().getDate());
 
 			peopleDAO.update(selectedPeople);
 
@@ -346,6 +353,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			people.setCreateDate(this.getJXCreateDate().getDate());
 			people.setReactivateDate(this.getJXReactivateDate().getDate());
 			people.setActive(this.getJckActive().isSelected());
+			people.setDateBorn(this.getJXCreateDate().getDate());
 
 			// save people
 			peopleDAO.insert(people);
@@ -984,6 +992,53 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		gbcCheckActive.gridx = 4;
 		gbcCheckActive.gridy = 3;
 		return gbcCheckActive;
+	}
+	
+	private JLabel getJLabelDateBorn() {
+
+		if (jLblDateBorn == null) {
+			jLblDateBorn = new JLabel("Fecha Nacimiento");
+			jLblDateBorn.setMaximumSize(new Dimension(30, 14));
+			jLblDateBorn.setHorizontalAlignment(SwingConstants.LEFT);
+			jLblDateBorn.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+
+		return jLblDateBorn;
+	}
+
+	private GridBagConstraints getGridJLabelDateBorn() {
+
+		GridBagConstraints gbc_lblCreateDate = new GridBagConstraints();
+		gbc_lblCreateDate.anchor = GridBagConstraints.WEST;
+		gbc_lblCreateDate.insets = new Insets(0, 20, 0, 5);
+		gbc_lblCreateDate.gridx = 0;
+		gbc_lblCreateDate.gridy = 4;
+
+		return gbc_lblCreateDate;
+	}
+
+	private JXDatePicker getJXDateBorn() {
+
+		if (jxDateBorn == null) {
+			jxDateBorn = new JXDatePicker();
+			jxDateBorn.setName("dateBorn");
+			
+		}
+
+		return jxDateBorn;
+	}
+
+	private GridBagConstraints getGridJXDateBorn() {
+
+		GridBagConstraints gbc_txfCreateDate = new GridBagConstraints();
+		gbc_txfCreateDate.weightx = 1.0;
+		gbc_txfCreateDate.insets = new Insets(0, 0, 0, 5);
+		gbc_txfCreateDate.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txfCreateDate.gridx = 1;
+		gbc_txfCreateDate.gridy = 4;
+
+		return gbc_txfCreateDate;
+
 	}
 
 	/* FUNCIONES PANEL ACCIONES */

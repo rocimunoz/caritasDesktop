@@ -645,6 +645,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 	public List<MonthlyReport> filterData() {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdfCorto = new SimpleDateFormat("dd/MM/yyyy");
 
 		List<MonthlyReport> listReport = new ArrayList<MonthlyReport>();
 
@@ -714,11 +715,12 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 					MonthlyReport report = new MonthlyReport();
 
+					
 					report.setAtencion(getAttentionTicket(filterMonth, ticket));
 					report.setApellidos(people.getFirstSurname() + " " + people.getSecondSurname());
 					report.setEstadoCivil(people.getCivilStatus());
 					if (people.getDateBorn() != null) {
-						report.setFechaNacimiento(sdf.format(people.getDateBorn()));
+						report.setFechaNacimiento(sdfCorto.format(people.getDateBorn()));
 					}
 
 					report.setNacionalidad(people.getNationality());
