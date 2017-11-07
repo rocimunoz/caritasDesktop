@@ -5,6 +5,7 @@ public class FilterTicket {
 	private Long idPeople;
 	private String namePeople;
 	private String dniPeople;
+	private String passportPeople;
 	private Integer yearTicket;
 	private Boolean pointsJanuary;
 	private Boolean pointsFebruary;
@@ -122,6 +123,12 @@ public class FilterTicket {
 	}
 	public void setPointsDecember(Boolean pointsDecember) {
 		this.pointsDecember = pointsDecember;
+	}
+	public String getPassportPeople() {
+		return passportPeople;
+	}
+	public void setPassportPeople(String passportPeople) {
+		this.passportPeople = passportPeople;
 	}
 	
 	

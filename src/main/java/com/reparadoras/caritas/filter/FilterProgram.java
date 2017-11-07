@@ -7,6 +7,7 @@ public class FilterProgram {
 	private String namePeople;
 	private String firstSurname;
 	private String dni;
+	private String passport;
 	private Boolean active;
 	
 	
@@ -66,6 +67,20 @@ public class FilterProgram {
 	}
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+
+
+
+	public String getPassport() {
+		return passport;
+	}
+
+
+
+
+	public void setPassport(String passport) {
+		this.passport = passport;
 	}
 	
 	

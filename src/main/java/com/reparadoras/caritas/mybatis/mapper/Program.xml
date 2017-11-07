@@ -176,6 +176,10 @@
   		<bind name="pattern" value="'%' + dni + '%'" />
     		AND PE.DNI like #{pattern}
   		</if>
+  		<if test="passport != null and !passport.equals('')">
+  		<bind name="pattern_passport" value="'%' + passport + '%'" />
+    		AND PE.PASSPORT like #{pattern_passport}
+  		</if>
   		<if test="active != null">
     		AND PE.ACTIVE = #{active}
   		</if>

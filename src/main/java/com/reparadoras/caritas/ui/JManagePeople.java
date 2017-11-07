@@ -905,6 +905,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				FilterTicket filterTicket = new FilterTicket();
 				filterTicket.setActive(people.isActive());
 				filterTicket.setDniPeople(people.getDni());
+				filterTicket.setPassportPeople(people.getPassport());
 				filterTicket.setNamePeople(people.getName());
 				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
 				filterTicket.setIdPeople(people.getId());

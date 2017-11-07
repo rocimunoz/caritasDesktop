@@ -82,6 +82,10 @@
   		<bind name="pattern" value="'%' + dniPeople + '%'" />
     		AND PE.DNI like #{pattern}
   		</if>
+  		<if test="passportPeople != null and !passportPeople.equals('')">
+  		<bind name="pattern_passport" value="'%' + passportPeople + '%'" />
+    		AND PE.PASSPORT like #{pattern_passport}
+  		</if>
   		<if test="yearTicket != null and !yearTicket.equals('')">
     		AND T.YEAR = #{yearTicket}
   		</if>
