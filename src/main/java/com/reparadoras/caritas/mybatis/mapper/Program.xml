@@ -79,17 +79,17 @@
 	
 	<resultMap id="AuthorizationTypeResult" type="AuthorizationType">
         <result property="id" column="id_authorization_type"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_atype"/>
     </resultMap>
     
     <resultMap id="JobSituationResult" type="JobSituation">
         <result property="id" column="id_job_situation"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_js"/>
     </resultMap>
     
     <resultMap id="StudiesResult" type="Studies">
         <result property="id" column="id_studies"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_studies"/>
     </resultMap>
     
     <resultMap id="OtherInfoResult" type="OtherInfo">
@@ -145,7 +145,10 @@
                OI.INSTITUTIONS,
                OI.DEMAND,
                OI.DESCRIPTION DESCRIPTION_OTHER,
-               OI.ACTUATIONS
+               OI.ACTUATIONS,
+               ATYPE.DESCRIPTION DESCRIPTION_ATYPE,
+               JS.DESCRIPTION DESCRIPTION_JS,
+               STUDIES.DESCRIPTION DESCRIPTION_STUDIES
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
               LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID

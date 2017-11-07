@@ -1380,7 +1380,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		AuthorizationType aTypeFilter = new AuthorizationType();
 		String description = "";
 		logger.info("Guardando tipo de autorizacion ...");
-		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()) {
+		
 			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioResidence().getText();
 
@@ -1394,7 +1394,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				description = getJPanelAuthorizationType().getJRadioTourism().getText();
 
 			}
-		}
+		
 
 		else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioUndocumented().getText();

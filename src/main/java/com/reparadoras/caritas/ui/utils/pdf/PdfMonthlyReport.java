@@ -77,8 +77,6 @@ public class PdfMonthlyReport {
 	private static final String PDF_EXTENSION = ".pdf";
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
-
 
 	private static final Font TITLE_14_FONT_BOLD = new Font(FontFamily.HELVETICA, 14, Font.BOLD);
 	private static final Font TITLE_12_FONT = new Font(FontFamily.HELVETICA, 12, Font.NORMAL);
@@ -87,11 +85,6 @@ public class PdfMonthlyReport {
 	private static final Font TITLE_6_FONT_BOLD = new Font(FontFamily.HELVETICA, 7, Font.BOLD);
 	private static final Font TITLE_10_FONT = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
 	private static final Font TITLE_6_FONT = new Font(FontFamily.HELVETICA, 7, Font.NORMAL);
-	
-
-
-
-
 
 	private RelativeDAO relativeDAO;
 	private AuthorizationTypeDAO authorizationTypeDAO;
@@ -100,10 +93,9 @@ public class PdfMonthlyReport {
 	private IncomesDAO incomesDAO;
 	private ExpensesDAO expensesDAO;
 
-	public File export(List<MonthlyReport> lista, File file, String month, String year) throws DocumentException, IOException {
+	public File export(List<MonthlyReport> lista, File file, String month, String year)
+			throws DocumentException, IOException {
 
-		
-		
 		try {
 
 			relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -113,17 +105,19 @@ public class PdfMonthlyReport {
 			expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 			incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
-			Document document = new Document(PageSize.A4.rotate(), 10f, 10f, 100f, 0f);
+			//Document document = new Document(PageSize.A4.rotate(), 20f, 10f, 100f, 0f);
+			Document document = new Document(PageSize.A4.rotate());
+			
+			
 		
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-			
+
 			document.open();
 
 			addMetaData(document);
 			addTitle(document, month, year);
 			addReport(document, lista);
-			
-		
+
 			document.close();
 		} catch (Exception e) {
 			logger.error(e);
@@ -141,368 +135,225 @@ public class PdfMonthlyReport {
 		document.addCreator("Lars Vogel");
 	}
 
-	private void addTitle(Document document, String month, String year) throws DocumentException{
+	private void addTitle(Document document, String month, String year) throws DocumentException {
 		Paragraph paragraphTitle = new Paragraph();
 		paragraphTitle.setAlignment(Paragraph.ALIGN_CENTER);
-		
+
 		paragraphTitle.add(new Paragraph("PROGRAMA DE ATENCIÓN PRIMARIA", TITLE_20_FONT_BOLD));
-		
+
 		Paragraph paragraphSub = new Paragraph();
-		paragraphSub.setAlignment(Paragraph.ALIGN_LEFT);
 		
+		//paragraphSub.setAlignment(Paragraph.ALIGN_LEFT);
+
 		paragraphSub.add(new Paragraph("PARROQUIA: SANTA MARIA REPARADORAS", TITLE_14_FONT_BOLD));
-		paragraphSub.add(new Paragraph("FECHA: " + month + "  " +  year, TITLE_14_FONT_BOLD));
-		
-	
-		
+		paragraphSub.add(new Paragraph("FECHA: " + month + "  " + year, TITLE_14_FONT_BOLD));
+
 		this.addEmptyLine(paragraphTitle, 1);
-		
-		
+
 		this.addEmptyLine(paragraphSub, 1);
-		
+
 		document.add(paragraphTitle);
 		document.add(paragraphSub);
 	}
-	private void addTitlePage(Document document) throws DocumentException, MalformedURLException, IOException {
-		Paragraph paragraph = new Paragraph();
-		paragraph.setAlignment(Paragraph.ALIGN_RIGHT);
-		
-		addEmptyLine(paragraph, 1);
-		
-		paragraph.add(new Paragraph("Nº SICCE _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("F. ALTA _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("NOMBRE _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("APELLIDOS _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("DNI/NIE _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("F.NACIMIENTO _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("PAIS ORIGEN _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("AÑO LLEGADA ESPAÑA _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("PROYECTO _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("ATIENDE _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		paragraph.add(new Paragraph("CÁRITAS PARROQUIAL _____________________", TITLE_12_FONT));
-		addEmptyLine(paragraph, 1);
-		addEmptyLine(paragraph, 1);
 
-		Image img = Image.getInstance(PdfMonthlyReport.class.getResource("/com/reparadoras/images/logo2.png"));
-		img.setAlignment(Paragraph.ALIGN_CENTER);
+	private void addReport(Document document, List<MonthlyReport> lista) throws DocumentException {
 
-		document.add(paragraph);
-		document.add(img);
-		
-		document.newPage();
-	}
+		try {
 
-	
-	private void addReport(Document document, List<MonthlyReport> lista) throws DocumentException{
-		
-		PdfPTable table = new PdfPTable(19);
-		table.setTotalWidth(new float[] { 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2});
-		table.setTotalWidth(PageSize.A4.getWidth());
-		
-		//table.setLockedWidth(true);
-		
-		PdfPCell cell = new PdfPCell(new Phrase("F.Atencion", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Apellidos", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Nombre", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Documentación", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("F. Nacimiento", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Sexo", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Domicilio", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Nº Personas", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("T. Familia", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Estado Civil", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("H. <18", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("H. >18", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Año Llegada", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Nacionalidad", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("T. Autorización", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("S. Laboral", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Estudios", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Demandas", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		cell = new PdfPCell(new Phrase("Respuesta e Importe", TITLE_6_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		
-		if (lista!=null && !lista.isEmpty()){
-			
-			for (MonthlyReport report : lista) {
-				
-				cell = new PdfPCell(new Phrase(report.getAtencion(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getApellidos(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getNombre(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getDocumentacion(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getFechaNacimiento(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getSexo(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getDomicilio(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getNumPersonas(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getTipoFamilia(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getEstadoCivil(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase("H. <18", TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase("H. >18", TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getAnyoLlegada(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getNacionalidad(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getTipoAutorizacion(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getSituacionLaboral(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getEstudios(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getDemandas(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				cell = new PdfPCell(new Phrase(report.getRespuestaImporte(), TITLE_6_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
+			PdfPTable table = new PdfPTable(19);
+			table.setTotalWidth(new float[] { 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2 });
+			table.setTotalWidth(PageSize.A4.getWidth());
+
+			// table.setLockedWidth(true);
+
+			PdfPCell cell = new PdfPCell(new Phrase("F.Atencion", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Apellidos", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Nombre", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Documentación", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("F. Nacimiento", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Sexo", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Domicilio", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Nº Personas", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("T. Familia", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Estado Civil", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("H. <18", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("H. >18", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Año Llegada", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Nacionalidad", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("T. Autorización", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("S. Laboral", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Estudios", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Demandas", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			cell = new PdfPCell(new Phrase("Respuesta e Importe", TITLE_6_FONT_BOLD));
+			setCellStyleTableWithBorder(cell);
+			table.addCell(cell);
+
+			if (lista != null && !lista.isEmpty()) {
+
+				for (MonthlyReport report : lista) {
+
+					cell = new PdfPCell(new Phrase(report.getAtencion(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getApellidos(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getNombre(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getDocumentacion(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getFechaNacimiento(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getSexo(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getDomicilio(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getNumPersonas(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getTipoFamilia(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getEstadoCivil(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getHijosMenor18(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getHijosMayor18(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getAnyoLlegada(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getNacionalidad(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getTipoAutorizacion(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getSituacionLaboral(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getEstudios(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getDemandas(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+					cell = new PdfPCell(new Phrase(report.getRespuestaImporte(), TITLE_6_FONT));
+					setCellStyleTableWithBorder(cell);
+					table.addCell(cell);
+
+				}
 			}
-		}
-		
-		document.add(table);
-		
-		
-		
-		
-	}
-	
 
-	private void addFamily(Document document, Family family) throws DocumentException, IOException {
+			document.add(table);
 
-		List<Relative> relatives = new ArrayList<Relative>();
-		relatives = family.getRelatives();
-
-		Relative relativeFilter = new Relative();
-		relativeFilter.setFamily(family);
-		relatives = relativeDAO.findRelative(relativeFilter);
-
-		Paragraph paragraphtitulo = new Paragraph();
-
-		paragraphtitulo.add(new Paragraph("COMPOSICIÓN FAMILIAR", TITLE_10_FONT_BOLD));
-		addEmptyLine(paragraphtitulo, 1);
-
-		PdfPTable table = new PdfPTable(5);
-		table.setTotalWidth(new float[] { 100, 100, 100, 100, 100});
-		table.setLockedWidth(true);
-
-		// first row
-		PdfPCell cell = new PdfPCell(new Phrase("PARENTESCO", TITLE_10_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		// second row
-		cell = new PdfPCell(new Phrase("APELLIDOS", TITLE_10_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-
-		// third row
-		cell = new PdfPCell(new Phrase("NOMBRE", TITLE_10_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-
-		// third row
-		cell = new PdfPCell(new Phrase("F.NAC", TITLE_10_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-
-		// third row
-		cell = new PdfPCell(new Phrase("SITUACION", TITLE_10_FONT_BOLD));
-		setCellStyleTableWithBorder(cell);
-		table.addCell(cell);
-		//table.setHeaderRows(1);
-		if (relatives != null && !relatives.isEmpty()) {
-
-			for (Relative relative : relatives) {
-				cell = new PdfPCell(new Phrase(relative.getRelationShip(), TITLE_10_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				cell = new PdfPCell(new Phrase(relative.getSurname(), TITLE_10_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				cell = new PdfPCell(new Phrase(relative.getName(), TITLE_10_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				
-				
-				cell = new PdfPCell(new Phrase(sdf.format(relative.getDateBorn()), TITLE_10_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-				cell = new PdfPCell(new Phrase(relative.getSituation(), TITLE_10_FONT));
-				setCellStyleTableWithBorder(cell);
-				table.addCell(cell);
-			}
-		}else{
-			createEmptyCells(5, table);
-			
+		} catch (DocumentException e) {
+			logger.error("Error obteniendo los datos del report: " + e);
+			throw e;
 		}
 
-		document.add(paragraphtitulo);
-
-		document.add(table);
-
 	}
-	
-	private void createEmptyCells(int num, PdfPTable table ){
-		
-		for (int i=0;i<num;i++){
+
+	private void createEmptyCells(int num, PdfPTable table) {
+
+		for (int i = 0; i < num; i++) {
 			PdfPCell cell = new PdfPCell(new Phrase("", TITLE_10_FONT));
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 		}
 	}
 
-	
-	
-
-	
-
-
-
-	
-	
-
-
-
-
-
-
-
-
-	
-
-	private  void addEmptyLine(Paragraph paragraph, int number) {
-		for (int i = 0; i < number; i++) {
-			paragraph.add(new Paragraph(" "));
-		}
-	}
-	
-	private  void addEmptyLinePhrase(Phrase paragraph, int number) {
+	private void addEmptyLine(Paragraph paragraph, int number) {
 		for (int i = 0; i < number; i++) {
 			paragraph.add(new Paragraph(" "));
 		}
 	}
 
-	
-
-	
-
-	
-
-	
-
-	
-
-	
+	private void addEmptyLinePhrase(Phrase paragraph, int number) {
+		for (int i = 0; i < number; i++) {
+			paragraph.add(new Paragraph(" "));
+		}
+	}
 
 	private String getNullRepresentation(String method) {
 		if (method != null && !method.equals("")) {
@@ -520,22 +371,20 @@ public class PdfMonthlyReport {
 		}
 	}
 
-	
-	
-	private PdfPCell setCellStyleTableNoBorder(PdfPCell cell){
+	private PdfPCell setCellStyleTableNoBorder(PdfPCell cell) {
 		cell.setFixedHeight(30);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setBorder(Rectangle.NO_BORDER);
 		return cell;
-		
+
 	}
-	
-	private PdfPCell setCellStyleTableWithBorder(PdfPCell cell){
+
+	private PdfPCell setCellStyleTableWithBorder(PdfPCell cell) {
 		cell.setFixedHeight(30);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setBorder(Rectangle.BOX);
 		return cell;
-		
+
 	}
 
 }

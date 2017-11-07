@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ import com.reparadoras.caritas.model.JobSituation;
 import com.reparadoras.caritas.model.MonthlyReport;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
+import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
@@ -117,6 +119,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 	private TicketDAO ticketDAO;
 	private ProgramDAO programDAO;
+	private RelativeDAO relativeDAO;
 
 	public JManageMonthlyReport(JDesktopPane desktop) {
 		super(desktop);
@@ -136,6 +139,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
@@ -193,7 +197,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				JOptionPane.showMessageDialog(null, "Se ha generado el pdf correctamente.");
 
 			} catch (DocumentException e) {
-				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
+				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible generar el informe",
 						"Generacion PDF", JOptionPane.ERROR_MESSAGE);
 				// logger.info(e);
 
@@ -643,7 +647,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		List<MonthlyReport> listReport = new ArrayList<MonthlyReport>();
-		
+
 		String filterYear = this.getJTextFieldYear().getText();
 		String filterMonth = (String) this.getJComboBoxMonth().getSelectedItem();
 		boolean filterActive = this.getCkActive().isSelected();
@@ -652,7 +656,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		filterTicket.setYearTicket(Integer.parseInt(filterYear));
 		filterTicket.setActive(filterActive);
 
-		String dateAtention = "";
+		
 
 		switch (filterMonth) {
 		case "Enero":
@@ -707,9 +711,9 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				if (listPrograms != null && !listPrograms.isEmpty()) {
 					program = listPrograms.get(0);
 					people = program.getPeople();
-					
+
 					MonthlyReport report = new MonthlyReport();
-					
+
 					report.setAtencion(getAttentionTicket(filterMonth, ticket));
 					report.setApellidos(people.getFirstSurname() + " " + people.getSecondSurname());
 					report.setEstadoCivil(people.getCivilStatus());
@@ -721,77 +725,85 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 					report.setNombre(people.getName());
 					report.setSexo(people.getSex());
 					String documentacion = "";
-					if (people.getDni()!=null && !people.getDni().equals("")){
+					if (people.getDni() != null && !people.getDni().equals("")) {
 						documentacion = people.getDni();
-					}else if (people.getPassport()!=null && !people.getPassport().equals("")){
+					} else if (people.getPassport() != null && !people.getPassport().equals("")) {
 						documentacion = people.getPassport();
 					}
 					report.setDocumentacion(documentacion);
 					String domicilio = "";
 					String street = program.getFamily().getHome().getAddress().getStreet();
-					if (street!=null){
+					if (street != null) {
 						domicilio = street;
 						String floor = program.getFamily().getHome().getAddress().getFloor();
 						String gate = program.getFamily().getHome().getAddress().getGate();
-						if (gate!=null){
+						if (gate != null) {
 							domicilio = domicilio + " " + gate;
-							if (floor!=null){
+							if (floor != null) {
 								domicilio = domicilio + " " + floor;
 							}
 						}
-						
+
 					}
 					report.setDomicilio(domicilio);
 					report.setNumPersonas(String.valueOf(program.getFamily().getHome().getNumberFamilies()));
 					String tipoFamilia = "";
-					if (program.getFamily().getFamilyType()!=null){
-						FamilyType familyType =new FamilyType();
+					if (program.getFamily().getFamilyType() != null) {
+						FamilyType familyType = new FamilyType();
 						familyType.setDescription(program.getFamily().getFamilyType().getDescription());
 						tipoFamilia = Constants.getNemonicFamilyType(familyType);
 						report.setTipoFamilia(tipoFamilia);
 					}
-					
+
 					report.setEstadoCivil(people.getCivilStatus());
-					if (people.getYearToSpain()!=null){
+					if (people.getYearToSpain() != null) {
 						report.setAnyoLlegada(String.valueOf(people.getYearToSpain()));
 					}
-					
+
 					String tipoAutorizacion = "";
-					if (program.getAuthorizationType()!=null){
+					if (program.getAuthorizationType() != null) {
 						AuthorizationType atype = new AuthorizationType();
 						atype.setDescription(program.getAuthorizationType().getDescription());
-						tipoAutorizacion =Constants.getNemonicAuthorizationType(atype);
+						tipoAutorizacion = Constants.getNemonicAuthorizationType(atype);
 						report.setTipoAutorizacion(tipoAutorizacion);
-						
+
 					}
-					
+
 					String situacionLaboral = "";
-					if (program.getJobSituation()!=null){
+					if (program.getJobSituation() != null) {
 						JobSituation jtype = new JobSituation();
 						jtype.setDescription(program.getJobSituation().getDescription());
-						situacionLaboral =Constants.getNemonicJobSituation(jtype);
+						situacionLaboral = Constants.getNemonicJobSituation(jtype);
 						report.setSituacionLaboral(situacionLaboral);
-						
+
 					}
-					
+
 					String estudios = "";
-					if (program.getStudies()!=null){
+					if (program.getStudies() != null) {
 						Studies studies = new Studies();
 						studies.setDescription(program.getStudies().getDescription());
-						estudios =Constants.getNemonicStudies(studies);
+						estudios = Constants.getNemonicStudies(studies);
 						report.setEstudios(estudios);
-						
+
 					}
-					
-					if (program.getOtherInfo()!=null){
+
+					if (program.getOtherInfo() != null) {
 						report.setDemandas(program.getOtherInfo().getDemand());
 					}
+
+					Family family = program.getFamily();
+					if (family != null) {
 					
-					
+						Relative filter = new Relative();
+						filter.setFamily(family);
+						List<Relative> relatives = relativeDAO.findRelative(filter);
+						report.setHijosMenor18(String.valueOf(getHijos18(relatives)[0]));
+						report.setHijosMayor18(String.valueOf(getHijos18(relatives)[1]));
+					}
+
 					listReport.add(report);
 				}
 
-				
 			}
 		}
 
@@ -799,4 +811,45 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 	}
 
+	private Integer[] getHijos18(List<Relative> relatives) {
+		Integer[] edadHijos = new Integer[2];
+		int menor18 = 0;
+		int mayor18 = 0;
+		if (relatives!=null){
+			for (Relative relative : relatives) {
+				if (relative.getRelationShip() != null && !relative.getRelationShip().equals("")) {
+					String relacion = relative.getRelationShip().toLowerCase();
+					if (relacion.equals("hijo") || relacion.equals("hija")) {
+						Date fecha = relative.getDateBorn();
+						if (fecha != null) {
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTime(fecha);
+							Calendar today = Calendar.getInstance();
+							today.setTime(new Date());
+							int year = calendar.get(Calendar.YEAR);
+							int yearToday = today.get(Calendar.YEAR);
+							if (yearToday - year >= 18) {
+								++mayor18;
+							} else {
+								++menor18;
+							}
+
+						}
+
+					}
+				}
+
+			}
+		}
+		
+
+		edadHijos[0] = menor18;
+		edadHijos[1] = mayor18;
+		return edadHijos;
+	}
+
+	private int getHijosMenor18() {
+
+		return 0;
+	}
 }

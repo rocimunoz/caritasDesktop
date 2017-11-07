@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -26,6 +27,7 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,6 +46,8 @@ import javax.swing.event.ChangeEvent;
 
 public class JManageEditPeople extends AbstractJInternalFrame {
 
+	static final Logger logger = Logger.getLogger(JManageEditPeople.class);
+	
 	private JPanel jPanelContentPane;
 
 	private JPanel jPanelPersonalData;
@@ -300,7 +304,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			this.selectedPeople.setCountry(this.getJTextFieldCountry().getText());
 			this.selectedPeople.setNationality(this.getJTextFieldNationality().getText());
 			if (this.getJTextFieldYearToSpain().getText() != null && !this.getJTextFieldYearToSpain().getText().equals("")) {
-				this.selectedPeople.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText()));
+				this.selectedPeople.setYearToSpain(Integer.parseInt(this.getJTextFieldYearToSpain().getText().replace(".", "")));
 			} else {
 				this.selectedPeople.setYearToSpain(null);
 			}
@@ -316,6 +320,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Actualización Persona", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error actualizando persona" + e);
 		}
 
 	}
@@ -351,6 +356,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error guardando persona" + e);
 		}
 
 	}
@@ -834,9 +840,12 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 
 	public JFormattedTextField getJTextFieldYearToSpain() {
 		if (txfYearToSpain == null) {
-			NumberFormat numberFormat = NumberFormat.getNumberInstance();
-			txfYearToSpain = new JFormattedTextField(numberFormat);
+			
+			DecimalFormat formatter = new DecimalFormat("#0,000");
+		
+			txfYearToSpain = new JFormattedTextField(formatter);
 			txfYearToSpain.setColumns(10);
+			txfYearToSpain.setName("yearToSpain");
 		}
 		return txfYearToSpain;
 	}
