@@ -21,6 +21,7 @@
     <resultMap id="PeopleResult" type="People">
         <result property="id" column="idPeople"/> 
        <result property="dni" column="dni"/> 
+       <result property="passport" column="passport"/> 
     </resultMap>
  
   <delete id="deleteByProgram" parameterType="Program">
@@ -30,7 +31,7 @@
    
  
  <select id="findAllIncomes" parameterType="Income" resultMap="IncomeResult">
-       SELECT * FROM C_INCOME I, C_PROGRAM P, C_PEOPLE PE
+       SELECT I.ID, I.CONCEPT, I.END_DATE, I.AMOUNT, PE.ID IDPEOPLE, PE.DNI, PE.PASSPORT, P.ID IDPROGRAM FROM C_INCOME I, C_PROGRAM P, C_PEOPLE PE
        WHERE I.ID_PROGRAM = P.ID
        AND P.ID_PEOPLE = PE.ID
     </select>

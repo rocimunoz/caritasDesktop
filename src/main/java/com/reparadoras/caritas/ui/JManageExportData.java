@@ -99,6 +99,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
 	private RelativeDAO relativeDAO;
+	private PeopleDAO peopleDAO;
 
 	public int countOK = 0;
 	public int countKO = 0;
@@ -126,6 +127,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		addListener();
 
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
@@ -464,7 +466,8 @@ public class JManageExportData extends AbstractJInternalFrame {
 			} else if (passport != null && !passport.equals("")) {
 				mapProgram.put(passport, program);
 			} else {
-				System.out.println("registro no exportable");
+				logger.warn("Registro no exportable.");
+				
 			}
 		}
 
@@ -484,13 +487,19 @@ public class JManageExportData extends AbstractJInternalFrame {
 			if (programs != null && !programs.isEmpty() && programs.size() == 1) {
 				Program programRelatives = programs.get(0);
 				String dni = programRelatives.getPeople().getDni();
-
-				if (mapRelatives.get(dni) != null) {
-					mapRelatives.get(dni).add(relative);
+				String passport = programRelatives.getPeople().getPassport();
+				String key ="";
+				if (dni!=null && !dni.equals("")){
+					key = dni;
+				}else{
+					key = passport;
+				}
+				if (mapRelatives.get(key) != null) {
+					mapRelatives.get(key).add(relative);
 				} else {
 					List<Relative> relatives = new ArrayList<>();
 					relatives.add(relative);
-					mapRelatives.put(dni, relatives);
+					mapRelatives.put(key, relatives);
 				}
 			}
 		}
@@ -504,13 +513,19 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 		for (Income income : listIncomes) {
 			String dni = income.getProgram().getPeople().getDni();
-
-			if (mapIncomes.get(dni) != null) {
-				mapIncomes.get(dni).add(income);
+			String passport = income.getProgram().getPeople().getPassport();
+			String key ="";
+			if (dni!=null && !dni.equals("")){
+				key = dni;
+			}else{
+				key = passport;
+			}
+			if (mapIncomes.get(key) != null) {
+				mapIncomes.get(key).add(income);
 			} else {
 				List<Income> incomes = new ArrayList<>();
 				incomes.add(income);
-				mapIncomes.put(dni, incomes);
+				mapIncomes.put(key, incomes);
 			}
 
 		}
@@ -524,13 +539,19 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 		for (Expense expense : listExpenses) {
 			String dni = expense.getProgram().getPeople().getDni();
-
-			if (mapExpenses.get(dni) != null) {
-				mapExpenses.get(dni).add(expense);
+			String passport = expense.getProgram().getPeople().getPassport();
+			String key ="";
+			if (dni!=null && !dni.equals("")){
+				key = dni;
+			}else{
+				key = passport;
+			}
+			if (mapExpenses.get(key) != null) {
+				mapExpenses.get(key).add(expense);
 			} else {
 				List<Expense> expenses = new ArrayList<>();
 				expenses.add(expense);
-				mapExpenses.put(dni, expenses);
+				mapExpenses.put(key, expenses);
 			}
 
 		}
@@ -570,13 +591,24 @@ public class JManageExportData extends AbstractJInternalFrame {
 			HSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapIncomes.keySet()) {
 
+				People filter =new People();
+				filter.setDni(key);
+				List<People> test =peopleDAO.findPeople(filter);
+				String dni ="";
+				String passport ="";
+				if (test!=null && !test.isEmpty()){
+					dni =key;
+				}else{
+					passport=key;
+				}
+				
 				List<Income> listIncomes = mapIncomes.get(key);
 				for (Income income : listIncomes) {
 
 					HSSFCell cell = row.createCell(0);
-					cell.setCellValue(key);
+					cell.setCellValue(dni);
 					cell = row.createCell(1);
-					cell.setCellValue("");
+					cell.setCellValue(passport);
 					cell = row.createCell(2);
 					cell.setCellValue(income.getConcept());
 					cell = row.createCell(3);
@@ -606,13 +638,24 @@ public class JManageExportData extends AbstractJInternalFrame {
 			HSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapExpenses.keySet()) {
 
+				People filter =new People();
+				filter.setDni(key);
+				List<People> test =peopleDAO.findPeople(filter);
+				String dni ="";
+				String passport ="";
+				if (test!=null && !test.isEmpty()){
+					dni =key;
+				}else{
+					passport=key;
+				}
+				
 				List<Expense> listExpense = mapExpenses.get(key);
 				for (Expense expense : listExpense) {
 
 					HSSFCell cell = row.createCell(0);
-					cell.setCellValue(key);
+					cell.setCellValue(dni);
 					cell = row.createCell(1);
-					cell.setCellValue("");
+					cell.setCellValue(passport);
 					cell = row.createCell(2);
 					cell.setCellValue(expense.getConcept());
 					cell = row.createCell(3);
@@ -644,13 +687,25 @@ public class JManageExportData extends AbstractJInternalFrame {
 			HSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapRelatives.keySet()) {
 
+				People filter =new People();
+				filter.setDni(key);
+				List<People> test =peopleDAO.findPeople(filter);
+				String dni ="";
+				String passport ="";
+				if (test!=null && !test.isEmpty()){
+					dni =key;
+				}else{
+					passport=key;
+				}
+				
 				List<Relative> listRelatives = mapRelatives.get(key);
 				for (Relative relative : listRelatives) {
 
+					
 					HSSFCell cell = row.createCell(0);
-					cell.setCellValue(key);
+					cell.setCellValue(dni);
 					cell = row.createCell(1);
-					cell.setCellValue("");
+					cell.setCellValue(passport);
 					cell = row.createCell(2);
 					cell.setCellValue(relative.getRelationShip());
 					cell = row.createCell(3);
