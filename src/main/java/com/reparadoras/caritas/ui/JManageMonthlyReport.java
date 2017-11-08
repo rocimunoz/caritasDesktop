@@ -143,14 +143,17 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 		addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
-				// do something
-				// filterPeople();
-				System.out.println("evento internal frame");
+			
 			}
 		});
 
 		getJButtonReport().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				
+				
+				
+				
 				createPdfReport();
 			}
 		});
@@ -172,48 +175,66 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 	private void createPdfReport() {
 
-		PdfMonthlyReport exporter = new PdfMonthlyReport();
+		if (this.getJTextFieldYear().getText()!=null && !this.getJTextFieldYear().getText().equals("") && this.getJComboBoxMonth().getSelectedItem()!=null){
+			PdfMonthlyReport exporter = new PdfMonthlyReport();
 
-		JFileChooser fileChooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf");
-		fileChooser.setFileFilter(filter);
-		int retval = fileChooser.showSaveDialog(this.getJButtonReport());
-		if (retval == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
-			if (file == null) {
-				return;
+			JFileChooser fileChooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf");
+			fileChooser.setFileFilter(filter);
+			int retval = fileChooser.showSaveDialog(this.getJButtonReport());
+			if (retval == JFileChooser.APPROVE_OPTION) {
+				File file = fileChooser.getSelectedFile();
+				if (file == null) {
+					return;
+				}
+
+				if (!file.getAbsolutePath().endsWith(".pdf")) {
+					file = new File(fileChooser.getSelectedFile() + ".pdf");
+				}
+				try {
+
+					List<MonthlyReport> listReport = filterData();
+					String month = (String) this.getJComboBoxMonth().getSelectedItem();
+					String year = this.getJTextFieldYear().getText();
+					exporter.export(listReport, file, month, year);
+					textArea.append("\n");
+					textArea.append("******************: " + "\n");
+					textArea.append("Resumen: " + "\n");
+					textArea.append("******************: " + "\n");
+					textArea.append("Se ha generado el pdf correctamente. \n");
+					textArea.append("Se ha guardado en: . " + file.getAbsolutePath() + "\n");
+					if (listReport!=null && !listReport.isEmpty()){
+						textArea.append("Registros añadidos al iinforme: \n");
+						for (MonthlyReport monthlyReport : listReport) {
+							textArea.append(monthlyReport.getNombre() + " " + monthlyReport.getApellidos() + "\n");
+						}
+					}
+					
+					JOptionPane.showMessageDialog(null, "Se ha generado el pdf correctamente.");
+
+				} catch (DocumentException e) {
+					JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible generar el informe",
+							"Generacion PDF", JOptionPane.ERROR_MESSAGE);
+					// logger.info(e);
+
+				} catch (FileNotFoundException e) {
+
+					JOptionPane.showMessageDialog(this,
+							"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
+							JOptionPane.ERROR_MESSAGE);
+					// logger.info(e);
+				} catch (IOException e) {
+
+					JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
+							"Generacion PDF", JOptionPane.ERROR_MESSAGE);
+					// logger.info(e);
+				}
 			}
-
-			if (!file.getAbsolutePath().endsWith(".pdf")) {
-				file = new File(fileChooser.getSelectedFile() + ".pdf");
-			}
-			try {
-
-				List<MonthlyReport> listReport = filterData();
-				String month = (String) this.getJComboBoxMonth().getSelectedItem();
-				String year = this.getJTextFieldYear().getText();
-				exporter.export(listReport, file, month, year);
-
-				JOptionPane.showMessageDialog(null, "Se ha generado el pdf correctamente.");
-
-			} catch (DocumentException e) {
-				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible generar el informe",
-						"Generacion PDF", JOptionPane.ERROR_MESSAGE);
-				// logger.info(e);
-
-			} catch (FileNotFoundException e) {
-
-				JOptionPane.showMessageDialog(this,
-						"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
-						JOptionPane.ERROR_MESSAGE);
-				// logger.info(e);
-			} catch (IOException e) {
-
-				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible imprimir el registro",
-						"Generacion PDF", JOptionPane.ERROR_MESSAGE);
-				// logger.info(e);
-			}
+		}else{
+			JOptionPane.showMessageDialog(null, "Seleccioine un año y un mes para poder generar el informe");
 		}
+		
+		
 	}
 
 	public void createGUIComponents() {
