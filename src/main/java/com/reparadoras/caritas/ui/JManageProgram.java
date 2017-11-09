@@ -997,7 +997,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		try {
 			logger.info("Filtrando programa ...");
 			FilterProgram filterProgram = new FilterProgram();
-			filterProgram.setActive(this.getCkActive().isSelected());
+			//filterProgram.setActive(this.getCkActive().isSelected());
 			filterProgram.setDni(this.getJTextFieldDni().getText());
 			filterProgram.setPassport(this.getJTextFieldPassport().getText());
 			filterProgram.setNamePeople(this.getJTextFieldName().getText());

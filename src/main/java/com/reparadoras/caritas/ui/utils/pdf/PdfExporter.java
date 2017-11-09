@@ -197,7 +197,7 @@ public class PdfExporter {
 		
 		paragraph.add(new Paragraph("Fecha Padron:  " + this.getNullDateRepresentation(home.getAddress().getCensus()), TITLE_10_FONT));
 		
-		paragraph.add(new Paragraph("Lugar:  " + home.getAddress().getPlace(), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Lugar:  " + getNullRepresentation(home.getAddress().getPlace()), TITLE_10_FONT));
 		
 		
 		addEmptyLine(paragraph,1);
@@ -708,7 +708,7 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 				fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
 				universidad= new Phrase(this.getCheckFalse(noTab,universidadCaption));
 			} else if (studiesBBDD.getDescription().equals("Infantil")) {
-				noLee = new Phrase(this.getCheckTrue(noTab,noLeeCaption));
+				noLee = new Phrase(this.getCheckFalse(noTab,noLeeCaption));
 				lee= new Phrase(this.getCheckFalse(noTab,leeCaption));
 				infantil= new Phrase(this.getCheckTrue(noTab,infantilCaption));
 				primaria= new Phrase(this.getCheckFalse(noTab,primariaCaption));
@@ -718,7 +718,7 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 				fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
 				universidad= new Phrase(this.getCheckFalse(noTab,universidadCaption));
 			} else if (studiesBBDD.getDescription().equals("Primaria")) {
-				noLee = new Phrase(this.getCheckTrue(noTab,noLeeCaption));
+				noLee = new Phrase(this.getCheckFalse(noTab,noLeeCaption));
 				lee= new Phrase(this.getCheckFalse(noTab,leeCaption));
 				infantil= new Phrase(this.getCheckFalse(noTab,infantilCaption));
 				primaria= new Phrase(this.getCheckTrue(noTab,primariaCaption));
@@ -748,7 +748,7 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 				fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
 				universidad= new Phrase(this.getCheckFalse(noTab,universidadCaption));
 			}else if (studiesBBDD.getDescription().equals("FP-Grado Medio")) {
-				noLee = new Phrase(this.getCheckTrue(noTab,noLeeCaption));
+				noLee = new Phrase(this.getCheckFalse(noTab,noLeeCaption));
 				lee= new Phrase(this.getCheckFalse(noTab,leeCaption));
 				infantil= new Phrase(this.getCheckFalse(noTab,infantilCaption));
 				primaria= new Phrase(this.getCheckFalse(noTab,primariaCaption));
@@ -758,7 +758,7 @@ private void addJobSituation(Document document, JobSituation jType) throws Docum
 				fpSuperior= new Phrase(this.getCheckFalse(noTab,fpSuperiorCaption));
 				universidad= new Phrase(this.getCheckFalse(noTab,universidadCaption));
 			}else if (studiesBBDD.getDescription().equals("FP-Grado Superior")) {
-				noLee = new Phrase(this.getCheckTrue(noTab,noLeeCaption));
+				noLee = new Phrase(this.getCheckFalse(noTab,noLeeCaption));
 				lee= new Phrase(this.getCheckFalse(noTab,leeCaption));
 				infantil= new Phrase(this.getCheckFalse(noTab,infantilCaption));
 				primaria= new Phrase(this.getCheckFalse(noTab,primariaCaption));

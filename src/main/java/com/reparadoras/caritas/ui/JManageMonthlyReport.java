@@ -871,8 +871,5 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		return edadHijos;
 	}
 
-	private int getHijosMenor18() {
 
-		return 0;
-	}
 }
