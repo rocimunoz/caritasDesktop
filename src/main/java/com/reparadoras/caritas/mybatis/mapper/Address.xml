@@ -8,7 +8,7 @@
 
 
 	<resultMap id="AddressResult" type="Address">
-		<result property="id" column="id" />
+		<result property="id" column="id_address" />
 		<result property="town" column="town" />
 		<result property="street" column="street" />
 		<result property="gate" column="gate" />
@@ -26,7 +26,7 @@
     </delete>
 
 	<select id="findAll" resultMap="AddressResult">
-		SELECT * FROM C_ADDRESS;
+		SELECT ID ID_ADDRESS, TOWN, STREET, GATE, FLOOR, TELEPHONE, TELEPHONE_CONTACT, POSTAL_CODE, CENSUS, PLACE FROM C_ADDRESS;
 	</select>
 
 

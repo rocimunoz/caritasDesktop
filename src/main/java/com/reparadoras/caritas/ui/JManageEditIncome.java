@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.JLabel;
@@ -48,6 +49,8 @@ import java.awt.Color;
 
 public class JManageEditIncome extends AbstractJInternalFrame {
 
+	static final Logger logger = Logger.getLogger(JManageEditIncome.class);
+	
 	private JPanel jPanelContentPane;
 	private JTextField txfPeople;
 
@@ -231,6 +234,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error onCreateIncome " + e.getMessage());
 		}
 
 		return null;

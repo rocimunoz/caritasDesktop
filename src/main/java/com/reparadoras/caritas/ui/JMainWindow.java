@@ -465,6 +465,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageTicketPeopleWindow " + e.getMessage());
 
 		}
 	}
@@ -480,6 +481,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManagePeopleWindow " + e.getMessage());
 
 		}
 	}
@@ -499,6 +501,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageMonthlyReportWindow " + e.getMessage());
 
 		}
 	}
@@ -514,6 +517,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageProgramWindow " + e.getMessage());
 
 		}
 	}
@@ -535,6 +539,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageImportBackup " + e.getMessage());
 
 		}
 	}
@@ -550,6 +555,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageExportBackup " + e.getMessage());
 
 		}
 	}
@@ -610,6 +616,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 						JOptionPane.INFORMATION_MESSAGE);*/
 			} catch (ExecutionException | InterruptedException e) {
 				e.printStackTrace();
+				logger.error("Error done " + e.getMessage());
 			}
 
 			System.exit(0);

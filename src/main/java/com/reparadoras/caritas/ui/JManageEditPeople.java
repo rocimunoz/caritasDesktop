@@ -182,6 +182,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		} catch (PropertyVetoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Error onCloseWindow " + e.getMessage());
 		}
 	}
 
@@ -328,6 +329,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Actualización Persona", JOptionPane.ERROR_MESSAGE);
 			logger.error("Error actualizando persona" + e);
+			
 		}
 
 	}

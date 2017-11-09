@@ -23,6 +23,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.JLabel;
@@ -48,6 +49,8 @@ import java.awt.Color;
 
 public class JManageEditExpense extends AbstractJInternalFrame {
 
+	static final Logger logger = Logger.getLogger(JManageEditExpense.class);
+	
 	private JPanel jPanelContentPane;
 	private JTextField txfPeople;
 
@@ -152,6 +155,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		} catch (PropertyVetoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Error onCloseWindow " + e.getMessage());
 		}
 	}
 
@@ -214,6 +218,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error onUpdateExpense " + e.getMessage());
 		}
 
 		return null;
@@ -242,6 +247,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error onCreateExpense " + e.getMessage());
 		}
 
 		return null;

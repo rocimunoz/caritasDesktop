@@ -439,6 +439,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
 			logger.error("Se ha producido un error en la exportacion de datos  " + e.getMessage());
+			
 
 		}
 
@@ -574,9 +575,11 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido cloneTemplateExcel  " + e.getMessage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido cloneTemplateExcel  " + e.getMessage());
 		}
 
 		return workbook;
@@ -626,6 +629,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetIncomes  " + e.getMessage());
 
 		}
 	}
@@ -675,6 +679,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetExpenses  " + e.getMessage());
 
 		}
 	}
@@ -733,6 +738,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetRelatives  " + e.getMessage());
 
 		}
 	}
@@ -874,6 +880,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetProgram  " + e.getMessage());
 			countKO++;
 
 		}

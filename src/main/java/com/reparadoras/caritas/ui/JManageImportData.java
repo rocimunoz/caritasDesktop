@@ -9,8 +9,11 @@ import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,6 +121,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.ActionEvent;
 
 public class JManageImportData extends AbstractJInternalFrame {
@@ -133,10 +137,12 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 	private JPanel jPanelTData = null;
 	private JButton btnExit = null;
-	private JButton btnImportFile = null;
+	//private JButton btnImportFile = null;
+	private JLabel lblUploadTemplate = null;
 	private JFileChooser jfc = null;
 	private JTextArea textArea = null;
 	private JScrollPane scroll = null;
+	private JLabel lblDownloadTemplate = null;
 
 	private PeopleDAO peopleDAO;
 
@@ -206,6 +212,39 @@ public class JManageImportData extends AbstractJInternalFrame {
 	}
 
 	public void addListener() {
+		
+		getJLabelDownload().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				downloadTemplate();
+			}
+		});
+		getJLabelDownload().addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				getJLabelDownload().setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+		});
+		
+		getJLabelUpload().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+				int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+
+					importData(jfc.getSelectedFile());
+
+				}
+			}
+		});
+		getJLabelUpload().addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				getJLabelUpload().setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+		});
+		
 
 		this.getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -216,19 +255,82 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		});
 
-		getJButtonImportFile().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
-				if (returnValue == JFileChooser.APPROVE_OPTION) {
-
-					importData(jfc.getSelectedFile());
-
-				}
-			}
-		});
+		
 	}
 
+	private void downloadTemplate(){
+		
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL FILES", "xls");
+		fileChooser.setFileFilter(filter);
+		int retval = fileChooser.showSaveDialog(this.getJLabelDownload());
+		if (retval == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			if (file == null) {
+				return;
+			}
+
+			if (!file.getAbsolutePath().endsWith(".xls")) {
+				file = new File(fileChooser.getSelectedFile() + ".xls");
+			}
+		
+		
+		HSSFWorkbook workbookCloned = cloneTemplateExcel(file);
+		
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(file);
+			workbookCloned.write(fileOut);
+
+			fileOut.flush();
+			fileOut.close();
+			
+			textArea.append("Se ha descargado la plantilla correctamente : " +  file.getAbsolutePath());
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			textArea.append("Lo siento no ha sido posible la descarga de la plantilla");
+			e.printStackTrace();
+		} catch (IOException e) {
+			textArea.append("Lo siento no ha sido posible la descarga de la plantilla");
+			e.printStackTrace();
+		}
+
+	
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	public HSSFWorkbook cloneTemplateExcel(File destinationPath) {
+
+		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xls");
+		File fTemplate = new File(url.getPath());
+		FileInputStream excelFileTemplate;
+		HSSFWorkbook workbook = null;
+		try {
+			excelFileTemplate = new FileInputStream(fTemplate);
+			workbook = new HSSFWorkbook(excelFileTemplate);
+			FileOutputStream outputStream = new FileOutputStream(destinationPath.getPath());
+			workbook.write(outputStream);
+
+			// workbook.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return workbook;
+
+	}
+	
 	private JFileChooser getFileChooser() {
 		if (jfc == null) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("XLS files", "xls");
@@ -255,8 +357,10 @@ public class JManageImportData extends AbstractJInternalFrame {
 		getJPanelFile().setLayout(getGridLayoutJPanelFile());
 		getJPanelData().setLayout(getGridLayoutJPanelData());
 
+		
+		getJPanelFile().add(getJLabelDownload(), getGridJLabelDownload());
 		getJPanelFile().add(getJButtonExit(), getGridButtonExit());
-		getJPanelFile().add(getJButtonImportFile(), getGridButtonImportFile());
+		getJPanelFile().add(getJLabelUpload(), getGridJLabelUpload());
 
 		getJPanelData().add(getJScrollPane(), getGridJScrollPane());
 
@@ -392,24 +496,55 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return gbc_btnExit;
 	}
 
-	private JButton getJButtonImportFile() {
-		if (btnImportFile == null) {
-			btnImportFile = new JButton("Seleccione un fichero de importacion");
+	private JLabel getJLabelUpload() {
+		if (lblUploadTemplate == null) {
+			lblUploadTemplate = new JLabel("Carga datos");
+			lblUploadTemplate.setMaximumSize(new Dimension(180, 14));
+			lblUploadTemplate.setPreferredSize(new Dimension(180, 14));
+			lblUploadTemplate.setBorder(new LineBorder(Color.RED, 1, true));
+			lblUploadTemplate.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblUploadTemplate.setForeground(Color.RED);
 
-			btnImportFile.setHorizontalAlignment(SwingConstants.RIGHT);
-
-			// btnImportFile.setIcon(new
-			// ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+			lblUploadTemplate.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 
-		return btnImportFile;
+		return lblUploadTemplate;
 	}
 
-	private GridBagConstraints getGridButtonImportFile() {
+	private GridBagConstraints getGridJLabelUpload() {
 
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
-		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.ipady = 20;
+		gbc_btnExit.ipadx = 20;
+		gbc_btnExit.insets = new Insets(10, 10, 10, 25);
 		gbc_btnExit.gridx = 2;
+		gbc_btnExit.gridy = 0;
+
+		return gbc_btnExit;
+	}
+	
+	private JLabel getJLabelDownload() {
+		if (lblDownloadTemplate == null) {
+			lblDownloadTemplate = new JLabel("Descarga Plantilla.xls");
+			lblDownloadTemplate.setMaximumSize(new Dimension(180, 14));
+			lblDownloadTemplate.setPreferredSize(new Dimension(180, 14));
+			lblDownloadTemplate.setBorder(new LineBorder(Color.RED, 1, true));
+			lblDownloadTemplate.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblDownloadTemplate.setForeground(Color.RED);
+
+			lblDownloadTemplate.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		return lblDownloadTemplate;
+	}
+
+	private GridBagConstraints getGridJLabelDownload() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.ipady = 20;
+		gbc_btnExit.ipadx = 20;
+		gbc_btnExit.insets = new Insets(10, 10, 10, 25);
+		gbc_btnExit.gridx = 1;
 		gbc_btnExit.gridy = 0;
 
 		return gbc_btnExit;

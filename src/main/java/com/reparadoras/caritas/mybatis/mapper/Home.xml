@@ -8,7 +8,7 @@
 
 
 	<resultMap id="HomeResult" type="Home">
-		<result property="id" column="id" />
+		<result property="id" column="id_home" />
 		<result property="regHolding" column="reg_holding" />
 		<result property="numberRooms" column="number_rooms" />
 		<result property="numberPeople" column="number_people" />
@@ -19,7 +19,7 @@
 	</resultMap>
 
 	<resultMap id="AddressResult" type="Address">
-		<result property="id" column="id" />
+		<result property="id" column="id_address" />
 		<result property="town" column="street" />
 		<result property="gate" column="gate" />
 		<result property="floor" column="floor" />

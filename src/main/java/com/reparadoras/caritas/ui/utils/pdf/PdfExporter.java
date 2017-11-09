@@ -191,9 +191,15 @@ public class PdfExporter {
 		
 		paragraph.add(new Paragraph("Piso y Mano:  " + getNullRepresentation(home.getAddress().getFloor()), TITLE_10_FONT));
 		
-		paragraph.add(new Paragraph("Tfno. domicilio  " + getNullRepresentation(home.getAddress().getTelephone()), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Tfno. domicilio:  " + getNullRepresentation(home.getAddress().getTelephone()), TITLE_10_FONT));
 		
-		paragraph.add(new Paragraph("Tfno. contacto  " + getNullRepresentation(home.getAddress().getTelephoneContact()), TITLE_10_FONT));
+		paragraph.add(new Paragraph("Tfno. contacto:  " + getNullRepresentation(home.getAddress().getTelephoneContact()), TITLE_10_FONT));
+		
+		paragraph.add(new Paragraph("Fecha Padron:  " + this.getNullDateRepresentation(home.getAddress().getCensus()), TITLE_10_FONT));
+		
+		paragraph.add(new Paragraph("Lugar:  " + home.getAddress().getPlace(), TITLE_10_FONT));
+		
+		
 		addEmptyLine(paragraph,1);
 		
 		
@@ -1018,7 +1024,19 @@ private void addOtherInfo(Document document, OtherInfo info) throws DocumentExce
 	
 
 	
-
+	private String getNullDateRepresentation(Date method) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try{
+			if (method != null && !method.equals("")) {
+				return sdf.format(method);
+			} else {
+				return "";
+			}
+		}catch(Exception e){
+			return "";
+		}
+		
+	}
 	
 
 	private String getNullRepresentation(String method) {
