@@ -22,6 +22,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
+import org.apache.log4j.Logger;
+
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
@@ -73,6 +75,7 @@ import javax.swing.JComboBox;
 public class JManagePeople extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	static final Logger logger = Logger.getLogger(JManagePeople.class);
 
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
@@ -819,6 +822,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible eliminar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error(e);
 		}
 
 	}
@@ -852,6 +856,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -921,6 +926,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					logger.error(e);
 				}
 
 			} else {

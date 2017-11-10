@@ -1147,6 +1147,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -1216,6 +1217,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -1284,6 +1286,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -1361,7 +1364,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 			
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 
@@ -1383,7 +1386,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			homeDAO.update(home);
 
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 	}
@@ -1402,7 +1405,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			address.setPlace(getJPanelAddress().getJTextFieldPlace().getText());
 			addressDAO.update(address);
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 
@@ -1420,7 +1423,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 			
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 
@@ -1638,20 +1641,20 @@ public class JManageProgram extends AbstractJInternalFrame {
 						JOptionPane.showMessageDialog(this,
 								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
 								JOptionPane.ERROR_MESSAGE);
-						logger.info(e);
+						logger.error(e);
 
 					} catch (FileNotFoundException e) {
 
 						JOptionPane.showMessageDialog(this,
 								"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
 								JOptionPane.ERROR_MESSAGE);
-						logger.info(e);
+						logger.error(e);
 					} catch (IOException e) {
 
 						JOptionPane.showMessageDialog(this,
 								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
 								JOptionPane.ERROR_MESSAGE);
-						logger.info(e);
+						logger.error(e);
 					}
 
 				}
@@ -1694,7 +1697,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 						"Actualización Persona", JOptionPane.ERROR_MESSAGE);
-				logger.info(e);
+				logger.error(e);
 			}
 
 		}

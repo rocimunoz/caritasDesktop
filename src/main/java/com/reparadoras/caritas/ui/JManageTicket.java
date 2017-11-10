@@ -28,6 +28,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
+
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.filter.FilterTicket;
@@ -74,6 +76,7 @@ import java.awt.event.ActionEvent;
 public class JManageTicket extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	static final Logger logger = Logger.getLogger(JManageProgram.class);
 
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
@@ -868,6 +871,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
