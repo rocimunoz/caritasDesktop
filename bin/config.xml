@@ -22,7 +22,11 @@
         <typeAlias alias="JobSituation" type="com.reparadoras.caritas.model.JobSituation"/>  
         <typeAlias alias="Studies" type="com.reparadoras.caritas.model.Studies"/>  
         <typeAlias alias="Income" type="com.reparadoras.caritas.model.Income"/> 
-        <typeAlias alias="Expense" type="com.reparadoras.caritas.model.Expense"/>             
+        <typeAlias alias="Expense" type="com.reparadoras.caritas.model.Expense"/> 
+        <typeAlias alias="OtherInfo" type="com.reparadoras.caritas.model.OtherInfo"/>       
+        
+         <typeAlias alias="FilterTicket" type="com.reparadoras.caritas.filter.FilterTicket"/> 
+         <typeAlias alias="FilterProgram" type="com.reparadoras.caritas.filter.FilterProgram"/>            
     </typeAliases>
    
     <environments default="development">
@@ -53,6 +57,7 @@
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Studies.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Income.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Expense.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/OtherInfo.xml"/>
     
     </mappers>
 </configuration>

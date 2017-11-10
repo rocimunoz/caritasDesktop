@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Ticket;
 
@@ -77,12 +78,12 @@ public  List<Ticket> findAll(){
 
 }
 
-public  List<Ticket> findTicket(People people){
+public  List<Ticket> findTicket(FilterTicket filter){
 	List<Ticket> list = null;
     SqlSession session = sqlSessionFactory.openSession();
 
     try {
-        list = session.selectList("Ticket.findTicket", people);
+        list = session.selectList("Ticket.findTicket", filter);
     } finally {
         session.close();
     }

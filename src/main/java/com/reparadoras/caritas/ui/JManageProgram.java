@@ -7,6 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +27,7 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -31,6 +35,7 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.itextpdf.text.DocumentException;
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
@@ -39,19 +44,23 @@ import com.reparadoras.caritas.dao.FamilyTypeDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
 import com.reparadoras.caritas.dao.IncomesDAO;
 import com.reparadoras.caritas.dao.JobSituationDAO;
+import com.reparadoras.caritas.dao.OtherInfoDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.StudiesDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterProgram;
 import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Expense;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
 import com.reparadoras.caritas.model.Home;
+import com.reparadoras.caritas.model.HomeType;
 import com.reparadoras.caritas.model.Income;
 import com.reparadoras.caritas.model.JobSituation;
+import com.reparadoras.caritas.model.OtherInfo;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Relative;
@@ -73,7 +82,9 @@ import com.reparadoras.caritas.ui.tabs.JPanelEconomicSituation;
 import com.reparadoras.caritas.ui.tabs.JPanelFamily;
 import com.reparadoras.caritas.ui.tabs.JPanelHome;
 import com.reparadoras.caritas.ui.tabs.JPanelJobSituation;
+import com.reparadoras.caritas.ui.tabs.JPanelOtherInfo;
 import com.reparadoras.caritas.ui.tabs.JPanelStudies;
+import com.reparadoras.caritas.ui.utils.pdf.PdfExporter;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -85,6 +96,7 @@ import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import java.awt.FlowLayout;
@@ -114,7 +126,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	private JComboBox<People> cbPeople;
+	// private JComboBox<People> cbPeople;
+	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
 	private JPanel jPanelContent = null;
@@ -124,6 +137,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JCheckBox ckActive;
 	private JPanel jPanelActions = null;
 	private JButton btnSave = null;
+	private JButton btnPrint = null;
 	private JButton btnExit = null;
 	private JPanel jPanelGrid;
 	private JTable tableProgram = null;
@@ -141,6 +155,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private StudiesDAO studiesDAO;
 	private IncomesDAO incomesDAO;
 	private ExpensesDAO expensesDAO;
+	private OtherInfoDAO otherInfoDAO;
 
 	private JTabbedPane jtabPane1;
 	private JPanel jPanelFamily;
@@ -150,6 +165,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JPanel jPanelStudies;
 	private JPanel jPanelJobSituation;
 	private JPanel jPanelEconomicSituation;
+	private JPanel jPanelOtherInfo;
 
 	private People people = null;
 
@@ -184,14 +200,23 @@ public class JManageProgram extends AbstractJInternalFrame {
 		jobSituationDAO = new JobSituationDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		createGUIComponents();
 		initComponents();
 		addListeners();
+
+		this.getJTextFieldName().setText(people.getName());
+		this.getJTextFieldDni().setText(people.getDni());
+
 		onFilterProgram(true);
 
 		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
 		}
+
+		this.getJButtonClean().setVisible(false);
+		this.getJButtonSearch().setVisible(false);
 
 	}
 
@@ -221,7 +246,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		initComponents();
 		addListeners();
 
-		onFilterProgram(true);
+		onFilterProgram(false);
 
 		if (this.getProgramTableModel().getDomainObjects().size() == 1) {
 			this.getJTableProgram().setRowSelectionInterval(0, 0);
@@ -261,6 +286,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			public void actionPerformed(ActionEvent arg0) {
 
 				onSaveProgram();
+			}
+		});
+
+		getJButtonPrint().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				onExportPdf();
 			}
 		});
 
@@ -342,13 +374,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
+		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 		getJPanelFilter().add(getJButtonExit(), getGridButtonExit());
 
 		getJPanelActions().setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		getJPanelActions().add(getJButtonSave());
+		getJPanelActions().add(getJButtonPrint());
 
 		// Añado elementos del JPanelGrid
 		getJPanelGrid().setLayout(getGridLayoutJPanelGrid());
@@ -367,9 +400,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJtabPane1().add("SITUACION LABORAL", getJPanelJobSituation());
 		getJtabPane1().add("ESTUDIOS", getJPanelStudies());
 		getJtabPane1().add("SITUACION ECONOMICA", getJPanelEconomicSituation());
+		getJtabPane1().add("OTROS DATOS", getJPanelOtherInfo());
 		getJtabPane1().setEnabledAt(1, true);
 		getJtabPane1().setEnabledAt(0, true);
-		
 
 		getJtabPane1().setBackgroundAt(0, Color.WHITE);
 
@@ -377,26 +410,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		initCbPeople();
-
-	}
-
-	public void initCbPeople() {
-
-		List<People> listPeople = peopleDAO.findAll();
-
-		if (this.people!=null){
-			this.getJComboBoxPeople().addItem(this.people);
-			this.getJComboBoxPeople().setSelectedItem(this.people);
-		}
-		else{
-			for (People p : listPeople) {
-				this.getJComboBoxPeople().addItem(p);
-			}
-			getJComboBoxPeople().setSelectedIndex(-1);
-		}
 		
 	}
+
+	
 
 	/* TABS */
 
@@ -447,6 +464,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 			jPanelEconomicSituation = new JPanelEconomicSituation();
 		}
 		return (JPanelEconomicSituation) jPanelEconomicSituation;
+	}
+	
+	private JPanelOtherInfo getJPanelOtherInfo() {
+		if (jPanelOtherInfo == null) {
+			jPanelOtherInfo = new JPanelOtherInfo();
+		}
+		return (JPanelOtherInfo) jPanelOtherInfo;
 	}
 
 	/* FUNCIONES DEL GETCONTENTPANE */
@@ -516,17 +540,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JComboBox<People> getJComboBoxPeople() {
-		if (cbPeople == null) {
-			cbPeople = new JComboBox<People>();
-
-			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); // By default it selects first item,
-											// we don't want any selection
-
+	private JTextField getJTextFieldName() {
+		if (tfName == null) {
+			tfName = new JTextField();
 		}
 
-		return cbPeople;
+		return tfName;
 
 	}
 
@@ -691,6 +710,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return btnSave;
 	}
 
+	private JButton getJButtonPrint() {
+		if (btnPrint == null) {
+			btnPrint = new JButton("Imprimir");
+
+			btnPrint.setIcon(
+					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-print-32.png")));
+		}
+
+		return btnPrint;
+	}
+
 	/* FUNCIONES DEL PANEL DEL GRID */
 
 	private GridBagLayout getGridLayoutJPanelGrid() {
@@ -755,11 +785,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 			tableProgram = new JTable(getProgramTableModel());
 			tableProgram.setAutoCreateRowSorter(true);
 			tableProgram.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			
+
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
-			tableProgram.getColumnModel().getColumn(2).setCellRenderer(dateRenderer);
-			
+			tableProgram.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
+
 			tableProgram.setRowMargin(5);
 			tableProgram.setRowHeight(30);
 			tableProgram.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
@@ -771,7 +801,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramTableModel getProgramTableModel() {
 
 		if (programTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Fecha Creacion" };
+			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos", "Fecha Creacion" };
 			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -838,7 +868,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
-		this.getJComboBoxPeople().setSelectedIndex(-1);
+		this.getJTextFieldName().setText("");
+
 	}
 
 	public void cleanTabs() {
@@ -849,13 +880,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 		this.getJPanelJobSituation().cleanJobSituation();
 		this.getJPanelStudies().cleanStudies();
 		this.getJPanelEconomicSituation().cleanGrids();
+		this.getJPanelOtherInfo().cleanInfo();
 
 	}
 
 	public void fillDataProgram() {
 
 		cleanTabs();
-
+		logger.info("Rellenando campos programa ....");
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -868,7 +900,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 			AuthorizationType aType = selectedProgram.getAuthorizationType();
 			JobSituation jobSituation = selectedProgram.getJobSituation();
 			Studies studies = selectedProgram.getStudies();
-
+			OtherInfo otherInfo = selectedProgram.getOtherInfo();
+			
+			
 			this.getJPanelAddress().fillData(address);
 			this.getJPanelHome().fillData(home);
 			this.getJPanelFamily().fillData(relativeDAO, family);
@@ -876,6 +910,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			this.getJPanelJobSituation().fillData(jobSituation);
 			this.getJPanelStudies().fillData(studies);
 			this.getJPanelEconomicSituation().fillData(incomesDAO, expensesDAO, selectedProgram);
+			this.getJPanelOtherInfo().fillData(otherInfo);
 
 			logger.info("FillDataProgram: campos rellenos");
 		} else {
@@ -885,7 +920,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void onCreateProgramFirstTime(People filterPeople) {
 		Program programNewReset = new Program();
-
+		logger.info("Creando programa ...");
 		Address address = new Address();
 		addressDAO.insert(address);
 
@@ -900,7 +935,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 		family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 		familyDAO.insert(family);
 
+		OtherInfo otherInfo = new OtherInfo();
+		otherInfoDAO.insert(otherInfo);
+		
 		programNewReset.setFamily(family);
+		programNewReset.setOtherInfo(otherInfo);
 		programNewReset.setPeople(filterPeople);
 
 		programDAO.insert(programNewReset);
@@ -910,17 +949,13 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onFilterProgram(boolean create) {
 
 		try {
+			logger.info("Filtrando programa ...");
+			FilterProgram filterProgram = new FilterProgram();
+			filterProgram.setActive(this.getCkActive().isSelected());
+			filterProgram.setDni(this.getJTextFieldDni().getText());
+			filterProgram.setNamePeople(this.getJTextFieldName().getText());
 
-			People filterPeople = new People();
-			filterPeople.setActive(this.getCkActive().isSelected());
-			filterPeople.setDni(this.getJTextFieldDni().getText());
-			People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
-			if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
-				filterPeople.setName(selectedPeopleCombo.getName());
-				filterPeople.setFirstSurname(selectedPeopleCombo.getFirstSurname());
-			}
-
-			List<Program> programs = programDAO.findProgram(filterPeople);
+			List<Program> programs = programDAO.findProgram(filterProgram);
 			if (programs != null && !programs.isEmpty()) {
 				this.getProgramTableModel().clearTableModelData();
 				this.getProgramTableModel().addRows(programs);
@@ -928,7 +963,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			} else {
 				cleanTabs();
 				if (create) {
-					
+
 					if (JOptionPane.showConfirmDialog(this,
 							"Este usuario no tiene un Programa de Atención Primaria todavia. ¿Quieres crearlo?",
 							"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -938,13 +973,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 						JOptionPane.showMessageDialog(this,
 								"Se ha generado un Programa de Atención Primaria para el usuario "
-										+ filterPeople.getName() + "con todos los datos vacios.");
+										+ filterProgram.getNamePeople() + " con todos los datos vacios.");
 					} else {
 						dispose();
 					}
 
 				} else {
-					JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+					// JOptionPane.showMessageDialog(this, "No existen registros
+					// para los datos de búsqueda");
 				}
 
 			}
@@ -973,7 +1009,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void editRelative(Relative relative, Integer rowIndex) {
-
+		logger.info("Editando relative ...");
 		Relative editedRelative = getJPanelFamily().getRelativesTableModel().getDomainObject(rowIndex);
 		if (editedRelative != null) {
 			if (relative.getName() != null) {
@@ -1001,7 +1037,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 
 			if (relative.getSituation() != null) {
-				if (!editedRelative.getSituation().equals(relative.getSituation())) {
+				
+				if (editedRelative.getSituation()!=null && !editedRelative.getSituation().equals(relative.getSituation())) {
 					editedRelative.setSituation(relative.getSituation());
 				}
 			} else {
@@ -1021,7 +1058,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void deleteRelative() {
-
+		logger.info("Borrando relative ...");
 		int rowIndex = getJPanelFamily().getJTableRelatives().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -1034,7 +1071,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openEditRelative(int openMode, String title, Family family, Integer index) {
-
+		logger.info("Abriendo ventana edicion relatives ...");
 		JManageEditRelative jManageEditRelative = null;
 		try {
 
@@ -1081,6 +1118,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void addIncome(Income income) {
 
+		logger.info("Añadiendo ingresos ...");
 		this.getJPanelEconomicSituation().getIncomesTableModel().addRow(income);
 
 	}
@@ -1090,7 +1128,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void deleteIncome() {
-
+		logger.info("Borrando ingresos ...");
 		int rowIndex = getJPanelEconomicSituation().getJTableIncomes().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -1103,7 +1141,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openEditIncome(int openMode, String title, Family family, Integer index) {
-
+		logger.info("Abriendo ventana edicion ingresos ...");
 		JManageEditIncome jManageEditIncome = null;
 		try {
 
@@ -1136,7 +1174,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openExpense(int mode) {
-
+		
 		int rowIndex = getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
@@ -1148,7 +1186,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void addExpense(Expense expense) {
-
+		logger.info("Añadiendo gastos ...");
 		this.getJPanelEconomicSituation().getExpensesTableModel().addRow(expense);
 
 	}
@@ -1158,7 +1196,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void deleteExpense() {
-
+		logger.info("Borrando gastos ...");
 		int rowIndex = getJPanelEconomicSituation().getJTableExpenses().getSelectedRow();
 		if (rowIndex != -1) {
 
@@ -1171,7 +1209,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openEditExpense(int openMode, String title, Family family, Integer index) {
-
+		logger.info("Abrir ventana edicion gastos ...");
 		JManageEditExpense jManageEditexpense = null;
 		try {
 
@@ -1205,6 +1243,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void onSaveRelatives(Family family) {
 
+		logger.info("Guardando relatives ...");
 		List<Relative> listRelatives = this.getJPanelFamily().getRelativesTableModel().getDomainObjects();
 		Relative relativeFilter = new Relative();
 		relativeFilter.setFamily(family);
@@ -1249,6 +1288,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveFamily(Family family) throws Exception {
 
 		try {
+			logger.info("Guardando familia ...");
 			family.setOtherInfo(getJPanelFamily().getJTextAreaFamilyOtherInfo().getText());
 
 			String description = "";
@@ -1280,13 +1320,16 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveHome(Home home) throws Exception {
 
 		try {
-
+			logger.info("Guardando vivienda ...");
 			home.setNumberFamilies((Integer) getJPanelHome().getJComboNumberFamilies().getSelectedItem());
 			home.setNumberPeople((Integer) getJPanelHome().getJComboNumberPeople().getSelectedItem());
 			home.setNumberRooms((Integer) getJPanelHome().getJComboNumberRooms().getSelectedItem());
 			home.setOtherInfo(getJPanelHome().getJTextAreaOtherInfo().getText());
 			home.setRegHolding((String) getJPanelHome().getJComboBoxRegHolding().getSelectedItem());
 
+			HomeType hType = (HomeType) (getJPanelHome().getJTextFieldTypeHouse().getSelectedItem());
+
+			home.setHomeType(hType);
 			homeDAO.update(home);
 
 		} catch (Exception e) {
@@ -1297,14 +1340,35 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void onSaveAddress(Address address) throws Exception {
 		try {
+			logger.info("Guardando dirección ...");
 			address.setFloor(getJPanelAddress().getJTextFieldFloor().getText());
 			address.setGate(getJPanelAddress().getJTextFieldGate().getText());
-			// address.setPostalCode(getJPanelAddress().getjtextfield);
+			address.setPostalCode(getJPanelAddress().getJTextFieldPostalCode().getText());
 			address.setStreet(getJPanelAddress().getJTextFieldStreet().getText());
 			address.setTelephone(getJPanelAddress().getJTextFieldTelephone().getText());
 			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());
 			address.setTown(getJPanelAddress().getJTextFieldTown().getText());
+			address.setCensus(getJPanelAddress().getJXDatePickerCensus().getDate());
+			address.setPlace(getJPanelAddress().getJTextFieldPlace().getText());
 			addressDAO.update(address);
+		} catch (Exception e) {
+			logger.info(e);
+			throw new Exception();
+		}
+
+	}
+	
+	public void onSaveOtherInfo(OtherInfo otherInfo) throws Exception {
+		try {
+			logger.info("Guardando otra info ...");
+			if (otherInfo!=null){
+				otherInfo.setActuations(getJPanelOtherInfo().getJTextAreaActuations().getText());
+				otherInfo.setDemand(getJPanelOtherInfo().getJTextAreaDemand().getText());
+				otherInfo.setDescription(getJPanelOtherInfo().getJTextAreaDescription().getText());
+				otherInfo.setInstitutions(getJPanelOtherInfo().getJTextAreaInstitutions().getText());
+				otherInfoDAO.update(otherInfo);
+			}
+			
 		} catch (Exception e) {
 			logger.info(e);
 			throw new Exception();
@@ -1315,6 +1379,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void onSaveAuthorizationType(Program selectedProgram) {
 		AuthorizationType aTypeFilter = new AuthorizationType();
 		String description = "";
+		logger.info("Guardando tipo de autorizacion ...");
 		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()) {
 			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioResidence().getText();
@@ -1338,17 +1403,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
 
 		}
-		if (!description.equals("")){
+		if (!description.equals("")) {
 			aTypeFilter.setDescription(description);
 			selectedProgram.setAuthorizationType(authorizationTypeDAO.findAuthorizationType(aTypeFilter));
 		}
-		
+
 	}
 
 	public void onSaveJobSituation(Program selectedProgram) {
 		JobSituation jsFilter = new JobSituation();
 		String description = "";
-
+		logger.info("Guardando situación laboral ...");
 		if (this.getJPanelJobSituation().getjRadioUnemployee().isSelected()) {
 			description = getJPanelJobSituation().getjRadioUnemployee().getText();
 
@@ -1365,17 +1430,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelJobSituation().getjRadioOthers().getText();
 		}
 
-		if (!description.equals("")){
+		if (!description.equals("")) {
 			jsFilter.setDescription(description);
 			selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
 		}
-		
+
 	}
 
 	public void onSaveStudies(Program selectedProgram) {
 		Studies studiesFilter = new Studies();
 		String description = "";
-
+		logger.info("Guardando estudios ...");
 		if (this.getJPanelStudies().getjRadioNoReadNoWrite().isSelected()) {
 			description = getJPanelStudies().getjRadioNoReadNoWrite().getText();
 
@@ -1397,13 +1462,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} else if (this.getJPanelStudies().getjRadioUniversity().isSelected()) {
 			description = getJPanelStudies().getjRadioUniversity().getText();
 		}
-		
-		if (!description.equals("")){
+
+		if (!description.equals("")) {
 			studiesFilter.setDescription(description);
 			selectedProgram.setStudies(studiesDAO.findStudies(studiesFilter));
 		}
 
-		
 	}
 
 	public void onSaveIncomes(Program selectedProgram) {
@@ -1412,7 +1476,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		Income incomeFilter = new Income();
 		incomeFilter.setProgram(selectedProgram);
 		List<Income> listIncomesBBDD = incomesDAO.findIncomes(incomeFilter);
-
+		logger.info("Guardando Ingresos ...");
 		// Insert and Updates
 		for (Income income : listIncomes) {
 			if (income.getId() != null) {
@@ -1455,7 +1519,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		Expense expenseFilter = new Expense();
 		expenseFilter.setProgram(selectedProgram);
 		List<Expense> listExpenseBBDD = expensesDAO.findExpenses(expenseFilter);
-
+		logger.info("Guardando Gastos ...");
 		// Insert and Updates
 		for (Expense expense : listExpenses) {
 			if (expense.getId() != null) {
@@ -1492,13 +1556,66 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	}
 
-	public void onSaveProgram() {
+	public void onExportPdf() {
 
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
+			logger.info("Exportando PDF ...");
+			Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
+			if (selectedProgram != null) {
+
+				PdfExporter exporter = new PdfExporter();
+
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF FILES", "pdf");
+				fileChooser.setFileFilter(filter);
+				int retval = fileChooser.showSaveDialog(getJButtonPrint());
+				if (retval == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					if (file == null) {
+						return;
+					}
+
+					if (!file.getAbsolutePath().endsWith(".pdf")) {
+						file = new File(fileChooser.getSelectedFile() + ".pdf");
+					}
+					try {
+						exporter.export(selectedProgram, file);
+
+						JOptionPane.showMessageDialog(null, "Se ha generado el pdf correctamente.");
+
+					} catch (DocumentException e) {
+						JOptionPane.showMessageDialog(this,
+								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
+								JOptionPane.ERROR_MESSAGE);
+						logger.info(e);
+
+					} catch (FileNotFoundException e) {
+
+						JOptionPane.showMessageDialog(this,
+								"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
+								JOptionPane.ERROR_MESSAGE);
+						logger.info(e);
+					} catch (IOException e) {
+
+						JOptionPane.showMessageDialog(this,
+								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
+								JOptionPane.ERROR_MESSAGE);
+						logger.info(e);
+					}
+
+				}
+			}
+		}
+	}
+
+	public void onSaveProgram() {
+		
+		int rowIndex = this.getJTableProgram().getSelectedRow();
+		if (rowIndex != -1) {
 			try {
+				logger.info("Guardando datos ...");
 				Program selectedProgram = this.getProgramTableModel().getDomainObject(rowIndex);
-				People people = (People) this.getJComboBoxPeople().getSelectedItem();
 				if (selectedProgram != null) {
 
 					if (selectedProgram.getFamily() != null) {
@@ -1512,11 +1629,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 						onSaveStudies(selectedProgram);
 						onSaveIncomes(selectedProgram);
 						onSaveExpenses(selectedProgram);
+						onSaveOtherInfo(selectedProgram.getOtherInfo());
 
-						if (selectedProgram.getJobSituation()!=null || selectedProgram.getAuthorizationType()!=null || selectedProgram.getStudies()!=null){
+						if (selectedProgram.getJobSituation() != null || selectedProgram.getAuthorizationType() != null
+								|| selectedProgram.getStudies() != null) {
 							programDAO.update(selectedProgram);
 						}
-						
 
 					}
 

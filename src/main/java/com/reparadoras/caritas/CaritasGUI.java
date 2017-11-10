@@ -16,7 +16,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 
-import com.reparadoras.caritas.ui.JManageBackup;
+import com.reparadoras.caritas.ui.JManageBackup_backup;
 import com.reparadoras.caritas.ui.JMainWindow;
 import com.reparadoras.caritas.ui.JManagePeople;
 import com.reparadoras.caritas.ui.JManageTicket;

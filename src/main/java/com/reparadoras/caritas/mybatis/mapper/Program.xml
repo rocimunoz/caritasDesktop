@@ -12,15 +12,23 @@
         <association property="authorizationType" resultMap="AuthorizationTypeResult"/>
         <association property="jobSituation" resultMap="JobSituationResult"/>
         <association property="studies" resultMap="StudiesResult"/>
+        <association property="otherInfo" resultMap="OtherInfoResult"/>
        
     </resultMap>
     
      <resultMap id="PeopleResult" type="People">
         <result property="id" column="id"/>
         <result property="name" column="name"/>  
-        <result property="dni" column="dni"/>  
+        <result property="firstSurname" column="first_surname"/>
+        <result property="dni" column="dni"/>
+        <result property="passport" column="passport"/>    
         <result property="active" column="active"/>
         <result property="createDate" column="create_date"/>
+         <result property="reactivateDate" column="reactivate_date"/>
+        <result property="country" column="country"/>
+        <result property="nationality" column="nationality"/>
+        <result property="yearToSpain" column="year_to_spain"/>
+        <result property="sex" column="sex"/>
     </resultMap>
     
     <resultMap id="FamilyResult" type="Family">
@@ -45,8 +53,14 @@
 		<result property="numberPeople" column="number_people" />
 		<result property="numberFamilies" column="number_families" />
 		<result property="otherInfo" column="other_info_home" />
+		 <association property="homeType" resultMap="HomeTypeResult"/>
 		<association property="address" resultMap="AddressResult" />
 	</resultMap>
+	
+	 <resultMap id="HomeTypeResult" type="HomeType">
+        <result property="id" column="id_home_type"/>
+        <result property="description" column="description_home_type"/>
+    </resultMap>
 	
 	<resultMap id="AddressResult" type="Address">
 		<result property="id" column="id_address" />
@@ -57,6 +71,8 @@
 		<result property="telephone" column="telephone" />
 		<result property="telephoneContact" column="telephone_contact" />
 		<result property="postalCode" column="postal_code" />
+		<result property="place" column="place" />
+		<result property="census" column="census" />
 
 	</resultMap>
 	
@@ -75,51 +91,28 @@
         <result property="description" column="description"/>
     </resultMap>
     
-     <select id="findAll" resultMap="ProgramResult">
-          SELECT PE.DNI, 
-               PE.NAME,
-               PE.CREATE_DATE,
-               F.ID ID_FAMILY,
-               F.OTHER_INFO OTHER_INFO_FAMILY,
-               FT.ID ID_FAMILY_TYPE,
-               FT.DESCRIPTION DESCRIPTION_FAMILY_TYPE,
-               H.ID ID_HOME,
-               H.REG_HOLDING,
-               H.NUMBER_ROOMS,
-               H.NUMBER_PEOPLE,
-               H.NUMBER_FAMILIES,
-               H.OTHER_INFO OTHER_INFO_HOME,
-               A.ID ID_ADDRESS,
-               A.TOWN,
-               A.STREET,
-               A.GATE,
-               A.FLOOR,
-               A.TELEPHONE,
-               A.TELEPHONE_CONTACT,
-               A.POSTAL_CODE,
-               PR.ID ID_PROGRAM,
-               PR.ID_AUTHORIZATION_TYPE,
-               PR.ID_JOB_SITUATION,
-               PR.ID_STUDIES
-        FROM C_PEOPLE PE, 
-              C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
-              LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
-              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID,
-             C_FAMILY F,
-             C_FAMILY_TYPE FT,
-             C_HOME H,
-             C_ADDRESS A
-        WHERE PR.ID_PEOPLE = PE.id
-        AND PR.ID_FAMILY = F.ID
-        AND F.ID_FAMILY_TYPE = FT.ID
-        AND F.ID_HOME = H.ID
-        AND H.ID_ADDRESS = A.ID
-    </select>
+    <resultMap id="OtherInfoResult" type="OtherInfo">
+		<result property="id" column="id_other_info" />
+		<result property="institutions" column="institutions" />
+		<result property="demand" column="demand" />
+		<result property="description" column="description_other" />
+		<result property="actuations" column="actuations" />
+	</resultMap>
     
-    <select id="findProgram" parameterType="People" resultMap="ProgramResult">
+
+    
+    <select id="findProgram" parameterType="FilterProgram" resultMap="ProgramResult">
         SELECT PE.DNI, 
+        	   PE.PASSPORT,
                PE.NAME,
+               PE.FIRST_SURNAME,
                PE.CREATE_DATE,
+               PE.ACTIVE,
+               PE.REACTIVATE_DATE,
+               PE.COUNTRY,
+               PE.NATIONALITY,
+               PE.YEAR_TO_SPAIN,
+               PE.SEX,
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,
                FT.ID ID_FAMILY_TYPE,
@@ -130,6 +123,8 @@
                H.NUMBER_PEOPLE,
                H.NUMBER_FAMILIES,
                H.OTHER_INFO OTHER_INFO_HOME,
+               HT.ID ID_HOME_TYPE,
+               HT.DESCRIPTION DESCRIPTION_HOME_TYPE,
                A.ID ID_ADDRESS,
                A.TOWN,
                A.STREET,
@@ -137,29 +132,35 @@
                A.FLOOR,
                A.TELEPHONE,
                A.TELEPHONE_CONTACT,
+               A.CENSUS,
+               A.PLACE,
                A.POSTAL_CODE,
                PR.ID ID_PROGRAM,
                PR.ID_AUTHORIZATION_TYPE,
                PR.ID_JOB_SITUATION,
-               PR.ID_STUDIES
+               PR.ID_STUDIES,
+               OI.ID ID_OTHER_INFO,
+               OI.INSTITUTIONS,
+               OI.DEMAND,
+               OI.DESCRIPTION DESCRIPTION_OTHER,
+               OI.ACTUATIONS
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
               LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
-              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID,
-             C_FAMILY F,
-             C_FAMILY_TYPE FT,
-             C_HOME H,
-             C_ADDRESS A
+              LEFT JOIN C_STUDIES STUDIES ON   PR.ID_STUDIES = STUDIES.ID
+              LEFT JOIN C_OTHER_INFO OI ON   PR.ID_OTHER_INFO = OI.ID
+              LEFT JOIN C_FAMILY F ON PR.ID_FAMILY = F.ID
+     		  LEFT JOIN C_FAMILY_TYPE FT ON F.ID_FAMILY_TYPE = FT.ID
+              LEFT JOIN C_HOME H ON F.ID_HOME = H.ID
+              LEFT JOIN C_HOME_TYPE HT ON H.ID_HOME_TYPE = HT.ID
+              LEFT JOIN C_ADDRESS A ON H.ID_ADDRESS = A.ID
         WHERE PR.ID_PEOPLE = PE.id
-        AND PR.ID_FAMILY = F.ID
-        AND F.ID_FAMILY_TYPE = FT.ID
-        AND F.ID_HOME = H.ID
-        AND H.ID_ADDRESS = A.ID
          <if test="id != null">
     		AND PE.ID = #{id}
   		</if>
-  		<if test="name != null">
-    		AND PE.NAME = #{name}
+  		<if test="namePeople != null and !namePeople.equals('')">
+  		<bind name="pattern_name" value="'%' + namePeople + '%'" />
+    		AND PE.NAME like #{pattern_name}
   		</if>
   		<if test="firstSurname != null">
     		AND PE.FIRST_SURNAME = #{firstSurname}
@@ -171,6 +172,9 @@
   		<if test="active != null">
     		AND PE.ACTIVE = #{active}
   		</if>
+  		<if test="idFamily!= null">
+    		AND F.ID = #{idFamily}
+  		</if>
       
     </select>
     
@@ -181,14 +185,14 @@
     
     <insert id="insert" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_PROGRAM 
-        	(ID_PEOPLE, ID_FAMILY) 
-        VALUES (#{people.id}, #{family.id})
+        	(ID_PEOPLE, ID_FAMILY, ID_OTHER_INFO) 
+        VALUES (#{people.id}, #{family.id}, #{otherInfo.id})
     </insert>
     
     <insert id="insert-excel" parameterType="Program" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_PROGRAM 
-        	(ID_PEOPLE, ID_FAMILY, ID_JOB_SITUATION, ID_AUTHORIZATION_TYPE, ID_STUDIES) 
-        VALUES (#{people.id}, #{family.id}, #{jobSituation.id}, #{authorizationType.id}, #{studies.id})
+        	(ID_PEOPLE, ID_FAMILY, ID_JOB_SITUATION, ID_AUTHORIZATION_TYPE, ID_STUDIES, ID_OTHER_INFO) 
+        VALUES (#{people.id}, #{family.id}, #{jobSituation.id}, #{authorizationType.id}, #{studies.id}, #{otherInfo.id})
     </insert>
     
     <update id="update" parameterType="Program">
@@ -197,6 +201,7 @@
           <if test="authorizationType != null">id_authorization_type = #{authorizationType.id},</if>
           <if test="studies != null">id_studies = #{studies.id},</if>
            <if test="jobSituation != null">id_job_situation = #{jobSituation.id},</if>
+           <if test="otherInfo != null">id_other_info = #{otherInfo.id},</if>
           
           </set>
         WHERE id = #{id} 

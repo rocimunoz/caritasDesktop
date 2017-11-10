@@ -15,13 +15,15 @@
     </resultMap>
     
     <resultMap id="FamilyResult" type="Family">
-        <result property="id" column="id"/>
+        <result property="id" column="id_family"/>
         <result property="otherInfo" column="other_info"/>      
         
     </resultMap>
  
     
-    
+   <select id="findAllRelatives" parameterType="Relative" resultMap="RelativeResult">
+       SELECT * FROM C_RELATIVE
+    </select>
  	
     
     <select id="findRelative" parameterType="Relative" resultMap="RelativeResult">
@@ -31,6 +33,10 @@
     
     <delete id="delete" parameterType="Relative">
     	DELETE FROM C_RELATIVE WHERE id = #{id}
+    </delete>
+    
+    <delete id="deleteByFamily" parameterType="Family">
+    	DELETE FROM C_RELATIVE WHERE id_family = #{id}
     </delete>
     
     

@@ -23,6 +23,20 @@ public RelativeDAO(SqlSessionFactory sqlSessionFactory){
 }
 
 
+public  List<Relative> findAllRelatives(){
+	List<Relative> relatives = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+    	relatives = session.selectList("Relative.findAllRelatives");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAllRelatives() --> ");
+    return relatives;
+
+}
+
 public  List<Relative> findRelative(Relative relativeFilter){
 	List<Relative> relatives = null;
     SqlSession session = sqlSessionFactory.openSession();
@@ -75,6 +89,20 @@ public int delete(Relative relative){
 
      try {
          session.delete("Relative.delete", relative);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
+     return id;
+ }
+
+public int deleteByFamily(Family family){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Relative.deleteByFamily", family);
      } finally {
          session.commit();
          session.close();

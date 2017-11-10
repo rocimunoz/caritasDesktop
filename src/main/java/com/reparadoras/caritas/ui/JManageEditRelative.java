@@ -161,7 +161,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	
 	private boolean checkRequiredFields(){
 		
-		if (!getJTextFieldName().getText().equals("") && !getJTextFieldRelationShip().getText().equals("") && !getJTextFieldSituation().getText().equals("") && this.getJXDateBorn().getDate()!=null ){
+		if (!getJTextFieldName().getText().equals("") && !getJTextFieldRelationShip().getText().equals("")  && this.getJXDateBorn().getDate()!=null ){
 			return true;
 		}
 		else{

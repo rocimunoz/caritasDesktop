@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.reparadoras.caritas.model.Address;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.Home;
 import com.reparadoras.caritas.model.People;
@@ -47,6 +48,20 @@ public int insert(Home home){
          session.close();
      }
      System.out.println("insert("+home+") --> "+home.getId());
+     return id;
+ }
+
+public int delete(Home home){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Home.delete", home);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
      return id;
  }
 

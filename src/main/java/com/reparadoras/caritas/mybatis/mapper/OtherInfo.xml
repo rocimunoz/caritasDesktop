@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="OtherInfo">
+
+
+
+	<resultMap id="OtherInfoResult" type="OtherInfo">
+		<result property="id" column="id" />
+		<result property="institutions" column="institutions" />
+		<result property="demand" column="demand" />
+		<result property="description" column="description" />
+		<result property="actuations" column="actuations" />
+	</resultMap>
+
+	
+	
+	
+
+ <delete id="delete" parameterType="OtherInfo">
+    	DELETE FROM C_OTHER_INFO WHERE id = #{id}
+    </delete>
+
+	<select id="findAll" resultMap="OtherInfoResult">
+		SELECT * FROM C_OTHER_INFO;
+	</select>
+
+
+
+
+
+	<insert id="insert" parameterType="OtherInfo" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO C_OTHER_INFO (institutions, demand, description, actuations)
+		VALUES (
+		#{institutions},
+		#{demand},
+		#{description},
+		#{actuations}
+		);
+	</insert>
+
+	<update id="update" parameterType="OtherInfo">
+		UPDATE C_OTHER_INFO
+		<set>
+			<if test="institutions != null">institutions = #{institutions},</if>
+			<if test="demand != null">demand = #{demand},</if>
+			<if test="description != null">description = #{description},</if>
+			<if test="actuations != null">actuations = #{actuations}</if>
+			
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+
+
+
+
+</mapper>

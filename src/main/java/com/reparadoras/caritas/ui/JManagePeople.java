@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -21,9 +22,19 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
+import com.reparadoras.caritas.dao.AddressDAO;
+import com.reparadoras.caritas.dao.ExpensesDAO;
+import com.reparadoras.caritas.dao.FamilyDAO;
+import com.reparadoras.caritas.dao.HomeDAO;
+import com.reparadoras.caritas.dao.IncomesDAO;
+import com.reparadoras.caritas.dao.OtherInfoDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
+import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterProgram;
+import com.reparadoras.caritas.filter.FilterTicket;
+import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
@@ -66,7 +77,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	private JComboBox<People> cbPeople;
+	//private JComboBox<People> cbPeople;
+	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
 	
@@ -88,6 +100,16 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
+	private FamilyDAO familyDAO;
+	private AddressDAO addressDAO;
+	private HomeDAO homeDAO;
+	private ExpensesDAO expensesDAO;
+	private IncomesDAO incomesDAO;
+	private RelativeDAO relativesDAO;
+	private OtherInfoDAO otherInfoDAO;
+	
+	
+	
 
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
@@ -107,6 +129,16 @@ public class JManagePeople extends AbstractJInternalFrame {
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+	
+		familyDAO = new FamilyDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		homeDAO = new HomeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		addressDAO = new AddressDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
+		relativesDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 
 		createGUIComponents();
 		initComponents();
@@ -158,6 +190,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getBtnDeletePeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				onDeletePeople();
+				cleanFilter();
 				filterPeople();
 			}
 		});
@@ -196,7 +229,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJComboPeople());
+		getJPanelFilter().add(this.getJTextFieldName(), getGridJTextFieldName());
 		
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
@@ -224,20 +257,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		initCbPeople();
-
-	}
-
-	public void initCbPeople() {
-
-		List<People> listPeople = peopleDAO.findAll();
 		
-		for (People p : listPeople) {
-			this.getJComboBoxPeople().addItem(p);
-		}
-		getJComboBoxPeople().setSelectedIndex(-1);
 
 	}
+
+	
 
 	/* FUNCIONES DEL GETCONTENTPANE */
 
@@ -305,20 +329,20 @@ public class JManagePeople extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JComboBox<People> getJComboBoxPeople() {
-		if (cbPeople == null) {
-			cbPeople = new JComboBox<People>();
-			
-			
-			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); //By default it selects first item, we don't want any selection
-		}
+	
+	private JTextField getJTextFieldName() {
+		if (tfName == null) {
+			if (tfName == null) {
+				tfName = new JTextField();
+				tfName.setColumns(10);
+			}
+			return tfName;}
 
-		return cbPeople;
+		return tfName;
 
 	}
 
-	private GridBagConstraints getGridJComboPeople() {
+	private GridBagConstraints getGridJTextFieldName() {
 
 		GridBagConstraints gbc_tfName = new GridBagConstraints();
 		gbc_tfName.insets = new Insets(0, 0, 0, 5);
@@ -661,21 +685,24 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	public void cleanFilter(){
 		this.getJTextFieldDni().setText("");
-		this.getJComboBoxPeople().setSelectedIndex(-1);
+		this.getJTextFieldName().setText("");
+		
 	}
 	
 	public void filterPeople() {
 		String filterDni = this.getJTextFieldDni().getText();
+		String filterName = this.getJTextFieldName().getText();
 		boolean filterActive = this.getCkActive().isSelected();
 		People filterPeople = new People();
 		if (filterDni != null && !filterDni.equals("")) {
 			filterPeople.setDni(filterDni);
 		}
 		
-		People selectedPeople = (People)this.getJComboBoxPeople().getSelectedItem();
-		if (selectedPeople != null && selectedPeople.getId()!=-1) {
-			filterPeople.setName(selectedPeople.getName());
+		if (filterName != null && !filterName.equals("")) {
+			filterPeople.setName(filterName);
 		}
+		
+		
 
 		filterPeople.setActive(filterActive);
 
@@ -686,7 +713,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		} else {
 			this.getPeopleTableModel().clearTableModelData();
-			JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+			//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 			
 		}
 
@@ -696,7 +723,10 @@ public class JManagePeople extends AbstractJInternalFrame {
 		try {
 
 			int rowIndex = this.getJTablePeople().getSelectedRow();
+			//cuando ordeno pierde el orden. Solucion convertir la fila
+			
 			if (rowIndex != -1) {
+				rowIndex = getJTablePeople().convertRowIndexToModel(rowIndex);
 
 				if (JOptionPane.showConfirmDialog(null,
 						"Se eliminará la persona seleccionada, sus vales y su programa de atención primaria. ¿Está seguro?",
@@ -704,9 +734,27 @@ public class JManagePeople extends AbstractJInternalFrame {
 					People selectedPeople = this.getPeopleTableModel().getDomainObject(rowIndex);
 
 					if (selectedPeople != null) {
+						FilterProgram filter = new FilterProgram();
+						filter.setIdPeople(selectedPeople.getId());
+						List<Program> listPrograms = programDAO.findProgram(filter);
+						Program programToDelete = listPrograms.get(0);
+						
 						ticketDAO.delete(selectedPeople);
+						expensesDAO.deleteByProgram(programToDelete);
+						incomesDAO.deleteByProgram(programToDelete);
 						programDAO.delete(selectedPeople);
 						peopleDAO.delete(selectedPeople);
+						
+						Family familyToDelete = programToDelete.getFamily();
+						relativesDAO.deleteByFamily(familyToDelete);
+						familyDAO.delete(familyToDelete);
+						homeDAO.delete(familyToDelete.getHome());
+						addressDAO.delete(familyToDelete.getHome().getAddress());
+						otherInfoDAO.delete(programToDelete.getOtherInfo());
+						
+						
+						
+						
 					}
 					
 					
@@ -733,7 +781,10 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
 				int row = this.getJTablePeople().getSelectedRow();
+				
+				
 				if (row != -1) {
+					row = getJTablePeople().convertRowIndexToModel(row);
 					People people = this.getPeopleTableModel().getDomainObject(row);
 					jManageEditPeople = new JManageEditPeople(this, true, openMode, title, people);
 				} else {
@@ -762,10 +813,11 @@ public class JManagePeople extends AbstractJInternalFrame {
 		int row = getJTablePeople().getSelectedRow();
 		
 		//cuando ordeno pierde el orden. Solucion convertir la fila
-		row = getJTablePeople().convertRowIndexToModel(row);
+		
 
 		
 		if (row != -1) {
+			row = getJTablePeople().convertRowIndexToModel(row);
 			People people = getPeopleTableModel().getDomainObject(row);
 
 			if (people != null) {
@@ -798,14 +850,19 @@ public class JManagePeople extends AbstractJInternalFrame {
 		JManageTicket jManageTicket = null;
 		int row = getJTablePeople().getSelectedRow();
 		if (row != -1) {
-
+			row = getJTablePeople().convertRowIndexToModel(row);
 			People people = getPeopleTableModel().getDomainObject(row);
 
 			if (people != null) {
-
+				FilterTicket filterTicket = new FilterTicket();
+				filterTicket.setActive(people.isActive());
+				filterTicket.setDniPeople(people.getDni());
+				filterTicket.setNamePeople(people.getName());
+				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterTicket.setIdPeople(people.getId());
 				try {
 
-					jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, people);
+					jManageTicket = new JManageTicket(this, true, JWindowParams.IMODE_INSERT, title, filterTicket);
 					this.desktop.add(jManageTicket);
 					jManageTicket.setMaximum(true);
 					jManageTicket.setMaximizable(true);

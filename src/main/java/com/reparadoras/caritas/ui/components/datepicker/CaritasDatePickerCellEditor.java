@@ -57,6 +57,14 @@ public class CaritasDatePickerCellEditor extends AbstractCellEditor implements T
 
         return datePicker; 
     } 
+    
+    public void setLowerBound(Date date) {
+        datePicker.getMonthView().setLowerBound(date);          
+    }
+
+    public void setUpperBound(Date date) {
+        datePicker.getMonthView().setLowerBound(date);          
+    }
 
     public void actionPerformed(ActionEvent e) { 
         fireEditingStopped(); 

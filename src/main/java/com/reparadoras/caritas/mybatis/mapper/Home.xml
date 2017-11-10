@@ -14,6 +14,7 @@
 		<result property="numberPeople" column="number_people" />
 		<result property="numberFamilies" column="number_families" />
 		<result property="otherInfo" column="other_info" />
+		<association property="homeType" resultMap="HomeTypeResult" />
 		<association property="address" resultMap="AddressResult" />
 	</resultMap>
 
@@ -27,6 +28,15 @@
 		<result property="postalCode" column="postal_code" />
 
 	</resultMap>
+	
+	<resultMap id="HomeTypeResult" type="HomeType">
+        <result property="id" column="id_home_type"/>
+        <result property="description" column="description_home_type"/>
+    </resultMap>
+
+ <delete id="delete" parameterType="Home">
+    	DELETE FROM C_HOME WHERE id = #{id}
+    </delete>
 
 	<select id="findAll" resultMap="HomeResult">
 		SELECT * FROM C_HOME;
@@ -59,6 +69,7 @@
 			<if test="numberFamilies != null">number_families = #{numberFamilies},</if>
 			<if test="otherInfo != null">other_info = #{otherInfo},</if>
 			<if test="address.id != null">id_address = #{address.id},</if>
+			 <if test="homeType != null">id_home_type = #{homeType.id},</if>
 		</set>
 		WHERE id = #{id}
 	</update>

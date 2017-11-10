@@ -26,6 +26,8 @@ public class Address implements Serializable{
 	private String telephone;
 	private String telephoneContact;
 	private String postalCode;
+	private String place;
+	private Date census;
 	
 	
 	
@@ -76,6 +78,18 @@ public class Address implements Serializable{
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public String getPlace() {
+		return place;
+	}
+	public void setPlace(String place) {
+		this.place = place;
+	}
+	public Date getCensus() {
+		return census;
+	}
+	public void setCensus(Date census) {
+		this.census = census;
 	}
 	
 	

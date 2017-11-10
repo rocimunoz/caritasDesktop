@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+
+<configuration>
+<properties resource="application.properties">
+  
+</properties>
+    <typeAliases>
+        <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
+        <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
+        <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>
+        <typeAlias alias="Home" type="com.reparadoras.caritas.model.Home"/>
+        <typeAlias alias="HomeType" type="com.reparadoras.caritas.model.HomeType"/>
+        <typeAlias alias="Address" type="com.reparadoras.caritas.model.Address"/> 
+        <typeAlias alias="Family" type="com.reparadoras.caritas.model.Family"/>
+        <typeAlias alias="Relative" type="com.reparadoras.caritas.model.Relative"/>
+        <typeAlias alias="FamilyType" type="com.reparadoras.caritas.model.FamilyType"/> 
+        <typeAlias alias="AuthorizationType" type="com.reparadoras.caritas.model.AuthorizationType"/>
+        <typeAlias alias="JobSituation" type="com.reparadoras.caritas.model.JobSituation"/>  
+        <typeAlias alias="Studies" type="com.reparadoras.caritas.model.Studies"/>  
+        <typeAlias alias="Income" type="com.reparadoras.caritas.model.Income"/> 
+        <typeAlias alias="Expense" type="com.reparadoras.caritas.model.Expense"/> 
+        <typeAlias alias="OtherInfo" type="com.reparadoras.caritas.model.OtherInfo"/>       
+        
+         <typeAlias alias="FilterTicket" type="com.reparadoras.caritas.filter.FilterTicket"/> 
+         <typeAlias alias="FilterProgram" type="com.reparadoras.caritas.filter.FilterProgram"/>            
+    </typeAliases>
+   
+    <environments default="development">
+        <environment id="development">
+          <transactionManager type="JDBC"/>
+            <!--  connecting to Local MySql -->
+            
+            <dataSource type="POOLED">
+                <property name="driver" value="${caritas.driverClassName}"/>
+                <property name="url" value="${caritas.url}"/>
+                <property name="username" value="${caritas.username}"/>
+                <property name="password" value="${caritas.password}"/>
+            </dataSource>
+       </environment>
+    </environments>
+    <mappers>
+       <mapper resource="com/reparadoras/caritas/mybatis/mapper/People.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Program.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Ticket.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Family.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/FamilyType.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Relative.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Home.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/HomeType.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Address.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/AuthorizationType.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/JobSituation.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Studies.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Income.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Expense.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/OtherInfo.xml"/>
+    
+    </mappers>
+</configuration>

@@ -20,7 +20,8 @@ public class ProgramTableModel extends GenericDomainTableModel<Program>{
 		switch(columnIndex) {
         case 0: return String.class; //dni
         case 1: return String.class; //nombre
-        case 2: return Date.class; //fecha
+        case 2: return String.class; //APELLIDO
+        case 3: return Date.class; //fecha
     }
     throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}
@@ -31,7 +32,8 @@ public class ProgramTableModel extends GenericDomainTableModel<Program>{
         switch(columnIndex) {
             case 0: return program.getPeople().getDni();
             case 1: return program.getPeople().getName();
-            case 2: return program.getPeople().getCreateDate();
+            case 2: return program.getPeople().getFirstSurname();
+            case 3: return program.getPeople().getCreateDate();
             
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}
@@ -43,7 +45,7 @@ public class ProgramTableModel extends GenericDomainTableModel<Program>{
         switch(columnIndex) {
             case 0: program.getPeople().setDni((String)aValue); break;
             case 1: program.getPeople().setName((String)aValue); break;
-            //case 2: people.setSurname((String)aValue); break;
+            case 2: program.getPeople().setFirstSurname((String)aValue);break;
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
         }
         notifyTableCellUpdated(rowIndex, columnIndex);

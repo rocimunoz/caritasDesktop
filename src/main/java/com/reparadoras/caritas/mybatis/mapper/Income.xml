@@ -14,9 +14,26 @@
     </resultMap>
     
     <resultMap id="ProgramResult" type="Program">
-        <result property="id" column="id"/>      
+        <result property="id" column="idProgram"/> 
+        <association property="people" resultMap="PeopleResult"/>  
+    </resultMap>
+    
+    <resultMap id="PeopleResult" type="People">
+        <result property="id" column="idPeople"/> 
+       <result property="dni" column="dni"/> 
     </resultMap>
  
+  <delete id="deleteByProgram" parameterType="Program">
+    	DELETE FROM C_INCOME WHERE id_program = #{id}
+    </delete>
+    
+   
+ 
+ <select id="findAllIncomes" parameterType="Income" resultMap="IncomeResult">
+       SELECT * FROM C_INCOME I, C_PROGRAM P, C_PEOPLE PE
+       WHERE I.ID_PROGRAM = P.ID
+       AND P.ID_PEOPLE = PE.ID
+    </select>
     
     <select id="findIncome" parameterType="Income" resultMap="IncomeResult">
        SELECT * FROM C_INCOME

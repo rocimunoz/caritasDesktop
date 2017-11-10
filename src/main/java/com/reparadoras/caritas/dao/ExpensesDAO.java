@@ -24,6 +24,19 @@ public ExpensesDAO(SqlSessionFactory sqlSessionFactory){
     this.sqlSessionFactory = sqlSessionFactory;
 }
 
+public  List<Expense> findAllExpenses(){
+	List<Expense> expenses = null;
+    SqlSession session = sqlSessionFactory.openSession();
+
+    try {
+    	expenses = session.selectList("Expense.findAllExpenses");
+    } finally {
+        session.close();
+    }
+    System.out.println("findAllExpenses() --> ");
+    return expenses;
+
+}
 
 public  List<Expense> findExpenses(Expense expenseFilter){
 	List<Expense> expenses = null;
@@ -68,6 +81,20 @@ public int insert(Expense expense){
          session.close();
      }
      System.out.println("insert("+expense+") --> "+expense.getId());
+     return id;
+ }
+
+public int deleteByProgram(Program program){
+    int id = -1;
+     SqlSession session = sqlSessionFactory.openSession();
+
+     try {
+         session.delete("Expense.deleteByProgram", program);
+     } finally {
+         session.commit();
+         session.close();
+     }
+     System.out.println("delete("+id+") --> ");
      return id;
  }
 

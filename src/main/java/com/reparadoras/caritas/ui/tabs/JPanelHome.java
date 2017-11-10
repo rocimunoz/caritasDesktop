@@ -69,9 +69,10 @@ public void initCombos(){
 		
 		List<HomeType> listHomeType = homeTypeDAO.findAll();
 		for (HomeType homeType : listHomeType) {
-			cbHomeType.addItem(homeType);
+			this.getJTextFieldTypeHouse().addItem(homeType);
 		}
 	
+		//TODO: meter en BBDD
 		this.getJComboBoxRegHolding().addItem("Alquiler");
 		this.getJComboBoxRegHolding().addItem("Alquiler compartido");
 		this.getJComboBoxRegHolding().addItem("Tutelado");
@@ -166,7 +167,7 @@ public void initCombos(){
 		return gbc_lblTypeHouse;
 	}
 	
-	public JComboBox getJTextFieldTypeHouse() {
+	public JComboBox<HomeType> getJTextFieldTypeHouse() {
 		if (cbHomeType == null) {
 			cbHomeType = new JComboBox<HomeType>();
 			
@@ -408,6 +409,10 @@ public void initCombos(){
 		this.getJComboNumberRooms().setSelectedItem(home.getNumberRooms());
 		this.getJTextAreaOtherInfo().setText(home.getOtherInfo());
 		this.getJComboBoxRegHolding().setSelectedItem(home.getRegHolding());
+		if (home.getHomeType()!=null){
+			this.getJTextFieldTypeHouse().setSelectedIndex(home.getHomeType().getId() -1); //marranada
+		}
+		
 	}
 	
 	

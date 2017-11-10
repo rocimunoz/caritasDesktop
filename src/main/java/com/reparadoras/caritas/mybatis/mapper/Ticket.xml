@@ -30,6 +30,7 @@
         <result property="dateOctober" column="DATE_OCTOBER"/>  
         <result property="dateNovember" column="DATE_NOVEMBER"/>  
         <result property="dateDecember" column="DATE_DECEMBER"/>  
+        <result property="year" column="YEAR"/>  
         <association property="people" resultMap="PeopleResult"/>  
       
     </resultMap>
@@ -40,7 +41,7 @@
        
     </resultMap>
  
-   <select id="findTicket" parameterType="People" resultMap="TicketResult">
+   <select id="findTicket" parameterType="FilterTicket" resultMap="TicketResult">
         SELECT PE.ID, 
                PE.NAME, 
                T.POINTS_JANUARY,
@@ -70,15 +71,19 @@
         FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.ID_PEOPLE 
         WHERE
         PE.ID = T.ID_PEOPLE
-        <if test="id != null">
-    		AND PE.ID = #{id}
+        <if test="idPeople != null">
+    		AND PE.ID = #{idPeople}
   		</if>
-  		<if test="name != null">
-    		AND PE.NAME = #{name}
+  		<if test="namePeople != null and !namePeople.equals('')">
+  		<bind name="pattern_name" value="'%' + namePeople + '%'" />
+    		AND PE.NAME like #{pattern_name}
   		</if>
-  		<if test="dni != null and !dni.equals('')">
-  		<bind name="pattern" value="'%' + dni + '%'" />
+  		<if test="dniPeople != null and !dniPeople.equals('')">
+  		<bind name="pattern" value="'%' + dniPeople + '%'" />
     		AND PE.DNI like #{pattern}
+  		</if>
+  		<if test="yearTicket != null and !yearTicket.equals('')">
+    		AND T.YEAR = #{yearTicket}
   		</if>
   		<if test="active != null">
     		AND PE.ACTIVE = #{active}
@@ -120,9 +125,9 @@
 	
 	<insert id="insert" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_TICKET 
-        	(ID_PEOPLE, POINTS_JANUARY, POINTS_FEBRUARY, POINTS_MARCH, POINTS_APRIL, POINTS_MAY, POINTS_JUNE, POINTS_JULY, POINTS_AUGUST,
+        	(ID_PEOPLE, YEAR, POINTS_JANUARY, POINTS_FEBRUARY, POINTS_MARCH, POINTS_APRIL, POINTS_MAY, POINTS_JUNE, POINTS_JULY, POINTS_AUGUST,
         	POINTS_SEPTEMBER, POINTS_OCTOBER, POINTS_NOVEMBER, POINTS_DECEMBER) 
-        VALUES (#{people.id},
+        VALUES (#{people.id},#{year},
         #{pointsJanuary}, #{pointsFebruary}, 
         #{pointsMarch}, #{pointsApril}, 
         #{pointsMay}, #{pointsJune}, 

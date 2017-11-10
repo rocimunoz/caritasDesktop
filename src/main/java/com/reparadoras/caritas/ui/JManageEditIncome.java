@@ -31,7 +31,9 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -182,8 +184,15 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private Income onUpdateIncomes() {
 		try {
 
+			DecimalFormat formatter = new DecimalFormat("###,###.###");
+			
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				this.selectedIncome.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+				
+				String amountString = this.getJTextFieldAmount().getText();
+				double amountDouble = formatter.parse(amountString).doubleValue();
+				
+				//this.selectedIncome.setAmount(new Double(formatter.format(this.getJTextFieldAmount().getText()).replace(',', '.')));
+				this.selectedIncome.setAmount(amountDouble);
 			}
 
 			this.selectedIncome.setConcept(this.getJTextFieldConcept().getText());
@@ -205,7 +214,13 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 			Income income = new Income();
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				income.setAmount(Integer.parseInt(this.getJTextFieldAmount().getText()));
+			
+				
+				DecimalFormat formatter = new DecimalFormat("#0,000.000");
+				String amountString = this.getJTextFieldAmount().getText();
+				double amountDouble = formatter.parse(amountString).doubleValue();
+				income.setAmount(amountDouble);
+				
 			}
 
 			income.setConcept(this.getJTextFieldConcept().getText());
@@ -373,9 +388,8 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 		if (txfAmount == null) {
 			
-			NumberFormat amountFormat = NumberFormat.getNumberInstance();
-			
-			txfAmount = new JFormattedTextField(amountFormat);
+			DecimalFormat formatter = new DecimalFormat("#0,000.000");
+			txfAmount = new JFormattedTextField(formatter);
 			
 			txfAmount.setColumns(10);
 			txfAmount.setName("amount");

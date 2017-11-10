@@ -12,19 +12,21 @@ import java.util.Date;
 
 public class Program implements Serializable{
 
-    private int id;
+    private Long id;
     
     private People people;
     private Family family;
     private AuthorizationType authorizationType;
     private JobSituation jobSituation;
     private Studies studies;
+    private OtherInfo otherInfo;
     
     
-	public int getId() {
+	
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public People getPeople() {
@@ -57,6 +59,14 @@ public class Program implements Serializable{
 	public void setStudies(Studies studies) {
 		this.studies = studies;
 	}
+	public OtherInfo getOtherInfo() {
+		return otherInfo;
+	}
+	public void setOtherInfo(OtherInfo otherInfo) {
+		this.otherInfo = otherInfo;
+	}
+	
+	
 	
 	
 	

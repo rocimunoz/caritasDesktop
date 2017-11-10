@@ -10,7 +10,9 @@ import java.beans.PropertyVetoException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -28,6 +30,7 @@ import javax.swing.table.TableModel;
 
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.People;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
@@ -78,7 +81,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JLabel lblDni;
 	private JTextField tfDni;
 	private JCheckBox ckActive;
-	private JComboBox<People> cbPeople = null;
+	private JLabel lblYear = null;
+	private JTextField tfName;
+	private JTextField tfYear;
 	private JPanel jPanelContent = null;
 
 	private JPanel jPanelTable = null;
@@ -89,7 +94,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
 	private JButton btnCleanPeople = null;
-	private People people = null;
+	private FilterTicket filterTicket = null;
 
 	private TicketDAO ticketDAO;
 	private PeopleDAO peopleDAO;
@@ -98,7 +103,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	 * @wbp.parser.constructor
 	 */
 	public JManageTicket(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
-			People people) {
+			FilterTicket filterTicket) {
 
 		super(jCicIFParent, modal);
 		this.setVisible(true);
@@ -110,7 +115,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		this.setResizable(true);
 		this.setTitle(title);
 
-		this.people = people;
+		this.filterTicket = filterTicket;
 
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -118,7 +123,17 @@ public class JManageTicket extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
+		
+		this.getJTextFieldDni().setText(this.filterTicket.getDniPeople());
+		this.getJTextFieldName().setText(this.filterTicket.getNamePeople());
+		if (this.filterTicket.getYearTicket()!=null){
+			this.getJTextFieldYear().setText(this.filterTicket.getYearTicket().toString());
+		}
+		
 		onFilterTicket(true);
+		
+		this.getJButtonSearch().setVisible(false);
+		this.getJButtonClean().setVisible(false);
 		
 	}
 
@@ -147,7 +162,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	public void initComponents() {
 
 		this.getCkActive().setSelected(true);
-		initCbPeople();
+		
 	}
 
 	public void addListeners() {
@@ -181,26 +196,13 @@ public class JManageTicket extends AbstractJInternalFrame {
 	
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
-		this.getJComboBoxPeople().setSelectedIndex(-1);
+		this.getJTextFieldName().setText("");
+		this.getJTextFieldYear().setText("");
+		
+		
 	}
 	
-	public void initCbPeople() {
-
-		List<People> listPeople = peopleDAO.findAll();
-
-		if (this.people!=null){
-			this.getJComboBoxPeople().addItem(this.people);
-			this.getJComboBoxPeople().setSelectedItem(this.people);
-		}
-		else{
-			for (People p : listPeople) {
-				this.getJComboBoxPeople().addItem(p);
-			}
-			getJComboBoxPeople().setSelectedIndex(-1);
-		}
-		
-
-	}
+	
 
 	public void createGUIComponents() {
 
@@ -214,7 +216,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
-		getJPanelFilter().add(getJComboBoxPeople(), getGridJTextFieldName());
+		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
+		getJPanelFilter().add(getJLabelYear(), getGridJLabelYear());
+		getJPanelFilter().add(getJTextFieldYear(), getGridJTextFieldYear());
 		getJPanelFilter().add(getJButtonSearch(), getGridButtonSearch());
 		getJPanelFilter().add(getJButtonClean(), getGridButtonClean());
 
@@ -358,17 +362,14 @@ public class JManageTicket extends AbstractJInternalFrame {
 		return gbc_lblName;
 	}
 
-	private JComboBox<People> getJComboBoxPeople() {
-		if (cbPeople == null) {
-			cbPeople = new JComboBox<People>();
+	private JTextField getJTextFieldName() {
+		if (tfName == null) {
+			tfName = new JTextField();
 
-			cbPeople.setRenderer(new ComboBoxRenderer("  -- TODOS -- "));
-			cbPeople.setSelectedIndex(-1); // By default it selects first item,
-											// we don't want any selection
-
+			
 		}
 
-		return cbPeople;
+		return tfName;
 
 	}
 
@@ -380,6 +381,46 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
 		gbc_tfName.gridy = 1;
+
+		return gbc_tfName;
+	}
+	
+	private JLabel getJLabelYear() {
+
+		if (lblYear == null) {
+			lblYear = new JLabel("Año ");
+			lblYear.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblYear;
+	}
+
+	private GridBagConstraints getGridJLabelYear() {
+		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.fill = GridBagConstraints.BOTH;
+		gbc_lblName.insets = new Insets(0, 5, 5, 5);
+		gbc_lblName.gridx = 0;
+		gbc_lblName.gridy = 2;
+
+		return gbc_lblName;
+	}
+
+	private JTextField getJTextFieldYear() {
+		if (tfYear == null) {
+			tfYear = new JTextField();
+		}
+
+		return tfYear;
+
+	}
+
+	private GridBagConstraints getGridJTextFieldYear() {
+
+		GridBagConstraints gbc_tfName = new GridBagConstraints();
+		gbc_tfName.insets = new Insets(0, 0, 5, 5);
+		gbc_tfName.weightx = 1.0;
+		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfName.gridx = 1;
+		gbc_tfName.gridy = 2;
 
 		return gbc_tfName;
 	}
@@ -602,33 +643,92 @@ public class JManageTicket extends AbstractJInternalFrame {
 		TableColumn octoberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(19);
 		TableColumn novemberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(21);
 		TableColumn decemberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(23);
-		CaritasDatePickerCellEditor datePicker = new CaritasDatePickerCellEditor();
-
+		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerFebruary = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerMarch = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerApril = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerMay = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerJune = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerJuly = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerAugust = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerSeptember = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerOctober = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerNovember = new CaritasDatePickerCellEditor();
+		CaritasDatePickerCellEditor datePickerDecember = new CaritasDatePickerCellEditor();
+		Calendar calendarMinJanuary = new GregorianCalendar(2017,0,01);
+		Calendar calendarMaxJanuary = new GregorianCalendar(2017,0,31);
+		Calendar calendarMinFebruary = new GregorianCalendar(2017,1,01);
+		Calendar calendarMaxFebruary = new GregorianCalendar(2017,2,1);
+		Calendar calendarMinMarch = new GregorianCalendar(2017,2,01);
+		Calendar calendarMaxMarch = new GregorianCalendar(2017,2,31);
+		Calendar calendarMinApril = new GregorianCalendar(2017,3,01);
+		Calendar calendarMaxApril = new GregorianCalendar(2017,3,30);
+		Calendar calendarMinMay = new GregorianCalendar(2017,4,01);
+		Calendar calendarMaxMay = new GregorianCalendar(2017,4,31);
+		Calendar calendarMinJune = new GregorianCalendar(2017,5,01);
+		Calendar calendarMaxJune = new GregorianCalendar(2017,5,30);
+		Calendar calendarMinJuly = new GregorianCalendar(2017,6,01);
+		Calendar calendarMaxJuly = new GregorianCalendar(2017,6,31);
+		Calendar calendarMinAugust = new GregorianCalendar(2017,7,01);
+		Calendar calendarMaxAugust = new GregorianCalendar(2017,7,31);
+		Calendar calendarMinSeptember = new GregorianCalendar(2017,8,01);
+		Calendar calendarMaxSeptember = new GregorianCalendar(2017,8,30);
+		Calendar calendarMinOctober = new GregorianCalendar(2017,9,01);
+		Calendar calendarMaxOctober = new GregorianCalendar(2017,9,31);
+		Calendar calendarMinNovember = new GregorianCalendar(2017,10,01);
+		Calendar calendarMaxNovember = new GregorianCalendar(2017,10,30);
+		Calendar calendarMinDecember = new GregorianCalendar(2017,11,01);
+		Calendar calendarMaxDecember = new GregorianCalendar(2017,11,31);
+		
+		/*datePickerJanuary.setLowerBound(calendarMinJanuary.getTime());
+		datePickerJanuary.setUpperBound(calendarMaxJanuary.getTime());
+		datePickerFebruary.setLowerBound(calendarMinFebruary.getTime());
+		datePickerFebruary.setUpperBound(calendarMaxFebruary.getTime());
+		datePickerMarch.setLowerBound(calendarMinMarch.getTime());
+		datePickerMarch.setUpperBound(calendarMaxMarch.getTime());
+		datePickerApril.setLowerBound(calendarMinApril.getTime());
+		datePickerApril.setUpperBound(calendarMaxApril.getTime());
+		datePickerMay.setLowerBound(calendarMinMay.getTime());
+		datePickerMay.setUpperBound(calendarMaxMay.getTime());
+		datePickerJune.setLowerBound(calendarMinJune.getTime());
+		datePickerJune.setUpperBound(calendarMaxJune.getTime());
+		datePickerJuly.setLowerBound(calendarMinJuly.getTime());
+		datePickerJuly.setUpperBound(calendarMaxJuly.getTime());
+		datePickerAugust.setLowerBound(calendarMinAugust.getTime());
+		datePickerAugust.setUpperBound(calendarMaxAugust.getTime());
+		datePickerSeptember.setLowerBound(calendarMinSeptember.getTime());
+		datePickerSeptember.setUpperBound(calendarMaxSeptember.getTime());
+		datePickerOctober.setLowerBound(calendarMinOctober.getTime());
+		datePickerOctober.setUpperBound(calendarMaxOctober.getTime());
+		datePickerNovember.setLowerBound(calendarMinNovember.getTime());
+		datePickerNovember.setUpperBound(calendarMaxNovember.getTime());
+		datePickerDecember.setLowerBound(calendarMinDecember.getTime());
+		datePickerDecember.setUpperBound(calendarMaxDecember.getTime());*/
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
-		januaryColumn.setCellEditor(datePicker);
+		januaryColumn.setCellEditor(datePickerJanuary);
 		januaryColumn.setCellRenderer(dateRenderer);
-		februaryColumn.setCellEditor(datePicker);
+		februaryColumn.setCellEditor(datePickerFebruary);
 		februaryColumn.setCellRenderer(dateRenderer);
-		marchColumn.setCellEditor(datePicker);
+		marchColumn.setCellEditor(datePickerMarch);
 		marchColumn.setCellRenderer(dateRenderer);
-		aprilColumn.setCellEditor(datePicker);
+		aprilColumn.setCellEditor(datePickerApril);
 		aprilColumn.setCellRenderer(dateRenderer);
-		mayColumn.setCellEditor(datePicker);
+		mayColumn.setCellEditor(datePickerMay);
 		mayColumn.setCellRenderer(dateRenderer);
-		juneColumn.setCellEditor(datePicker);
+		juneColumn.setCellEditor(datePickerJune);
 		juneColumn.setCellRenderer(dateRenderer);
-		julyColumn.setCellEditor(datePicker);
+		julyColumn.setCellEditor(datePickerJuly);
 		julyColumn.setCellRenderer(dateRenderer);
-		augustColumn.setCellEditor(datePicker);
+		augustColumn.setCellEditor(datePickerAugust);
 		augustColumn.setCellRenderer(dateRenderer);
-		septemberColumn.setCellEditor(datePicker);
+		septemberColumn.setCellEditor(datePickerSeptember);
 		septemberColumn.setCellRenderer(dateRenderer);
-		octoberColumn.setCellEditor(datePicker);
+		octoberColumn.setCellEditor(datePickerOctober);
 		octoberColumn.setCellRenderer(dateRenderer);
-		novemberColumn.setCellEditor(datePicker);
+		novemberColumn.setCellEditor(datePickerNovember);
 		novemberColumn.setCellRenderer(dateRenderer);
-		decemberColumn.setCellEditor(datePicker);
+		decemberColumn.setCellEditor(datePickerDecember);
 		decemberColumn.setCellRenderer(dateRenderer);
 
 	}
@@ -730,23 +830,37 @@ public class JManageTicket extends AbstractJInternalFrame {
 	}
 
 	public void onFilterTicket(boolean create) {
-		People filterPeople = new People();
-		filterPeople.setActive(this.getCkActive().isSelected());
-		filterPeople.setDni(this.getJTextFieldDni().getText());
-		People selectedPeopleCombo = (People) this.getJComboBoxPeople().getSelectedItem();
-		if (selectedPeopleCombo != null && selectedPeopleCombo.getId() != -1) {
-			filterPeople.setName(selectedPeopleCombo.getName());
-			
+		
+		
+		if (filterTicket == null){
+			filterTicket = new FilterTicket();
+		} 
+		filterTicket.setActive(this.getCkActive().isSelected());
+		filterTicket.setDniPeople(this.getJTextFieldDni().getText());
+		filterTicket.setNamePeople(this.getJTextFieldName().getText());
+		if (this.getJTextFieldYear().getText()!=null && !this.getJTextFieldYear().getText().equals("")){
+			filterTicket.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
 		}
+		
 
-		List<Ticket> tickets = ticketDAO.findTicket(filterPeople);
+		
+		
+		List<Ticket> tickets = ticketDAO.findTicket(filterTicket);
 		if (tickets != null && !tickets.isEmpty()) {
 			this.getTicketsPeopleTableModel().clearTableModelData();
 			this.getTicketsPeopleTableModel().addRows(tickets);
 
 		} else {
 			Ticket ticketNewReset = new Ticket();
-			ticketNewReset.setPeople(this.people);
+			People filterPeople = new People();
+			filterPeople.setDni(this.getJTextFieldDni().getText());
+			filterPeople.setName(this.getJTextFieldName().getText());
+			filterPeople.setId(filterTicket.getIdPeople());
+			People peopleTicket = peopleDAO.findPeopleById(filterPeople);
+			
+			ticketNewReset.setPeople(peopleTicket);
+			
+			ticketNewReset.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
 			if (create) {
 				if (JOptionPane.showConfirmDialog(this,
@@ -755,14 +869,15 @@ public class JManageTicket extends AbstractJInternalFrame {
 				
 					ticketDAO.insert(ticketNewReset);
 					
-					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.people.getName() + " con todos los meses inicializados a 0");
+					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.getJTextFieldName().getText() + " con todos los meses inicializados a 0");
 					onFilterTicket(false);
+					this.cleanFilter();
 					
 					
 				}
 
 			} else {
-				JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+				//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
 			}
 
 		}
