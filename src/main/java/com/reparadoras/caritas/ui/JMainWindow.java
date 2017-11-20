@@ -248,7 +248,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblRegPeople.setBorder(null);
 			lblRegPeople.setHorizontalAlignment(SwingConstants.CENTER);
 			lblRegPeople.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-program-64.png")));
 		}
 		return lblRegPeople;
 	}
@@ -275,7 +275,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblMonthlyReport.setBorder(null);
 			lblMonthlyReport.setHorizontalAlignment(SwingConstants.CENTER);
 			lblMonthlyReport.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-report-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-report-64.png")));
 		}
 		return lblMonthlyReport;
 	}
@@ -297,7 +297,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			});
 			lblProgram.setHorizontalAlignment(SwingConstants.CENTER);
 			lblProgram.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-program-64.png")));
 			lblProgram.setForeground(Color.BLACK);
 			lblProgram.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblProgram.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -324,7 +324,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 				}
 			});
 			lblTickets.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-program-64.png")));
 			lblTickets.setForeground(Color.BLACK);
 			lblTickets.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblTickets.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -351,7 +351,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			});
 			lblImport.setHorizontalAlignment(SwingConstants.CENTER);
 			lblImport.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-import-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-import-64.png")));
 			lblImport.setForeground(Color.BLACK);
 			lblImport.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblImport.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -378,7 +378,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			});
 			lblExport.setHorizontalAlignment(SwingConstants.CENTER);
 			lblExport.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-export-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-export-64.png")));
 			lblExport.setForeground(Color.BLACK);
 			lblExport.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblExport.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -421,7 +421,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblExit.setFont(new Font("Verdana", Font.PLAIN, 18));
 			lblExit.setHorizontalTextPosition(SwingConstants.RIGHT);
 			lblExit.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-exit-64.png")));
+			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/img/icon-exit-64.png")));
 
 		}
 		return lblExit;
@@ -447,7 +447,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblLogo() {
 		if (lblLogo == null) {
 			lblLogo = new JLabel("");
-			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo_splash.PNG")));
+			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/img/logo_splash.PNG")));
 			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
 			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		}

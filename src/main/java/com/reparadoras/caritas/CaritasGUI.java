@@ -36,7 +36,7 @@ public class CaritasGUI  extends JFrame{
 
 	
     public CaritasGUI() {
-    	setIconImage(Toolkit.getDefaultToolkit().getImage(CaritasGUI.class.getResource("/com/reparadoras/images/caritas.png")));
+    	setIconImage(Toolkit.getDefaultToolkit().getImage(CaritasGUI.class.getResource("/img/caritas.png")));
 
     	initLookAndFeel();
         initUI();
@@ -82,7 +82,7 @@ public class CaritasGUI  extends JFrame{
         
         
         jDesktopPane = new JDesktopPane();
-        ImageIcon icon = new ImageIcon("./com/reparadoras/images/logo.PNG");
+        ImageIcon icon = new ImageIcon("logo.PNG");
         JLabel l = new JLabel(icon);
         jDesktopPane.add(l, new Integer(Integer.MIN_VALUE));
         getContentPane().add(jDesktopPane);
