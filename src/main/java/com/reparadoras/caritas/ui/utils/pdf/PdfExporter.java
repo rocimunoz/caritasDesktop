@@ -5,12 +5,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.net.URLClassLoader;
+
+import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Color;
@@ -64,6 +68,7 @@ import com.reparadoras.caritas.model.Relative;
 import com.reparadoras.caritas.model.Studies;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.JManageProgram;
+import com.reparadoras.caritas.ui.tabs.JPanelEconomicSituation;
 
 public class PdfExporter {
 
@@ -168,7 +173,17 @@ public class PdfExporter {
 		addEmptyLine(paragraph, 1);
 		addEmptyLine(paragraph, 1);
 
-		Image img = Image.getInstance(PdfExporter.class.getResource("/com/reparadoras/images/logo2.png"));
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+
+        URL[] urls = ((URLClassLoader)cl).getURLs();
+
+        for(URL url: urls){
+        	System.out.println(url.getFile());
+        	logger.info(url.getFile());
+        }
+		
+		Image img = Image.getInstance(PdfExporter.class.getResource("/img/logo2.PNG"));
+		
 		img.setAlignment(Paragraph.ALIGN_CENTER);
 
 		document.add(paragraph);
@@ -1057,7 +1072,7 @@ private void addOtherInfo(Document document, OtherInfo info) throws DocumentExce
 
 	private Paragraph getCheckTrue(String tab, String message) throws DocumentException, IOException {
 
-		String path = PdfExporter.class.getResource("/com/reparadoras/caritas/ui/utils/pdf/WINGDING.TTF").getPath();
+		String path = PdfExporter.class.getResource("/img/WINGDING.TTF").getPath();
 		BaseFont base = BaseFont.createFont(path, BaseFont.IDENTITY_H, false);
 
 		Font font = new Font(base, 12f, Font.NORMAL);
@@ -1073,7 +1088,7 @@ private void addOtherInfo(Document document, OtherInfo info) throws DocumentExce
 	}
 
 	private Paragraph getCheckFalse(String tab, String message) throws DocumentException, IOException {
-		String path = PdfExporter.class.getResource("/com/reparadoras/caritas/ui/utils/pdf/WINGDING.TTF").getPath();
+		String path = PdfExporter.class.getResource("/img/WINGDING.TTF").getPath();
 		BaseFont base = BaseFont.createFont(path, BaseFont.IDENTITY_H, false);
 
 		Font font = new Font(base, 12f, Font.NORMAL);

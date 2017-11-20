@@ -666,7 +666,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnSearchPeople == null) {
 			btnSearchPeople = new JButton("Filtrar");
 			btnSearchPeople.setIcon(
-					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-search.png")));
+					new ImageIcon(JManageProgram.class.getResource("/img/icon-search.png")));
 		}
 
 		return btnSearchPeople;
@@ -686,7 +686,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
 			btnCleanPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+					new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -707,7 +707,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnExit == null) {
 			btnExit = new JButton("Salir al menu");
 
-			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-exit.png")));
 		}
 
 		return btnExit;
@@ -749,7 +749,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnSave == null) {
 			btnSave = new JButton("Guardar");
 
-			btnSave.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-save.png")));
+			btnSave.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-save.png")));
 		}
 
 		return btnSave;
@@ -760,7 +760,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			btnPrint = new JButton("Imprimir");
 
 			btnPrint.setIcon(
-					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-print-32.png")));
+					new ImageIcon(JManageProgram.class.getResource("/img/icon-print-32.png")));
 		}
 
 		return btnPrint;

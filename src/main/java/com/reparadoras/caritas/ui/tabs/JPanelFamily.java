@@ -396,7 +396,7 @@ public class JPanelFamily extends JPanel {
 				}
 			});
 			btnAddRelative.setIcon(
-					new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+					new ImageIcon(JPanelEconomicSituation.class.getResource("/img/icon-add.png")));
 		}
 		return btnAddRelative;
 	}
@@ -405,7 +405,7 @@ public class JPanelFamily extends JPanel {
 		if (btnDeleteRelative == null) {
 			btnDeleteRelative = new JButton("Borrar");
 			btnDeleteRelative.setIcon(new ImageIcon(
-					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+					JPanelEconomicSituation.class.getResource("/img/icon-delete.png")));
 		}
 		return btnDeleteRelative;
 	}
@@ -414,7 +414,7 @@ public class JPanelFamily extends JPanel {
 		if (btnEditRelative == null) {
 			btnEditRelative = new JButton("Editar");
 			btnEditRelative.setIcon(new ImageIcon(
-					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+					JPanelEconomicSituation.class.getResource("/img/icon-update.png")));
 		}
 		return btnEditRelative;
 	}
