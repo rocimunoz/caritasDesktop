@@ -22,6 +22,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
+import org.apache.log4j.Logger;
+
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
@@ -73,11 +75,13 @@ import javax.swing.JComboBox;
 public class JManagePeople extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	static final Logger logger = Logger.getLogger(JManagePeople.class);
 
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
+	private JLabel lblPassport = null;
+	private JTextField tfPassport;
 	private JLabel lblName = null;
-	//private JComboBox<People> cbPeople;
 	private JTextField tfName;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
@@ -155,18 +159,21 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		getJButtonSearch().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				logger.info("Filtrando Persona ...");
 				filterPeople();
 			}
 		});
 		
 		getJButtonClean().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				logger.info("Limpiando filtro ...");
 				cleanFilter();
 			}
 		});
 
 		getBtnNewPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				logger.info("Insertando nueva persona ...");
 				openEditPeople(JWindowParams.IMODE_INSERT, "Nueva Persona");
 				
 			}
@@ -174,6 +181,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		getBtnViewPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				logger.info("Consultando persona ...");
 				openEditPeople(JWindowParams.IMODE_SELECT, "Consulta Persona");
 				
 
@@ -226,6 +234,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
+		getJPanelFilter().add(getJLabelPassport(), getGridJLabelPassport());
+		getJPanelFilter().add(getJTextFieldPassport(), getGridJTextFieldPassport());
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
@@ -324,7 +334,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_lblName.anchor = GridBagConstraints.WEST;
 		gbc_lblName.insets = new Insets(0, 5, 0, 5);
 		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 1;
+		gbc_lblName.gridy = 2;
 
 		return gbc_lblName;
 	}
@@ -349,7 +359,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_tfName.weightx = 1.0;
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
-		gbc_tfName.gridy = 1;
+		gbc_tfName.gridy = 2;
 
 		return gbc_tfName;
 	}
@@ -392,6 +402,45 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
+	
+	private JLabel getJLabelPassport() {
+		if (lblPassport == null) {
+			lblPassport = new JLabel("Pasaporte:");
+			lblPassport.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblPassport;
+	}
+
+	private GridBagConstraints getGridJLabelPassport() {
+		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.anchor = GridBagConstraints.WEST;
+		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDni.gridx = 0;
+		gbc_lblDni.gridy = 1;
+
+		return gbc_lblDni;
+	}
+
+	private JTextField getJTextFieldPassport() {
+		if (tfPassport == null) {
+			tfPassport = new JTextField();
+			tfPassport.setColumns(10);
+		}
+		return tfPassport;
+	}
+
+	private GridBagConstraints getGridJTextFieldPassport() {
+
+		GridBagConstraints gbc_tfDni = new GridBagConstraints();
+		gbc_tfDni.weightx = 1.0;
+		gbc_tfDni.anchor = GridBagConstraints.NORTH;
+		gbc_tfDni.insets = new Insets(0, 0, 5, 5);
+		gbc_tfDni.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfDni.gridx = 1;
+		gbc_tfDni.gridy = 1;
+
+		return gbc_tfDni;
+	}
 
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
@@ -417,7 +466,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnSearchPeople == null) {
 			btnSearchPeople = new JButton("Filtrar");
 			btnSearchPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-search.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-search.png")));
 		}
 
 		return btnSearchPeople;
@@ -428,7 +477,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		GridBagConstraints gbc_btnSearchPeople = new GridBagConstraints();
 		gbc_btnSearchPeople.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSearchPeople.gridx = 2;
-		gbc_btnSearchPeople.gridy = 1;
+		gbc_btnSearchPeople.gridy = 2;
 
 		return gbc_btnSearchPeople;
 	}
@@ -437,7 +486,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
 			btnCleanPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -449,7 +498,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_btnCleanPeople.anchor = GridBagConstraints.WEST;
 		gbc_btnCleanPeople.insets = new Insets(0, 0, 0, 5);
 		gbc_btnCleanPeople.gridx = 3;
-		gbc_btnCleanPeople.gridy = 1;
+		gbc_btnCleanPeople.gridy = 2;
 
 		return gbc_btnCleanPeople;
 	}
@@ -459,7 +508,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 			btnExitPeople = new JButton("Salir al menú");
 			btnExitPeople.setHorizontalAlignment(SwingConstants.RIGHT);
 			btnExitPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-exit.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-exit.png")));
 		}
 		return btnExitPeople;
 	}
@@ -470,7 +519,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		gbc_btnExit.anchor = GridBagConstraints.EAST;
 		gbc_btnExit.insets = new Insets(0, 0, 0, 20);
 		gbc_btnExit.gridx = 3;
-		gbc_btnExit.gridy = 1;
+		gbc_btnExit.gridy = 2;
 
 		return gbc_btnExit;
 	}
@@ -541,7 +590,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnNewPeople == null) {
 			btnNewPeople = new JButton("Nuevo");
 			btnNewPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-add.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-add.png")));
 		}
 
 		return btnNewPeople;
@@ -552,7 +601,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnUpdatePeople == null) {
 			btnUpdatePeople = new JButton("Editar");
 			btnUpdatePeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-update.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-update.png")));
 		}
 
 		return btnUpdatePeople;
@@ -563,7 +612,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnDeletePeople == null) {
 			btnDeletePeople = new JButton("Borrar");
 			getBtnDeletePeople()
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-delete.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-delete.png")));
 
 		}
 
@@ -575,7 +624,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnViewPeople == null) {
 			btnViewPeople = new JButton("Consultar");
 			btnViewPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-view.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-view.png")));
 		}
 
 		return btnViewPeople;
@@ -585,7 +634,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnProgramPeople == null) {
 			btnProgramPeople = new JButton("Programa Atencion Primaria");
 			btnProgramPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-program.png")));
+					new ImageIcon(JManagePeople.class.getResource("/img/icon-program.png")));
 		}
 		return btnProgramPeople;
 	}
@@ -594,7 +643,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnTicketPeople == null) {
 			btnTicketPeople = new JButton("Vales");
 			btnTicketPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-ticket.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-ticket.png")));
 		}
 		return btnTicketPeople;
 	}
@@ -674,7 +723,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private PeopleTableModel getPeopleTableModel() {
 
 		if (peopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "DNI", "NOMBRE", "APELLIDO 1", "APELLIDO 2" };
+			Object[] columnIdentifiers = new Object[] { "DNI", "PASAPORTE","NOMBRE", "APELLIDO 1", "APELLIDO 2" };
 			peopleTableModel = new PeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -686,16 +735,22 @@ public class JManagePeople extends AbstractJInternalFrame {
 	public void cleanFilter(){
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
+		this.getJTextFieldPassport().setText("");
 		
 	}
 	
 	public void filterPeople() {
 		String filterDni = this.getJTextFieldDni().getText();
 		String filterName = this.getJTextFieldName().getText();
+		String filterPassport = this.getJTextFieldPassport().getText();
 		boolean filterActive = this.getCkActive().isSelected();
 		People filterPeople = new People();
 		if (filterDni != null && !filterDni.equals("")) {
 			filterPeople.setDni(filterDni);
+		}
+		
+		if (filterPassport != null && !filterPassport.equals("")) {
+			filterPeople.setPassport(filterPassport);
 		}
 		
 		if (filterName != null && !filterName.equals("")) {
@@ -752,7 +807,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 						addressDAO.delete(familyToDelete.getHome().getAddress());
 						otherInfoDAO.delete(programToDelete.getOtherInfo());
 						
-						
+						logger.info("Registro eliminado ...");
 						
 						
 					}
@@ -771,6 +826,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible eliminar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error(e);
 		}
 
 	}
@@ -804,6 +860,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -834,6 +891,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					logger.error(e);
 				}
 
 			} else {
@@ -857,6 +915,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				FilterTicket filterTicket = new FilterTicket();
 				filterTicket.setActive(people.isActive());
 				filterTicket.setDniPeople(people.getDni());
+				filterTicket.setPassportPeople(people.getPassport());
 				filterTicket.setNamePeople(people.getName());
 				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
 				filterTicket.setIdPeople(people.getId());
@@ -872,6 +931,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					logger.error(e);
 				}
 
 			} else {

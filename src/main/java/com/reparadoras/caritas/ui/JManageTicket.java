@@ -28,6 +28,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
+
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
 import com.reparadoras.caritas.filter.FilterTicket;
@@ -74,12 +76,15 @@ import java.awt.event.ActionEvent;
 public class JManageTicket extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	static final Logger logger = Logger.getLogger(JManageProgram.class);
 
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
 	private JLabel lblDni;
 	private JTextField tfDni;
+	private JLabel lblPassport = null;
+	private JTextField tfPassport;
 	private JCheckBox ckActive;
 	private JLabel lblYear = null;
 	private JTextField tfName;
@@ -126,6 +131,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		
 		this.getJTextFieldDni().setText(this.filterTicket.getDniPeople());
 		this.getJTextFieldName().setText(this.filterTicket.getNamePeople());
+		this.getJTextFieldPassport().setText(this.filterTicket.getPassportPeople());
 		if (this.filterTicket.getYearTicket()!=null){
 			this.getJTextFieldYear().setText(this.filterTicket.getYearTicket().toString());
 		}
@@ -213,7 +219,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
-
+		getJPanelFilter().add(getJLabelPassport(), getGridJLabelPassport());
+		getJPanelFilter().add(getJTextFieldPassport(), getGridJTextFieldPassport());
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
 		getJPanelFilter().add(getJTextFieldName(), getGridJTextFieldName());
@@ -323,6 +330,45 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
+	
+	private JLabel getJLabelPassport() {
+		if (lblPassport == null) {
+			lblPassport = new JLabel("Pasaporte:");
+			lblPassport.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblPassport;
+	}
+
+	private GridBagConstraints getGridJLabelPassport() {
+		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.anchor = GridBagConstraints.WEST;
+		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDni.gridx = 0;
+		gbc_lblDni.gridy = 1;
+
+		return gbc_lblDni;
+	}
+
+	private JTextField getJTextFieldPassport() {
+		if (tfPassport == null) {
+			tfPassport = new JTextField();
+			tfPassport.setColumns(10);
+		}
+		return tfPassport;
+	}
+
+	private GridBagConstraints getGridJTextFieldPassport() {
+
+		GridBagConstraints gbc_tfDni = new GridBagConstraints();
+		gbc_tfDni.weightx = 1.0;
+		gbc_tfDni.anchor = GridBagConstraints.NORTH;
+		gbc_tfDni.insets = new Insets(0, 0, 5, 5);
+		gbc_tfDni.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfDni.gridx = 1;
+		gbc_tfDni.gridy = 1;
+
+		return gbc_tfDni;
+	}
 
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
@@ -357,7 +403,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_lblName.fill = GridBagConstraints.BOTH;
 		gbc_lblName.insets = new Insets(0, 5, 5, 5);
 		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 1;
+		gbc_lblName.gridy = 2;
 
 		return gbc_lblName;
 	}
@@ -380,7 +426,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_tfName.weightx = 1.0;
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
-		gbc_tfName.gridy = 1;
+		gbc_tfName.gridy = 2;
 
 		return gbc_tfName;
 	}
@@ -399,7 +445,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_lblName.fill = GridBagConstraints.BOTH;
 		gbc_lblName.insets = new Insets(0, 5, 5, 5);
 		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 2;
+		gbc_lblName.gridy = 3;
 
 		return gbc_lblName;
 	}
@@ -420,7 +466,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_tfName.weightx = 1.0;
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
-		gbc_tfName.gridy = 2;
+		gbc_tfName.gridy = 3;
 
 		return gbc_tfName;
 	}
@@ -825,6 +871,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}

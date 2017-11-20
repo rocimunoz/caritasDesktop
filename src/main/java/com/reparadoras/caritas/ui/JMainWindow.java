@@ -87,6 +87,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private TicketDAO ticketDAO;
 	private JPanel jPanelMenu;
 	private JLabel lblRegPeople;
+	private JLabel lblMonthlyReport;
 	private JLabel lblProgram;
 	private JLabel lblTickets;
 	private JLabel lblImport;
@@ -98,6 +99,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 	public JMainWindow(JDesktopPane desktop) {
 		super(desktop);
+		setMaximizable(true);
 		getContentPane().setBackground(Color.WHITE);
 		this.desktop = desktop;
 		this.setTitle("Gestion Personas");
@@ -178,8 +180,16 @@ public class JMainWindow extends AbstractJInternalFrame {
 			gbc_lblRegPeople.fill = GridBagConstraints.VERTICAL;
 			gbc_lblRegPeople.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblRegPeople.gridx = 0;
-			gbc_lblRegPeople.gridy = 1;
+			gbc_lblRegPeople.gridy = 0;
 			jPanelMenu.add(getLblRegPeople(), gbc_lblRegPeople);
+			GridBagConstraints gbc_lblMonthlyReport = new GridBagConstraints();
+			gbc_lblMonthlyReport.insets = new Insets(20, 0, 20, 0);
+			gbc_lblMonthlyReport.weightx = 1.0;
+			gbc_lblMonthlyReport.fill = GridBagConstraints.VERTICAL;
+			gbc_lblMonthlyReport.anchor = GridBagConstraints.NORTHWEST;
+			gbc_lblMonthlyReport.gridx = 0;
+			gbc_lblMonthlyReport.gridy = 1;
+			jPanelMenu.add(getLblMonthlyReport(), gbc_lblMonthlyReport);
 			GridBagConstraints gbc_lblTickets = new GridBagConstraints();
 			gbc_lblTickets.anchor = GridBagConstraints.NORTHWEST;
 			gbc_lblTickets.insets = new Insets(20, 0, 20, 0);
@@ -238,9 +248,36 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblRegPeople.setBorder(null);
 			lblRegPeople.setHorizontalAlignment(SwingConstants.CENTER);
 			lblRegPeople.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-program-64.png")));
 		}
 		return lblRegPeople;
+	}
+	
+	private JLabel getLblMonthlyReport() {
+		if (lblMonthlyReport == null) {
+			lblMonthlyReport = new JLabel("  Informe Mensual Cáritas ");
+			lblMonthlyReport.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					openManageMonthlyReportWindow();
+				}
+			});
+			lblMonthlyReport.addMouseMotionListener(new MouseMotionAdapter() {
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					lblMonthlyReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				}
+			});
+			lblMonthlyReport.setHorizontalTextPosition(SwingConstants.RIGHT);
+			lblMonthlyReport.setFont(new Font("Verdana", Font.BOLD, 30));
+			lblMonthlyReport.setForeground(Color.BLACK);
+			lblMonthlyReport.setBackground(Color.WHITE);
+			lblMonthlyReport.setBorder(null);
+			lblMonthlyReport.setHorizontalAlignment(SwingConstants.CENTER);
+			lblMonthlyReport.setIcon(
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-report-64.png")));
+		}
+		return lblMonthlyReport;
 	}
 
 	private JLabel getLblProgram() {
@@ -260,7 +297,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			});
 			lblProgram.setHorizontalAlignment(SwingConstants.CENTER);
 			lblProgram.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-program-64.png")));
 			lblProgram.setForeground(Color.BLACK);
 			lblProgram.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblProgram.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -287,7 +324,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 				}
 			});
 			lblTickets.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-program-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-program-64.png")));
 			lblTickets.setForeground(Color.BLACK);
 			lblTickets.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblTickets.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -314,7 +351,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			});
 			lblImport.setHorizontalAlignment(SwingConstants.CENTER);
 			lblImport.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-import-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-import-64.png")));
 			lblImport.setForeground(Color.BLACK);
 			lblImport.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblImport.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -341,7 +378,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			});
 			lblExport.setHorizontalAlignment(SwingConstants.CENTER);
 			lblExport.setIcon(
-					new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-export-64.png")));
+					new ImageIcon(JMainWindow.class.getResource("/img/icon-export-64.png")));
 			lblExport.setForeground(Color.BLACK);
 			lblExport.setFont(new Font("Verdana", Font.BOLD, 30));
 			lblExport.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -384,7 +421,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 			lblExit.setFont(new Font("Verdana", Font.PLAIN, 18));
 			lblExit.setHorizontalTextPosition(SwingConstants.RIGHT);
 			lblExit.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/icon-exit-64.png")));
+			lblExit.setIcon(new ImageIcon(JMainWindow.class.getResource("/img/icon-exit-64.png")));
 
 		}
 		return lblExit;
@@ -410,7 +447,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblLogo() {
 		if (lblLogo == null) {
 			lblLogo = new JLabel("");
-			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/com/reparadoras/images/logo_splash.PNG")));
+			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/img/logo_splash.PNG")));
 			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
 			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		}
@@ -428,6 +465,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageTicketPeopleWindow " + e.getMessage());
 
 		}
 	}
@@ -443,6 +481,27 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManagePeopleWindow " + e.getMessage());
+
+		}
+	}
+	
+	private void openManageMonthlyReportWindow() {
+
+		try {
+			JManageMonthlyReport jManageMonthlyReport = new JManageMonthlyReport(this.desktop);
+			this.desktop.add(jManageMonthlyReport);
+
+		
+			jManageMonthlyReport.setMaximizable(false);
+			jManageMonthlyReport.moveToFront();
+			jManageMonthlyReport.setMaximum(true);
+			jManageMonthlyReport.setMaximizable(false);
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error openManageMonthlyReportWindow " + e.getMessage());
 
 		}
 	}
@@ -458,6 +517,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageProgramWindow " + e.getMessage());
 
 		}
 	}
@@ -479,6 +539,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageImportBackup " + e.getMessage());
 
 		}
 	}
@@ -494,6 +555,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Error openManageExportBackup " + e.getMessage());
 
 		}
 	}
@@ -554,6 +616,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 						JOptionPane.INFORMATION_MESSAGE);*/
 			} catch (ExecutionException | InterruptedException e) {
 				e.printStackTrace();
+				logger.error("Error done " + e.getMessage());
 			}
 
 			System.exit(0);

@@ -224,7 +224,7 @@ public class JPanelEconomicSituation extends JPanel {
 		if (btnAddIncome == null) {
 			btnAddIncome = new JButton("Nuevo");
 			btnAddIncome.setIcon(
-					new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+					new ImageIcon(JPanelEconomicSituation.class.getResource("/img/icon-add.png")));
 		}
 		return btnAddIncome;
 	}
@@ -233,7 +233,7 @@ public class JPanelEconomicSituation extends JPanel {
 		if (btnDeleteIncome == null) {
 			btnDeleteIncome = new JButton("Borrar");
 			btnDeleteIncome.setIcon(new ImageIcon(
-					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+					JPanelEconomicSituation.class.getResource("/img/icon-delete.png")));
 		}
 		return btnDeleteIncome;
 	}
@@ -242,7 +242,7 @@ public class JPanelEconomicSituation extends JPanel {
 		if (btnEditIncome == null) {
 			btnEditIncome = new JButton("Editar");
 			btnEditIncome.setIcon(new ImageIcon(
-					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+					JPanelEconomicSituation.class.getResource("/img/icon-update.png")));
 		}
 		return btnEditIncome;
 	}
@@ -356,7 +356,7 @@ public class JPanelEconomicSituation extends JPanel {
 		if (btnAddExpense == null) {
 			btnAddExpense = new JButton("Nuevo");
 			btnAddExpense.setIcon(
-					new ImageIcon(JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-add.png")));
+					new ImageIcon(JPanelEconomicSituation.class.getResource("/img/icon-add.png")));
 		}
 		return btnAddExpense;
 	}
@@ -365,7 +365,7 @@ public class JPanelEconomicSituation extends JPanel {
 		if (btnDeleteExpense == null) {
 			btnDeleteExpense = new JButton("Borrar");
 			btnDeleteExpense.setIcon(new ImageIcon(
-					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-delete.png")));
+					JPanelEconomicSituation.class.getResource("/img/icon-delete.png")));
 		}
 		return btnDeleteExpense;
 	}
@@ -374,7 +374,7 @@ public class JPanelEconomicSituation extends JPanel {
 		if (btnEditExpense == null) {
 			btnEditExpense = new JButton("Editar");
 			btnEditExpense.setIcon(new ImageIcon(
-					JPanelEconomicSituation.class.getResource("/com/reparadoras/images/icon-update.png")));
+					JPanelEconomicSituation.class.getResource("/img/icon-update.png")));
 		}
 		return btnEditExpense;
 	}

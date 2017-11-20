@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Report">
+
+	<resultMap id="ReportResult" type="MonthlyReport">
+		<result property="id" column="id_program" />
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="firstSurname" column="first_surname" />
+		<result property="dni" column="dni" />
+		<result property="passport" column="passport" />
+		<result property="active" column="active" />
+		<result property="createDate" column="create_date" />
+		<result property="reactivateDate" column="reactivate_date" />
+		<result property="country" column="country" />
+		<result property="nationality" column="nationality" />
+		<result property="yearToSpain" column="year_to_spain" />
+		<result property="sex" column="sex" />
+
+	</resultMap>
+
+
+
+
+
+	<select id="findReport" parameterType="FilterReport" resultMap="ReportResult">
+		SELECT T.POINTS_JANUARY,
+       T.POINTS_FEBRUARY,
+       T.POINTS_MARCH,
+       T.POINTS_APRIL,
+       T.POINTS_MAY,
+       T.POINTS_JUNE,
+       T.POINTS_JULY,
+       T.POINTS_AUGUST,
+       T.POINTS_SEPTEMBER,
+       T.POINTS_OCTOBER,
+       T.POINTS_NOVEMBER,
+       T.POINTS_DECEMBER,
+       T.DATE_JANUARY,
+       T.DATE_FEBRUARY,
+       T.DATE_MARCH,
+       T.DATE_APRIL,
+       T.DATE_MAY,
+       T.DATE_JUNE,
+       T.DATE_JULY,
+       T.DATE_AUGUST,
+       T.DATE_SEPTEMBER,
+       T.DATE_OCTOBER,
+       T.DATE_NOVEMBER,
+       T.DATE_DECEMBER,
+       PE.FIRST_SURNAME,
+       PE.SECOND_SURNAME,
+       PE.NAME,
+       PE.DNI,
+       PE.PASSPORT,
+       PE.DATE_BORN,
+       PE.SEX,
+       A.STREET,
+       A.GATE,
+       A.FLOOR,
+       H.NUMBER_PEOPLE,
+       FT.DESCRIPTION,
+       PE.CIVIL_STATUS,
+       PE.YEAR_TO_SPAIN,
+       PE.NATIONALITY,
+       ATYPE.DESCRIPTION,
+       JS.DESCRIPTION,
+       STUDIES.DESCRIPTION,
+       OI.DEMAND
+FROM C_PEOPLE PE,
+     C_TICKET T,
+     C_PROGRAM PR
+     LEFT JOIN C_AUTHORIZATION_TYPE ATYPE
+        ON PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
+     LEFT JOIN C_JOB_SITUATION JS ON PR.ID_JOB_SITUATION = JS.ID
+     LEFT JOIN C_STUDIES STUDIES ON PR.ID_STUDIES = STUDIES.ID
+     LEFT JOIN C_OTHER_INFO OI ON PR.ID_OTHER_INFO = OI.ID
+     LEFT JOIN C_FAMILY F ON PR.ID_FAMILY = F.ID
+     LEFT JOIN C_FAMILY_TYPE FT ON F.ID_FAMILY_TYPE = FT.ID
+     LEFT JOIN C_HOME H ON F.ID_HOME = H.ID
+     LEFT JOIN C_HOME_TYPE HT ON H.ID_HOME_TYPE = HT.ID
+     LEFT JOIN C_ADDRESS A ON H.ID_ADDRESS = A.ID
+WHERE PR.ID_PEOPLE = PE.id AND T.ID_PEOPLE = PE.ID
+		<if test="id != null">
+			AND PE.ID = #{id}
+		</if>
+		<if test="active != null">
+			AND PE.ACTIVE = #{active}
+		</if>
+		<if test="pointsJanuary != null">
+    		AND T.POINTS_JANUARY > 0
+  		</if>
+  		<if test="pointsFebruary != null">
+    		AND T.POINTS_FEBRUARY > 0
+  		</if>
+  		<if test="pointsMarch != null">
+    		AND T.POINTS_MARCH > 0
+  		</if>
+  		<if test="pointsApril != null">
+    		AND T.POINTS_APRIL > 0
+  		</if>
+  		<if test="pointsMay != null">
+    		AND T.POINTS_MAY > 0
+  		</if>
+  		<if test="pointsJune != null">
+    		AND T.POINTS_JUNE > 0
+  		</if>
+  		<if test="pointsJuly != null">
+    		AND T.POINTS_JULY > 0
+  		</if>
+  		<if test="pointsAugust != null">
+    		AND T.POINTS_AUGUST > 0
+  		</if>
+  		<if test="pointsSeptember != null">
+    		AND T.POINTS_SEPTEMBER > 0
+  		</if>
+  		<if test="pointsOctober != null">
+    		AND T.POINTS_OCTOBER > 0
+  		</if>
+  		<if test="pointsNovember != null">
+    		AND T.POINTS_NOVEMBER > 0
+  		</if>
+  		<if test="pointsDecember != null">
+    		AND T.POINTS_DECEMBER > 0
+  		</if>
+
+	</select>
+
+
+</mapper>

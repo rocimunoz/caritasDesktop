@@ -21,12 +21,13 @@
     <resultMap id="PeopleResult" type="People">
         <result property="id" column="idPeople"/> 
        <result property="dni" column="dni"/> 
+       <result property="passport" column="passport"/> 
     </resultMap>
  
    
     
  	 <select id="findAllExpenses" parameterType="Expense" resultMap="ExpenseResult">
-       SELECT * FROM C_EXPENSE E, C_PROGRAM P, C_PEOPLE PE
+       SELECT E.ID, E.CONCEPT, E.END_DATE, E.AMOUNT, E.REGULARITY, P.ID IDPROGRAM, PE.ID IDPEOPLE, PE.DNI, PE.PASSPORT FROM C_EXPENSE E, C_PROGRAM P, C_PEOPLE PE
        WHERE E.ID_PROGRAM = P.ID
        AND P.ID_PEOPLE = PE.ID
     </select>

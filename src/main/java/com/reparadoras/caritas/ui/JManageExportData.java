@@ -36,6 +36,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -97,6 +99,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 	private IncomesDAO incomeDAO;
 	private ExpensesDAO expenseDAO;
 	private RelativeDAO relativeDAO;
+	private PeopleDAO peopleDAO;
 
 	public int countOK = 0;
 	public int countKO = 0;
@@ -124,6 +127,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		addListener();
 
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		incomeDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expenseDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
@@ -159,7 +163,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 	protected void saveToFile() {
 
 		JFileChooser fileChooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL FILES", "xlsx");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL FILES", "xls");
 		fileChooser.setFileFilter(filter);
 		int retval = fileChooser.showSaveDialog(getJButtonExportFile());
 		if (retval == JFileChooser.APPROVE_OPTION) {
@@ -167,11 +171,11 @@ public class JManageExportData extends AbstractJInternalFrame {
 			if (file == null) {
 				return;
 			}
-			
-			if(!file.getAbsolutePath().endsWith(".xlsx")){
-				file = new File(fileChooser.getSelectedFile() + ".xlsx");
+
+			if (!file.getAbsolutePath().endsWith(".xls")) {
+				file = new File(fileChooser.getSelectedFile() + ".xls");
 			}
-			
+
 			readBBDDAndGenerateExcel(file);
 		}
 	}
@@ -419,7 +423,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 			mapExpenses = fillMapExpenses();
 
-			XSSFWorkbook workbookCloned = cloneTemplateExcel(file);
+			HSSFWorkbook workbookCloned = cloneTemplateExcel(file);
 			generateSheetProgram(mapProgram, workbookCloned, file);
 			generateSheetRelatives(mapRelatives, workbookCloned, file);
 			generateSheetIncomes(mapIncomes, workbookCloned, file);
@@ -435,6 +439,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		} catch (Exception e) {
 			logger.error("Se ha producido un error en la exportacion de datos  " + e.getMessage());
+			
 
 		}
 
@@ -461,9 +466,9 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 			} else if (passport != null && !passport.equals("")) {
 				mapProgram.put(passport, program);
-			}
-			else{
-				System.out.println("registro no exportable");
+			} else {
+				logger.warn("Registro no exportable.");
+				
 			}
 		}
 
@@ -474,7 +479,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 
 		List<Relative> listRelatives = relativeDAO.findAllRelatives();
 		Map<String, List<Relative>> mapRelatives = new HashMap<String, List<Relative>>();
-		
+
 		for (Relative relative : listRelatives) {
 			Family family = relative.getFamily();
 			FilterProgram filter = new FilterProgram();
@@ -483,70 +488,86 @@ public class JManageExportData extends AbstractJInternalFrame {
 			if (programs != null && !programs.isEmpty() && programs.size() == 1) {
 				Program programRelatives = programs.get(0);
 				String dni = programRelatives.getPeople().getDni();
-
-				if (mapRelatives.get(dni) != null) {
-					mapRelatives.get(dni).add(relative);
+				String passport = programRelatives.getPeople().getPassport();
+				String key ="";
+				if (dni!=null && !dni.equals("")){
+					key = dni;
+				}else{
+					key = passport;
+				}
+				if (mapRelatives.get(key) != null) {
+					mapRelatives.get(key).add(relative);
 				} else {
 					List<Relative> relatives = new ArrayList<>();
 					relatives.add(relative);
-					mapRelatives.put(dni, relatives);
+					mapRelatives.put(key, relatives);
 				}
 			}
 		}
 		return mapRelatives;
 	}
-	
+
 	public Map<String, List<Income>> fillMapIncomes() {
 
 		List<Income> listIncomes = incomeDAO.findAllIncomes();
 		Map<String, List<Income>> mapIncomes = new HashMap<String, List<Income>>();
-		
+
 		for (Income income : listIncomes) {
 			String dni = income.getProgram().getPeople().getDni();
-
-			if (mapIncomes.get(dni) != null) {
-				mapIncomes.get(dni).add(income);
+			String passport = income.getProgram().getPeople().getPassport();
+			String key ="";
+			if (dni!=null && !dni.equals("")){
+				key = dni;
+			}else{
+				key = passport;
+			}
+			if (mapIncomes.get(key) != null) {
+				mapIncomes.get(key).add(income);
 			} else {
 				List<Income> incomes = new ArrayList<>();
 				incomes.add(income);
-				mapIncomes.put(dni, incomes);
+				mapIncomes.put(key, incomes);
 			}
 
 		}
 		return mapIncomes;
 	}
-	
+
 	public Map<String, List<Expense>> fillMapExpenses() {
 		List<Expense> listExpenses = expenseDAO.findAllExpenses();
-		
+
 		Map<String, List<Expense>> mapExpenses = new HashMap<String, List<Expense>>();
-		
+
 		for (Expense expense : listExpenses) {
 			String dni = expense.getProgram().getPeople().getDni();
-
-			if (mapExpenses.get(dni) != null) {
-				mapExpenses.get(dni).add(expense);
+			String passport = expense.getProgram().getPeople().getPassport();
+			String key ="";
+			if (dni!=null && !dni.equals("")){
+				key = dni;
+			}else{
+				key = passport;
+			}
+			if (mapExpenses.get(key) != null) {
+				mapExpenses.get(key).add(expense);
 			} else {
 				List<Expense> expenses = new ArrayList<>();
 				expenses.add(expense);
-				mapExpenses.put(dni, expenses);
+				mapExpenses.put(key, expenses);
 			}
 
 		}
 		return mapExpenses;
 	}
 
-	public XSSFWorkbook cloneTemplateExcel(File destinationPath) {
+	public HSSFWorkbook cloneTemplateExcel(File destinationPath) {
 
-		
-		
-		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xlsx");
+		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xls");
 		File fTemplate = new File(url.getPath());
 		FileInputStream excelFileTemplate;
-		XSSFWorkbook workbook = null;
+		HSSFWorkbook workbook = null;
 		try {
 			excelFileTemplate = new FileInputStream(fTemplate);
-			workbook = new XSSFWorkbook(excelFileTemplate);
+			workbook = new HSSFWorkbook(excelFileTemplate);
 			FileOutputStream outputStream = new FileOutputStream(destinationPath.getPath());
 			workbook.write(outputStream);
 
@@ -554,37 +575,52 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido cloneTemplateExcel  " + e.getMessage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido cloneTemplateExcel  " + e.getMessage());
 		}
 
 		return workbook;
 
 	}
 
-	public void generateSheetIncomes(Map<String, List<Income>> mapIncomes, XSSFWorkbook workbook, File file) {
+	public void generateSheetIncomes(Map<String, List<Income>> mapIncomes, HSSFWorkbook workbook, File file) {
 
 		try {
-			XSSFSheet sheet = workbook.getSheetAt(2);
+			HSSFSheet sheet = workbook.getSheetAt(2);
 			int rowNumber = 2;
-			XSSFRow row = sheet.createRow(rowNumber);
+			HSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapIncomes.keySet()) {
 
+				People filter =new People();
+				filter.setDni(key);
+				List<People> test =peopleDAO.findPeople(filter);
+				String dni ="";
+				String passport ="";
+				if (test!=null && !test.isEmpty()){
+					dni =key;
+				}else{
+					passport=key;
+				}
+				
 				List<Income> listIncomes = mapIncomes.get(key);
 				for (Income income : listIncomes) {
 
-					XSSFCell cell = row.createCell(0);
-					cell.setCellValue(key);
+					HSSFCell cell = row.createCell(0);
+					cell.setCellValue(dni);
 					cell = row.createCell(1);
-					cell.setCellValue("");
+					cell.setCellValue(passport);
 					cell = row.createCell(2);
 					cell.setCellValue(income.getConcept());
 					cell = row.createCell(3);
 					cell.setCellValue(income.getAmount());
 					cell = row.createCell(4);
 					cell.setCellStyle(getCellStyleDate(workbook));
-					cell.setCellValue(income.getEndDate());
+					if (income.getEndDate() != null) {
+						cell.setCellValue(income.getEndDate());
+					}
 
 					row = sheet.createRow(++rowNumber);
 				}
@@ -593,25 +629,37 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetIncomes  " + e.getMessage());
 
 		}
 	}
 
-	public void generateSheetExpenses(Map<String, List<Expense>> mapExpenses, XSSFWorkbook workbook, File file) {
+	public void generateSheetExpenses(Map<String, List<Expense>> mapExpenses, HSSFWorkbook workbook, File file) {
 
 		try {
-			XSSFSheet sheet = workbook.getSheetAt(3);
+			HSSFSheet sheet = workbook.getSheetAt(3);
 			int rowNumber = 2;
-			XSSFRow row = sheet.createRow(rowNumber);
+			HSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapExpenses.keySet()) {
 
+				People filter =new People();
+				filter.setDni(key);
+				List<People> test =peopleDAO.findPeople(filter);
+				String dni ="";
+				String passport ="";
+				if (test!=null && !test.isEmpty()){
+					dni =key;
+				}else{
+					passport=key;
+				}
+				
 				List<Expense> listExpense = mapExpenses.get(key);
 				for (Expense expense : listExpense) {
 
-					XSSFCell cell = row.createCell(0);
-					cell.setCellValue(key);
+					HSSFCell cell = row.createCell(0);
+					cell.setCellValue(dni);
 					cell = row.createCell(1);
-					cell.setCellValue("");
+					cell.setCellValue(passport);
 					cell = row.createCell(2);
 					cell.setCellValue(expense.getConcept());
 					cell = row.createCell(3);
@@ -620,7 +668,9 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell.setCellValue(expense.getRegularity());
 					cell = row.createCell(5);
 					cell.setCellStyle(getCellStyleDate(workbook));
-					cell.setCellValue(expense.getEndDate());
+					if (expense.getEndDate() != null) {
+						cell.setCellValue(expense.getEndDate());
+					}
 
 					row = sheet.createRow(++rowNumber);
 				}
@@ -629,25 +679,38 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetExpenses  " + e.getMessage());
 
 		}
 	}
 
-	public void generateSheetRelatives(Map<String, List<Relative>> mapRelatives, XSSFWorkbook workbook, File file) {
+	public void generateSheetRelatives(Map<String, List<Relative>> mapRelatives, HSSFWorkbook workbook, File file) {
 
 		try {
-			XSSFSheet sheet = workbook.getSheetAt(1);
+			HSSFSheet sheet = workbook.getSheetAt(1);
 			int rowNumber = 2;
-			XSSFRow row = sheet.createRow(rowNumber);
+			HSSFRow row = sheet.createRow(rowNumber);
 			for (String key : mapRelatives.keySet()) {
 
+				People filter =new People();
+				filter.setDni(key);
+				List<People> test =peopleDAO.findPeople(filter);
+				String dni ="";
+				String passport ="";
+				if (test!=null && !test.isEmpty()){
+					dni =key;
+				}else{
+					passport=key;
+				}
+				
 				List<Relative> listRelatives = mapRelatives.get(key);
 				for (Relative relative : listRelatives) {
 
-					XSSFCell cell = row.createCell(0);
-					cell.setCellValue(key);
+					
+					HSSFCell cell = row.createCell(0);
+					cell.setCellValue(dni);
 					cell = row.createCell(1);
-					cell.setCellValue("");
+					cell.setCellValue(passport);
 					cell = row.createCell(2);
 					cell.setCellValue(relative.getRelationShip());
 					cell = row.createCell(3);
@@ -658,7 +721,10 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell.setCellValue(relative.getName());
 					cell = row.createCell(6);
 					cell.setCellStyle(getCellStyleDate(workbook));
-					cell.setCellValue(relative.getDateBorn());
+					if (relative.getDateBorn() != null) {
+						cell.setCellValue(relative.getDateBorn());
+					}
+
 					cell = row.createCell(7);
 					cell.setCellValue("");
 					cell = row.createCell(8);
@@ -672,32 +738,39 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetRelatives  " + e.getMessage());
 
 		}
 	}
 
-	public void generateSheetProgram(Map<String, Program> mapProgram, XSSFWorkbook workbook, File file) {
+	public void generateSheetProgram(Map<String, Program> mapProgram, HSSFWorkbook workbook, File file) {
 
 		try {
 			countTotal = mapProgram.size();
-			XSSFSheet sheet = workbook.getSheetAt(0);
+			HSSFSheet sheet = workbook.getSheetAt(0);
 			int rowNumber = 2;
-			XSSFRow row = sheet.createRow(rowNumber);
+			HSSFRow row = sheet.createRow(rowNumber);
 
 			for (String key : mapProgram.keySet()) {
 
 				Program program = mapProgram.get(key);
-				XSSFCell cell = row.createCell(0);
+				HSSFCell cell = row.createCell(0);
 				cell.setCellValue(program.getPeople().getDni());
 				cell = row.createCell(1);
 				cell.setCellValue(program.getPeople().getPassport());
 				cell = row.createCell(2);
 				cell.setCellStyle(getCellStyleDate(workbook));
-				cell.setCellValue(program.getPeople().getCreateDate());
+				if (program.getPeople().getCreateDate()!=null){
+					cell.setCellValue(program.getPeople().getCreateDate());
+				}
+			
 
 				cell = row.createCell(3);
 				cell.setCellStyle(getCellStyleDate(workbook));
-				cell.setCellValue(program.getPeople().getReactivateDate());
+				if (program.getPeople().getReactivateDate()!=null){
+					cell.setCellValue(program.getPeople().getReactivateDate());
+				}
+				
 				cell = row.createCell(4);
 				if (program.getPeople().isActive() != null && program.getPeople().isActive()) {
 					cell.setCellValue("X");
@@ -712,7 +785,10 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getPeople().getSex());
 				cell = row.createCell(9);
 				cell.setCellStyle(getCellStyleDate(workbook));
-				cell.setCellValue(program.getPeople().getDateBorn());
+				if (program.getPeople().getDateBorn()!=null){
+					cell.setCellValue(program.getPeople().getDateBorn());
+				}
+				
 				cell = row.createCell(10);
 				cell.setCellValue(program.getPeople().getCountry());
 				cell = row.createCell(11);
@@ -741,10 +817,10 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getFamily().getHome().getAddress().getTelephoneContact());
 				// home type //TODO
 				cell = row.createCell(23);
-				if (program.getFamily().getHome().getHomeType()!=null){
+				if (program.getFamily().getHome().getHomeType() != null) {
 					cell.setCellValue(program.getFamily().getHome().getHomeType().getDescription());
 				}
-				
+
 				cell = row.createCell(24);
 				cell.setCellValue(program.getFamily().getHome().getRegHolding());
 				cell = row.createCell(25);
@@ -757,7 +833,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 				cell.setCellValue(program.getFamily().getHome().getOtherInfo());
 				// Family Type
 				cell = row.createCell(29);
-				cell.setCellValue(Constants.getNemonicFamilyType(program.getFamily().getFamilyType())); 
+				cell.setCellValue(Constants.getNemonicFamilyType(program.getFamily().getFamilyType()));
 				cell = row.createCell(30);
 				cell.setCellValue(program.getFamily().getOtherInfo());
 				// Tipo Autorizacion
@@ -777,7 +853,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 				if (program.getStudies() != null) {
 					cell.setCellValue(Constants.getNemonicStudies(program.getStudies()));
 				}
-				if (program.getOtherInfo()!=null){
+				if (program.getOtherInfo() != null) {
 					cell = row.createCell(34);
 					cell.setCellValue(program.getOtherInfo().getInstitutions());
 					cell = row.createCell(35);
@@ -793,7 +869,6 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell = row.createCell(40);
 					cell.setCellValue(program.getOtherInfo().getActuations());
 				}
-				
 
 				row = sheet.createRow(++rowNumber);
 				countOK++;
@@ -805,13 +880,14 @@ public class JManageExportData extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Se ha producido generateSheetProgram  " + e.getMessage());
 			countKO++;
 
 		}
 
 	}
 
-	public CellStyle getCellStyleDate(XSSFWorkbook workbook) {
+	public CellStyle getCellStyleDate(HSSFWorkbook workbook) {
 		CellStyle cellStyle = workbook.createCellStyle();
 		CreationHelper createHelper = workbook.getCreationHelper();
 		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));

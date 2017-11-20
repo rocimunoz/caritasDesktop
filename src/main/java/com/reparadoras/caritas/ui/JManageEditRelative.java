@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.JLabel;
@@ -40,6 +41,8 @@ import javax.swing.ImageIcon;
 
 public class JManageEditRelative extends AbstractJInternalFrame {
 
+	static final Logger logger = Logger.getLogger(JManageEditRelative.class);
+	
 	private JPanel jPanelContentPane;
 	private JTextField txfName;
 
@@ -151,6 +154,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		} catch (PropertyVetoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error("Error onCloseWindow " + e.getMessage());
 		}
 	}
 
@@ -200,6 +204,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error onUpdateRelationShip " + e.getMessage());
 		}
 
 		return null;
@@ -221,6 +226,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			logger.error("Error onCreateRelationShip " + e.getMessage());
 		}
 
 		return null;

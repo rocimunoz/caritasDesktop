@@ -126,8 +126,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	// private JComboBox<People> cbPeople;
+	
 	private JTextField tfName;
+	private JLabel lblPassport = null;
+	private JTextField tfPassport;
 	private JButton btnSearchPeople = null;
 	private JButton btnCleanPeople = null;
 	private JPanel jPanelContent = null;
@@ -208,6 +210,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		this.getJTextFieldName().setText(people.getName());
 		this.getJTextFieldDni().setText(people.getDni());
+		this.getJTextFieldPassport().setText(people.getPassport());
 
 		onFilterProgram(true);
 
@@ -371,6 +374,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		getJPanelFilter().setLayout(getGridLayoutJPanelFilter());
 		getJPanelFilter().add(getJLabelDni(), getGridJLabelDni());
 		getJPanelFilter().add(getJTextFieldDni(), getGridJTextFieldDni());
+		getJPanelFilter().add(getJLabelPassport(), getGridJLabelPassport());
+		getJPanelFilter().add(getJTextFieldPassport(), getGridJTextFieldPassport());
 
 		getJPanelFilter().add(getCkActive(), getGridJCheckBoxdActive());
 		getJPanelFilter().add(getJLabelName(), getGridJLabelName());
@@ -535,7 +540,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		gbc_lblName.fill = GridBagConstraints.BOTH;
 		gbc_lblName.insets = new Insets(0, 5, 0, 5);
 		gbc_lblName.gridx = 0;
-		gbc_lblName.gridy = 1;
+		gbc_lblName.gridy = 2;
 
 		return gbc_lblName;
 	}
@@ -556,7 +561,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		gbc_tfName.weightx = 1.0;
 		gbc_tfName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tfName.gridx = 1;
-		gbc_tfName.gridy = 1;
+		gbc_tfName.gridy = 2;
 
 		return gbc_tfName;
 	}
@@ -597,6 +602,46 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
+	
+	private JLabel getJLabelPassport() {
+		if (lblPassport == null) {
+			lblPassport = new JLabel("Pasaporte:");
+			lblPassport.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return lblPassport;
+	}
+
+	private GridBagConstraints getGridJLabelPassport() {
+		GridBagConstraints gbc_lblDni = new GridBagConstraints();
+		gbc_lblDni.anchor = GridBagConstraints.WEST;
+		gbc_lblDni.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDni.gridx = 0;
+		gbc_lblDni.gridy = 1;
+
+		return gbc_lblDni;
+	}
+
+	private JTextField getJTextFieldPassport() {
+		if (tfPassport == null) {
+			tfPassport = new JTextField();
+			tfPassport.setColumns(10);
+		}
+		return tfPassport;
+	}
+
+	private GridBagConstraints getGridJTextFieldPassport() {
+
+		GridBagConstraints gbc_tfDni = new GridBagConstraints();
+		gbc_tfDni.weightx = 1.0;
+		gbc_tfDni.anchor = GridBagConstraints.NORTH;
+		gbc_tfDni.insets = new Insets(0, 0, 5, 5);
+		gbc_tfDni.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfDni.gridx = 1;
+		gbc_tfDni.gridy = 1;
+
+		return gbc_tfDni;
+	}
+
 
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
@@ -621,7 +666,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnSearchPeople == null) {
 			btnSearchPeople = new JButton("Filtrar");
 			btnSearchPeople.setIcon(
-					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-search.png")));
+					new ImageIcon(JManageProgram.class.getResource("/img/icon-search.png")));
 		}
 
 		return btnSearchPeople;
@@ -641,7 +686,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
 			btnCleanPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+					new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -662,7 +707,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnExit == null) {
 			btnExit = new JButton("Salir al menu");
 
-			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-exit.png")));
 		}
 
 		return btnExit;
@@ -704,7 +749,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnSave == null) {
 			btnSave = new JButton("Guardar");
 
-			btnSave.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-save.png")));
+			btnSave.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-save.png")));
 		}
 
 		return btnSave;
@@ -715,7 +760,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			btnPrint = new JButton("Imprimir");
 
 			btnPrint.setIcon(
-					new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-print-32.png")));
+					new ImageIcon(JManageProgram.class.getResource("/img/icon-print-32.png")));
 		}
 
 		return btnPrint;
@@ -788,7 +833,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
-			tableProgram.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
+			tableProgram.getColumnModel().getColumn(4).setCellRenderer(dateRenderer);
 
 			tableProgram.setRowMargin(5);
 			tableProgram.setRowHeight(30);
@@ -801,7 +846,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private ProgramTableModel getProgramTableModel() {
 
 		if (programTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Dni", "Nombre", "Apellidos", "Fecha Creacion" };
+			Object[] columnIdentifiers = new Object[] { "Dni", "Pasaporte", "Nombre", "Apellidos", "Fecha Creacion" };
 			programTableModel = new ProgramTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -869,6 +914,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
+		this.getJTextFieldPassport().setText("");
 
 	}
 
@@ -951,8 +997,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 		try {
 			logger.info("Filtrando programa ...");
 			FilterProgram filterProgram = new FilterProgram();
-			filterProgram.setActive(this.getCkActive().isSelected());
+			//filterProgram.setActive(this.getCkActive().isSelected());
 			filterProgram.setDni(this.getJTextFieldDni().getText());
+			filterProgram.setPassport(this.getJTextFieldPassport().getText());
 			filterProgram.setNamePeople(this.getJTextFieldName().getText());
 
 			List<Program> programs = programDAO.findProgram(filterProgram);
@@ -1100,6 +1147,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -1169,6 +1217,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -1237,6 +1286,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
@@ -1304,14 +1354,17 @@ public class JManageProgram extends AbstractJInternalFrame {
 			} else if (getJPanelFamily().getJRadioOther().isSelected()) {
 				description = getJPanelFamily().getJRadioOther().getText();
 			}
+			if (!description.equals("")){
+				FamilyType fType = new FamilyType();
+				fType.setDescription(description);
+				family.setFamilyType(familyTypeDAO.findFamilyType(fType));
 
-			FamilyType fType = new FamilyType();
-			fType.setDescription(description);
-			family.setFamilyType(familyTypeDAO.findFamilyType(fType));
+				familyDAO.update(family);
+			}
 
-			familyDAO.update(family);
+			
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 
@@ -1333,7 +1386,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			homeDAO.update(home);
 
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 	}
@@ -1352,7 +1405,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			address.setPlace(getJPanelAddress().getJTextFieldPlace().getText());
 			addressDAO.update(address);
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 
@@ -1370,7 +1423,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 			
 		} catch (Exception e) {
-			logger.info(e);
+			logger.error(e);
 			throw new Exception();
 		}
 
@@ -1380,7 +1433,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		AuthorizationType aTypeFilter = new AuthorizationType();
 		String description = "";
 		logger.info("Guardando tipo de autorizacion ...");
-		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()) {
+		
 			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
 				description = getJPanelAuthorizationType().getJRadioResidence().getText();
 
@@ -1394,7 +1447,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 				description = getJPanelAuthorizationType().getJRadioTourism().getText();
 
 			}
-		}
+		
 
 		else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioUndocumented().getText();
@@ -1588,20 +1641,20 @@ public class JManageProgram extends AbstractJInternalFrame {
 						JOptionPane.showMessageDialog(this,
 								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
 								JOptionPane.ERROR_MESSAGE);
-						logger.info(e);
+						logger.error(e);
 
 					} catch (FileNotFoundException e) {
 
 						JOptionPane.showMessageDialog(this,
 								"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
 								JOptionPane.ERROR_MESSAGE);
-						logger.info(e);
+						logger.error(e);
 					} catch (IOException e) {
 
 						JOptionPane.showMessageDialog(this,
 								"Se ha producido un error. No ha sido posible imprimir el registro", "Generacion PDF",
 								JOptionPane.ERROR_MESSAGE);
-						logger.info(e);
+						logger.error(e);
 					}
 
 				}
@@ -1644,7 +1697,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Se ha producido un error. No ha sido posible guardar el registro",
 						"Actualización Persona", JOptionPane.ERROR_MESSAGE);
-				logger.info(e);
+				logger.error(e);
 			}
 
 		}

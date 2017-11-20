@@ -8,7 +8,7 @@
 	
 
     <resultMap id="FamilyResult" type="Family">
-        <result property="id" column="id"/>
+        <result property="id" column="id_family"/>
         <result property="otherInfo" column="other_info"/>  
         <association property="familyType" resultMap="FamilyTypeResult"/> 
         <association property="home" resultMap="HomeResult"/>    
@@ -27,7 +27,7 @@
 	</resultMap>
 	
 	 <resultMap id="RelativeResult" type="Relative">
-        <result property="id" column="id_family"/>
+        <result property="id" column="id_relaive"/>
         <result property="name" column="name"/>
         <result property="surname" column="surname"/>
         <result property="relationShip" column="relation_ship"/>
@@ -36,7 +36,7 @@
     </resultMap>
  
     <select id="findAll" resultMap="FamilyResult">
-        SELECT F.ID, F.OTHER_INFO, FT.ID ID_FAMILY_TYPE, H.ID ID_HOME  
+        SELECT F.ID ID_FAMILY, F.OTHER_INFO, FT.ID ID_FAMILY_TYPE, H.ID ID_HOME  
         FROM C_FAMILY F, C_FAMILY_TYPE FT, C_HOME H
         WHERE F.ID = FT.ID
         AND F.ID_HOME = H.ID

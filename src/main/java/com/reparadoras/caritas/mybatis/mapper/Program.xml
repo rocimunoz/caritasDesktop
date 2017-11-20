@@ -17,13 +17,15 @@
     </resultMap>
     
      <resultMap id="PeopleResult" type="People">
-        <result property="id" column="id"/>
+        <result property="id" column="id_people"/>
         <result property="name" column="name"/>  
         <result property="firstSurname" column="first_surname"/>
+         <result property="secondSurname" column="second_surname"/>
         <result property="dni" column="dni"/>
         <result property="passport" column="passport"/>    
         <result property="active" column="active"/>
         <result property="createDate" column="create_date"/>
+          <result property="dateBorn" column="date_born"/>
          <result property="reactivateDate" column="reactivate_date"/>
         <result property="country" column="country"/>
         <result property="nationality" column="nationality"/>
@@ -78,17 +80,17 @@
 	
 	<resultMap id="AuthorizationTypeResult" type="AuthorizationType">
         <result property="id" column="id_authorization_type"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_atype"/>
     </resultMap>
     
     <resultMap id="JobSituationResult" type="JobSituation">
         <result property="id" column="id_job_situation"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_js"/>
     </resultMap>
     
     <resultMap id="StudiesResult" type="Studies">
         <result property="id" column="id_studies"/>
-        <result property="description" column="description"/>
+        <result property="description" column="description_studies"/>
     </resultMap>
     
     <resultMap id="OtherInfoResult" type="OtherInfo">
@@ -106,6 +108,7 @@
         	   PE.PASSPORT,
                PE.NAME,
                PE.FIRST_SURNAME,
+               PE.SECOND_SURNAME,
                PE.CREATE_DATE,
                PE.ACTIVE,
                PE.REACTIVATE_DATE,
@@ -113,6 +116,7 @@
                PE.NATIONALITY,
                PE.YEAR_TO_SPAIN,
                PE.SEX,
+               PE.DATE_BORN,
                F.ID ID_FAMILY,
                F.OTHER_INFO OTHER_INFO_FAMILY,
                FT.ID ID_FAMILY_TYPE,
@@ -143,7 +147,10 @@
                OI.INSTITUTIONS,
                OI.DEMAND,
                OI.DESCRIPTION DESCRIPTION_OTHER,
-               OI.ACTUATIONS
+               OI.ACTUATIONS,
+               ATYPE.DESCRIPTION DESCRIPTION_ATYPE,
+               JS.DESCRIPTION DESCRIPTION_JS,
+               STUDIES.DESCRIPTION DESCRIPTION_STUDIES
         FROM C_PEOPLE PE, 
               C_PROGRAM PR LEFT JOIN C_AUTHORIZATION_TYPE ATYPE ON   PR.ID_AUTHORIZATION_TYPE = ATYPE.ID
               LEFT JOIN C_JOB_SITUATION JS ON   PR.ID_JOB_SITUATION = JS.ID
@@ -155,8 +162,8 @@
               LEFT JOIN C_HOME_TYPE HT ON H.ID_HOME_TYPE = HT.ID
               LEFT JOIN C_ADDRESS A ON H.ID_ADDRESS = A.ID
         WHERE PR.ID_PEOPLE = PE.id
-         <if test="id != null">
-    		AND PE.ID = #{id}
+         <if test="idPeople != null">
+    		AND PE.ID = #{idPeople}
   		</if>
   		<if test="namePeople != null and !namePeople.equals('')">
   		<bind name="pattern_name" value="'%' + namePeople + '%'" />
@@ -168,6 +175,10 @@
   		<if test="dni != null and !dni.equals('')">
   		<bind name="pattern" value="'%' + dni + '%'" />
     		AND PE.DNI like #{pattern}
+  		</if>
+  		<if test="passport != null and !passport.equals('')">
+  		<bind name="pattern_passport" value="'%' + passport + '%'" />
+    		AND PE.PASSPORT like #{pattern_passport}
   		</if>
   		<if test="active != null">
     		AND PE.ACTIVE = #{active}

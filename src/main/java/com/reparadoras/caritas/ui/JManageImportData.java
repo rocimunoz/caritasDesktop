@@ -9,8 +9,11 @@ import java.awt.Insets;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,13 +41,12 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
-
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.reparadoras.caritas.dao.AddressDAO;
 import com.reparadoras.caritas.dao.AuthorizationTypeDAO;
@@ -119,6 +121,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.ActionEvent;
 
 public class JManageImportData extends AbstractJInternalFrame {
@@ -134,10 +137,12 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 	private JPanel jPanelTData = null;
 	private JButton btnExit = null;
-	private JButton btnImportFile = null;
+	//private JButton btnImportFile = null;
+	private JLabel lblUploadTemplate = null;
 	private JFileChooser jfc = null;
 	private JTextArea textArea = null;
 	private JScrollPane scroll = null;
+	private JLabel lblDownloadTemplate = null;
 
 	private PeopleDAO peopleDAO;
 
@@ -207,6 +212,39 @@ public class JManageImportData extends AbstractJInternalFrame {
 	}
 
 	public void addListener() {
+		
+		getJLabelDownload().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				downloadTemplate();
+			}
+		});
+		getJLabelDownload().addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				getJLabelDownload().setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+		});
+		
+		getJLabelUpload().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+				int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+
+					importData(jfc.getSelectedFile());
+
+				}
+			}
+		});
+		getJLabelUpload().addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				getJLabelUpload().setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+		});
+		
 
 		this.getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -217,19 +255,82 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		});
 
-		getJButtonImportFile().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				int returnValue = getFileChooser().showDialog(null, "Selecciona fichero");
-				if (returnValue == JFileChooser.APPROVE_OPTION) {
-
-					importData(jfc.getSelectedFile());
-
-				}
-			}
-		});
+		
 	}
 
+	private void downloadTemplate(){
+		
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL FILES", "xls");
+		fileChooser.setFileFilter(filter);
+		int retval = fileChooser.showSaveDialog(this.getJLabelDownload());
+		if (retval == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			if (file == null) {
+				return;
+			}
+
+			if (!file.getAbsolutePath().endsWith(".xls")) {
+				file = new File(fileChooser.getSelectedFile() + ".xls");
+			}
+		
+		
+		HSSFWorkbook workbookCloned = cloneTemplateExcel(file);
+		
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(file);
+			workbookCloned.write(fileOut);
+
+			fileOut.flush();
+			fileOut.close();
+			
+			textArea.append("Se ha descargado la plantilla correctamente : " +  file.getAbsolutePath());
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			textArea.append("Lo siento no ha sido posible la descarga de la plantilla");
+			e.printStackTrace();
+		} catch (IOException e) {
+			textArea.append("Lo siento no ha sido posible la descarga de la plantilla");
+			e.printStackTrace();
+		}
+
+	
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	public HSSFWorkbook cloneTemplateExcel(File destinationPath) {
+
+		URL url = JManageExportData.class.getResource("/com/reparadoras/caritas/ui/utils/template.xls");
+		File fTemplate = new File(url.getPath());
+		FileInputStream excelFileTemplate;
+		HSSFWorkbook workbook = null;
+		try {
+			excelFileTemplate = new FileInputStream(fTemplate);
+			workbook = new HSSFWorkbook(excelFileTemplate);
+			FileOutputStream outputStream = new FileOutputStream(destinationPath.getPath());
+			workbook.write(outputStream);
+
+			// workbook.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return workbook;
+
+	}
+	
 	private JFileChooser getFileChooser() {
 		if (jfc == null) {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("XLS files", "xls");
@@ -256,8 +357,10 @@ public class JManageImportData extends AbstractJInternalFrame {
 		getJPanelFile().setLayout(getGridLayoutJPanelFile());
 		getJPanelData().setLayout(getGridLayoutJPanelData());
 
+		
+		getJPanelFile().add(getJLabelDownload(), getGridJLabelDownload());
 		getJPanelFile().add(getJButtonExit(), getGridButtonExit());
-		getJPanelFile().add(getJButtonImportFile(), getGridButtonImportFile());
+		getJPanelFile().add(getJLabelUpload(), getGridJLabelUpload());
 
 		getJPanelData().add(getJScrollPane(), getGridJScrollPane());
 
@@ -393,24 +496,55 @@ public class JManageImportData extends AbstractJInternalFrame {
 		return gbc_btnExit;
 	}
 
-	private JButton getJButtonImportFile() {
-		if (btnImportFile == null) {
-			btnImportFile = new JButton("Seleccione un fichero de importacion");
+	private JLabel getJLabelUpload() {
+		if (lblUploadTemplate == null) {
+			lblUploadTemplate = new JLabel("Carga datos");
+			lblUploadTemplate.setMaximumSize(new Dimension(180, 14));
+			lblUploadTemplate.setPreferredSize(new Dimension(180, 14));
+			lblUploadTemplate.setBorder(new LineBorder(Color.RED, 1, true));
+			lblUploadTemplate.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblUploadTemplate.setForeground(Color.RED);
 
-			btnImportFile.setHorizontalAlignment(SwingConstants.RIGHT);
-
-			// btnImportFile.setIcon(new
-			// ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+			lblUploadTemplate.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 
-		return btnImportFile;
+		return lblUploadTemplate;
 	}
 
-	private GridBagConstraints getGridButtonImportFile() {
+	private GridBagConstraints getGridJLabelUpload() {
 
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
-		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
+		gbc_btnExit.ipady = 20;
+		gbc_btnExit.ipadx = 20;
+		gbc_btnExit.insets = new Insets(10, 10, 10, 25);
 		gbc_btnExit.gridx = 2;
+		gbc_btnExit.gridy = 0;
+
+		return gbc_btnExit;
+	}
+	
+	private JLabel getJLabelDownload() {
+		if (lblDownloadTemplate == null) {
+			lblDownloadTemplate = new JLabel("Descarga Plantilla.xls");
+			lblDownloadTemplate.setMaximumSize(new Dimension(180, 14));
+			lblDownloadTemplate.setPreferredSize(new Dimension(180, 14));
+			lblDownloadTemplate.setBorder(new LineBorder(Color.RED, 1, true));
+			lblDownloadTemplate.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblDownloadTemplate.setForeground(Color.RED);
+
+			lblDownloadTemplate.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		return lblDownloadTemplate;
+	}
+
+	private GridBagConstraints getGridJLabelDownload() {
+
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.ipady = 20;
+		gbc_btnExit.ipadx = 20;
+		gbc_btnExit.insets = new Insets(10, 10, 10, 25);
+		gbc_btnExit.gridx = 1;
 		gbc_btnExit.gridy = 0;
 
 		return gbc_btnExit;
@@ -477,14 +611,14 @@ public class JManageImportData extends AbstractJInternalFrame {
 		try {
 			// this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			InputStream targetStream = new FileInputStream(file);
-			XSSFWorkbook workbook = new XSSFWorkbook(targetStream);
+			HSSFWorkbook workbook = new HSSFWorkbook(targetStream);
 
 			// Acceso a la primera hoja del documento
-			XSSFSheet sheet = workbook.getSheetAt(0);
+			HSSFSheet sheet = workbook.getSheetAt(0);
 
-			XSSFSheet sheetRelatives = workbook.getSheetAt(1);
-			XSSFSheet sheetIncomes = workbook.getSheetAt(2);
-			XSSFSheet sheetExpenses = workbook.getSheetAt(3);
+			HSSFSheet sheetRelatives = workbook.getSheetAt(1);
+			HSSFSheet sheetIncomes = workbook.getSheetAt(2);
+			HSSFSheet sheetExpenses = workbook.getSheetAt(3);
 
 			List<String> data = new ArrayList<String>();
 			Map<String, Program> mapProgram = new HashMap<String, Program>();
@@ -534,7 +668,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 	public void extractDataSheet_0(Iterator itRows, Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			XSSFRow row = (XSSFRow) itRows.next();
+			HSSFRow row = (HSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -543,7 +677,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						XSSFCell cell = (XSSFCell) cells.next();
+						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow_Sheet0(cell, mapProgram, key);
 					}
 
@@ -581,7 +715,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 		}
 	}
 
-	public String extractDataRow_Sheet0(XSSFCell cell, Map<String, Program> mapProgram, String key) {
+	public String extractDataRow_Sheet0(HSSFCell cell, Map<String, Program> mapProgram, String key) {
 
 		Program program = new Program();
 		People people = new People();
@@ -608,7 +742,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 				break;
 			case 1:
-				if (primaryKey != null) {
+				if (primaryKey != null && !primaryKey.equals("")) {
 					mapProgram.get(key).getPeople().setPassport(cell.getStringCellValue());
 				} else {
 					mapProgram.put(cell.getStringCellValue(), program);
@@ -785,7 +919,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			XSSFRow row = (XSSFRow) itRows.next();
+			HSSFRow row = (HSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -794,7 +928,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						XSSFCell cell = (XSSFCell) cells.next();
+						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow_Sheet1(cell, mapRelatives, key);
 					}
 
@@ -808,12 +942,12 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		mapRelatives.forEach((k, v) -> {
 			boolean exist = false;
-			String dni = k;
+			String dniOrPassport = k;
 			List<Relative> listRelatives = v;
 			// Si dni esta en el set, no inserto relatives
 
 			for (String errorDni : errorRegister) {
-				if (dni.equals(errorDni)) {
+				if (dniOrPassport.equals(errorDni)) {
 					exist = true;
 					break;
 				}
@@ -823,12 +957,12 @@ public class JManageImportData extends AbstractJInternalFrame {
 					// Si dni no esta en el set y existe en BBDD inserto
 					// relatives
 
-					if (mapProgram.get(dni) != null) {
-						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dni).getPeople());
+					if (mapProgram.get(dniOrPassport) != null) {
+						List<People> listPeopleExist = peopleDAO.findPeople(mapProgram.get(dniOrPassport).getPeople());
 						if (listPeopleExist != null && !listPeopleExist.isEmpty()) {
 
 							for (Relative relative : listRelatives) {
-								relative.setFamily(mapProgram.get(dni).getFamily());
+								relative.setFamily(mapProgram.get(dniOrPassport).getFamily());
 								relativeDAO.insert(relative);
 							}
 
@@ -838,13 +972,13 @@ public class JManageImportData extends AbstractJInternalFrame {
 				}
 			} catch (Exception e) {
 				logger.error("Se ha producido un error " + e.getMessage());
-				textArea.append("Error tratando familiares del dni:  " + dni + "\n");
+				textArea.append("Error tratando familiares del dni/Passport:  " + dniOrPassport + "\n");
 			}
 
 		});
 	}
 
-	public String extractDataRow_Sheet1(XSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
+	public String extractDataRow_Sheet1(HSSFCell cell, Map<String, List<Relative>> mapRelatives, String key) {
 
 		String primaryKey = key;
 		List<Relative> listRelatives = null;
@@ -852,18 +986,36 @@ public class JManageImportData extends AbstractJInternalFrame {
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					if (mapRelatives.get(cell.getStringCellValue()) == null) {
+						listRelatives = new ArrayList();
+						relative = new Relative();
 
-				if (mapRelatives.get(cell.getStringCellValue()) == null) {
-					listRelatives = new ArrayList();
-					relative = new Relative();
+						listRelatives.add(relative);
+						mapRelatives.put(cell.getStringCellValue(), listRelatives);
+						primaryKey = cell.getStringCellValue();
+					} else {
 
-					listRelatives.add(relative);
-					mapRelatives.put(cell.getStringCellValue(), listRelatives);
-					primaryKey = cell.getStringCellValue();
-				} else {
+						mapRelatives.get(cell.getStringCellValue()).add(new Relative());
+						primaryKey = cell.getStringCellValue();
+					}
+				}
+				
+				break;
+			case 1:
+				if (primaryKey == null || primaryKey.equals("")){
+					if (mapRelatives.get(cell.getStringCellValue()) == null) {
+						listRelatives = new ArrayList();
+						relative = new Relative();
 
-					mapRelatives.get(cell.getStringCellValue()).add(new Relative());
-					primaryKey = cell.getStringCellValue();
+						listRelatives.add(relative);
+						mapRelatives.put(cell.getStringCellValue(), listRelatives);
+						primaryKey = cell.getStringCellValue();
+					} else {
+
+						mapRelatives.get(cell.getStringCellValue()).add(new Relative());
+						primaryKey = cell.getStringCellValue();
+					}
 				}
 				break;
 			case 2:
@@ -905,7 +1057,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			XSSFRow row = (XSSFRow) itRows.next();
+			HSSFRow row = (HSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -914,7 +1066,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						XSSFCell cell = (XSSFCell) cells.next();
+						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow_Sheet2(cell, mapIncomes, key);
 					}
 
@@ -966,25 +1118,43 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 
-	public String extractDataRow_Sheet2(XSSFCell cell, Map<String, List<Income>> mapIncomes, String key) {
+	public String extractDataRow_Sheet2(HSSFCell cell, Map<String, List<Income>> mapIncomes, String key) {
 		String primaryKey = key;
 		List<Income> listIncomes = null;
 		Income income = null;
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					if (mapIncomes.get(cell.getStringCellValue()) == null) {
+						listIncomes = new ArrayList();
+						income = new Income();
 
-				if (mapIncomes.get(cell.getStringCellValue()) == null) {
-					listIncomes = new ArrayList();
-					income = new Income();
+						listIncomes.add(income);
+						mapIncomes.put(cell.getStringCellValue(), listIncomes);
+						primaryKey = cell.getStringCellValue();
+					} else {
 
-					listIncomes.add(income);
-					mapIncomes.put(cell.getStringCellValue(), listIncomes);
-					primaryKey = cell.getStringCellValue();
-				} else {
+						mapIncomes.get(cell.getStringCellValue()).add(new Income());
+						primaryKey = cell.getStringCellValue();
+					}
+				}
+			
+				break;
+			case 1:
+				if (primaryKey == null || primaryKey.equals("")){
+					if (mapIncomes.get(cell.getStringCellValue()) == null) {
+						listIncomes = new ArrayList();
+						income = new Income();
 
-					mapIncomes.get(cell.getStringCellValue()).add(new Income());
-					primaryKey = cell.getStringCellValue();
+						listIncomes.add(income);
+						mapIncomes.put(cell.getStringCellValue(), listIncomes);
+						primaryKey = cell.getStringCellValue();
+					} else {
+
+						mapIncomes.get(cell.getStringCellValue()).add(new Income());
+						primaryKey = cell.getStringCellValue();
+					}
 				}
 				break;
 			case 2:
@@ -1016,7 +1186,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 			Map<String, Program> mapProgram) {
 
 		while (itRows.hasNext()) {
-			XSSFRow row = (XSSFRow) itRows.next();
+			HSSFRow row = (HSSFRow) itRows.next();
 
 			try {
 				if (row.getRowNum() >= 2) {
@@ -1025,7 +1195,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 					String key = "";
 
 					while (cells.hasNext()) {
-						XSSFCell cell = (XSSFCell) cells.next();
+						HSSFCell cell = (HSSFCell) cells.next();
 						key = extractDataRow_Sheet3(cell, mapExpenses, key);
 					}
 
@@ -1075,25 +1245,43 @@ public class JManageImportData extends AbstractJInternalFrame {
 		});
 	}
 
-	public String extractDataRow_Sheet3(XSSFCell cell, Map<String, List<Expense>> mapExpenses, String key) {
+	public String extractDataRow_Sheet3(HSSFCell cell, Map<String, List<Expense>> mapExpenses, String key) {
 		String primaryKey = key;
 		List<Expense> listExpenses = null;
 		Expense expense = null;
 		try {
 			switch (cell.getColumnIndex()) {
 			case 0:
+				if (cell.getStringCellValue()!=null && !cell.getStringCellValue().equals("")){
+					if (mapExpenses.get(cell.getStringCellValue()) == null) {
+						listExpenses = new ArrayList();
+						expense = new Expense();
 
-				if (mapExpenses.get(cell.getStringCellValue()) == null) {
-					listExpenses = new ArrayList();
-					expense = new Expense();
+						listExpenses.add(expense);
+						mapExpenses.put(cell.getStringCellValue(), listExpenses);
+						primaryKey = cell.getStringCellValue();
+					} else {
 
-					listExpenses.add(expense);
-					mapExpenses.put(cell.getStringCellValue(), listExpenses);
-					primaryKey = cell.getStringCellValue();
-				} else {
+						mapExpenses.get(cell.getStringCellValue()).add(new Expense());
+						primaryKey = cell.getStringCellValue();
+					}
+				}
+			
+				break;
+			case 1:
+				if (primaryKey == null || primaryKey.equals("")){
+					if (mapExpenses.get(cell.getStringCellValue()) == null) {
+						listExpenses = new ArrayList();
+						expense = new Expense();
 
-					mapExpenses.get(cell.getStringCellValue()).add(new Expense());
-					primaryKey = cell.getStringCellValue();
+						listExpenses.add(expense);
+						mapExpenses.put(cell.getStringCellValue(), listExpenses);
+						primaryKey = cell.getStringCellValue();
+					} else {
+
+						mapExpenses.get(cell.getStringCellValue()).add(new Expense());
+						primaryKey = cell.getStringCellValue();
+					}
 				}
 				break;
 			case 2:
@@ -1123,29 +1311,27 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 	public void readExcelFileXlsx(File file) {
 
-		XSSFWorkbook workbook;
+		HSSFWorkbook workbook;
 		try {
-			workbook = new XSSFWorkbook(file);
+			InputStream targetStream = new FileInputStream(file);
+			workbook = new HSSFWorkbook(targetStream);
 			// Acceso a la primera hoja del documento
-			XSSFSheet sheet = workbook.getSheetAt(0);
+			HSSFSheet sheet = workbook.getSheetAt(0);
 			List<String> data = new ArrayList<String>();
 
 			// Recorremos las filas del documento
 			Iterator rows = sheet.rowIterator();
 			while (rows.hasNext()) {
-				XSSFRow row = (XSSFRow) rows.next();
+				HSSFRow row = (HSSFRow) rows.next();
 				Iterator cells = row.cellIterator();
 				while (cells.hasNext()) {
-					XSSFCell cell = (XSSFCell) cells.next();
+					HSSFCell cell = (HSSFCell) cells.next();
 					if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 						data.add(cell.getRichStringCellValue().getString());
 					}
 				}
 			}
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		}  catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
