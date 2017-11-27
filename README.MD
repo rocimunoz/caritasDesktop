@@ -12,8 +12,12 @@ mvn install
 
 * Copiar el fichero jar generado caritasDesktop.jar a la carpeta Instalador/dist
 * Configurar fichero application.properties con los datos de conexion a BBDD 	
-
-
+```
+caritas.url=jdbc:mysql://localhost:3306/caritas
+caritas.username=xxxx
+caritas.password=xxxx
+```
+* Ejecutar scripts de BBDD para crear tablas e inserts
 
 
 
