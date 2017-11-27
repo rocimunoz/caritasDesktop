@@ -579,7 +579,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JButton getJButtonAccept() {
 		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
-			jBtnAccept.setIcon(new ImageIcon(JManageEditRelative.class.getResource("/com/reparadoras/images/icon-check.png")));
+			jBtnAccept.setIcon(new ImageIcon(JManageEditRelative.class.getResource("/img/icon-check.png")));
 		}
 
 		return jBtnAccept;
@@ -598,7 +598,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JButton getJButtonCancel() {
 		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
-			jBtnCancel.setIcon(new ImageIcon(JManageEditRelative.class.getResource("/com/reparadoras/images/icon-cancel.png")));
+			jBtnCancel.setIcon(new ImageIcon(JManageEditRelative.class.getResource("/img/icon-cancel.png")));
 		}
 
 		return jBtnCancel;
