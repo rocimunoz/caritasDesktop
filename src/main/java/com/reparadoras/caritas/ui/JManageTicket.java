@@ -135,6 +135,11 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (this.filterTicket.getYearTicket()!=null){
 			this.getJTextFieldYear().setText(this.filterTicket.getYearTicket().toString());
 		}
+		if (this.filterTicket.getActive()){
+			this.getCkActive().setSelected(true);
+		}else{
+			this.getCkActive().setSelected(false);
+		}
 		
 		onFilterTicket(true);
 		
@@ -487,7 +492,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 			btnFilterTicket = new JButton("Buscar");
 
 			btnFilterTicket
-					.setIcon(new ImageIcon(JManageTicket.class.getResource("/com/reparadoras/images/icon-search.png")));
+					.setIcon(new ImageIcon(JManageTicket.class.getResource("/img/icon-search.png")));
 		}
 		return btnFilterTicket;
 	}
@@ -496,7 +501,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
 			btnCleanPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+					new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -519,7 +524,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 			btnExit.setHorizontalAlignment(SwingConstants.RIGHT);
 
-			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-exit.png")));
 		}
 
 		return btnExit;
@@ -617,7 +622,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (btnSaveTicket == null) {
 			btnSaveTicket = new JButton("Guardar");
 			btnSaveTicket
-					.setIcon(new ImageIcon(JManageTicket.class.getResource("/com/reparadoras/images/icon-save.png")));
+					.setIcon(new ImageIcon(JManageTicket.class.getResource("/img/icon-save.png")));
 		}
 		return btnSaveTicket;
 	}
@@ -882,7 +887,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (filterTicket == null){
 			filterTicket = new FilterTicket();
 		} 
-		filterTicket.setActive(this.getCkActive().isSelected());
+		
 		filterTicket.setDniPeople(this.getJTextFieldDni().getText());
 		filterTicket.setNamePeople(this.getJTextFieldName().getText());
 		if (this.getJTextFieldYear().getText()!=null && !this.getJTextFieldYear().getText().equals("")){
