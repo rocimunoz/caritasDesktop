@@ -792,22 +792,29 @@ public class JManagePeople extends AbstractJInternalFrame {
 						FilterProgram filter = new FilterProgram();
 						filter.setIdPeople(selectedPeople.getId());
 						List<Program> listPrograms = programDAO.findProgram(filter);
-						Program programToDelete = listPrograms.get(0);
+						if (listPrograms!=null && !listPrograms.isEmpty()){
+							Program programToDelete = listPrograms.get(0);
+							
+							ticketDAO.delete(selectedPeople);
+							expensesDAO.deleteByProgram(programToDelete);
+							incomesDAO.deleteByProgram(programToDelete);
+							programDAO.delete(selectedPeople);
+							peopleDAO.delete(selectedPeople);
+							
+							Family familyToDelete = programToDelete.getFamily();
+							relativesDAO.deleteByFamily(familyToDelete);
+							familyDAO.delete(familyToDelete);
+							homeDAO.delete(familyToDelete.getHome());
+							addressDAO.delete(familyToDelete.getHome().getAddress());
+							otherInfoDAO.delete(programToDelete.getOtherInfo());
+							
+							logger.info("Registro eliminado ...");
+						}else{
+							ticketDAO.delete(selectedPeople);
+							peopleDAO.delete(selectedPeople);
+							
+						}
 						
-						ticketDAO.delete(selectedPeople);
-						expensesDAO.deleteByProgram(programToDelete);
-						incomesDAO.deleteByProgram(programToDelete);
-						programDAO.delete(selectedPeople);
-						peopleDAO.delete(selectedPeople);
-						
-						Family familyToDelete = programToDelete.getFamily();
-						relativesDAO.deleteByFamily(familyToDelete);
-						familyDAO.delete(familyToDelete);
-						homeDAO.delete(familyToDelete.getHome());
-						addressDAO.delete(familyToDelete.getHome().getAddress());
-						otherInfoDAO.delete(programToDelete.getOtherInfo());
-						
-						logger.info("Registro eliminado ...");
 						
 						
 					}
