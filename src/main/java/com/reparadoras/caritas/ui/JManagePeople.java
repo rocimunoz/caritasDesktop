@@ -117,6 +117,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
+	private JButton btnMoneyPeople;
 	private JButton btnExitPeople;
 	
 
@@ -216,6 +217,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 				onManageTicketPeople();
 			}
 		});
+		
+		getBtnMoneyPeople().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				onManageMoneyPeople();
+			}
+		});
 
 		getBtnExitPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -258,6 +266,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJPanelActions().add(getBtnDeletePeople());
 		getJPanelActions().add(getBtnProgramPeople());
 		getJPanelActions().add(getBtnTicketPeople());
+		getJPanelActions().add(getBtnMoneyPeople());
 
 		getJPanelContent().add(getJPanelTable(), getGridJPanelTable());
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
@@ -643,9 +652,18 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnTicketPeople == null) {
 			btnTicketPeople = new JButton("Vales");
 			btnTicketPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-ticket.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-ticket-32.png")));
 		}
 		return btnTicketPeople;
+	}
+	
+	private JButton getBtnMoneyPeople() {
+		if (btnMoneyPeople == null) {
+			btnMoneyPeople = new JButton("Importe");
+			btnMoneyPeople
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-money.png")));
+		}
+		return btnMoneyPeople;
 	}
 
 	/* FUNCIONES DEL PANEL JTABLE */
@@ -935,6 +953,46 @@ public class JManagePeople extends AbstractJInternalFrame {
 					jManageTicket.setVisible(true);
 					jManageTicket.moveToFront();
 					jManageTicket.show();
+				} catch (PropertyVetoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					logger.error(e);
+				}
+
+			} else {
+
+				return;
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Seleccione un registro");
+		}
+
+	}
+	
+	public void onManageMoneyPeople() {
+		JManageMoney jManageMoney = null;
+		int row = getJTablePeople().getSelectedRow();
+		if (row != -1) {
+			row = getJTablePeople().convertRowIndexToModel(row);
+			People people = getPeopleTableModel().getDomainObject(row);
+
+			if (people != null) {
+				FilterTicket filterTicket = new FilterTicket();
+				filterTicket.setActive(people.isActive());
+				filterTicket.setDniPeople(people.getDni());
+				filterTicket.setPassportPeople(people.getPassport());
+				filterTicket.setNamePeople(people.getName());
+				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterTicket.setIdPeople(people.getId());
+				try {
+
+					jManageMoney = new JManageMoney(this, true, JWindowParams.IMODE_INSERT, title, filterTicket);
+					this.desktop.add(jManageMoney);
+					jManageMoney.setMaximum(true);
+					jManageMoney.setMaximizable(true);
+					jManageMoney.setVisible(true);
+					jManageMoney.moveToFront();
+					jManageMoney.show();
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
