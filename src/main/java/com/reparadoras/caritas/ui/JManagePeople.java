@@ -34,6 +34,7 @@ import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterAnswer;
 import com.reparadoras.caritas.filter.FilterProgram;
 import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.Family;
@@ -221,7 +222,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getBtnMoneyPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				onManageMoneyPeople();
+				onManageAnswerPeople();
 			}
 		});
 
@@ -969,24 +970,24 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	}
 	
-	public void onManageMoneyPeople() {
-		JManageMoney jManageMoney = null;
+	public void onManageAnswerPeople() {
+		JManageAnswer jManageMoney = null;
 		int row = getJTablePeople().getSelectedRow();
 		if (row != -1) {
 			row = getJTablePeople().convertRowIndexToModel(row);
 			People people = getPeopleTableModel().getDomainObject(row);
 
 			if (people != null) {
-				FilterTicket filterTicket = new FilterTicket();
-				filterTicket.setActive(people.isActive());
-				filterTicket.setDniPeople(people.getDni());
-				filterTicket.setPassportPeople(people.getPassport());
-				filterTicket.setNamePeople(people.getName());
-				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
-				filterTicket.setIdPeople(people.getId());
+				FilterAnswer filterAnswer = new FilterAnswer();
+				filterAnswer.setActive(people.isActive());
+				filterAnswer.setDniPeople(people.getDni());
+				filterAnswer.setPassportPeople(people.getPassport());
+				filterAnswer.setNamePeople(people.getName());
+				filterAnswer.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterAnswer.setIdPeople(people.getId());
 				try {
 
-					jManageMoney = new JManageMoney(this, true, JWindowParams.IMODE_INSERT, title, filterTicket);
+					jManageMoney = new JManageAnswer(this, true, JWindowParams.IMODE_INSERT, title, filterAnswer);
 					this.desktop.add(jManageMoney);
 					jManageMoney.setMaximum(true);
 					jManageMoney.setMaximizable(true);

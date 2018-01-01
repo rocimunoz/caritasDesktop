@@ -22,7 +22,7 @@ public class Answer implements Serializable
     private People people;
     private double money;
     private String answer;
-    
+    private Date date;
     private int year;
 
 	public int getId() {
@@ -65,7 +65,18 @@ public class Answer implements Serializable
 
 	public void setYear(int year) {
 		this.year = year;
+		
 	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	
     
     
 	
