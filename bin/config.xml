@@ -12,6 +12,7 @@
         <typeAlias alias="People" type="com.reparadoras.caritas.model.People"/> 
         <typeAlias alias="Program" type="com.reparadoras.caritas.model.Program"/>    
         <typeAlias alias="Ticket" type="com.reparadoras.caritas.model.Ticket"/>
+        <typeAlias alias="Answer" type="com.reparadoras.caritas.model.Answer"/>
         <typeAlias alias="Home" type="com.reparadoras.caritas.model.Home"/>
         <typeAlias alias="HomeType" type="com.reparadoras.caritas.model.HomeType"/>
         <typeAlias alias="Address" type="com.reparadoras.caritas.model.Address"/> 
@@ -46,6 +47,7 @@
        <mapper resource="com/reparadoras/caritas/mybatis/mapper/People.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Program.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Ticket.xml"/>
+    	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Answer.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Family.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/FamilyType.xml"/>
     	<mapper resource="com/reparadoras/caritas/mybatis/mapper/Relative.xml"/>

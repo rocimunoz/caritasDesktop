@@ -512,7 +512,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		if (btnReport == null) {
 			btnReport = new JButton("Generar Informe");
 			btnReport.setIcon(new ImageIcon(
-					JManageMonthlyReport.class.getResource("/com/reparadoras/images/icon-report-32.png")));
+					JManageMonthlyReport.class.getResource("/img/icon-report-32.png")));
 		}
 
 		return btnReport;
@@ -532,7 +532,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		if (btnCleanReport == null) {
 			btnCleanReport = new JButton("Limpiar");
 			btnCleanReport.setIcon(
-					new ImageIcon(JManageMonthlyReport.class.getResource("/com/reparadoras/images/icon-clean-32.png")));
+					new ImageIcon(JManageMonthlyReport.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanReport;
@@ -554,7 +554,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 			btnExitPeople = new JButton("Salir al menú");
 			btnExitPeople.setHorizontalAlignment(SwingConstants.RIGHT);
 			btnExitPeople.setIcon(
-					new ImageIcon(JManageMonthlyReport.class.getResource("/com/reparadoras/images/icon-exit.png")));
+					new ImageIcon(JManageMonthlyReport.class.getResource("/img/icon-exit.png")));
 		}
 		return btnExitPeople;
 	}

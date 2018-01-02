@@ -480,7 +480,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 			btnExit.setHorizontalAlignment(SwingConstants.RIGHT);
 
-			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/com/reparadoras/images/icon-exit.png")));
+			btnExit.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-exit.png")));
 		}
 
 		return btnExit;

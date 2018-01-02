@@ -447,7 +447,7 @@ public class JMainWindow extends AbstractJInternalFrame {
 	private JLabel getLblLogo() {
 		if (lblLogo == null) {
 			lblLogo = new JLabel("");
-			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/img/logo_splash.PNG")));
+			lblLogo.setIcon(new ImageIcon(JMainWindow.class.getResource("/img/logoRepas.PNG")));
 			lblLogo.setHorizontalTextPosition(SwingConstants.CENTER);
 			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		}

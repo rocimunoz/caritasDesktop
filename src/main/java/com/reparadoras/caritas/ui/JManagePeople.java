@@ -34,6 +34,7 @@ import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterAnswer;
 import com.reparadoras.caritas.filter.FilterProgram;
 import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.Family;
@@ -117,6 +118,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 
 	private JButton btnProgramPeople;
 	private JButton btnTicketPeople;
+	private JButton btnMoneyPeople;
 	private JButton btnExitPeople;
 	
 
@@ -216,6 +218,13 @@ public class JManagePeople extends AbstractJInternalFrame {
 				onManageTicketPeople();
 			}
 		});
+		
+		getBtnMoneyPeople().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				onManageAnswerPeople();
+			}
+		});
 
 		getBtnExitPeople().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -258,6 +267,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 		getJPanelActions().add(getBtnDeletePeople());
 		getJPanelActions().add(getBtnProgramPeople());
 		getJPanelActions().add(getBtnTicketPeople());
+		getJPanelActions().add(getBtnMoneyPeople());
 
 		getJPanelContent().add(getJPanelTable(), getGridJPanelTable());
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
@@ -643,9 +653,18 @@ public class JManagePeople extends AbstractJInternalFrame {
 		if (btnTicketPeople == null) {
 			btnTicketPeople = new JButton("Vales");
 			btnTicketPeople
-					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-ticket.png")));
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-ticket-32.png")));
 		}
 		return btnTicketPeople;
+	}
+	
+	private JButton getBtnMoneyPeople() {
+		if (btnMoneyPeople == null) {
+			btnMoneyPeople = new JButton("Importe");
+			btnMoneyPeople
+					.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-money.png")));
+		}
+		return btnMoneyPeople;
 	}
 
 	/* FUNCIONES DEL PANEL JTABLE */
@@ -792,22 +811,29 @@ public class JManagePeople extends AbstractJInternalFrame {
 						FilterProgram filter = new FilterProgram();
 						filter.setIdPeople(selectedPeople.getId());
 						List<Program> listPrograms = programDAO.findProgram(filter);
-						Program programToDelete = listPrograms.get(0);
+						if (listPrograms!=null && !listPrograms.isEmpty()){
+							Program programToDelete = listPrograms.get(0);
+							
+							ticketDAO.delete(selectedPeople);
+							expensesDAO.deleteByProgram(programToDelete);
+							incomesDAO.deleteByProgram(programToDelete);
+							programDAO.delete(selectedPeople);
+							peopleDAO.delete(selectedPeople);
+							
+							Family familyToDelete = programToDelete.getFamily();
+							relativesDAO.deleteByFamily(familyToDelete);
+							familyDAO.delete(familyToDelete);
+							homeDAO.delete(familyToDelete.getHome());
+							addressDAO.delete(familyToDelete.getHome().getAddress());
+							otherInfoDAO.delete(programToDelete.getOtherInfo());
+							
+							logger.info("Registro eliminado ...");
+						}else{
+							ticketDAO.delete(selectedPeople);
+							peopleDAO.delete(selectedPeople);
+							
+						}
 						
-						ticketDAO.delete(selectedPeople);
-						expensesDAO.deleteByProgram(programToDelete);
-						incomesDAO.deleteByProgram(programToDelete);
-						programDAO.delete(selectedPeople);
-						peopleDAO.delete(selectedPeople);
-						
-						Family familyToDelete = programToDelete.getFamily();
-						relativesDAO.deleteByFamily(familyToDelete);
-						familyDAO.delete(familyToDelete);
-						homeDAO.delete(familyToDelete.getHome());
-						addressDAO.delete(familyToDelete.getHome().getAddress());
-						otherInfoDAO.delete(programToDelete.getOtherInfo());
-						
-						logger.info("Registro eliminado ...");
 						
 						
 					}
@@ -928,6 +954,46 @@ public class JManagePeople extends AbstractJInternalFrame {
 					jManageTicket.setVisible(true);
 					jManageTicket.moveToFront();
 					jManageTicket.show();
+				} catch (PropertyVetoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					logger.error(e);
+				}
+
+			} else {
+
+				return;
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Seleccione un registro");
+		}
+
+	}
+	
+	public void onManageAnswerPeople() {
+		JManageAnswer jManageMoney = null;
+		int row = getJTablePeople().getSelectedRow();
+		if (row != -1) {
+			row = getJTablePeople().convertRowIndexToModel(row);
+			People people = getPeopleTableModel().getDomainObject(row);
+
+			if (people != null) {
+				FilterAnswer filterAnswer = new FilterAnswer();
+				filterAnswer.setActive(people.isActive());
+				filterAnswer.setDniPeople(people.getDni());
+				filterAnswer.setPassportPeople(people.getPassport());
+				filterAnswer.setNamePeople(people.getName());
+				filterAnswer.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterAnswer.setIdPeople(people.getId());
+				try {
+
+					jManageMoney = new JManageAnswer(this, true, JWindowParams.IMODE_INSERT, title, filterAnswer);
+					this.desktop.add(jManageMoney);
+					jManageMoney.setMaximum(true);
+					jManageMoney.setMaximizable(true);
+					jManageMoney.setVisible(true);
+					jManageMoney.moveToFront();
+					jManageMoney.show();
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
