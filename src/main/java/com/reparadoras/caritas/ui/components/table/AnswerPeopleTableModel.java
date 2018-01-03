@@ -21,8 +21,9 @@ public class AnswerPeopleTableModel extends GenericDomainTableModel<Answer>{
 	public Class<?> getColumnClass(int columnIndex) {
 		switch(columnIndex) {
         case 0: return String.class;
-        case 1: return Date.class;
-        case 2: return String.class;
+        case 1: return String.class;
+        case 2: return Date.class;
+        case 3: return String.class;
         
     }
     throw new ArrayIndexOutOfBoundsException(columnIndex);
@@ -33,8 +34,9 @@ public class AnswerPeopleTableModel extends GenericDomainTableModel<Answer>{
 		Answer answer = getDomainObject(rowIndex);
         switch(columnIndex) {
             case 0: return answer.getPeople();
-            case 1: return answer.getDate();
-            case 2: return answer.getAnswer();
+            case 1: return answer.getMonth();
+            case 2: return answer.getDate();
+            case 3: return answer.getAnswer();
             
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}

@@ -183,13 +183,14 @@ CREATE TABLE `c_ticket` (
 
 CREATE TABLE `c_answer` (
   `id` int(11) DEFAULT NULL,
-  `date` date NOT NULL,
-  `money` double NOT NULL,
+  `date` date DEFAULT NULL,
   `answer` varchar(20) DEFAULT NULL,
   `id_people` int(11) NOT NULL,
+  `month` varchar(11) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
   KEY `answerIdPeople` (`id_people`),
   CONSTRAINT `answerIdPeople` FOREIGN KEY (`id_people`) REFERENCES `c_people` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- EXPENSE
 CREATE TABLE `c_expense` (

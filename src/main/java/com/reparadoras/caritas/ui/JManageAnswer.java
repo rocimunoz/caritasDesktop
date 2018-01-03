@@ -667,6 +667,9 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			tablePeople.setShowGrid(true);
 			tablePeople.setShowVerticalLines(true);
+			tablePeople.setRowMargin(5);
+			tablePeople.setRowHeight(30);
+			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
 
 		}
 
@@ -676,7 +679,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private AnswerPeopleTableModel getAnswersPeopleTableModel() {
 
 		if (answersPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Nombre", "Fecha", "Respuesta" };
+			Object[] columnIdentifiers = new Object[] { "Nombre", "Mes","Fecha", "Respuesta" };
 			answersPeopleTableModel = new AnswerPeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -684,13 +687,10 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	}
 
 	private void setRendererJXDatePicker() {
-		TableColumn januaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(1);
+		TableColumn januaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(2);
 		
 		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
-		
 	
-		
-		
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 		januaryColumn.setCellEditor(datePickerJanuary);
@@ -772,10 +772,33 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 			if (create) {
 				if (JOptionPane.showConfirmDialog(this,
-						"Este usuario no tiene registros de Vales todavia. ¿Quieres crearlo?",
+						"Este usuario no tiene registros de Respuesta todavia. ¿Quieres crearlo?",
 						"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				
+					answerNewReset.setMonth("Enero");
 					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Febrero");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Marzo");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Abril");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Mayo");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Junio");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Julio");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Agosto");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Septiembre");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Octubre");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Noviembre");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Diciembre");
+					answerDAO.insert(answerNewReset);
+					
 					
 					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.getJTextFieldName().getText() + " con todos los meses inicializados a 0");
 					onFilterAnswer(false);
@@ -797,7 +820,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		int row = this.getJTableTicketsPeople().getSelectedRow();
 		if (row != -1) {
 			Answer answer = this.getAnswersPeopleTableModel().getDomainObject(row);
-			answerDAO.update(answer);
+			//answerDAO.update(answer);
 			onFilterAnswer(false);
 			JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
 		} else {

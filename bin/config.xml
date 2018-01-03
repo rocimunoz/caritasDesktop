@@ -27,6 +27,7 @@
         <typeAlias alias="OtherInfo" type="com.reparadoras.caritas.model.OtherInfo"/>       
         
          <typeAlias alias="FilterTicket" type="com.reparadoras.caritas.filter.FilterTicket"/> 
+         <typeAlias alias="FilterAnswer" type="com.reparadoras.caritas.filter.FilterAnswer"/> 
          <typeAlias alias="FilterProgram" type="com.reparadoras.caritas.filter.FilterProgram"/>            
     </typeAliases>
    

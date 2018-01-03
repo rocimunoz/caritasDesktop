@@ -6,6 +6,8 @@
 <mapper namespace="Answer">
     <resultMap id="AnswerResult" type="Answer">
         <result property="idAnswer" column="idAnswer"/> 
+        <result property="month" column="month"/>
+        <result property="answer" column="answer"/>  
         <result property="year" column="YEAR"/>  
         <association property="people" resultMap="PeopleResult"/>  
       
@@ -13,11 +15,60 @@
     
      <resultMap id="PeopleResult" type="People">
      <id property="id" column="id"/>
-        <result property="name" column="name"/>  
+        <result property="name" column="name"/>
+        <result property="firstSurname" column="first_surname"/>  
        
     </resultMap>
  
-  
+  <select id="findAnswer" parameterType="FilterAnswer" resultMap="AnswerResult">
+        SELECT PE.ID, 
+               PE.NAME,
+               PE.FIRST_SURNAME,
+               A.MONTH,
+               A.ANSWER
+              
+        FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE 
+        WHERE
+        PE.ID = A.ID_PEOPLE
+        <if test="idPeople != null">
+    		AND PE.ID = #{idPeople}
+  		</if>
+  		<if test="namePeople != null and !namePeople.equals('')">
+  		<bind name="pattern_name" value="'%' + namePeople + '%'" />
+    		AND PE.NAME like #{pattern_name}
+  		</if>
+  		<if test="dniPeople != null and !dniPeople.equals('')">
+  		<bind name="pattern" value="'%' + dniPeople + '%'" />
+    		AND PE.DNI like #{pattern}
+  		</if>
+  		<if test="passportPeople != null and !passportPeople.equals('')">
+  		<bind name="pattern_passport" value="'%' + passportPeople + '%'" />
+    		AND PE.PASSPORT like #{pattern_passport}
+  		</if>
+  		
+    </select>
+    
+    <select id="findAll"  resultMap="AnswerResult">
+        SELECT PE.ID, 
+               PE.NAME,
+                PE.FIRST_SURNAME,
+               A.MONTH,
+               A.ANSWER
+               
+        FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE
+     
+      
+    </select>
+    
+    <insert id="insert" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_ANSWER
+        	(ID_PEOPLE, YEAR, MONTH) 
+        VALUES (#{people.id},#{year},#{month})
+    </insert> 
+    
+    <delete id="delete" parameterType="People">
+    	DELETE FROM C_ANSWER WHERE ID_PEOPLE = #{id}
+    </delete>
     
     
 </mapper>

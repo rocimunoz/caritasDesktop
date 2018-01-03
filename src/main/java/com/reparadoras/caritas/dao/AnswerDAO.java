@@ -22,6 +22,7 @@ public AnswerDAO(SqlSessionFactory sqlSessionFactory){
     this.sqlSessionFactory = sqlSessionFactory;
 }
 
+
 public int insert(Answer answer){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();
@@ -36,6 +37,7 @@ public int insert(Answer answer){
      return id;
  }
 
+/*
 public int update(Answer answer){
     int id = -1;
      SqlSession session = sqlSessionFactory.openSession();
@@ -49,6 +51,7 @@ public int update(Answer answer){
      System.out.println("update("+answer+") --> "+answer.getId());
      return id;
  }
+*/
 
 public int delete(People people){
     int id = -1;

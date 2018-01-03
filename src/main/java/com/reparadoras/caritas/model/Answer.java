@@ -20,9 +20,9 @@ public class Answer implements Serializable
     private int id;
 
     private People people;
-    private double money;
     private String answer;
     private Date date;
+    private String month;
     private int year;
 
 	public int getId() {
@@ -43,13 +43,7 @@ public class Answer implements Serializable
 
 	
 
-	public double getMoney() {
-		return money;
-	}
-
-	public void setMoney(double money) {
-		this.money = money;
-	}
+	
 
 	public String getAnswer() {
 		return answer;
@@ -75,6 +69,15 @@ public class Answer implements Serializable
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
 	
 	
     
