@@ -633,7 +633,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 	private JScrollPane getScrollPaneTable() {
 		if (scrollPaneJTable == null) {
-			scrollPaneJTable = new JScrollPane(getJTableTicketsPeople());
+			scrollPaneJTable = new JScrollPane(getJTableAnswerPeople());
 			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
 		}
 
@@ -653,10 +653,10 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		return gbc_jPanelScroll;
 	}
 
-	private JTable getJTableTicketsPeople() {
+	private JTable getJTableAnswerPeople() {
 		if (tablePeople == null) {
 			TableModel tableModel = getAnswersPeopleTableModel();
-			tablePeople = new JTable(tableModel) {
+	        tablePeople = new JTable(tableModel) {
 
 				protected JTableHeader createDefaultTableHeader() {
 					return new GroupableTableHeader(columnModel);
@@ -670,6 +670,14 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.setRowMargin(5);
 			tablePeople.setRowHeight(30);
 			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(75);
+			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(400);
+			tablePeople.getColumnModel().getColumn(2).setPreferredWidth(100);
+			//tablePeople.getColumnModel().getColumn(2).setPreferredWidth(400);
+			
+			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+            //tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
 
 		}
 
@@ -679,7 +687,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private AnswerPeopleTableModel getAnswersPeopleTableModel() {
 
 		if (answersPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Nombre", "Mes","Fecha", "Respuesta" };
+			Object[] columnIdentifiers = new Object[] { "Mes", "Nombre","Fecha", "Importe", "Respuesta" };
 			answersPeopleTableModel = new AnswerPeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -687,7 +695,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	}
 
 	private void setRendererJXDatePicker() {
-		TableColumn januaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(2);
+		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(2);
 		
 		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
 	
@@ -708,7 +716,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		try {
 
 			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
-				int row = this.getJTableTicketsPeople().getSelectedRow();
+				int row = this.getJTableAnswerPeople().getSelectedRow();
 				if (row != -1) {
 					// Ticket people =
 					// this.getJTableTicketsPeople().getDomainObject(row);
@@ -816,17 +824,16 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	}
 
 	public void onSaveAnswer() {
-
-		int row = this.getJTableTicketsPeople().getSelectedRow();
-		if (row != -1) {
-			Answer answer = this.getAnswersPeopleTableModel().getDomainObject(row);
-			//answerDAO.update(answer);
-			onFilterAnswer(false);
-			JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
-		} else {
-			JOptionPane.showMessageDialog(null, "Seleccione un registro");
-			return;
+		List<Answer> answers = this.getAnswersPeopleTableModel().getDomainObjects();
+		for (Answer answer : answers) {
+			answerDAO.update(answer);
+			
 		}
+		
+		onFilterAnswer(false);
+		JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
+		
+		
 
 	}
 

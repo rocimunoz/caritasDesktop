@@ -9,6 +9,8 @@
         <result property="month" column="month"/>
         <result property="answer" column="answer"/>  
         <result property="year" column="YEAR"/>  
+        <result property="date" column="date"/>
+        <result property="money" column="money"/>
         <association property="people" resultMap="PeopleResult"/>  
       
     </resultMap>
@@ -25,8 +27,9 @@
                PE.NAME,
                PE.FIRST_SURNAME,
                A.MONTH,
-               A.ANSWER
-              
+               A.ANSWER,
+               A.DATE,
+               A.MONEY
         FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE 
         WHERE
         PE.ID = A.ID_PEOPLE
@@ -53,8 +56,9 @@
                PE.NAME,
                 PE.FIRST_SURNAME,
                A.MONTH,
-               A.ANSWER
-               
+               A.ANSWER,
+               A.DATE,
+               A.MONEY
         FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE
      
       
@@ -62,13 +66,25 @@
     
     <insert id="insert" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO C_ANSWER
-        	(ID_PEOPLE, YEAR, MONTH) 
-        VALUES (#{people.id},#{year},#{month})
+        	(ID_PEOPLE, YEAR, MONTH, ANSWER) 
+        VALUES (#{people.id},#{year},#{month}, #{answer})
     </insert> 
     
     <delete id="delete" parameterType="People">
     	DELETE FROM C_ANSWER WHERE ID_PEOPLE = #{id}
     </delete>
+    
+    <update id="update" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
+        
+        UPDATE C_ANSWER <set>
+        <if test="date != null">DATE = #{date},</if>
+        <if test="answer != null">ANSWER = #{answer},</if>
+        <if test="money != null">MONEY = #{money},</if>
+        </set>
+        WHERE ID_PEOPLE = #{people.id}
+        AND MONTH=#{month}
+    
+    </update>
     
     
 </mapper>

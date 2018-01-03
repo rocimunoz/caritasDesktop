@@ -23,6 +23,7 @@ public class Answer implements Serializable
     private String answer;
     private Date date;
     private String month;
+    private Double money;
     private int year;
 
 	public int getId() {
@@ -77,6 +78,16 @@ public class Answer implements Serializable
 	public void setMonth(String month) {
 		this.month = month;
 	}
+
+	public Double getMoney() {
+		return money;
+	}
+
+	public void setMoney(Double money) {
+		this.money = money;
+	}
+	
+	
 
 	
 	

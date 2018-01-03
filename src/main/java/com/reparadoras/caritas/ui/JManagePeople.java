@@ -25,6 +25,7 @@ import javax.swing.event.InternalFrameEvent;
 import org.apache.log4j.Logger;
 
 import com.reparadoras.caritas.dao.AddressDAO;
+import com.reparadoras.caritas.dao.AnswerDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
@@ -105,6 +106,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 	private PeopleDAO peopleDAO;
 	private ProgramDAO programDAO;
 	private TicketDAO ticketDAO;
+	private AnswerDAO answerDAO;
 	private FamilyDAO familyDAO;
 	private AddressDAO addressDAO;
 	private HomeDAO homeDAO;
@@ -135,6 +137,8 @@ public class JManagePeople extends AbstractJInternalFrame {
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		answerDAO = new AnswerDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 	
@@ -815,6 +819,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 							Program programToDelete = listPrograms.get(0);
 							
 							ticketDAO.delete(selectedPeople);
+							answerDAO.delete(selectedPeople);
 							expensesDAO.deleteByProgram(programToDelete);
 							incomesDAO.deleteByProgram(programToDelete);
 							programDAO.delete(selectedPeople);

@@ -188,6 +188,7 @@ CREATE TABLE `c_answer` (
   `id_people` int(11) NOT NULL,
   `month` varchar(11) DEFAULT NULL,
   `year` int(11) DEFAULT NULL,
+  `money` double DEFAULT NULL,
   KEY `answerIdPeople` (`id_people`),
   CONSTRAINT `answerIdPeople` FOREIGN KEY (`id_people`) REFERENCES `c_people` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
