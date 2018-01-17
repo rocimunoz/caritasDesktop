@@ -33,6 +33,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.itextpdf.text.DocumentException;
 import com.reparadoras.caritas.dao.AddressDAO;
+import com.reparadoras.caritas.dao.AnswerDAO;
 import com.reparadoras.caritas.dao.ExpensesDAO;
 import com.reparadoras.caritas.dao.FamilyDAO;
 import com.reparadoras.caritas.dao.HomeDAO;
@@ -43,9 +44,11 @@ import com.reparadoras.caritas.dao.ProgramDAO;
 import com.reparadoras.caritas.dao.RelativeDAO;
 
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterAnswer;
 import com.reparadoras.caritas.filter.FilterProgram;
 
 import com.reparadoras.caritas.filter.FilterTicket;
+import com.reparadoras.caritas.model.Answer;
 import com.reparadoras.caritas.model.AuthorizationType;
 import com.reparadoras.caritas.model.Family;
 import com.reparadoras.caritas.model.FamilyType;
@@ -120,6 +123,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 	private TicketDAO ticketDAO;
 	private ProgramDAO programDAO;
 	private RelativeDAO relativeDAO;
+	private AnswerDAO answerDAO;
 
 	public JManageMonthlyReport(JDesktopPane desktop) {
 		super(desktop);
@@ -138,8 +142,11 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		initComponents();
 
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		answerDAO = new AnswerDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		programDAO = new ProgramDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		relativeDAO = new RelativeDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 
 		addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
@@ -677,45 +684,61 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 		filterTicket.setYearTicket(Integer.parseInt(filterYear));
 		filterTicket.setActive(filterActive);
+		
+		FilterAnswer filterAnswer = new FilterAnswer();
+		filterAnswer.setYearTicket(Integer.parseInt(filterYear));
+		filterAnswer.setActive(filterActive);
 
 		
 
 		switch (filterMonth) {
 		case "Enero":
 			filterTicket.setPointsJanuary(true);
+			filterAnswer.setMonth("Enero");
 			break;
 		case "Febrero":
 			filterTicket.setPointsFebruary(true);
+			filterAnswer.setMonth("Febrero");
 			break;
 		case "Marzo":
 			filterTicket.setPointsMarch(true);
+			filterAnswer.setMonth("Marzo");
 			break;
 		case "Abril":
 			filterTicket.setPointsApril(true);
+			filterAnswer.setMonth("Abril");
 			break;
 		case "Mayo":
 			filterTicket.setPointsMay(true);
+			filterAnswer.setMonth("Mayo");
 			break;
 		case "Junio":
 			filterTicket.setPointsJune(true);
+			filterAnswer.setMonth("Junio");
 			break;
 		case "Julio":
 			filterTicket.setPointsJuly(true);
+			filterAnswer.setMonth("Julio");
 			break;
 		case "Agosto":
 			filterTicket.setPointsAugust(true);
+			filterAnswer.setMonth("Agosto");
 			break;
 		case "Septiembre":
 			filterTicket.setPointsSeptember(true);
+			filterAnswer.setMonth("Septiembre");
 			break;
 		case "Octubre":
 			filterTicket.setPointsOctober(true);
+			filterAnswer.setMonth("Octubre");
 			break;
 		case "Noviembre":
 			filterTicket.setPointsNovember(true);
+			filterAnswer.setMonth("Noviembre");
 			break;
 		case "Diciembre":
 			filterTicket.setPointsDecember(true);
+			filterAnswer.setMonth("Diciembre");
 			break;
 		}
 
@@ -723,13 +746,15 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		if (listTicket != null && !listTicket.isEmpty()) {
 
 			for (Ticket ticket : listTicket) {
+				
 				Long id = ticket.getPeople().getId();
 				Program program = null;
 				People people = null;
 				FilterProgram filterProgram = new FilterProgram();
 				filterProgram.setIdPeople(id);
 				List<Program> listPrograms = programDAO.findProgram(filterProgram);
-
+				filterAnswer.setIdPeople(id);
+				List<Answer> listaAnswer = answerDAO.findAnswer(filterAnswer);
 				if (listPrograms != null && !listPrograms.isEmpty()) {
 					program = listPrograms.get(0);
 					people = program.getPeople();
@@ -823,7 +848,16 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 						report.setHijosMenor18(String.valueOf(getHijos18(relatives)[0]));
 						report.setHijosMayor18(String.valueOf(getHijos18(relatives)[1]));
 					}
+					
+					if (listaAnswer != null && !listaAnswer.isEmpty()) {
+						Double money = listaAnswer.get(0).getMoney();
+						if (money!=null){
+							report.setRespuestaImporte(String.valueOf(money));
+						}
+						
 
+					}
+					
 					listReport.add(report);
 				}
 

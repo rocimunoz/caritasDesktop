@@ -7,6 +7,7 @@ public class FilterAnswer {
 	private String dniPeople;
 	private String passportPeople;
 	private Integer yearTicket;
+	private String month;
 	
 	
 	
@@ -48,6 +49,14 @@ public class FilterAnswer {
 	public void setPassportPeople(String passportPeople) {
 		this.passportPeople = passportPeople;
 	}
+	public String getMonth() {
+		return month;
+	}
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	
+	
 	
 	
 	

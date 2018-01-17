@@ -21,10 +21,9 @@ public class AnswerPeopleTableModel extends GenericDomainTableModel<Answer>{
 	public Class<?> getColumnClass(int columnIndex) {
 		switch(columnIndex) {
         case 0: return String.class;
-        case 1: return String.class;
-        case 2: return Date.class;
-        case 3: return Double.class;
-        case 4: return String.class;
+        case 1: return Date.class;
+        case 2: return Double.class;
+        case 3: return String.class;
         
     }
     throw new ArrayIndexOutOfBoundsException(columnIndex);
@@ -35,10 +34,9 @@ public class AnswerPeopleTableModel extends GenericDomainTableModel<Answer>{
 		Answer answer = getDomainObject(rowIndex);
         switch(columnIndex) {
             case 0: return answer.getMonth();
-            case 1: return answer.getPeople();
-            case 2: return answer.getDate();
-            case 3: return answer.getMoney();
-            case 4: return answer.getAnswer();
+            case 1: return answer.getDate();
+            case 2: return answer.getMoney();
+            case 3: return answer.getAnswer();
             
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
 	}
@@ -49,9 +47,9 @@ public class AnswerPeopleTableModel extends GenericDomainTableModel<Answer>{
 		Answer answer = getDomainObject(rowIndex);
 		
         switch(columnIndex) {
-        case 2: answer.setDate((Date)aValue); break;
-        case 3: answer.setMoney((Double)aValue); break;
-        case 4: answer.setAnswer((String)aValue); break;
+        case 1: answer.setDate((Date)aValue); break;
+        case 2: answer.setMoney((Double)aValue); break;
+        case 3: answer.setAnswer((String)aValue); break;
            
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
         }

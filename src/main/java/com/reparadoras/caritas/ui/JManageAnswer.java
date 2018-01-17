@@ -672,9 +672,8 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(75);
-			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(400);
-			tablePeople.getColumnModel().getColumn(2).setPreferredWidth(100);
-			//tablePeople.getColumnModel().getColumn(2).setPreferredWidth(400);
+			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(100);
+			tablePeople.getColumnModel().getColumn(3).setPreferredWidth(400);
 			
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
             //tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
@@ -687,7 +686,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private AnswerPeopleTableModel getAnswersPeopleTableModel() {
 
 		if (answersPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Mes", "Nombre","Fecha", "Importe", "Respuesta" };
+			Object[] columnIdentifiers = new Object[] { "Mes","Fecha", "Importe", "Respuesta" };
 			answersPeopleTableModel = new AnswerPeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -695,7 +694,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	}
 
 	private void setRendererJXDatePicker() {
-		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(2);
+		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(1);
 		
 		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
 	
