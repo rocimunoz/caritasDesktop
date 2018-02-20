@@ -41,6 +41,7 @@ import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.components.NumberCellEditor;
 import com.reparadoras.caritas.ui.components.combobox.ComboBoxRenderer;
 import com.reparadoras.caritas.ui.components.datepicker.CaritasDatePickerCellEditor;
 import com.reparadoras.caritas.ui.components.table.AnswerPeopleTableModel;
@@ -674,6 +675,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(75);
 			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(100);
 			tablePeople.getColumnModel().getColumn(3).setPreferredWidth(400);
+			tablePeople.getColumnModel().getColumn(2).setCellEditor(new NumberCellEditor());
 			
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
             //tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
