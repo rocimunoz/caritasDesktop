@@ -877,6 +877,10 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	public void onSaveAnswer() {
 		List<Answer> answers = this.getAnswersPeopleTableModel().getDomainObjects();
 		for (Answer answer : answers) {
+			
+			if (answer.getAnswer()!=null && answer.getAnswer().length()>199){
+				answer.setAnswer(answer.getAnswer().substring(0, 199));
+			}
 			answerDAO.update(answer);
 
 		}

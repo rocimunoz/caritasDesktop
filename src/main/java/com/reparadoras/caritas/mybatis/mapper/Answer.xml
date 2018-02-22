@@ -48,6 +48,10 @@
   		<bind name="pattern_passport" value="'%' + passportPeople + '%'" />
     		AND PE.PASSPORT like #{pattern_passport}
   		</if>
+  		<if test="month != null and !month.equals('')">
+  		<bind name="pattern_month" value="'%' + month + '%'" />
+    		AND A.MONTH LIKE #{pattern_month}
+  		</if>
   		
     </select>
     

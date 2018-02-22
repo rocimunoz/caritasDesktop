@@ -835,6 +835,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 							logger.info("Registro eliminado ...");
 						}else{
 							ticketDAO.delete(selectedPeople);
+							answerDAO.delete(selectedPeople);
 							peopleDAO.delete(selectedPeople);
 							
 						}
