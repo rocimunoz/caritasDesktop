@@ -37,6 +37,7 @@ import com.reparadoras.caritas.filter.FilterAnswer;
 import com.reparadoras.caritas.filter.FilterTicket;
 import com.reparadoras.caritas.model.Answer;
 import com.reparadoras.caritas.model.People;
+import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
@@ -101,6 +102,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private JTable tablePeople = null;
 	private JScrollPane scrollPaneJTable = null;
 	private JButton btnSaveTicket;
+	private JButton btnCleanTicket;
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
 	private JButton btnCleanPeople = null;
@@ -133,24 +135,24 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		createGUIComponents();
 		initComponents();
 		addListeners();
-		
+
 		this.getJTextFieldDni().setText(this.filterAnswer.getDniPeople());
 		this.getJTextFieldName().setText(this.filterAnswer.getNamePeople());
 		this.getJTextFieldPassport().setText(this.filterAnswer.getPassportPeople());
-		if (this.filterAnswer.getYearTicket()!=null){
+		if (this.filterAnswer.getYearTicket() != null) {
 			this.getJTextFieldYear().setText(this.filterAnswer.getYearTicket().toString());
 		}
-		if (this.filterAnswer.getActive()){
+		if (this.filterAnswer.getActive()) {
 			this.getCkActive().setSelected(true);
-		}else{
+		} else {
 			this.getCkActive().setSelected(false);
 		}
-		
+
 		onFilterAnswer(true);
-		
+
 		this.getJButtonSearch().setVisible(false);
 		this.getJButtonClean().setVisible(false);
-		
+
 	}
 
 	public JManageAnswer(JDesktopPane desktop) {
@@ -178,7 +180,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	public void initComponents() {
 
 		this.getCkActive().setSelected(true);
-		
+
 	}
 
 	public void addListeners() {
@@ -195,13 +197,26 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			}
 		});
 
+		getBtnCleanTicket().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onCleanAnswer();
+			}
+		});
+
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				dispose();
+				int answer = confirmExit();
+				if (answer == 1) {
+
+					// onSaveAnswer();
+				} else if (answer == 0) {
+					dispose();
+				}
+				
 			}
 		});
-		
+
 		getJButtonClean().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cleanFilter();
@@ -209,16 +224,12 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		});
 	}
 
-	
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
 		this.getJTextFieldYear().setText("");
-		
-		
+
 	}
-	
-	
 
 	public void createGUIComponents() {
 
@@ -250,9 +261,9 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
 
 		getJPanelTable().add(getBtnSaveTicket(), getGridJBtnSave());
+		getJPanelTable().add(getBtnCleanTicket(), getGridJBtnClean());
 		getJPanelTable().add(getScrollPaneTable(), getGridJPanelScrollTable());
 
-		
 		setRendererJXDatePicker();
 
 	}
@@ -287,7 +298,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Personas",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			((javax.swing.border.TitledBorder) jPanelFilter.getBorder())
-			.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
+					.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelFilter;
@@ -340,7 +351,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
-	
+
 	private JLabel getJLabelPassport() {
 		if (lblPassport == null) {
 			lblPassport = new JLabel("Pasaporte:");
@@ -422,7 +433,6 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		if (tfName == null) {
 			tfName = new JTextField();
 
-			
 		}
 
 		return tfName;
@@ -440,7 +450,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 		return gbc_tfName;
 	}
-	
+
 	private JLabel getJLabelYear() {
 
 		if (lblYear == null) {
@@ -496,17 +506,15 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		if (btnFilterTicket == null) {
 			btnFilterTicket = new JButton("Buscar");
 
-			btnFilterTicket
-					.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-search.png")));
+			btnFilterTicket.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-search.png")));
 		}
 		return btnFilterTicket;
 	}
-	
+
 	private JButton getJButtonClean() {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
-			btnCleanPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
+			btnCleanPeople.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -589,9 +597,9 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJPanelTable() {
 		GridBagConstraints gbc_jPanelTable = new GridBagConstraints();
+		gbc_jPanelTable.fill = GridBagConstraints.BOTH;
 		gbc_jPanelTable.weighty = 1.0;
 		gbc_jPanelTable.weightx = 1.0;
-		gbc_jPanelTable.fill = GridBagConstraints.BOTH;
 		gbc_jPanelTable.anchor = GridBagConstraints.WEST;
 		gbc_jPanelTable.gridx = 0;
 		gbc_jPanelTable.gridy = 1;
@@ -616,7 +624,6 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		GridBagConstraints gbc_btnSave = new GridBagConstraints();
 		gbc_btnSave.anchor = GridBagConstraints.WEST;
 		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSave.weightx = 1.0;
 		gbc_btnSave.gridx = 0;
 		gbc_btnSave.gridy = 0;
 
@@ -626,10 +633,29 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private JButton getBtnSaveTicket() {
 		if (btnSaveTicket == null) {
 			btnSaveTicket = new JButton("Guardar");
-			btnSaveTicket
-					.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-save.png")));
+			btnSaveTicket.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-save.png")));
 		}
 		return btnSaveTicket;
+	}
+
+	private GridBagConstraints getGridJBtnClean() {
+
+		GridBagConstraints gbc_btnClean = new GridBagConstraints();
+		gbc_btnClean.anchor = GridBagConstraints.WEST;
+		gbc_btnClean.insets = new Insets(0, 0, 5, 5);
+		gbc_btnClean.weightx = 1.0;
+		gbc_btnClean.gridx = 1;
+		gbc_btnClean.gridy = 0;
+
+		return gbc_btnClean;
+	}
+
+	private JButton getBtnCleanTicket() {
+		if (btnCleanTicket == null) {
+			btnCleanTicket = new JButton("Limpiar");
+			btnCleanTicket.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-clean-32.png")));
+		}
+		return btnCleanTicket;
 	}
 
 	private JScrollPane getScrollPaneTable() {
@@ -648,6 +674,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		gbc_jPanelScroll.weightx = 1.0;
 		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
+		gbc_jPanelScroll.gridwidth = 2;
 		gbc_jPanelScroll.gridx = 0;
 		gbc_jPanelScroll.gridy = 1;
 
@@ -657,7 +684,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private JTable getJTableAnswerPeople() {
 		if (tablePeople == null) {
 			TableModel tableModel = getAnswersPeopleTableModel();
-	        tablePeople = new JTable(tableModel) {
+			tablePeople = new JTable(tableModel) {
 
 				protected JTableHeader createDefaultTableHeader() {
 					return new GroupableTableHeader(columnModel);
@@ -676,9 +703,9 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(100);
 			tablePeople.getColumnModel().getColumn(3).setPreferredWidth(400);
 			tablePeople.getColumnModel().getColumn(2).setCellEditor(new NumberCellEditor());
-			
+
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-            //tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
+			// tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
 
 		}
 
@@ -688,7 +715,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private AnswerPeopleTableModel getAnswersPeopleTableModel() {
 
 		if (answersPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Mes","Fecha", "Importe", "Respuesta" };
+			Object[] columnIdentifiers = new Object[] { "Mes", "Fecha", "Importe", "Respuesta" };
 			answersPeopleTableModel = new AnswerPeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -697,18 +724,15 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 	private void setRendererJXDatePicker() {
 		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(1);
-		
+
 		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
-	
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 		januaryColumn.setCellEditor(datePickerJanuary);
 		januaryColumn.setCellRenderer(dateRenderer);
-		
 
 	}
-
-	
 
 	/* EVENTOS */
 
@@ -747,21 +771,17 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	}
 
 	public void onFilterAnswer(boolean create) {
-		
-		
-		if (filterAnswer == null){
+
+		if (filterAnswer == null) {
 			filterAnswer = new FilterAnswer();
-		} 
-		
+		}
+
 		filterAnswer.setDniPeople(this.getJTextFieldDni().getText());
 		filterAnswer.setNamePeople(this.getJTextFieldName().getText());
-		if (this.getJTextFieldYear().getText()!=null && !this.getJTextFieldYear().getText().equals("")){
+		if (this.getJTextFieldYear().getText() != null && !this.getJTextFieldYear().getText().equals("")) {
 			filterAnswer.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
 		}
-		
 
-		
-		
 		List<Answer> answers = answerDAO.findAnswer(filterAnswer);
 		if (answers != null && !answers.isEmpty()) {
 			this.getAnswersPeopleTableModel().clearTableModelData();
@@ -774,15 +794,15 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			filterPeople.setName(this.getJTextFieldName().getText());
 			filterPeople.setId(filterAnswer.getIdPeople());
 			People peopleTicket = peopleDAO.findPeopleById(filterPeople);
-			
+
 			answerNewReset.setPeople(peopleTicket);
-			
+
 			answerNewReset.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
 			if (create) {
 				if (JOptionPane.showConfirmDialog(this,
-						"Este usuario no tiene registros de Respuesta todavia. ¿Quieres crearlo?",
-						"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+						"Este usuario no tiene registros de Respuesta todavia. ¿Quieres crearlo?", "WARNING",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					answerNewReset.setMonth("Enero");
 					answerDAO.insert(answerNewReset);
 					answerNewReset.setMonth("Febrero");
@@ -807,19 +827,49 @@ public class JManageAnswer extends AbstractJInternalFrame {
 					answerDAO.insert(answerNewReset);
 					answerNewReset.setMonth("Diciembre");
 					answerDAO.insert(answerNewReset);
-					
-					
-					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.getJTextFieldName().getText() + " con todos los meses inicializados a 0");
+
+					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario "
+							+ this.getJTextFieldName().getText() + " con todos los meses inicializados a 0");
 					onFilterAnswer(false);
 					this.cleanFilter();
-					
-					
+
 				}
 
 			} else {
-				//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+				// JOptionPane.showMessageDialog(this, "No existen registros
+				// para los datos de búsqueda");
 			}
 
+		}
+
+	}
+
+	public int confirmExit() {
+
+		Object[] options = { "Si, quiero salir", "Cancelar" };
+		int n = JOptionPane.showOptionDialog(this, "¿Has guardado los datos?  !!! Si sales sin guardar, perderás los cambios !!!",
+				"Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, 
+				options[0]); // default button title
+
+		return n;
+	}
+
+	public void onCleanAnswer() {
+		int[] selectedRows = this.getJTableAnswerPeople().getSelectedRows();
+		if (selectedRows.length > 0) {
+			for (int rowIndex : selectedRows) {
+
+				Answer selectedAnswer = this.getAnswersPeopleTableModel().getDomainObject(rowIndex);
+				selectedAnswer.setMoney(null);
+				selectedAnswer.setAnswer("");
+				selectedAnswer.setDate(null);
+				answerDAO.update(selectedAnswer);
+			}
+
+			onFilterAnswer(false);
+			JOptionPane.showMessageDialog(this, "Se han limpiado los datos correctamente");
+		} else {
+			JOptionPane.showMessageDialog(null, "Seleccione algun registro para limpiar");
 		}
 
 	}
@@ -828,14 +878,14 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		List<Answer> answers = this.getAnswersPeopleTableModel().getDomainObjects();
 		for (Answer answer : answers) {
 			answerDAO.update(answer);
-			
+
 		}
-		
+
 		onFilterAnswer(false);
 		JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
-		
-		
 
 	}
+	
+	
 
 }

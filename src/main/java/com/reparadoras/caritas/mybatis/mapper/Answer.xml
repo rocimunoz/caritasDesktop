@@ -76,11 +76,10 @@
     
     <update id="update" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
         
-        UPDATE C_ANSWER <set>
-        <if test="date != null">DATE = #{date},</if>
-        <if test="answer != null">ANSWER = #{answer},</if>
-        <if test="money != null">MONEY = #{money},</if>
-        </set>
+        UPDATE C_ANSWER 
+        SET DATE = #{date},
+        ANSWER = #{answer},
+        MONEY = #{money}
         WHERE ID_PEOPLE = #{people.id}
         AND MONTH=#{month}
     

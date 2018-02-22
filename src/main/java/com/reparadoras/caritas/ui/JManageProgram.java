@@ -126,7 +126,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JDesktopPane desktop = null;
 	private JPanel jPanelFilter = null;
 	private JLabel lblName = null;
-	
+
 	private JTextField tfName;
 	private JLabel lblPassport = null;
 	private JTextField tfPassport;
@@ -203,7 +203,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		incomesDAO = new IncomesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		expensesDAO = new ExpensesDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		otherInfoDAO = new OtherInfoDAO(MyBatisConnectionFactory.getSqlSessionFactory());
-		
+
 		createGUIComponents();
 		initComponents();
 		addListeners();
@@ -280,8 +280,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				int answer = confirmExit();
+				if (answer == 1) {
 
-				dispose();
+					// onSaveAnswer();
+				} else if (answer == 0) {
+					dispose();
+				}
+				
 			}
 		});
 
@@ -415,10 +421,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 	public void initComponents() {
 		this.getCkActive().setSelected(true);
-		
-	}
 
-	
+	}
 
 	/* TABS */
 
@@ -470,7 +474,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 		return (JPanelEconomicSituation) jPanelEconomicSituation;
 	}
-	
+
 	private JPanelOtherInfo getJPanelOtherInfo() {
 		if (jPanelOtherInfo == null) {
 			jPanelOtherInfo = new JPanelOtherInfo();
@@ -602,7 +606,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
-	
+
 	private JLabel getJLabelPassport() {
 		if (lblPassport == null) {
 			lblPassport = new JLabel("Pasaporte:");
@@ -642,7 +646,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 		return gbc_tfDni;
 	}
 
-
 	private JCheckBox getCkActive() {
 		if (ckActive == null) {
 			ckActive = new JCheckBox("Activo");
@@ -665,8 +668,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JButton getJButtonSearch() {
 		if (btnSearchPeople == null) {
 			btnSearchPeople = new JButton("Filtrar");
-			btnSearchPeople.setIcon(
-					new ImageIcon(JManageProgram.class.getResource("/img/icon-search.png")));
+			btnSearchPeople.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-search.png")));
 		}
 
 		return btnSearchPeople;
@@ -685,8 +687,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	private JButton getJButtonClean() {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
-			btnCleanPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
+			btnCleanPeople.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -759,8 +760,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		if (btnPrint == null) {
 			btnPrint = new JButton("Imprimir");
 
-			btnPrint.setIcon(
-					new ImageIcon(JManageProgram.class.getResource("/img/icon-print-32.png")));
+			btnPrint.setIcon(new ImageIcon(JManageProgram.class.getResource("/img/icon-print-32.png")));
 		}
 
 		return btnPrint;
@@ -947,8 +947,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			JobSituation jobSituation = selectedProgram.getJobSituation();
 			Studies studies = selectedProgram.getStudies();
 			OtherInfo otherInfo = selectedProgram.getOtherInfo();
-			
-			
+
 			this.getJPanelAddress().fillData(address);
 			this.getJPanelHome().fillData(home);
 			this.getJPanelFamily().fillData(relativeDAO, family);
@@ -983,7 +982,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		OtherInfo otherInfo = new OtherInfo();
 		otherInfoDAO.insert(otherInfo);
-		
+
 		programNewReset.setFamily(family);
 		programNewReset.setOtherInfo(otherInfo);
 		programNewReset.setPeople(filterPeople);
@@ -997,7 +996,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 		try {
 			logger.info("Filtrando programa ...");
 			FilterProgram filterProgram = new FilterProgram();
-			//filterProgram.setActive(this.getCkActive().isSelected());
+			// filterProgram.setActive(this.getCkActive().isSelected());
 			filterProgram.setDni(this.getJTextFieldDni().getText());
 			filterProgram.setPassport(this.getJTextFieldPassport().getText());
 			filterProgram.setNamePeople(this.getJTextFieldName().getText());
@@ -1084,8 +1083,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 			}
 
 			if (relative.getSituation() != null) {
-				
-				if (editedRelative.getSituation()!=null && !editedRelative.getSituation().equals(relative.getSituation())) {
+
+				if (editedRelative.getSituation() != null
+						&& !editedRelative.getSituation().equals(relative.getSituation())) {
 					editedRelative.setSituation(relative.getSituation());
 				}
 			} else {
@@ -1223,7 +1223,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 	}
 
 	public void openExpense(int mode) {
-		
+
 		int rowIndex = getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			Program selectedProgram = getProgramTableModel().getDomainObject(rowIndex);
@@ -1354,7 +1354,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 			} else if (getJPanelFamily().getJRadioOther().isSelected()) {
 				description = getJPanelFamily().getJRadioOther().getText();
 			}
-			if (!description.equals("")){
+			if (!description.equals("")) {
 				FamilyType fType = new FamilyType();
 				fType.setDescription(description);
 				family.setFamilyType(familyTypeDAO.findFamilyType(fType));
@@ -1362,7 +1362,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 				familyDAO.update(family);
 			}
 
-			
 		} catch (Exception e) {
 			logger.error(e);
 			throw new Exception();
@@ -1410,18 +1409,18 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 
 	}
-	
+
 	public void onSaveOtherInfo(OtherInfo otherInfo) throws Exception {
 		try {
 			logger.info("Guardando otra info ...");
-			if (otherInfo!=null){
+			if (otherInfo != null) {
 				otherInfo.setActuations(getJPanelOtherInfo().getJTextAreaActuations().getText());
 				otherInfo.setDemand(getJPanelOtherInfo().getJTextAreaDemand().getText());
 				otherInfo.setDescription(getJPanelOtherInfo().getJTextAreaDescription().getText());
 				otherInfo.setInstitutions(getJPanelOtherInfo().getJTextAreaInstitutions().getText());
 				otherInfoDAO.update(otherInfo);
 			}
-			
+
 		} catch (Exception e) {
 			logger.error(e);
 			throw new Exception();
@@ -1433,21 +1432,20 @@ public class JManageProgram extends AbstractJInternalFrame {
 		AuthorizationType aTypeFilter = new AuthorizationType();
 		String description = "";
 		logger.info("Guardando tipo de autorizacion ...");
-		
-			if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
-				description = getJPanelAuthorizationType().getJRadioResidence().getText();
 
-			} else if (this.getJPanelAuthorizationType().getJRadioResidenceWork().isSelected()) {
-				description = getJPanelAuthorizationType().getJRadioResidenceWork().getText();
+		if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioResidence().getText();
 
-			} else if (this.getJPanelAuthorizationType().getJRadioStudy().isSelected()) {
-				description = getJPanelAuthorizationType().getJRadioStudy().getText();
+		} else if (this.getJPanelAuthorizationType().getJRadioResidenceWork().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioResidenceWork().getText();
 
-			} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
-				description = getJPanelAuthorizationType().getJRadioTourism().getText();
+		} else if (this.getJPanelAuthorizationType().getJRadioStudy().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioStudy().getText();
 
-			}
-		
+		} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioTourism().getText();
+
+		}
 
 		else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioUndocumented().getText();
@@ -1646,8 +1644,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 					} catch (FileNotFoundException e) {
 
 						JOptionPane.showMessageDialog(this,
-								"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.", "Generacion PDF",
-								JOptionPane.ERROR_MESSAGE);
+								"El fichero pdf se encuentra abierto. Cierrelo y vuelva a intentarlo.",
+								"Generacion PDF", JOptionPane.ERROR_MESSAGE);
 						logger.error(e);
 					} catch (IOException e) {
 
@@ -1662,8 +1660,18 @@ public class JManageProgram extends AbstractJInternalFrame {
 		}
 	}
 
+	public int confirmExit() {
+
+		Object[] options = { "Si, quiero salir", "Cancelar" };
+		int n = JOptionPane.showOptionDialog(this,
+				"¿Has guardado los datos?  !!! Si sales sin guardar, perderás los cambios !!!", "Confirmacion",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+		return n;
+	}
+
 	public void onSaveProgram() {
-		
+
 		int rowIndex = this.getJTableProgram().getSelectedRow();
 		if (rowIndex != -1) {
 			try {
