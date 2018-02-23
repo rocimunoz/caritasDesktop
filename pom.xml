@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.reparadoras</groupId>
 	<artifactId>Caritas</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2-RELEASE</version>
 	<packaging>jar</packaging>
 	<repositories>
 	</repositories>
