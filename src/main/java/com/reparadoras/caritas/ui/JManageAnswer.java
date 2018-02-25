@@ -206,13 +206,8 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				int answer = confirmExit();
-				if (answer == 1) {
-
-					// onSaveAnswer();
-				} else if (answer == 0) {
-					dispose();
-				}
+				onSaveAnswer();
+				dispose();
 				
 			}
 		});
@@ -844,15 +839,16 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 	}
 
+	/*
 	public int confirmExit() {
 
-		Object[] options = { "Si, quiero salir", "Cancelar" };
+		Object[] options = { "Salir sin guardar", "Cancelar" };
 		int n = JOptionPane.showOptionDialog(this, "¿Has guardado los datos?  !!! Si sales sin guardar, perderás los cambios !!!",
 				"Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, 
 				options[0]); // default button title
 
 		return n;
-	}
+	}*/
 
 	public void onCleanAnswer() {
 		int[] selectedRows = this.getJTableAnswerPeople().getSelectedRows();

@@ -280,13 +280,11 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int answer = confirmExit();
-				if (answer == 1) {
-
-					// onSaveAnswer();
-				} else if (answer == 0) {
-					dispose();
-				}
+				
+				onSaveProgram();
+				dispose();
+				
+				
 				
 			}
 		});
