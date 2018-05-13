@@ -211,7 +211,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 					textArea.append("Se ha generado el pdf correctamente. \n");
 					textArea.append("Se ha guardado en: . " + file.getAbsolutePath() + "\n");
 					if (listReport!=null && !listReport.isEmpty()){
-						textArea.append("Registros añadidos al iinforme: \n");
+						textArea.append("Registros añadidos al informe: \n");
 						for (MonthlyReport monthlyReport : listReport) {
 							textArea.append(monthlyReport.getNombre() + " " + monthlyReport.getApellidos() + "\n");
 						}
@@ -669,6 +669,52 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 		return attention;
 	}
+	
+	private Integer getValueTicket(String filterMonth, Ticket ticket) {
+
+		Integer value = 0;
+		
+		switch (filterMonth) {
+		case "Enero":
+			value = ticket.getPointsJanuary();
+			break;
+		case "Febrero":
+			value = ticket.getPointsFebruary();
+			break;
+		case "Marzo":
+			value =  ticket.getPointsMarch();
+			break;
+		case "Abril":
+			value =  ticket.getPointsApril();
+			break;
+		case "Mayo":
+			value =  ticket.getPointsMay();
+			break;
+		case "Junio":
+			value = ticket.getPointsJune();
+			break;
+		case "Julio":
+			value = ticket.getPointsJuly();
+			break;
+		case "Agosto":
+			value = ticket.getPointsAugust();
+			break;
+		case "Septiembre":
+			value =   ticket.getPointsSeptember();
+			break;
+		case "Octubre":
+			value =  ticket.getPointsOctober();
+			break;
+		case "Noviembre":
+			value = ticket.getPointsNovember();
+			break;
+		case "Diciembre":
+			value =  ticket.getPointsDecember();
+			break;
+		}
+
+		return value;
+	}
 
 	public List<MonthlyReport> filterData() {
 
@@ -761,7 +807,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 					MonthlyReport report = new MonthlyReport();
 
-					
+					report.setValorTicket(getValueTicket(filterMonth, ticket));
 					report.setAtencion(getAttentionTicket(filterMonth, ticket));
 					report.setApellidos(people.getFirstSurname() + " " + people.getSecondSurname());
 					report.setEstadoCivil(people.getCivilStatus());
@@ -852,7 +898,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 					if (listaAnswer != null && !listaAnswer.isEmpty()) {
 						Double money = listaAnswer.get(0).getMoney();
 						if (money!=null){
-							report.setRespuestaImporte(String.valueOf(money));
+							report.setRespuestaImporte(money);
 						}
 						
 
