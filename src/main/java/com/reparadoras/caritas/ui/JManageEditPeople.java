@@ -1080,7 +1080,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
 			jBtnAccept.setIcon(
-					new ImageIcon(JManageEditPeople.class.getResource("/com/reparadoras/images/icon-check.png")));
+					new ImageIcon(JManageEditPeople.class.getResource("/img/icon-check.png")));
 		}
 
 		return jBtnAccept;
@@ -1100,7 +1100,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
 			jBtnCancel.setIcon(
-					new ImageIcon(JManageEditPeople.class.getResource("/com/reparadoras/images/icon-cancel.png")));
+					new ImageIcon(JManageEditPeople.class.getResource("/img/icon-cancel.png")));
 		}
 
 		return jBtnCancel;

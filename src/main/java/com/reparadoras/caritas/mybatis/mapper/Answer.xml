@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Answer">
+    <resultMap id="AnswerResult" type="Answer">
+        <result property="idAnswer" column="idAnswer"/> 
+        <result property="month" column="month"/>
+        <result property="answer" column="answer"/>  
+        <result property="year" column="YEAR"/>  
+        <result property="date" column="date"/>
+        <result property="money" column="money"/>
+        <association property="people" resultMap="PeopleResult"/>  
+      
+    </resultMap>
+    
+     <resultMap id="PeopleResult" type="People">
+     <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="firstSurname" column="first_surname"/>  
+       
+    </resultMap>
+ 
+  <select id="findAnswer" parameterType="FilterAnswer" resultMap="AnswerResult">
+        SELECT PE.ID, 
+               PE.NAME,
+               PE.FIRST_SURNAME,
+               A.MONTH,
+               A.ANSWER,
+               A.DATE,
+               A.MONEY
+        FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE 
+        WHERE
+        PE.ID = A.ID_PEOPLE
+        <if test="idPeople != null">
+    		AND PE.ID = #{idPeople}
+  		</if>
+  		<if test="namePeople != null and !namePeople.equals('')">
+  		<bind name="pattern_name" value="'%' + namePeople + '%'" />
+    		AND PE.NAME like #{pattern_name}
+  		</if>
+  		<if test="dniPeople != null and !dniPeople.equals('')">
+  		<bind name="pattern" value="'%' + dniPeople + '%'" />
+    		AND PE.DNI like #{pattern}
+  		</if>
+  		<if test="passportPeople != null and !passportPeople.equals('')">
+  		<bind name="pattern_passport" value="'%' + passportPeople + '%'" />
+    		AND PE.PASSPORT like #{pattern_passport}
+  		</if>
+  		<if test="month != null and !month.equals('')">
+  		<bind name="pattern_month" value="'%' + month + '%'" />
+    		AND A.MONTH LIKE #{pattern_month}
+  		</if>
+  		
+    </select>
+    
+    <select id="findAll"  resultMap="AnswerResult">
+        SELECT PE.ID, 
+               PE.NAME,
+                PE.FIRST_SURNAME,
+               A.MONTH,
+               A.ANSWER,
+               A.DATE,
+               A.MONEY
+        FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE
+     
+      
+    </select>
+    
+    <insert id="insert" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO C_ANSWER
+        	(ID_PEOPLE, YEAR, MONTH, ANSWER) 
+        VALUES (#{people.id},#{year},#{month}, #{answer})
+    </insert> 
+    
+    <delete id="delete" parameterType="People">
+    	DELETE FROM C_ANSWER WHERE ID_PEOPLE = #{id}
+    </delete>
+    
+    <update id="update" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
+        
+        UPDATE C_ANSWER 
+        SET DATE = #{date},
+        ANSWER = #{answer},
+        MONEY = #{money}
+        WHERE ID_PEOPLE = #{people.id}
+        AND MONTH=#{month}
+    
+    </update>
+    
+    
+</mapper>

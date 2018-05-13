@@ -30,16 +30,22 @@ import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
 
+import com.reparadoras.caritas.dao.AnswerDAO;
 import com.reparadoras.caritas.dao.PeopleDAO;
 import com.reparadoras.caritas.dao.TicketDAO;
+import com.reparadoras.caritas.filter.FilterAnswer;
 import com.reparadoras.caritas.filter.FilterTicket;
+import com.reparadoras.caritas.model.Answer;
 import com.reparadoras.caritas.model.People;
+import com.reparadoras.caritas.model.Program;
 import com.reparadoras.caritas.model.Ticket;
 import com.reparadoras.caritas.mybatis.MyBatisConnectionFactory;
 import com.reparadoras.caritas.ui.components.AbstractJInternalFrame;
 import com.reparadoras.caritas.ui.components.JWindowParams;
+import com.reparadoras.caritas.ui.components.NumberCellEditor;
 import com.reparadoras.caritas.ui.components.combobox.ComboBoxRenderer;
 import com.reparadoras.caritas.ui.components.datepicker.CaritasDatePickerCellEditor;
+import com.reparadoras.caritas.ui.components.table.AnswerPeopleTableModel;
 import com.reparadoras.caritas.ui.components.table.ColumnGroup;
 import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
@@ -73,7 +79,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class JManageTicket extends AbstractJInternalFrame {
+public class JManageAnswer extends AbstractJInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	static final Logger logger = Logger.getLogger(JManageProgram.class);
@@ -92,23 +98,24 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JPanel jPanelContent = null;
 
 	private JPanel jPanelTable = null;
-	private TicketsPeopleTableModel ticketsPeopleTableModel = null;
+	private AnswerPeopleTableModel answersPeopleTableModel = null;
 	private JTable tablePeople = null;
 	private JScrollPane scrollPaneJTable = null;
 	private JButton btnSaveTicket;
+	private JButton btnCleanTicket;
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
 	private JButton btnCleanPeople = null;
-	private FilterTicket filterTicket = null;
+	private FilterAnswer filterAnswer = null;
 
-	private TicketDAO ticketDAO;
+	private AnswerDAO answerDAO;
 	private PeopleDAO peopleDAO;
 
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public JManageTicket(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
-			FilterTicket filterTicket) {
+	public JManageAnswer(AbstractJInternalFrame jCicIFParent, boolean modal, int executingMode, String title,
+			FilterAnswer filterAnswer) {
 
 		super(jCicIFParent, modal);
 		this.setVisible(true);
@@ -120,35 +127,35 @@ public class JManageTicket extends AbstractJInternalFrame {
 		this.setResizable(true);
 		this.setTitle(title);
 
-		this.filterTicket = filterTicket;
+		this.filterAnswer = filterAnswer;
 
-		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		answerDAO = new AnswerDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		createGUIComponents();
 		initComponents();
 		addListeners();
-		
-		this.getJTextFieldDni().setText(this.filterTicket.getDniPeople());
-		this.getJTextFieldName().setText(this.filterTicket.getNamePeople());
-		this.getJTextFieldPassport().setText(this.filterTicket.getPassportPeople());
-		if (this.filterTicket.getYearTicket()!=null){
-			this.getJTextFieldYear().setText(this.filterTicket.getYearTicket().toString());
+
+		this.getJTextFieldDni().setText(this.filterAnswer.getDniPeople());
+		this.getJTextFieldName().setText(this.filterAnswer.getNamePeople());
+		this.getJTextFieldPassport().setText(this.filterAnswer.getPassportPeople());
+		if (this.filterAnswer.getYearTicket() != null) {
+			this.getJTextFieldYear().setText(this.filterAnswer.getYearTicket().toString());
 		}
-		if (this.filterTicket.getActive()){
+		if (this.filterAnswer.getActive()) {
 			this.getCkActive().setSelected(true);
-		}else{
+		} else {
 			this.getCkActive().setSelected(false);
 		}
-		
-		onFilterTicket(true);
-		
+
+		onFilterAnswer(true);
+
 		this.getJButtonSearch().setVisible(false);
 		this.getJButtonClean().setVisible(false);
-		
+
 	}
 
-	public JManageTicket(JDesktopPane desktop) {
+	public JManageAnswer(JDesktopPane desktop) {
 		super(desktop);
 		this.desktop = desktop;
 		this.moveToFront();
@@ -159,34 +166,40 @@ public class JManageTicket extends AbstractJInternalFrame {
 		this.setVisible(true);
 		this.pack();
 
-		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		answerDAO = new AnswerDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 		peopleDAO = new PeopleDAO(MyBatisConnectionFactory.getSqlSessionFactory());
 
 		createGUIComponents();
 		initComponents();
 		addListeners();
 
-		onFilterTicket(false);
+		onFilterAnswer(false);
 
 	}
 
 	public void initComponents() {
 
 		this.getCkActive().setSelected(true);
-		
+
 	}
 
 	public void addListeners() {
 
 		getJButtonSearch().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				onFilterTicket(false);
+				onFilterAnswer(false);
 			}
 		});
 
 		getBtnSaveTicket().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				onSaveTicket();
+				onSaveAnswer();
+			}
+		});
+
+		getBtnCleanTicket().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onCleanAnswer();
 			}
 		});
 
@@ -203,7 +216,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 				
 			}
 		});
-		
+
 		getJButtonClean().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cleanFilter();
@@ -211,16 +224,12 @@ public class JManageTicket extends AbstractJInternalFrame {
 		});
 	}
 
-	
 	public void cleanFilter() {
 		this.getJTextFieldDni().setText("");
 		this.getJTextFieldName().setText("");
 		this.getJTextFieldYear().setText("");
-		
-		
+
 	}
-	
-	
 
 	public void createGUIComponents() {
 
@@ -252,9 +261,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
 
 		getJPanelTable().add(getBtnSaveTicket(), getGridJBtnSave());
+		getJPanelTable().add(getBtnCleanTicket(), getGridJBtnClean());
 		getJPanelTable().add(getScrollPaneTable(), getGridJPanelScrollTable());
 
-		setGroupHeadersTicket();
 		setRendererJXDatePicker();
 
 	}
@@ -289,7 +298,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 			jPanelFilter.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda Personas",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			((javax.swing.border.TitledBorder) jPanelFilter.getBorder())
-			.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
+					.setTitleFont(new Font("Verdana", Font.ITALIC, 18));
 		}
 
 		return jPanelFilter;
@@ -342,7 +351,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		return gbc_tfDni;
 	}
-	
+
 	private JLabel getJLabelPassport() {
 		if (lblPassport == null) {
 			lblPassport = new JLabel("Pasaporte:");
@@ -424,7 +433,6 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (tfName == null) {
 			tfName = new JTextField();
 
-			
 		}
 
 		return tfName;
@@ -442,7 +450,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		return gbc_tfName;
 	}
-	
+
 	private JLabel getJLabelYear() {
 
 		if (lblYear == null) {
@@ -498,17 +506,15 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (btnFilterTicket == null) {
 			btnFilterTicket = new JButton("Buscar");
 
-			btnFilterTicket
-					.setIcon(new ImageIcon(JManageTicket.class.getResource("/img/icon-search.png")));
+			btnFilterTicket.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-search.png")));
 		}
 		return btnFilterTicket;
 	}
-	
+
 	private JButton getJButtonClean() {
 		if (btnCleanPeople == null) {
 			btnCleanPeople = new JButton("Limpiar");
-			btnCleanPeople.setIcon(
-					new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
+			btnCleanPeople.setIcon(new ImageIcon(JManagePeople.class.getResource("/img/icon-clean-32.png")));
 		}
 
 		return btnCleanPeople;
@@ -591,9 +597,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	private GridBagConstraints getGridJPanelTable() {
 		GridBagConstraints gbc_jPanelTable = new GridBagConstraints();
+		gbc_jPanelTable.fill = GridBagConstraints.BOTH;
 		gbc_jPanelTable.weighty = 1.0;
 		gbc_jPanelTable.weightx = 1.0;
-		gbc_jPanelTable.fill = GridBagConstraints.BOTH;
 		gbc_jPanelTable.anchor = GridBagConstraints.WEST;
 		gbc_jPanelTable.gridx = 0;
 		gbc_jPanelTable.gridy = 1;
@@ -618,7 +624,6 @@ public class JManageTicket extends AbstractJInternalFrame {
 		GridBagConstraints gbc_btnSave = new GridBagConstraints();
 		gbc_btnSave.anchor = GridBagConstraints.WEST;
 		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSave.weightx = 1.0;
 		gbc_btnSave.gridx = 0;
 		gbc_btnSave.gridy = 0;
 
@@ -628,15 +633,34 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JButton getBtnSaveTicket() {
 		if (btnSaveTicket == null) {
 			btnSaveTicket = new JButton("Guardar");
-			btnSaveTicket
-					.setIcon(new ImageIcon(JManageTicket.class.getResource("/img/icon-save.png")));
+			btnSaveTicket.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-save.png")));
 		}
 		return btnSaveTicket;
 	}
 
+	private GridBagConstraints getGridJBtnClean() {
+
+		GridBagConstraints gbc_btnClean = new GridBagConstraints();
+		gbc_btnClean.anchor = GridBagConstraints.WEST;
+		gbc_btnClean.insets = new Insets(0, 0, 5, 5);
+		gbc_btnClean.weightx = 1.0;
+		gbc_btnClean.gridx = 1;
+		gbc_btnClean.gridy = 0;
+
+		return gbc_btnClean;
+	}
+
+	private JButton getBtnCleanTicket() {
+		if (btnCleanTicket == null) {
+			btnCleanTicket = new JButton("Limpiar");
+			btnCleanTicket.setIcon(new ImageIcon(JManageAnswer.class.getResource("/img/icon-clean-32.png")));
+		}
+		return btnCleanTicket;
+	}
+
 	private JScrollPane getScrollPaneTable() {
 		if (scrollPaneJTable == null) {
-			scrollPaneJTable = new JScrollPane(getJTableTicketsPeople());
+			scrollPaneJTable = new JScrollPane(getJTableAnswerPeople());
 			scrollPaneJTable.setViewportBorder(new LineBorder(new Color(0, 0, 0)));
 		}
 
@@ -650,15 +674,16 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_jPanelScroll.weightx = 1.0;
 		gbc_jPanelScroll.fill = GridBagConstraints.BOTH;
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
+		gbc_jPanelScroll.gridwidth = 2;
 		gbc_jPanelScroll.gridx = 0;
 		gbc_jPanelScroll.gridy = 1;
 
 		return gbc_jPanelScroll;
 	}
 
-	private JTable getJTableTicketsPeople() {
+	private JTable getJTableAnswerPeople() {
 		if (tablePeople == null) {
-			TableModel tableModel = getTicketsPeopleTableModel();
+			TableModel tableModel = getAnswersPeopleTableModel();
 			tablePeople = new JTable(tableModel) {
 
 				protected JTableHeader createDefaultTableHeader() {
@@ -670,186 +695,43 @@ public class JManageTicket extends AbstractJInternalFrame {
 			tablePeople.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			tablePeople.setShowGrid(true);
 			tablePeople.setShowVerticalLines(true);
+			tablePeople.setRowMargin(5);
+			tablePeople.setRowHeight(30);
+			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(75);
+			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(100);
+			tablePeople.getColumnModel().getColumn(3).setPreferredWidth(400);
+			tablePeople.getColumnModel().getColumn(2).setCellEditor(new NumberCellEditor());
+
+			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+			// tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
 
 		}
 
 		return tablePeople;
 	}
 
-	private TicketsPeopleTableModel getTicketsPeopleTableModel() {
+	private AnswerPeopleTableModel getAnswersPeopleTableModel() {
 
-		if (ticketsPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Nombre", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts",
-					"Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts",
-					"Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts" };
-			ticketsPeopleTableModel = new TicketsPeopleTableModel(Arrays.asList(columnIdentifiers));
+		if (answersPeopleTableModel == null) {
+			Object[] columnIdentifiers = new Object[] { "Mes", "Fecha", "Importe", "Respuesta" };
+			answersPeopleTableModel = new AnswerPeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
-		return ticketsPeopleTableModel;
+		return answersPeopleTableModel;
 	}
 
 	private void setRendererJXDatePicker() {
-		TableColumn januaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(1);
-		TableColumn februaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(3);
-		TableColumn marchColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(5);
-		TableColumn aprilColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(7);
-		TableColumn mayColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(9);
-		TableColumn juneColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(11);
-		TableColumn julyColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(13);
-		TableColumn augustColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(15);
-		TableColumn septemberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(17);
-		TableColumn octoberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(19);
-		TableColumn novemberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(21);
-		TableColumn decemberColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(23);
+		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(1);
+
 		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerFebruary = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerMarch = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerApril = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerMay = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerJune = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerJuly = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerAugust = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerSeptember = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerOctober = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerNovember = new CaritasDatePickerCellEditor();
-		CaritasDatePickerCellEditor datePickerDecember = new CaritasDatePickerCellEditor();
-		Calendar calendarMinJanuary = new GregorianCalendar(2017,0,01);
-		Calendar calendarMaxJanuary = new GregorianCalendar(2017,0,31);
-		Calendar calendarMinFebruary = new GregorianCalendar(2017,1,01);
-		Calendar calendarMaxFebruary = new GregorianCalendar(2017,2,1);
-		Calendar calendarMinMarch = new GregorianCalendar(2017,2,01);
-		Calendar calendarMaxMarch = new GregorianCalendar(2017,2,31);
-		Calendar calendarMinApril = new GregorianCalendar(2017,3,01);
-		Calendar calendarMaxApril = new GregorianCalendar(2017,3,30);
-		Calendar calendarMinMay = new GregorianCalendar(2017,4,01);
-		Calendar calendarMaxMay = new GregorianCalendar(2017,4,31);
-		Calendar calendarMinJune = new GregorianCalendar(2017,5,01);
-		Calendar calendarMaxJune = new GregorianCalendar(2017,5,30);
-		Calendar calendarMinJuly = new GregorianCalendar(2017,6,01);
-		Calendar calendarMaxJuly = new GregorianCalendar(2017,6,31);
-		Calendar calendarMinAugust = new GregorianCalendar(2017,7,01);
-		Calendar calendarMaxAugust = new GregorianCalendar(2017,7,31);
-		Calendar calendarMinSeptember = new GregorianCalendar(2017,8,01);
-		Calendar calendarMaxSeptember = new GregorianCalendar(2017,8,30);
-		Calendar calendarMinOctober = new GregorianCalendar(2017,9,01);
-		Calendar calendarMaxOctober = new GregorianCalendar(2017,9,31);
-		Calendar calendarMinNovember = new GregorianCalendar(2017,10,01);
-		Calendar calendarMaxNovember = new GregorianCalendar(2017,10,30);
-		Calendar calendarMinDecember = new GregorianCalendar(2017,11,01);
-		Calendar calendarMaxDecember = new GregorianCalendar(2017,11,31);
-		
-		/*datePickerJanuary.setLowerBound(calendarMinJanuary.getTime());
-		datePickerJanuary.setUpperBound(calendarMaxJanuary.getTime());
-		datePickerFebruary.setLowerBound(calendarMinFebruary.getTime());
-		datePickerFebruary.setUpperBound(calendarMaxFebruary.getTime());
-		datePickerMarch.setLowerBound(calendarMinMarch.getTime());
-		datePickerMarch.setUpperBound(calendarMaxMarch.getTime());
-		datePickerApril.setLowerBound(calendarMinApril.getTime());
-		datePickerApril.setUpperBound(calendarMaxApril.getTime());
-		datePickerMay.setLowerBound(calendarMinMay.getTime());
-		datePickerMay.setUpperBound(calendarMaxMay.getTime());
-		datePickerJune.setLowerBound(calendarMinJune.getTime());
-		datePickerJune.setUpperBound(calendarMaxJune.getTime());
-		datePickerJuly.setLowerBound(calendarMinJuly.getTime());
-		datePickerJuly.setUpperBound(calendarMaxJuly.getTime());
-		datePickerAugust.setLowerBound(calendarMinAugust.getTime());
-		datePickerAugust.setUpperBound(calendarMaxAugust.getTime());
-		datePickerSeptember.setLowerBound(calendarMinSeptember.getTime());
-		datePickerSeptember.setUpperBound(calendarMaxSeptember.getTime());
-		datePickerOctober.setLowerBound(calendarMinOctober.getTime());
-		datePickerOctober.setUpperBound(calendarMaxOctober.getTime());
-		datePickerNovember.setLowerBound(calendarMinNovember.getTime());
-		datePickerNovember.setUpperBound(calendarMaxNovember.getTime());
-		datePickerDecember.setLowerBound(calendarMinDecember.getTime());
-		datePickerDecember.setUpperBound(calendarMaxDecember.getTime());*/
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 		januaryColumn.setCellEditor(datePickerJanuary);
 		januaryColumn.setCellRenderer(dateRenderer);
-		februaryColumn.setCellEditor(datePickerFebruary);
-		februaryColumn.setCellRenderer(dateRenderer);
-		marchColumn.setCellEditor(datePickerMarch);
-		marchColumn.setCellRenderer(dateRenderer);
-		aprilColumn.setCellEditor(datePickerApril);
-		aprilColumn.setCellRenderer(dateRenderer);
-		mayColumn.setCellEditor(datePickerMay);
-		mayColumn.setCellRenderer(dateRenderer);
-		juneColumn.setCellEditor(datePickerJune);
-		juneColumn.setCellRenderer(dateRenderer);
-		julyColumn.setCellEditor(datePickerJuly);
-		julyColumn.setCellRenderer(dateRenderer);
-		augustColumn.setCellEditor(datePickerAugust);
-		augustColumn.setCellRenderer(dateRenderer);
-		septemberColumn.setCellEditor(datePickerSeptember);
-		septemberColumn.setCellRenderer(dateRenderer);
-		octoberColumn.setCellEditor(datePickerOctober);
-		octoberColumn.setCellRenderer(dateRenderer);
-		novemberColumn.setCellEditor(datePickerNovember);
-		novemberColumn.setCellRenderer(dateRenderer);
-		decemberColumn.setCellEditor(datePickerDecember);
-		decemberColumn.setCellRenderer(dateRenderer);
 
-	}
-
-	private void setGroupHeadersTicket() {
-		GroupableTableHeader header = (GroupableTableHeader) this.getJTableTicketsPeople().getTableHeader();
-		TableColumnModel tableColumnModel = this.getJTableTicketsPeople().getColumnModel();
-		ColumnGroup groupJanuary = new ColumnGroup("ENERO");
-		groupJanuary.add(tableColumnModel.getColumn(1));
-		groupJanuary.add(tableColumnModel.getColumn(2));
-		ColumnGroup groupFebruary = new ColumnGroup("FEBRERO");
-		groupFebruary.add(tableColumnModel.getColumn(3));
-		groupFebruary.add(tableColumnModel.getColumn(4));
-		ColumnGroup groupMarch = new ColumnGroup("MARZO");
-		groupMarch.add(tableColumnModel.getColumn(5));
-		groupMarch.add(tableColumnModel.getColumn(6));
-		ColumnGroup groupApril = new ColumnGroup("ABRIL");
-		groupApril.add(tableColumnModel.getColumn(7));
-		groupApril.add(tableColumnModel.getColumn(8));
-		ColumnGroup groupMay = new ColumnGroup("MAYO");
-		groupMay.add(tableColumnModel.getColumn(9));
-		groupMay.add(tableColumnModel.getColumn(10));
-		ColumnGroup groupJune = new ColumnGroup("JUNIO");
-		groupJune.add(tableColumnModel.getColumn(11));
-		groupJune.add(tableColumnModel.getColumn(12));
-		ColumnGroup groupJuly = new ColumnGroup("JULIO");
-		groupJuly.add(tableColumnModel.getColumn(13));
-		groupJuly.add(tableColumnModel.getColumn(14));
-		ColumnGroup groupAugust = new ColumnGroup("AGOSTO");
-		groupAugust.add(tableColumnModel.getColumn(15));
-		groupAugust.add(tableColumnModel.getColumn(16));
-		ColumnGroup groupSeptember = new ColumnGroup("SEPTIEMBRE");
-		groupSeptember.add(tableColumnModel.getColumn(17));
-		groupSeptember.add(tableColumnModel.getColumn(18));
-		ColumnGroup groupOctober = new ColumnGroup("OCTUBRE");
-		groupOctober.add(tableColumnModel.getColumn(19));
-		groupOctober.add(tableColumnModel.getColumn(20));
-		ColumnGroup groupNovember = new ColumnGroup("NOVIEMBRE");
-		groupNovember.add(tableColumnModel.getColumn(21));
-		groupNovember.add(tableColumnModel.getColumn(22));
-		ColumnGroup groupDecember = new ColumnGroup("DICIEMBRE");
-		groupDecember.add(tableColumnModel.getColumn(23));
-		groupDecember.add(tableColumnModel.getColumn(24));
-
-		header.addColumnGroup(groupJanuary);
-		header.addColumnGroup(groupFebruary);
-		header.addColumnGroup(groupMarch);
-		header.addColumnGroup(groupApril);
-		header.addColumnGroup(groupMay);
-		header.addColumnGroup(groupJune);
-		header.addColumnGroup(groupJuly);
-		header.addColumnGroup(groupAugust);
-		header.addColumnGroup(groupSeptember);
-		header.addColumnGroup(groupOctober);
-		header.addColumnGroup(groupNovember);
-		header.addColumnGroup(groupDecember);
-
-		Border blackline;
-
-		blackline = BorderFactory.createLineBorder(Color.black);
-		UIManager.getDefaults().put("TableHeader.cellBorder", blackline);
-
-		header.setBorder(blackline);
 	}
 
 	/* EVENTOS */
@@ -859,7 +741,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		try {
 
 			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
-				int row = this.getJTableTicketsPeople().getSelectedRow();
+				int row = this.getJTableAnswerPeople().getSelectedRow();
 				if (row != -1) {
 					// Ticket people =
 					// this.getJTableTicketsPeople().getDomainObject(row);
@@ -888,84 +770,126 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	}
 
-	public void onFilterTicket(boolean create) {
-		
-		
-		if (filterTicket == null){
-			filterTicket = new FilterTicket();
-		} 
-		
-		filterTicket.setDniPeople(this.getJTextFieldDni().getText());
-		filterTicket.setNamePeople(this.getJTextFieldName().getText());
-		if (this.getJTextFieldYear().getText()!=null && !this.getJTextFieldYear().getText().equals("")){
-			filterTicket.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
-		}
-		
+	public void onFilterAnswer(boolean create) {
 
-		
-		
-		List<Ticket> tickets = ticketDAO.findTicket(filterTicket);
-		if (tickets != null && !tickets.isEmpty()) {
-			this.getTicketsPeopleTableModel().clearTableModelData();
-			this.getTicketsPeopleTableModel().addRows(tickets);
+		if (filterAnswer == null) {
+			filterAnswer = new FilterAnswer();
+		}
+
+		filterAnswer.setDniPeople(this.getJTextFieldDni().getText());
+		filterAnswer.setNamePeople(this.getJTextFieldName().getText());
+		if (this.getJTextFieldYear().getText() != null && !this.getJTextFieldYear().getText().equals("")) {
+			filterAnswer.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
+		}
+
+		List<Answer> answers = answerDAO.findAnswer(filterAnswer);
+		if (answers != null && !answers.isEmpty()) {
+			this.getAnswersPeopleTableModel().clearTableModelData();
+			this.getAnswersPeopleTableModel().addRows(answers);
 
 		} else {
-			Ticket ticketNewReset = new Ticket();
+			Answer answerNewReset = new Answer();
 			People filterPeople = new People();
 			filterPeople.setDni(this.getJTextFieldDni().getText());
 			filterPeople.setName(this.getJTextFieldName().getText());
-			filterPeople.setId(filterTicket.getIdPeople());
+			filterPeople.setId(filterAnswer.getIdPeople());
 			People peopleTicket = peopleDAO.findPeopleById(filterPeople);
-			
-			ticketNewReset.setPeople(peopleTicket);
-			
-			ticketNewReset.setYear(Calendar.getInstance().get(Calendar.YEAR));
+
+			answerNewReset.setPeople(peopleTicket);
+
+			answerNewReset.setYear(Calendar.getInstance().get(Calendar.YEAR));
 
 			if (create) {
 				if (JOptionPane.showConfirmDialog(this,
-						"Este usuario no tiene registros de Vales todavia. ¿Quieres crearlo?",
-						"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				
-					ticketDAO.insert(ticketNewReset);
-					
-					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario " + this.getJTextFieldName().getText() + " con todos los meses inicializados a 0");
-					onFilterTicket(false);
+						"Este usuario no tiene registros de Respuesta todavia. ¿Quieres crearlo?", "WARNING",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					answerNewReset.setMonth("Enero");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Febrero");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Marzo");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Abril");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Mayo");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Junio");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Julio");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Agosto");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Septiembre");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Octubre");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Noviembre");
+					answerDAO.insert(answerNewReset);
+					answerNewReset.setMonth("Diciembre");
+					answerDAO.insert(answerNewReset);
+
+					JOptionPane.showMessageDialog(this, "Se ha creado un registro para el usuario "
+							+ this.getJTextFieldName().getText() + " con todos los meses inicializados a 0");
+					onFilterAnswer(false);
 					this.cleanFilter();
-					
-					
+
 				}
 
 			} else {
-				//JOptionPane.showMessageDialog(this, "No existen registros para los datos de búsqueda");
+				// JOptionPane.showMessageDialog(this, "No existen registros
+				// para los datos de búsqueda");
 			}
 
 		}
 
 	}
 
-	public void onSaveTicket() {
-
-		int row = this.getJTableTicketsPeople().getSelectedRow();
-		if (row != -1) {
-			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(row);
-			ticketDAO.update(ticket);
-			onFilterTicket(false);
-			JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
-		} else {
-			JOptionPane.showMessageDialog(null, "Seleccione un registro");
-			return;
-		}
-
-	}
-	
 	public int confirmExit() {
 
 		Object[] options = { "Si, quiero salir", "Cancelar" };
-		int n = JOptionPane.showOptionDialog(this,
-				"¿Has guardado los datos?  !!! Si sales sin guardar, perderás los cambios !!!", "Confirmacion",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		int n = JOptionPane.showOptionDialog(this, "¿Has guardado los datos?  !!! Si sales sin guardar, perderás los cambios !!!",
+				"Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, 
+				options[0]); // default button title
 
 		return n;
 	}
+
+	public void onCleanAnswer() {
+		int[] selectedRows = this.getJTableAnswerPeople().getSelectedRows();
+		if (selectedRows.length > 0) {
+			for (int rowIndex : selectedRows) {
+
+				Answer selectedAnswer = this.getAnswersPeopleTableModel().getDomainObject(rowIndex);
+				selectedAnswer.setMoney(null);
+				selectedAnswer.setAnswer("");
+				selectedAnswer.setDate(null);
+				answerDAO.update(selectedAnswer);
+			}
+
+			onFilterAnswer(false);
+			JOptionPane.showMessageDialog(this, "Se han limpiado los datos correctamente");
+		} else {
+			JOptionPane.showMessageDialog(null, "Seleccione algun registro para limpiar");
+		}
+
+	}
+
+	public void onSaveAnswer() {
+		List<Answer> answers = this.getAnswersPeopleTableModel().getDomainObjects();
+		for (Answer answer : answers) {
+			
+			if (answer.getAnswer()!=null && answer.getAnswer().length()>199){
+				answer.setAnswer(answer.getAnswer().substring(0, 199));
+			}
+			answerDAO.update(answer);
+
+		}
+
+		onFilterAnswer(false);
+		JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
+
+	}
+	
+	
 
 }

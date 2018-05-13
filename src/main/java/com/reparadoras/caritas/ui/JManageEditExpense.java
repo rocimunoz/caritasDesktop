@@ -552,7 +552,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
 			jBtnAccept.setIcon(
-					new ImageIcon(JManageEditExpense.class.getResource("/com/reparadoras/images/icon-check.png")));
+					new ImageIcon(JManageEditExpense.class.getResource("/img/icon-check.png")));
 		}
 
 		return jBtnAccept;
@@ -572,7 +572,7 @@ public class JManageEditExpense extends AbstractJInternalFrame {
 		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
 			jBtnCancel.setIcon(
-					new ImageIcon(JManageEditExpense.class.getResource("/com/reparadoras/images/icon-cancel.png")));
+					new ImageIcon(JManageEditExpense.class.getResource("/img/icon-cancel.png")));
 		}
 
 		return jBtnCancel;
