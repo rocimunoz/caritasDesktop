@@ -108,14 +108,12 @@ public class PdfMonthlyReport {
 			//Document document = new Document(PageSize.A4.rotate(), 20f, 10f, 100f, 0f);
 			Document document = new Document(PageSize.A4.rotate());
 			
-			
-		
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
 
 			document.open();
 
 			addMetaData(document);
-			addTitle(document, month, year);
+			addTitle(document, month, year, lista);
 			addReport(document, lista);
 
 			document.close();
@@ -135,7 +133,7 @@ public class PdfMonthlyReport {
 		document.addCreator("Lars Vogel");
 	}
 
-	private void addTitle(Document document, String month, String year) throws DocumentException {
+	private void addTitle(Document document, String month, String year, List<MonthlyReport> lista) throws DocumentException {
 		Paragraph paragraphTitle = new Paragraph();
 		paragraphTitle.setAlignment(Paragraph.ALIGN_CENTER);
 
@@ -143,19 +141,46 @@ public class PdfMonthlyReport {
 
 		Paragraph paragraphSub = new Paragraph();
 		
-		//paragraphSub.setAlignment(Paragraph.ALIGN_LEFT);
+		Integer totalVales = 0;
+		Double totalImporte = 0.0;
+		
+		for (MonthlyReport report : lista) {
+			
+			totalVales = totalVales + report.getValorTicket();
+			totalImporte = totalImporte + report.getRespuestaImporte();
+		}
 
-		paragraphSub.add(new Paragraph("PARROQUIA: SANTA MARIA REPARADORAS", TITLE_14_FONT_BOLD));
-		paragraphSub.add(new Paragraph("FECHA: " + month + "  " + year, TITLE_14_FONT_BOLD));
-
-		this.addEmptyLine(paragraphTitle, 1);
-
-		this.addEmptyLine(paragraphSub, 1);
+		PdfPTable table1 = new PdfPTable(2);
+		table1.setWidthPercentage(100);
+		table1.addCell(getCell("PARROQUIA: SANTA MARIA REPARADORAS", PdfPCell.ALIGN_LEFT));
+		table1.addCell(getCell("TOTAL VALES: " + totalVales, PdfPCell.ALIGN_LEFT));
+		
+		PdfPTable table2 = new PdfPTable(2);
+		table2.setWidthPercentage(100);
+		table2.addCell(getCell("FECHA: " + month + "  " + year, PdfPCell.ALIGN_LEFT));
+		table2.addCell(getCell("TOTAL IMPORTE: " + totalImporte, PdfPCell.ALIGN_LEFT));
+		
+		
+		
+		addEmptyLine(paragraphTitle, 1);
+		paragraphSub.add(table1);
+		paragraphSub.add(table2);
+		
+		addEmptyLine(paragraphSub, 1);
 
 		document.add(paragraphTitle);
 		document.add(paragraphSub);
 	}
 
+	
+	public PdfPCell getCell(String text, int alignment) {
+	    PdfPCell cell = new PdfPCell(new Paragraph(text, TITLE_14_FONT_BOLD));
+	    cell.setPadding(0);
+	    cell.setHorizontalAlignment(alignment);
+	    cell.setBorder(PdfPCell.NO_BORDER);
+	    return cell;
+	}
+	
 	private void addReport(Document document, List<MonthlyReport> lista) throws DocumentException {
 
 		try {
@@ -318,7 +343,7 @@ public class PdfMonthlyReport {
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Phrase(report.getRespuestaImporte(), TITLE_6_FONT));
+					cell = new PdfPCell(new Phrase(String.valueOf(report.getRespuestaImporte()), TITLE_6_FONT));
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
