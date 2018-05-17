@@ -193,13 +193,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				int answer = confirmExit();
-				if (answer == 1) {
-
-					// onSaveAnswer();
-				} else if (answer == 0) {
-					dispose();
-				}
+				onSaveTicket();
+				dispose();
 				
 			}
 		});
@@ -950,22 +945,11 @@ public class JManageTicket extends AbstractJInternalFrame {
 			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(row);
 			ticketDAO.update(ticket);
 			onFilterTicket(false);
-			JOptionPane.showMessageDialog(this, "Se han guardado los datos correctamente");
-		} else {
-			JOptionPane.showMessageDialog(null, "Seleccione un registro");
-			return;
-		}
+			JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
+		} 
 
 	}
 	
-	public int confirmExit() {
 
-		Object[] options = { "Si, quiero salir", "Cancelar" };
-		int n = JOptionPane.showOptionDialog(this,
-				"¿Has guardado los datos?  !!! Si sales sin guardar, perderás los cambios !!!", "Confirmacion",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-		return n;
-	}
 
 }

@@ -157,10 +157,6 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		getJButtonReport().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				
-				
-				
-				
 				createPdfReport();
 			}
 		});
@@ -881,9 +877,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 					}
 
-					if (program.getOtherInfo() != null) {
-						report.setDemandas(program.getOtherInfo().getDemand());
-					}
+					
 
 					Family family = program.getFamily();
 					if (family != null) {
@@ -897,8 +891,11 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 					
 					if (listaAnswer != null && !listaAnswer.isEmpty()) {
 						Double money = listaAnswer.get(0).getMoney();
+						String answer = listaAnswer.get(0).getAnswer();
+						report.setDemandas(answer);
 						if (money!=null){
 							report.setRespuestaImporte(money);
+							
 						}
 						
 
