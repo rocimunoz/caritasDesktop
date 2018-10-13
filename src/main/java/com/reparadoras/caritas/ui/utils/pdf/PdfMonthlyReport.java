@@ -146,8 +146,8 @@ public class PdfMonthlyReport {
 		
 		for (MonthlyReport report : lista) {
 			
-			totalVales = totalVales + report.getValorTicket();
-			totalImporte = totalImporte + report.getRespuestaImporte();
+			totalVales = totalVales + (report.getValorTicket()!=null?report.getValorTicket():0);
+			totalImporte = totalImporte + (report.getRespuestaImporte()!=null?report.getRespuestaImporte():0);
 		}
 
 		PdfPTable table1 = new PdfPTable(2);
@@ -270,8 +270,11 @@ public class PdfMonthlyReport {
 			if (lista != null && !lista.isEmpty()) {
 
 				for (MonthlyReport report : lista) {
-
-					cell = new PdfPCell(new Phrase(report.getAtencion(), TITLE_6_FONT));
+					String atencion = "";
+					if (report.getAtencion()!=null) {
+						atencion = report.getAtencion();
+					}
+					cell = new PdfPCell(new Phrase(atencion, TITLE_6_FONT));
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
@@ -343,7 +346,12 @@ public class PdfMonthlyReport {
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Phrase(String.valueOf(report.getRespuestaImporte()), TITLE_6_FONT));
+					Double respuestaImporte = report.getRespuestaImporte();
+					String respuestaImporteTexto = "";
+					if (respuestaImporte!=null) {
+						respuestaImporteTexto = String.valueOf(respuestaImporte);
+					}
+					cell = new PdfPCell(new Phrase(respuestaImporteTexto, TITLE_6_FONT));
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
