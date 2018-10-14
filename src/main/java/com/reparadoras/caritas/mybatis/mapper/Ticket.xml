@@ -38,12 +38,14 @@
      <resultMap id="PeopleResult" type="People">
      <id property="id" column="id"/>
         <result property="name" column="name"/>  
+         <result property="firstSurname" column="first_surname"/>  
        
     </resultMap>
  
    <select id="findTicket" parameterType="FilterTicket" resultMap="TicketResult">
         SELECT PE.ID, 
                PE.NAME, 
+               PE.FIRST_SURNAME,
                T.POINTS_JANUARY,
                T.POINTS_FEBRUARY,
                T.POINTS_MARCH,
@@ -135,6 +137,7 @@
     <select id="findAll"  resultMap="TicketResult">
         SELECT PE.ID, 
                PE.NAME, 
+               PE.FIRST_SURNAME,
                T.POINTS_JANUARY,
                T.POINTS_FEBRUARY,
                T.POINTS_MARCH,

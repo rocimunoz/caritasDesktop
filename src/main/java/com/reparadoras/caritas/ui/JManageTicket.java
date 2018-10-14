@@ -942,11 +942,13 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		int row = this.getJTableTicketsPeople().getSelectedRow();
 		if (row != -1) {
+			logger.info("Guardando datos ...");
 			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(row);
 			ticketDAO.update(ticket);
 			onFilterTicket(false);
-			JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
+			
 		} 
+		JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
 
 	}
 	

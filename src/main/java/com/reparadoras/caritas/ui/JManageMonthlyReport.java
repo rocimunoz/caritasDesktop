@@ -814,15 +814,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			}
 
-//<<<<<<< HEAD
-//					report.setValorTicket(getValueTicket(filterMonth, ticket));
-//					report.setAtencion(getAttentionTicket(filterMonth, ticket));
-//					report.setApellidos(people.getFirstSurname() + " " + people.getSecondSurname());
-//					report.setEstadoCivil(people.getCivilStatus());
-//					if (people.getDateBorn() != null) {
-//						report.setFechaNacimiento(sdfCorto.format(people.getDateBorn()));
-//					}
-//=======
+
 		}
 	}
 
@@ -855,34 +847,40 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		Program program = null;
 		FilterProgram filterProgram = new FilterProgram();
 		filterProgram.setIdPeople(people.getId());
+		
+		report.setApellidos(people.getFirstSurname() + " "
+				+ (people.getSecondSurname() != null ? people.getSecondSurname() : ""));
+		report.setEstadoCivil(people.getCivilStatus());
+		if (people.getDateBorn() != null) {
+			report.setFechaNacimiento(sdfCorto.format(people.getDateBorn()));
+		}
+
+		report.setNacionalidad(people.getNationality());
+		report.setNombre(people.getName());
+		report.setSexo(people.getSex());
+		String documentacion = "";
+		if (people.getDni() != null && !people.getDni().equals("")) {
+			documentacion = people.getDni();
+		} else if (people.getPassport() != null && !people.getPassport().equals("")) {
+			documentacion = people.getPassport();
+		}
+		report.setDocumentacion(documentacion);
+		
+		report.setEstadoCivil(people.getCivilStatus());
+		if (people.getYearToSpain() != null) {
+			report.setAnyoLlegada(String.valueOf(people.getYearToSpain()));
+		}
+		
+		if (ticket != null) {
+			report.setValorTicket(getValueTicket(filterMonth, ticket));
+			report.setAtencion(getAttentionTicket(filterMonth, ticket));
+		}
+		
 		List<Program> listPrograms = programDAO.findProgram(filterProgram);
-		// filterAnswer.setIdPeople(id);
-		// List<Answer> listaAnswer = answerDAO.findAnswer(filterAnswer);
 		if (listPrograms != null && !listPrograms.isEmpty()) {
 			program = listPrograms.get(0);
-			people = program.getPeople();
-			if (ticket != null) {
-				report.setValorTicket(getValueTicket(filterMonth, ticket));
-				report.setAtencion(getAttentionTicket(filterMonth, ticket));
-			}
-
-			report.setApellidos(people.getFirstSurname() + " "
-					+ (people.getSecondSurname() != null ? people.getSecondSurname() : ""));
-			report.setEstadoCivil(people.getCivilStatus());
-			if (people.getDateBorn() != null) {
-				report.setFechaNacimiento(sdfCorto.format(people.getDateBorn()));
-			}
-
-			report.setNacionalidad(people.getNationality());
-			report.setNombre(people.getName());
-			report.setSexo(people.getSex());
-			String documentacion = "";
-			if (people.getDni() != null && !people.getDni().equals("")) {
-				documentacion = people.getDni();
-			} else if (people.getPassport() != null && !people.getPassport().equals("")) {
-				documentacion = people.getPassport();
-			}
-			report.setDocumentacion(documentacion);
+			//people = program.getPeople();
+			
 			String domicilio = "";
 			String street = program.getFamily().getHome().getAddress().getStreet();
 			if (street != null) {
@@ -907,10 +905,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				report.setTipoFamilia(tipoFamilia);
 			}
 
-			report.setEstadoCivil(people.getCivilStatus());
-			if (people.getYearToSpain() != null) {
-				report.setAnyoLlegada(String.valueOf(people.getYearToSpain()));
-			}
+			
 
 			String tipoAutorizacion = "";
 			if (program.getAuthorizationType() != null) {
