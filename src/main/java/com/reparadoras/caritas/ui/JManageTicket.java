@@ -96,6 +96,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JTable tablePeople = null;
 	private JScrollPane scrollPaneJTable = null;
 	private JButton btnSaveTicket;
+	private JButton btnCleanTicket;
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
 	private JButton btnCleanPeople = null;
@@ -119,7 +120,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		this.setMaximizable(true);
 		this.setResizable(true);
 		this.setTitle(title);
-
+		this.desktop = jCicIFParent.getDesktopPane();
 		this.filterTicket = filterTicket;
 
 		ticketDAO = new TicketDAO(MyBatisConnectionFactory.getSqlSessionFactory());
@@ -199,6 +200,13 @@ public class JManageTicket extends AbstractJInternalFrame {
 			}
 		});
 		
+		getBtnCleanTicket().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openCleanTicket(JWindowParams.IMODE_UPDATE, "Actualización Ticket");
+				
+			}
+		});
+		
 		getJButtonClean().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cleanFilter();
@@ -215,6 +223,33 @@ public class JManageTicket extends AbstractJInternalFrame {
 		
 	}
 	
+	public void openCleanTicket(int openMode, String title) {
+		JManageEditTicket jManageEditTicket = null;
+		try {
+			int row = this.getJTableTicketsPeople().getSelectedRow();
+			if (row != -1) {
+				row = getJTableTicketsPeople().convertRowIndexToModel(row);
+				Ticket ticket = getTicketsPeopleTableModel().getDomainObject(row);
+				
+				jManageEditTicket = new JManageEditTicket(this, true, openMode, title, ticket);
+				
+				this.desktop.add(jManageEditTicket);
+				jManageEditTicket.setVisible(true);
+				jManageEditTicket.moveToFront();
+				jManageEditTicket.show();
+			} else {
+				JOptionPane.showMessageDialog(null, "Seleccione un registro");
+				return;
+			}
+			
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e);
+		}
+
+	}
 	
 
 	public void createGUIComponents() {
@@ -247,6 +282,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		getJPanelTable().setLayout(getGridLayoutJPanelTable());
 
 		getJPanelTable().add(getBtnSaveTicket(), getGridJBtnSave());
+		getJPanelTable().add(getBtnCleanTicket(), getGridBtnCleanTicket());
 		getJPanelTable().add(getScrollPaneTable(), getGridJPanelScrollTable());
 
 		setGroupHeadersTicket();
@@ -532,6 +568,29 @@ public class JManageTicket extends AbstractJInternalFrame {
 		return btnExit;
 	}
 
+	private GridBagConstraints getGridBtnCleanTicket() {
+
+		GridBagConstraints gbc_btnSave = new GridBagConstraints();
+		gbc_btnSave.anchor = GridBagConstraints.WEST;
+		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSave.weightx = 1.0;
+		gbc_btnSave.gridx = 1;
+		gbc_btnSave.gridy = 0;
+
+		return gbc_btnSave;
+
+		
+	}
+	
+	private JButton getBtnCleanTicket() {
+		if (btnCleanTicket == null) {
+			btnCleanTicket = new JButton("Limpiar");
+			btnCleanTicket
+					.setIcon(new ImageIcon(JManageTicket.class.getResource("/img/icon-clean-32.png")));
+		}
+		return btnCleanTicket;
+	}
+
 	private GridBagConstraints getGridButtonExit() {
 
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
@@ -613,7 +672,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		GridBagConstraints gbc_btnSave = new GridBagConstraints();
 		gbc_btnSave.anchor = GridBagConstraints.WEST;
 		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSave.weightx = 1.0;
+		//gbc_btnSave.weightx = 1.0;
 		gbc_btnSave.gridx = 0;
 		gbc_btnSave.gridy = 0;
 
@@ -647,6 +706,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		gbc_jPanelScroll.anchor = GridBagConstraints.WEST;
 		gbc_jPanelScroll.gridx = 0;
 		gbc_jPanelScroll.gridy = 1;
+		gbc_jPanelScroll.gridwidth=2;
 
 		return gbc_jPanelScroll;
 	}

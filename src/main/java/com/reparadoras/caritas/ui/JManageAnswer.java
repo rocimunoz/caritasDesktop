@@ -731,39 +731,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 	/* EVENTOS */
 
-	public void openEditPeople(int openMode, String title) {
-		JManageEditPeople jManageEditPeople = null;
-		try {
 
-			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
-				int row = this.getJTableAnswerPeople().getSelectedRow();
-				if (row != -1) {
-					// Ticket people =
-					// this.getJTableTicketsPeople().getDomainObject(row);
-					// jManageEditPeople = new JManageEditPeople(this, true,
-					// openMode, title, people);
-
-				} else {
-					JOptionPane.showMessageDialog(null, "Seleccione un registro");
-					return;
-				}
-
-			} else {
-				jManageEditPeople = new JManageEditPeople(this, true, openMode, title, null);
-			}
-
-			this.desktop.add(jManageEditPeople);
-			jManageEditPeople.setVisible(true);
-			jManageEditPeople.moveToFront();
-			jManageEditPeople.show();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e);
-		}
-
-	}
 
 	public void onFilterAnswer(boolean create) {
 
