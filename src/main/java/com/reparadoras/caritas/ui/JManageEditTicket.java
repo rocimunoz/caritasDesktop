@@ -32,6 +32,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -131,7 +133,48 @@ public class JManageEditTicket extends AbstractJInternalFrame {
 
 		getJButtonAccept().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Cerrar Transaccion
+				Map<String, Boolean> mapCleanMonths = new HashMap<>();
+				if (getJckJanuary().isSelected()) {
+					mapCleanMonths.put("Enero", true);
+				}
+				if (getJckFebruary().isSelected()) {
+					mapCleanMonths.put("Febrero", true);
+				}
+				if (getJckMarch().isSelected()) {
+					mapCleanMonths.put("Marzo", true);
+				}
+				if (getJckApril().isSelected()) {
+					mapCleanMonths.put("Abril", true);
+				}
+				if (getJckMay().isSelected()) {
+					mapCleanMonths.put("Mayo", true);
+				}
+				if (getJckJune().isSelected()) {
+					mapCleanMonths.put("Junio", true);
+				}
+				if (getJckJuly().isSelected()) {
+					mapCleanMonths.put("Julio", true);
+				}
+				if (getJckAugust().isSelected()) {
+					mapCleanMonths.put("Agosto", true);
+				}
+				if (getJckSeptember().isSelected()) {
+					mapCleanMonths.put("Septiembre", true);
+				}
+				if (getJckOctober().isSelected()) {
+					mapCleanMonths.put("Octubre", true);
+				}
+				if (getJckNovember().isSelected()) {
+					mapCleanMonths.put("Noviembre", true);
+				}
+				if (getJckDecember().isSelected()) {
+					mapCleanMonths.put("Diciembre", true);
+				}
+				
+				
+				
+				((JManageTicket)jCicIFParent).setCleanJXDatePicker(mapCleanMonths);
+				
 				onCloseWindow();
 				
 

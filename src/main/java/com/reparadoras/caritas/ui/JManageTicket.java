@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -743,6 +744,93 @@ public class JManageTicket extends AbstractJInternalFrame {
 		return ticketsPeopleTableModel;
 	}
 
+	public void setCleanJXDatePicker(Map<String, Boolean> mapCleanMonth) {
+	
+		Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(0);
+		this.getTicketsPeopleTableModel().clearTableModelData();
+		
+		for (Map.Entry<String, Boolean> entry : mapCleanMonth.entrySet())
+		{
+		    String month = entry.getKey();
+		    Integer valueColumn = null;
+		    switch(month) {
+		    case "Enero":
+		    	valueColumn = 1;
+		    	ticket.setDateJanuary(null);
+				ticket.setPointsJanuary(0);
+		    break;
+		    case "Febrero":
+		    	valueColumn = 3;
+		    	ticket.setDateFebruary(null);
+		    	ticket.setPointsFebruary(0);
+		    	break;
+		    case "Marzo":
+		    	valueColumn = 5;
+		    	ticket.setDateMarch(null);
+		    	ticket.setPointsMarch(0);
+		    	break;
+		    case "Abril":
+		    	valueColumn = 7;
+		    	ticket.setDateApril(null);
+		    	ticket.setPointsApril(0);
+		    	break;
+		    case "Mayo":
+		    	valueColumn = 9;
+		    	ticket.setDateMay(null);
+		    	ticket.setPointsMay(0);
+		    	break;
+		    case "Junio":
+		    	valueColumn = 11;
+		    	ticket.setDateJune(null);
+		    	ticket.setPointsJune(0);
+		    	break;
+		    	
+		    case "Julio":
+		    	valueColumn = 13;
+		    	ticket.setDateJuly(null);
+		    	ticket.setPointsJuly(0);
+		    	break;
+		    case "Agosto":
+		    	valueColumn = 15;
+		    	ticket.setDateAugust(null);
+		    	ticket.setPointsJuly(0);
+		    	break;
+		    case "Septiembre":
+		    	valueColumn = 17;
+		    	ticket.setDateSeptember(null);
+		    	ticket.setPointsSeptember(0);
+		    	break;
+		    case "Octubre":
+		    	valueColumn = 19;
+		    	ticket.setDateOctober(null);
+		    	ticket.setPointsOctober(0);
+		    	break;
+		    case "Noviembre":
+		    	valueColumn = 21;
+		    	ticket.setDateNovember(null);
+		    	ticket.setPointsNovember(0);
+		    	break;
+		    case "Diciembre":
+		    	valueColumn = 23;
+		    	ticket.setDateDecember(null);
+		    	ticket.setPointsDecember(0);
+		    	break;
+		  
+		    }
+		   
+		    if (valueColumn!=null) {
+		    	TableColumn columnToClean = this.getJTableTicketsPeople().getColumnModel().getColumn(valueColumn);
+		    	CaritasDatePickerCellEditor datePickerToClean = new CaritasDatePickerCellEditor();
+		    	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+				columnToClean.setCellEditor(datePickerToClean);
+				columnToClean.setCellRenderer(dateRenderer);
+		    }
+		   
+		}
+		 this.getTicketsPeopleTableModel().addRow(ticket);
+	}
+	
 	private void setRendererJXDatePicker() {
 		TableColumn januaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(1);
 		TableColumn februaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(3);
@@ -768,55 +856,9 @@ public class JManageTicket extends AbstractJInternalFrame {
 		CaritasDatePickerCellEditor datePickerOctober = new CaritasDatePickerCellEditor();
 		CaritasDatePickerCellEditor datePickerNovember = new CaritasDatePickerCellEditor();
 		CaritasDatePickerCellEditor datePickerDecember = new CaritasDatePickerCellEditor();
-		Calendar calendarMinJanuary = new GregorianCalendar(2017,0,01);
-		Calendar calendarMaxJanuary = new GregorianCalendar(2017,0,31);
-		Calendar calendarMinFebruary = new GregorianCalendar(2017,1,01);
-		Calendar calendarMaxFebruary = new GregorianCalendar(2017,2,1);
-		Calendar calendarMinMarch = new GregorianCalendar(2017,2,01);
-		Calendar calendarMaxMarch = new GregorianCalendar(2017,2,31);
-		Calendar calendarMinApril = new GregorianCalendar(2017,3,01);
-		Calendar calendarMaxApril = new GregorianCalendar(2017,3,30);
-		Calendar calendarMinMay = new GregorianCalendar(2017,4,01);
-		Calendar calendarMaxMay = new GregorianCalendar(2017,4,31);
-		Calendar calendarMinJune = new GregorianCalendar(2017,5,01);
-		Calendar calendarMaxJune = new GregorianCalendar(2017,5,30);
-		Calendar calendarMinJuly = new GregorianCalendar(2017,6,01);
-		Calendar calendarMaxJuly = new GregorianCalendar(2017,6,31);
-		Calendar calendarMinAugust = new GregorianCalendar(2017,7,01);
-		Calendar calendarMaxAugust = new GregorianCalendar(2017,7,31);
-		Calendar calendarMinSeptember = new GregorianCalendar(2017,8,01);
-		Calendar calendarMaxSeptember = new GregorianCalendar(2017,8,30);
-		Calendar calendarMinOctober = new GregorianCalendar(2017,9,01);
-		Calendar calendarMaxOctober = new GregorianCalendar(2017,9,31);
-		Calendar calendarMinNovember = new GregorianCalendar(2017,10,01);
-		Calendar calendarMaxNovember = new GregorianCalendar(2017,10,30);
-		Calendar calendarMinDecember = new GregorianCalendar(2017,11,01);
-		Calendar calendarMaxDecember = new GregorianCalendar(2017,11,31);
 		
-		/*datePickerJanuary.setLowerBound(calendarMinJanuary.getTime());
-		datePickerJanuary.setUpperBound(calendarMaxJanuary.getTime());
-		datePickerFebruary.setLowerBound(calendarMinFebruary.getTime());
-		datePickerFebruary.setUpperBound(calendarMaxFebruary.getTime());
-		datePickerMarch.setLowerBound(calendarMinMarch.getTime());
-		datePickerMarch.setUpperBound(calendarMaxMarch.getTime());
-		datePickerApril.setLowerBound(calendarMinApril.getTime());
-		datePickerApril.setUpperBound(calendarMaxApril.getTime());
-		datePickerMay.setLowerBound(calendarMinMay.getTime());
-		datePickerMay.setUpperBound(calendarMaxMay.getTime());
-		datePickerJune.setLowerBound(calendarMinJune.getTime());
-		datePickerJune.setUpperBound(calendarMaxJune.getTime());
-		datePickerJuly.setLowerBound(calendarMinJuly.getTime());
-		datePickerJuly.setUpperBound(calendarMaxJuly.getTime());
-		datePickerAugust.setLowerBound(calendarMinAugust.getTime());
-		datePickerAugust.setUpperBound(calendarMaxAugust.getTime());
-		datePickerSeptember.setLowerBound(calendarMinSeptember.getTime());
-		datePickerSeptember.setUpperBound(calendarMaxSeptember.getTime());
-		datePickerOctober.setLowerBound(calendarMinOctober.getTime());
-		datePickerOctober.setUpperBound(calendarMaxOctober.getTime());
-		datePickerNovember.setLowerBound(calendarMinNovember.getTime());
-		datePickerNovember.setUpperBound(calendarMaxNovember.getTime());
-		datePickerDecember.setLowerBound(calendarMinDecember.getTime());
-		datePickerDecember.setUpperBound(calendarMaxDecember.getTime());*/
+		
+	
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
 		januaryColumn.setCellEditor(datePickerJanuary);
@@ -909,39 +951,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	/* EVENTOS */
 
-	public void openEditPeople(int openMode, String title) {
-		JManageEditPeople jManageEditPeople = null;
-		try {
 
-			if ((openMode == JWindowParams.IMODE_SELECT || openMode == JWindowParams.IMODE_UPDATE)) {
-				int row = this.getJTableTicketsPeople().getSelectedRow();
-				if (row != -1) {
-					// Ticket people =
-					// this.getJTableTicketsPeople().getDomainObject(row);
-					// jManageEditPeople = new JManageEditPeople(this, true,
-					// openMode, title, people);
-
-				} else {
-					JOptionPane.showMessageDialog(null, "Seleccione un registro");
-					return;
-				}
-
-			} else {
-				jManageEditPeople = new JManageEditPeople(this, true, openMode, title, null);
-			}
-
-			this.desktop.add(jManageEditPeople);
-			jManageEditPeople.setVisible(true);
-			jManageEditPeople.moveToFront();
-			jManageEditPeople.show();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e);
-		}
-
-	}
 
 	public void onFilterTicket(boolean create) {
 		
