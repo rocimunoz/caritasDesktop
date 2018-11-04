@@ -631,40 +631,40 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			switch (filterMonth) {
 			case "Enero":
-				attention = sdf.format(ticket.getDateJanuary()) + " -- " + ticket.getPointsJanuary();
+				attention = sdf.format(ticket.getDateJanuary());
 				break;
 			case "Febrero":
-				attention = sdf.format(ticket.getDateFebruary()) + " -- " + ticket.getPointsFebruary();
+				attention = sdf.format(ticket.getDateFebruary());
 				break;
 			case "Marzo":
-				attention = sdf.format(ticket.getDateMarch()) + " -- " + ticket.getPointsMarch();
+				attention = sdf.format(ticket.getDateMarch());
 				break;
 			case "Abril":
-				attention = sdf.format(ticket.getDateApril()) + " -- " + ticket.getPointsApril();
+				attention = sdf.format(ticket.getDateApril());
 				break;
 			case "Mayo":
-				attention = sdf.format(ticket.getDateMay()) + " -- " + ticket.getPointsMay();
+				attention = sdf.format(ticket.getDateMay());
 				break;
 			case "Junio":
-				attention = sdf.format(ticket.getDateJune()) + " -- " + ticket.getPointsJune();
+				attention = sdf.format(ticket.getDateJune());
 				break;
 			case "Julio":
-				attention = sdf.format(ticket.getDateJuly()) + " -- " + ticket.getPointsJuly();
+				attention = sdf.format(ticket.getDateJuly());
 				break;
 			case "Agosto":
-				attention = sdf.format(ticket.getDateAugust()) + " -- " + ticket.getPointsAugust();
+				attention = sdf.format(ticket.getDateAugust());
 				break;
 			case "Septiembre":
-				attention = sdf.format(ticket.getDateSeptember()) + " -- " + ticket.getPointsSeptember();
+				attention = sdf.format(ticket.getDateSeptember());
 				break;
 			case "Octubre":
-				attention = sdf.format(ticket.getDateOctober()) + " -- " + ticket.getPointsOctober();
+				attention = sdf.format(ticket.getDateOctober());
 				break;
 			case "Noviembre":
-				attention = sdf.format(ticket.getDateNovember()) + " -- " + ticket.getPointsNovember();
+				attention = sdf.format(ticket.getDateNovember());
 				break;
 			case "Diciembre":
-				attention = sdf.format(ticket.getDateDecember()) + " -- " + ticket.getPointsDecember();
+				attention = sdf.format(ticket.getDateDecember());
 				break;
 			}
 
@@ -944,9 +944,9 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			}
 
-			if (program.getOtherInfo() != null) {
-				report.setDemandas(program.getOtherInfo().getDemand());
-			}
+//			if (program.getOtherInfo() != null) {
+//				report.setDemandas(program.getOtherInfo().getDemand());
+//			}
 	
 		}
 

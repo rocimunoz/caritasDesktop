@@ -1010,14 +1010,13 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	public void onSaveTicket() {
 
-		int row = this.getJTableTicketsPeople().getSelectedRow();
-		if (row != -1) {
+		
 			logger.info("Guardando datos ...");
-			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(row);
+			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(0);
 			ticketDAO.update(ticket);
 			onFilterTicket(false);
 			
-		} 
+		 
 		JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
 
 	}

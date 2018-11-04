@@ -261,7 +261,7 @@ public class PdfMonthlyReport {
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Demandas", TITLE_6_FONT_BOLD));
+			cell = new PdfPCell(new Phrase("Tickets", TITLE_6_FONT_BOLD));
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
@@ -344,7 +344,11 @@ public class PdfMonthlyReport {
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Phrase(report.getDemandas(), TITLE_6_FONT));
+					String valorTicket = "";
+					if (report.getValorTicket()!=null) {
+						valorTicket = report.getValorTicket() + "";
+					}
+					cell = new PdfPCell(new Phrase(valorTicket , TITLE_6_FONT));
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 

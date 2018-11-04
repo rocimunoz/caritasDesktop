@@ -33,6 +33,7 @@
         FROM C_PEOPLE PE INNER JOIN  C_ANSWER A ON PE.ID = A.ID_PEOPLE 
         WHERE
         PE.ID = A.ID_PEOPLE
+        
         <if test="idPeople != null">
     		AND PE.ID = #{idPeople}
   		</if>
@@ -51,6 +52,7 @@
   		<if test="month != null and !month.equals('')">
   		<bind name="pattern_month" value="'%' + month + '%'" />
     		AND A.MONTH LIKE #{pattern_month}
+    		AND A.MONEY!=NULL
   		</if>
   		
     </select>

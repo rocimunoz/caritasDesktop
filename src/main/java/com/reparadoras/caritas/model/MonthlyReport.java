@@ -36,7 +36,8 @@ public class MonthlyReport implements Serializable{
 	private String tipoAutorizacion;
 	private String situacionLaboral;
 	private String estudios;
-	private String demandas;
+	//private String demandas;
+	
 	private Double respuestaImporte;
 	private Integer valorTicket;
 	public Long getId() {
@@ -147,12 +148,12 @@ public class MonthlyReport implements Serializable{
 	public void setEstudios(String estudios) {
 		this.estudios = estudios;
 	}
-	public String getDemandas() {
-		return demandas;
-	}
-	public void setDemandas(String demandas) {
-		this.demandas = demandas;
-	}
+//	public String getDemandas() {
+//		return demandas;
+//	}
+//	public void setDemandas(String demandas) {
+//		this.demandas = demandas;
+//	}
 	
 	public Integer getValorTicket() {
 		return valorTicket;
@@ -166,6 +167,9 @@ public class MonthlyReport implements Serializable{
 	public void setRespuestaImporte(Double respuestaImporte) {
 		this.respuestaImporte = respuestaImporte;
 	}
+	
+	
+	
 	
 	
 	
