@@ -631,40 +631,40 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			switch (filterMonth) {
 			case "Enero":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateJanuary());
+				attention = attention + (ticket.getDateJanuary()!=null?sdf.format(ticket.getDateJanuary()):"");
 				break;
 			case "Febrero":
-				attention =  "F.Ticket: " +sdf.format(ticket.getDateFebruary());
+				attention =  attention + (ticket.getDateFebruary()!=null?sdf.format(ticket.getDateFebruary()):"");
 				break;
 			case "Marzo":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateMarch());
+				attention = attention +  (ticket.getDateMarch()!=null?sdf.format(ticket.getDateMarch()):"");
 				break;
 			case "Abril":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateApril());
+				attention = attention + (ticket.getDateApril()!=null?sdf.format(ticket.getDateApril()):"");
 				break;
 			case "Mayo":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateMay());
+				attention = attention + (ticket.getDateMay()!=null?sdf.format(ticket.getDateMay()):"");
 				break;
 			case "Junio":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateJune());
+				attention = attention + (ticket.getDateJune()!=null?sdf.format(ticket.getDateJune()):"");
 				break;
 			case "Julio":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateJuly());
+				attention = attention + (ticket.getDateJuly()!=null?sdf.format(ticket.getDateJuly()):"");
 				break;
 			case "Agosto":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateAugust());
+				attention = attention + (ticket.getDateAugust()!=null?sdf.format(ticket.getDateAugust()):"");
 				break;
 			case "Septiembre":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateSeptember());
+				attention = attention + (ticket.getDateSeptember()!=null?sdf.format(ticket.getDateSeptember()):"");
 				break;
 			case "Octubre":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateOctober());
+				attention = attention + (ticket.getDateOctober()!=null?sdf.format(ticket.getDateOctober()):"");
 				break;
 			case "Noviembre":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateNovember());
+				attention = attention + (ticket.getDateNovember()!=null?sdf.format(ticket.getDateNovember()):"");
 				break;
 			case "Diciembre":
-				attention = "F.Ticket: " + sdf.format(ticket.getDateDecember());
+				attention = attention + (ticket.getDateDecember()!=null?sdf.format(ticket.getDateDecember()):"");
 				break;
 			}
 
@@ -845,10 +845,14 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				Double money = answer.getMoney();
 				if (money != null) {
 					report.setRespuestaImporte(money);
-					String atencionImporte = "F.Importe: " + sdf.format(dateMoney);
+					String atencionImporte = "";
+					if (dateMoney!=null) {
+					  atencionImporte = sdf.format(dateMoney);
+							
+					}
 					if (report.getAtencion()!=null) {
 						
-						report.setAtencion(report.getAtencion() + atencionImporte);
+						report.setAtencion(report.getAtencion() + "\n" + atencionImporte);
 						
 					}else {
 						report.setAtencion(atencionImporte);

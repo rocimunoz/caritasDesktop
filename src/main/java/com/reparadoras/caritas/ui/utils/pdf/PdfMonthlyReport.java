@@ -261,11 +261,11 @@ public class PdfMonthlyReport {
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Tickets", TITLE_6_FONT_BOLD));
+			cell = new PdfPCell(new Phrase("Vales", TITLE_6_FONT_BOLD));
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Respuesta e Importe", TITLE_6_FONT_BOLD));
+			cell = new PdfPCell(new Phrase("Importe", TITLE_6_FONT_BOLD));
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 

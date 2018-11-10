@@ -1012,12 +1012,22 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 		
 			logger.info("Guardando datos ...");
-			Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(0);
-			ticketDAO.update(ticket);
-			onFilterTicket(false);
+			try {
+				Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(0);
+				ticketDAO.update(ticket);
+				onFilterTicket(false);
+				JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
+			}
+			catch(Exception e) {
+				JOptionPane.showMessageDialog(this, "No hay datos para guardar");
+			}
+			
+			
+			
+			
 			
 		 
-		JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
+		
 
 	}
 	
