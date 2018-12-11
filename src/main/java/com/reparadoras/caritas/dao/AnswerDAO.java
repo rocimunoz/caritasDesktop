@@ -89,6 +89,7 @@ public  List<Answer> findAnswer(FilterAnswer filter){
 
     try {
         list = session.selectList("Answer.findAnswer", filter);
+       
     } finally {
         session.close();
     }

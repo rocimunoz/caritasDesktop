@@ -158,9 +158,9 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 		getJButtonReport().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
 				createPdfReport();
 			}
+
 		});
 
 		getJButtonClean().addActionListener(new ActionListener() {
@@ -210,7 +210,9 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 					textArea.append("******************: " + "\n");
 					textArea.append("Se ha generado el pdf correctamente. \n");
 					textArea.append("Se ha guardado en: . " + file.getAbsolutePath() + "\n");
+
 					if (listReport != null && !listReport.isEmpty()) {
+
 						textArea.append("Registros añadidos al informe: \n");
 						for (MonthlyReport monthlyReport : listReport) {
 							textArea.append(monthlyReport.getNombre() + " " + monthlyReport.getApellidos() + "\n");
@@ -629,40 +631,40 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			switch (filterMonth) {
 			case "Enero":
-				attention = sdf.format(ticket.getDateJanuary()) + " -- " + ticket.getPointsJanuary();
+				attention = attention + (ticket.getDateJanuary()!=null?sdf.format(ticket.getDateJanuary()):"");
 				break;
 			case "Febrero":
-				attention = sdf.format(ticket.getDateFebruary()) + " -- " + ticket.getPointsFebruary();
+				attention =  attention + (ticket.getDateFebruary()!=null?sdf.format(ticket.getDateFebruary()):"");
 				break;
 			case "Marzo":
-				attention = sdf.format(ticket.getDateMarch()) + " -- " + ticket.getPointsMarch();
+				attention = attention +  (ticket.getDateMarch()!=null?sdf.format(ticket.getDateMarch()):"");
 				break;
 			case "Abril":
-				attention = sdf.format(ticket.getDateApril()) + " -- " + ticket.getPointsApril();
+				attention = attention + (ticket.getDateApril()!=null?sdf.format(ticket.getDateApril()):"");
 				break;
 			case "Mayo":
-				attention = sdf.format(ticket.getDateMay()) + " -- " + ticket.getPointsMay();
+				attention = attention + (ticket.getDateMay()!=null?sdf.format(ticket.getDateMay()):"");
 				break;
 			case "Junio":
-				attention = sdf.format(ticket.getDateJune()) + " -- " + ticket.getPointsJune();
+				attention = attention + (ticket.getDateJune()!=null?sdf.format(ticket.getDateJune()):"");
 				break;
 			case "Julio":
-				attention = sdf.format(ticket.getDateJuly()) + " -- " + ticket.getPointsJuly();
+				attention = attention + (ticket.getDateJuly()!=null?sdf.format(ticket.getDateJuly()):"");
 				break;
 			case "Agosto":
-				attention = sdf.format(ticket.getDateAugust()) + " -- " + ticket.getPointsAugust();
+				attention = attention + (ticket.getDateAugust()!=null?sdf.format(ticket.getDateAugust()):"");
 				break;
 			case "Septiembre":
-				attention = sdf.format(ticket.getDateSeptember()) + " -- " + ticket.getPointsSeptember();
+				attention = attention + (ticket.getDateSeptember()!=null?sdf.format(ticket.getDateSeptember()):"");
 				break;
 			case "Octubre":
-				attention = sdf.format(ticket.getDateOctober()) + " -- " + ticket.getPointsOctober();
+				attention = attention + (ticket.getDateOctober()!=null?sdf.format(ticket.getDateOctober()):"");
 				break;
 			case "Noviembre":
-				attention = sdf.format(ticket.getDateNovember()) + " -- " + ticket.getPointsNovember();
+				attention = attention + (ticket.getDateNovember()!=null?sdf.format(ticket.getDateNovember()):"");
 				break;
 			case "Diciembre":
-				attention = sdf.format(ticket.getDateDecember()) + " -- " + ticket.getPointsDecember();
+				attention = attention + (ticket.getDateDecember()!=null?sdf.format(ticket.getDateDecember()):"");
 				break;
 			}
 
@@ -670,10 +672,12 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 		return attention;
 	}
+	
+	
 
 	private Integer getValueTicket(String filterMonth, Ticket ticket) {
 
-		Integer value = 0;
+		Integer value = null;
 		if (ticket != null) {
 			switch (filterMonth) {
 			case "Enero":
@@ -714,8 +718,12 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				break;
 			}
 		}
-
-		return value;
+		if (value!=null) {
+			return value;
+		}else {
+			return 0;
+		}
+		
 	}
 
 	public List<MonthlyReport> filterData() {
@@ -794,7 +802,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		createMonthlyReportWithAnswer(listAnswer, filterMonth, mapMonthlyReport);
 
 		listReport.addAll(mapMonthlyReport.values());
-		
+
 		Collections.sort(listReport, (o1, o2) -> o1.getApellidos().compareTo(o2.getApellidos()));
 
 		return listReport;
@@ -812,26 +820,44 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			}
 
+
 		}
 	}
 
 	private void createMonthlyReportWithAnswer(List<Answer> listAnswer, String filterMonth,
 			Map<Long, MonthlyReport> mapMonthlyReport) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
 		if (listAnswer != null && !listAnswer.isEmpty()) {
 
 			for (Answer answer : listAnswer) {
 				People people = answer.getPeople();
 
 				if (mapMonthlyReport.get(people.getId()) == null) {
-					
+
 					Ticket ticket = null;
 					mapMonthlyReport.put(people.getId(), createReport(people, ticket, filterMonth));
 				}
 
 				MonthlyReport report = mapMonthlyReport.get(people.getId());
+				Date dateMoney = answer.getDate();
 				Double money = answer.getMoney();
 				if (money != null) {
 					report.setRespuestaImporte(money);
+					String atencionImporte = "";
+					if (dateMoney!=null) {
+					  atencionImporte = sdf.format(dateMoney);
+							
+					}
+					if (report.getAtencion()!=null) {
+						
+						report.setAtencion(report.getAtencion() + "\n" + atencionImporte);
+						
+					}else {
+						report.setAtencion(atencionImporte);
+					}
+					
 				}
 
 			}
@@ -844,33 +870,40 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		Program program = null;
 		FilterProgram filterProgram = new FilterProgram();
 		filterProgram.setIdPeople(people.getId());
+		
+		report.setApellidos(people.getFirstSurname() + " "
+				+ (people.getSecondSurname() != null ? people.getSecondSurname() : ""));
+		report.setEstadoCivil(people.getCivilStatus());
+		if (people.getDateBorn() != null) {
+			report.setFechaNacimiento(sdfCorto.format(people.getDateBorn()));
+		}
+
+		report.setNacionalidad(people.getNationality());
+		report.setNombre(people.getName());
+		report.setSexo(people.getSex());
+		String documentacion = "";
+		if (people.getDni() != null && !people.getDni().equals("")) {
+			documentacion = people.getDni();
+		} else if (people.getPassport() != null && !people.getPassport().equals("")) {
+			documentacion = people.getPassport();
+		}
+		report.setDocumentacion(documentacion);
+		
+		report.setEstadoCivil(people.getCivilStatus());
+		if (people.getYearToSpain() != null) {
+			report.setAnyoLlegada(String.valueOf(people.getYearToSpain()));
+		}
+		
+		if (ticket != null) {
+			report.setValorTicket(getValueTicket(filterMonth, ticket));
+			report.setAtencion(getAttentionTicket(filterMonth, ticket));
+		}
+		
 		List<Program> listPrograms = programDAO.findProgram(filterProgram);
-		// filterAnswer.setIdPeople(id);
-		// List<Answer> listaAnswer = answerDAO.findAnswer(filterAnswer);
 		if (listPrograms != null && !listPrograms.isEmpty()) {
 			program = listPrograms.get(0);
-			people = program.getPeople();
-			if (ticket != null) {
-				report.setValorTicket(getValueTicket(filterMonth, ticket));
-				report.setAtencion(getAttentionTicket(filterMonth, ticket));
-			}
-
-			report.setApellidos(people.getFirstSurname() + " " + (people.getSecondSurname()!=null?people.getSecondSurname():""));
-			report.setEstadoCivil(people.getCivilStatus());
-			if (people.getDateBorn() != null) {
-				report.setFechaNacimiento(sdfCorto.format(people.getDateBorn()));
-			}
-
-			report.setNacionalidad(people.getNationality());
-			report.setNombre(people.getName());
-			report.setSexo(people.getSex());
-			String documentacion = "";
-			if (people.getDni() != null && !people.getDni().equals("")) {
-				documentacion = people.getDni();
-			} else if (people.getPassport() != null && !people.getPassport().equals("")) {
-				documentacion = people.getPassport();
-			}
-			report.setDocumentacion(documentacion);
+			//people = program.getPeople();
+			
 			String domicilio = "";
 			String street = program.getFamily().getHome().getAddress().getStreet();
 			if (street != null) {
@@ -895,10 +928,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				report.setTipoFamilia(tipoFamilia);
 			}
 
-			report.setEstadoCivil(people.getCivilStatus());
-			if (people.getYearToSpain() != null) {
-				report.setAnyoLlegada(String.valueOf(people.getYearToSpain()));
-			}
+			
 
 			String tipoAutorizacion = "";
 			if (program.getAuthorizationType() != null) {
@@ -907,6 +937,16 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 				tipoAutorizacion = Constants.getNemonicAuthorizationType(atype);
 				report.setTipoAutorizacion(tipoAutorizacion);
 
+			}
+
+			Family family = program.getFamily();
+			if (family != null) {
+
+				Relative filter = new Relative();
+				filter.setFamily(family);
+				List<Relative> relatives = relativeDAO.findRelative(filter);
+				report.setHijosMenor18(String.valueOf(getHijos18(relatives)[0]));
+				report.setHijosMayor18(String.valueOf(getHijos18(relatives)[1]));
 			}
 
 			String situacionLaboral = "";
@@ -927,21 +967,10 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 
 			}
 
-			if (program.getOtherInfo() != null) {
-				report.setDemandas(program.getOtherInfo().getDemand());
-			}
-
-			Family family = program.getFamily();
-			if (family != null) {
-
-				Relative filter = new Relative();
-				filter.setFamily(family);
-				List<Relative> relatives = relativeDAO.findRelative(filter);
-				report.setHijosMenor18(String.valueOf(getHijos18(relatives)[0]));
-				report.setHijosMayor18(String.valueOf(getHijos18(relatives)[1]));
-			}
-
-//			
+//			if (program.getOtherInfo() != null) {
+//				report.setDemandas(program.getOtherInfo().getDemand());
+//			}
+	
 		}
 
 		return report;

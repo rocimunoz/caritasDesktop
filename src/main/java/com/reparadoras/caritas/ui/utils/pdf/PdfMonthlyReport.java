@@ -146,8 +146,10 @@ public class PdfMonthlyReport {
 		
 		for (MonthlyReport report : lista) {
 			
+
 			totalVales = totalVales + (report.getValorTicket()!=null?report.getValorTicket():0);
 			totalImporte = totalImporte + (report.getRespuestaImporte()!=null?report.getRespuestaImporte():0);
+
 		}
 
 		PdfPTable table1 = new PdfPTable(2);
@@ -259,11 +261,11 @@ public class PdfMonthlyReport {
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Demandas", TITLE_6_FONT_BOLD));
+			cell = new PdfPCell(new Phrase("Vales", TITLE_6_FONT_BOLD));
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Respuesta e Importe", TITLE_6_FONT_BOLD));
+			cell = new PdfPCell(new Phrase("Importe", TITLE_6_FONT_BOLD));
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
@@ -342,9 +344,14 @@ public class PdfMonthlyReport {
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Phrase(report.getDemandas(), TITLE_6_FONT));
+					String valorTicket = "";
+					if (report.getValorTicket()!=null) {
+						valorTicket = report.getValorTicket() + "";
+					}
+					cell = new PdfPCell(new Phrase(valorTicket , TITLE_6_FONT));
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
+
 
 					Double respuestaImporte = report.getRespuestaImporte();
 					String respuestaImporteTexto = "";
@@ -352,6 +359,7 @@ public class PdfMonthlyReport {
 						respuestaImporteTexto = String.valueOf(respuestaImporte);
 					}
 					cell = new PdfPCell(new Phrase(respuestaImporteTexto, TITLE_6_FONT));
+
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 

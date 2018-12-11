@@ -2,122 +2,124 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- 
+
 <mapper namespace="People">
 
-	
 
-    <resultMap id="PeopleResult" type="People">
-        <result property="id" column="id"/>
-        <result property="name" column="name"/>  
-        <result property="firstSurname" column="first_surname"/>
-        <result property="secondSurname" column="second_surname"/>   
-        <result property="dni" column="dni"/>
-         <result property="passport" column="passport"/>   
-        <result property="sex" column="sex"/>   
-        <result property="active" column="active"/>
-        <result property="createDate" column="create_date"/>
-        <result property="dateBorn" column="date_born"/>
-        <result property="reactivateDate" column="reactivate_date"/>
-        <result property="country" column="country"/>
-        <result property="nationality" column="nationality"/>
-        <result property="yearToSpain" column="year_to_spain"/>
-        <result property="civil_status" column="civil_status"/>
-        
-		
-    </resultMap>
- 
-    <select id="findAll" resultMap="PeopleResult">
-        SELECT * FROM C_PEOPLE ORDER BY NAME ASC;
-    </select>
-    
-    <select id="findById" resultMap="PeopleResult">
-        SELECT * FROM C_PEOPLE WHERE id = #{id}
-    </select>
-    
- 	
-    
-    <select id="findPeople" parameterType="People" resultMap="PeopleResult">
-       SELECT * 
-				FROM C_PEOPLE
-				<where>
-				
-					<if test="name!=null and !name.equals('')">
-					<bind name="pattern_name" value="'%' + name + '%'" />
-						name like  #{pattern_name}
-					</if>
-					<if test="dni!=null">
-					<bind name="pattern" value="'%' + dni + '%'" />
-					AND	dni like #{pattern}
-					</if>
-					<if test="passport!=null">
-					<bind name="pattern_passport" value="'%' + passport + '%'" />
-					AND	passport like #{pattern_passport}
-					</if>
-					<if test="active!=null">
-					AND	active = #{active}
-					</if>
-				</where>
-    </select>
-    
-    <delete id="delete" parameterType="People">
-    	DELETE FROM C_PEOPLE WHERE id = #{id}
-    </delete>
-    
-    
-    
- 	<insert id="insert" parameterType="People" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_PEOPLE (
-        name, 
-        first_surname,
-        second_surname, 
-        dni,
-        passport, 
-        sex,
-        country,
-        nationality,
-        year_to_spain,
-        create_date,
-        reactivate_date, 
-        date_born,
-        active) 
-        VALUES (
-        #{name},
-        #{firstSurname},
-        #{secondSurname},
-        #{dni},
-        #{passport},
-        #{sex},
-        #{country},
-        #{nationality},
-        #{yearToSpain},
-        #{createDate},
-        #{reactivateDate}, 
-         #{dateBorn}, 
-        #{active});
-    </insert>
-    
-    <update id="update" parameterType="People">
-        UPDATE C_PEOPLE
-        <set>
-          <if test="name != null">name = #{name},</if>
-          <if test="firstSurname != null">first_surname = #{firstSurname},</if>
-          <if test="secondSurname != null">second_surname = #{secondSurname},</if>
-          <if test="dni != null">dni = #{dni},</if>
-          <if test="passport != null">passport = #{passport},</if>
-          <if test="nationality != null">nationality = #{nationality},</if>
-          <if test="country != null">country = #{country},</if>
-          year_to_spain = #{yearToSpain},
-          <if test="createDate != null">create_date = #{createDate},</if>
-           <if test="dateBorn != null">date_born = #{dateBorn},</if>
-          <if test="reactivateDate != null">reactivate_date = #{reactivateDate},</if>
-          <if test="sex != null">sex = #{sex},</if>
-          <if test="active != null">active = #{active},</if>
-          
-          
-          </set>
-        WHERE id = #{id} 
-  	</update>
- 
-	
+
+	<resultMap id="PeopleResult" type="People">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="firstSurname" column="first_surname" />
+		<result property="secondSurname" column="second_surname" />
+		<result property="dni" column="dni" />
+		<result property="passport" column="passport" />
+		<result property="sex" column="sex" />
+		<result property="active" column="active" />
+		<result property="createDate" column="create_date" />
+		<result property="dateBorn" column="date_born" />
+		<result property="reactivateDate" column="reactivate_date" />
+		<result property="country" column="country" />
+		<result property="nationality" column="nationality" />
+		<result property="yearToSpain" column="year_to_spain" />
+		<result property="civil_status" column="civil_status" />
+
+
+	</resultMap>
+
+	<select id="findAll" resultMap="PeopleResult">
+		SELECT * FROM C_PEOPLE ORDER BY NAME ASC;
+	</select>
+
+	<select id="findById" resultMap="PeopleResult">
+		SELECT * FROM C_PEOPLE WHERE id = #{id}
+	</select>
+
+
+
+	<select id="findPeople" parameterType="People"
+		resultMap="PeopleResult">
+		SELECT *
+		FROM C_PEOPLE
+		<where>
+
+			<if test="name!=null and !name.equals('')">
+				<bind name="pattern_name" value="'%' + name + '%'" />
+				name like #{pattern_name}
+			</if>
+			<if test="dni!=null">
+				<bind name="pattern" value="'%' + dni + '%'" />
+				AND dni like #{pattern}
+			</if>
+			<if test="passport!=null">
+				<bind name="pattern_passport" value="'%' + passport + '%'" />
+				AND passport like #{pattern_passport}
+			</if>
+			<if test="active!=null">
+				AND active = #{active}
+			</if>
+		</where>
+	</select>
+
+	<delete id="delete" parameterType="People">
+		DELETE FROM C_PEOPLE WHERE id = #{id}
+	</delete>
+
+
+
+	<insert id="insert" parameterType="People"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO C_PEOPLE (
+		name,
+		first_surname,
+		second_surname,
+		dni,
+		passport,
+		sex,
+		country,
+		nationality,
+		year_to_spain,
+		create_date,
+		reactivate_date,
+		date_born,
+		active)
+		VALUES (
+		#{name},
+		#{firstSurname},
+		#{secondSurname},
+		#{dni},
+		#{passport},
+		#{sex},
+		#{country},
+		#{nationality},
+		#{yearToSpain},
+		#{createDate},
+		#{reactivateDate},
+		#{dateBorn},
+		#{active});
+	</insert>
+
+	<update id="update" parameterType="People">
+		UPDATE C_PEOPLE
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="firstSurname != null">first_surname = #{firstSurname},</if>
+			<if test="secondSurname != null">second_surname = #{secondSurname},</if>
+			<if test="dni != null">dni = #{dni},</if>
+			<if test="passport != null">passport = #{passport},</if>
+			<if test="nationality != null">nationality = #{nationality},</if>
+			<if test="country != null">country = #{country},</if>
+			year_to_spain = #{yearToSpain},
+			<if test="createDate != null">create_date = #{createDate},</if>
+			<if test="dateBorn != null">date_born = #{dateBorn},</if>
+			<if test="reactivateDate != null">reactivate_date = #{reactivateDate},</if>
+			<if test="sex != null">sex = #{sex},</if>
+			<if test="active != null">active = #{active},</if>
+
+
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
 </mapper>
