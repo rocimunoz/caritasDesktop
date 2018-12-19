@@ -25,7 +25,7 @@ public class TicketsPeopleTableModel extends GenericDomainTableModel<Ticket>
     {
 
     	switch (columnIndex) {
-    	case 0: return String.class;
+    	case 0: return Integer.class;
     	case 1: return Date.class;
     	case 2: return Integer.class;
     	case 3: return Date.class;
@@ -69,7 +69,7 @@ public class TicketsPeopleTableModel extends GenericDomainTableModel<Ticket>
 	switch (columnIndex)
 	{
 	case 0:
-	    return ticket.getPeople().getName();
+	    return ticket.getYear();
 	case 1:
 	    return ticket.getDateJanuary();
 	case 2:

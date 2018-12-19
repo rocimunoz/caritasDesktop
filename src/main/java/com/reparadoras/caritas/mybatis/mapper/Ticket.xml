@@ -5,7 +5,7 @@
  
 <mapper namespace="Ticket">
     <resultMap id="TicketResult" type="Ticket">
-        <result property="idTicket" column="idTicket"/>
+        <result property="id" column="ID_TICKET"/>
         <result property="pointsJanuary" column="POINTS_JANUARY"/>  
         <result property="pointsFebruary" column="POINTS_FEBRUARY"/>  
         <result property="pointsMarch" column="POINTS_MARCH"/>  
@@ -36,16 +36,17 @@
     </resultMap>
     
      <resultMap id="PeopleResult" type="People">
-     <id property="id" column="id"/>
+     <id property="id" column="ID_PEOPLE"/>
         <result property="name" column="name"/>  
          <result property="firstSurname" column="first_surname"/>  
        
     </resultMap>
  
    <select id="findTicket" parameterType="FilterTicket" resultMap="TicketResult">
-        SELECT PE.ID, 
+        SELECT PE.ID ID_PEOPLE, 
                PE.NAME, 
                PE.FIRST_SURNAME,
+               T.ID ID_TICKET,
                T.POINTS_JANUARY,
                T.POINTS_FEBRUARY,
                T.POINTS_MARCH,
@@ -69,7 +70,8 @@
                T.DATE_SEPTEMBER,
                T.DATE_OCTOBER,
                T.DATE_NOVEMBER,
-               T.DATE_DECEMBER
+               T.DATE_DECEMBER,
+               T.YEAR
         FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.ID_PEOPLE 
         WHERE
         PE.ID = T.ID_PEOPLE

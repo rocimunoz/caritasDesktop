@@ -735,7 +735,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private TicketsPeopleTableModel getTicketsPeopleTableModel() {
 
 		if (ticketsPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Nombre", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts",
+			Object[] columnIdentifiers = new Object[] { "Año", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts",
 					"Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts",
 					"Fecha", "Pts", "Fecha", "Pts", "Fecha", "Pts" };
 			ticketsPeopleTableModel = new TicketsPeopleTableModel(Arrays.asList(columnIdentifiers));
