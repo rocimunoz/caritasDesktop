@@ -283,9 +283,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 				
 				onSaveProgram();
 				dispose();
-				
-				
-				
 			}
 		});
 
@@ -1399,7 +1396,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());
 			address.setTown(getJPanelAddress().getJTextFieldTown().getText());
 			address.setCensus(getJPanelAddress().getJXDatePickerCensus().getDate());
-			address.setPlace(getJPanelAddress().getJTextFieldPlace().getText());
 			addressDAO.update(address);
 		} catch (Exception e) {
 			logger.error(e);

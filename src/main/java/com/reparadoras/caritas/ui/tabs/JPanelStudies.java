@@ -113,7 +113,7 @@ public class JPanelStudies extends JPanel {
 	public JRadioButton getjRadioNoReadNoWrite() {
 
 		if (jRadioNoReadNoWrite == null) {
-			jRadioNoReadNoWrite = new JRadioButton("No sabe leer ni escribir");
+			jRadioNoReadNoWrite = new JRadioButton("Sin alfabetizar");
 
 			jRadioNoReadNoWrite.setMargin(new Insets(20, 20, 2, 20));
 			jRadioNoReadNoWrite.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -124,7 +124,7 @@ public class JPanelStudies extends JPanel {
 	public JRadioButton getjRadioReadWrite() {
 
 		if (jRadioReadWrite == null) {
-			jRadioReadWrite = new JRadioButton("Sólo sabe leer y escribir");
+			jRadioReadWrite = new JRadioButton("Lee y escribe");
 
 			jRadioReadWrite.setMargin(new Insets(20, 20, 2, 20));
 			jRadioReadWrite.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -157,7 +157,7 @@ public class JPanelStudies extends JPanel {
 	public JRadioButton getjRadioHighSchool() {
 
 		if (jRadioHighSchool == null) {
-			jRadioHighSchool = new JRadioButton("Secundaria");
+			jRadioHighSchool = new JRadioButton("ESO -FP Básico");
 
 			jRadioHighSchool.setMargin(new Insets(20, 20, 2, 20));
 			jRadioHighSchool.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -179,7 +179,7 @@ public class JPanelStudies extends JPanel {
 	public JRadioButton getjRadioFP() {
 
 		if (jRadioFP == null) {
-			jRadioFP = new JRadioButton("FP-Grado Medio");
+			jRadioFP = new JRadioButton("FP Grado Medio con familia profesional");
 
 			jRadioFP.setMargin(new Insets(20, 20, 2, 20));
 			jRadioFP.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -190,7 +190,7 @@ public class JPanelStudies extends JPanel {
 	public JRadioButton getjRadioFPHigh() {
 
 		if (jRadioFPHigh == null) {
-			jRadioFPHigh = new JRadioButton("FP-Grado Superior");
+			jRadioFPHigh = new JRadioButton("FP Grado Superior con familia profesional");
 
 			jRadioFPHigh.setMargin(new Insets(20, 20, 2, 20));
 			jRadioFPHigh.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -201,7 +201,7 @@ public class JPanelStudies extends JPanel {
 	public JRadioButton getjRadioUniversity() {
 
 		if (jRadioUniversity == null) {
-			jRadioUniversity = new JRadioButton("Universidad Diplomado");
+			jRadioUniversity = new JRadioButton("Enseñanzas universitarias");
 
 			jRadioUniversity.setMargin(new Insets(20, 20, 2, 20));
 			jRadioUniversity.setFont(new Font("Verdana", Font.PLAIN, 14));

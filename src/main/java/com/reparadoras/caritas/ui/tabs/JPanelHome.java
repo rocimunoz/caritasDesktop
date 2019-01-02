@@ -73,14 +73,16 @@ public void initCombos(){
 		}
 	
 		//TODO: meter en BBDD
-		this.getJComboBoxRegHolding().addItem("Alquiler");
-		this.getJComboBoxRegHolding().addItem("Alquiler compartido");
-		this.getJComboBoxRegHolding().addItem("Tutelado");
-		this.getJComboBoxRegHolding().addItem("Compartido");
-		this.getJComboBoxRegHolding().addItem("Cedido");
-		
-		
-		
+		this.getJComboBoxRegHolding().addItem("Propiedad (pagada)");
+		this.getJComboBoxRegHolding().addItem("Propiedad (pagando)");
+		this.getJComboBoxRegHolding().addItem("Alquilada/Arrendada");
+		this.getJComboBoxRegHolding().addItem("Realquilada (Compartida)");
+		this.getJComboBoxRegHolding().addItem("Cedida");
+		this.getJComboBoxRegHolding().addItem("Ocupada");
+		this.getJComboBoxRegHolding().addItem("Acogido/a");
+		this.getJComboBoxRegHolding().addItem("En servicio de alojamiento");
+		this.getJComboBoxRegHolding().addItem("Otros (Chabola, Caravana...)");
+				
 	}
 	
 	private void createGUIPanel(){
