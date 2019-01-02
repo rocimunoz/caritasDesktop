@@ -288,6 +288,7 @@ public class JPanelAddress extends JPanel {
 	public JFormattedTextField getJTextFieldTelephone() {
 		if (tfTelephone == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			numberFormat.setGroupingUsed(false);
 			tfTelephone = new JFormattedTextField(numberFormat);
 			tfTelephone.setColumns(10);
 		}
@@ -329,6 +330,7 @@ public class JPanelAddress extends JPanel {
 	public JFormattedTextField getJTextFieldTelephoneContact() {
 		if (tfTelephoneContact == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			numberFormat.setGroupingUsed(false);
 			tfTelephoneContact = new JFormattedTextField(numberFormat);
 			tfTelephoneContact.setColumns(10);
 		}
@@ -389,11 +391,6 @@ public class JPanelAddress extends JPanel {
 	}
 
 	
-
-
-
-	
-	
 	public JLabel getJLabelPostalCode() {
 
 		if (lblPostalCode == null) {
@@ -417,7 +414,8 @@ public class JPanelAddress extends JPanel {
 		if (tfPostalCode == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
 			numberFormat.setMinimumIntegerDigits(0);
-			
+			numberFormat.setGroupingUsed(false);
+
 			tfPostalCode = new JFormattedTextField(numberFormat);
 			tfPostalCode.setColumns(10);
 		}
