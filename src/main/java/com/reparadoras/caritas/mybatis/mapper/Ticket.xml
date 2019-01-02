@@ -132,7 +132,7 @@
   		<if test="pointsDecember != null">
     		AND T.POINTS_DECEMBER > 0
   		</if>
-  		
+  		ORDER BY T.YEAR DESC
       
     </select>
     
@@ -165,6 +165,7 @@
                T.DATE_NOVEMBER,
                T.DATE_DECEMBER
         FROM C_PEOPLE PE INNER JOIN  C_TICKET T ON PE.ID = T.ID_PEOPLE
+        ORDER BY T.YEAR DESC
      
       
     </select>
@@ -213,6 +214,8 @@
         <if test="pointsDecember != null">POINTS_DECEMBER = #{pointsDecember},</if>
         </set>
         WHERE ID_PEOPLE = #{people.id}
+        AND YEAR = #{year}
+       
     
     </update>
     

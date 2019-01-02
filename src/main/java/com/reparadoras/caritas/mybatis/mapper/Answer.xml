@@ -53,6 +53,9 @@
     		AND A.MONTH = #{month}
     		AND A.MONEY is not NULL
   		</if>
+  		<if test="year != null and !year.equals('')">
+    		AND A.YEAR = #{year}
+  		</if>
   		
     </select>
     

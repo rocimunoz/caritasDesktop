@@ -746,89 +746,96 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 	public void setCleanJXDatePicker(Map<String, Boolean> mapCleanMonth) {
 	
-		Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(0);
-		this.getTicketsPeopleTableModel().clearTableModelData();
-		
-		for (Map.Entry<String, Boolean> entry : mapCleanMonth.entrySet())
-		{
-		    String month = entry.getKey();
-		    Integer valueColumn = null;
-		    switch(month) {
-		    case "Enero":
-		    	valueColumn = 1;
-		    	ticket.setDateJanuary(null);
-				ticket.setPointsJanuary(0);
-		    break;
-		    case "Febrero":
-		    	valueColumn = 3;
-		    	ticket.setDateFebruary(null);
-		    	ticket.setPointsFebruary(0);
-		    	break;
-		    case "Marzo":
-		    	valueColumn = 5;
-		    	ticket.setDateMarch(null);
-		    	ticket.setPointsMarch(0);
-		    	break;
-		    case "Abril":
-		    	valueColumn = 7;
-		    	ticket.setDateApril(null);
-		    	ticket.setPointsApril(0);
-		    	break;
-		    case "Mayo":
-		    	valueColumn = 9;
-		    	ticket.setDateMay(null);
-		    	ticket.setPointsMay(0);
-		    	break;
-		    case "Junio":
-		    	valueColumn = 11;
-		    	ticket.setDateJune(null);
-		    	ticket.setPointsJune(0);
-		    	break;
-		    	
-		    case "Julio":
-		    	valueColumn = 13;
-		    	ticket.setDateJuly(null);
-		    	ticket.setPointsJuly(0);
-		    	break;
-		    case "Agosto":
-		    	valueColumn = 15;
-		    	ticket.setDateAugust(null);
-		    	ticket.setPointsJuly(0);
-		    	break;
-		    case "Septiembre":
-		    	valueColumn = 17;
-		    	ticket.setDateSeptember(null);
-		    	ticket.setPointsSeptember(0);
-		    	break;
-		    case "Octubre":
-		    	valueColumn = 19;
-		    	ticket.setDateOctober(null);
-		    	ticket.setPointsOctober(0);
-		    	break;
-		    case "Noviembre":
-		    	valueColumn = 21;
-		    	ticket.setDateNovember(null);
-		    	ticket.setPointsNovember(0);
-		    	break;
-		    case "Diciembre":
-		    	valueColumn = 23;
-		    	ticket.setDateDecember(null);
-		    	ticket.setPointsDecember(0);
-		    	break;
-		  
-		    }
-		   
-		    if (valueColumn!=null) {
-		    	TableColumn columnToClean = this.getJTableTicketsPeople().getColumnModel().getColumn(valueColumn);
-		    	CaritasDatePickerCellEditor datePickerToClean = new CaritasDatePickerCellEditor();
-		    	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-				TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
-				columnToClean.setCellEditor(datePickerToClean);
-				columnToClean.setCellRenderer(dateRenderer);
-		    }
-		   
+		int row = this.getJTableTicketsPeople().getSelectedRow();
+		if (row != -1) {
+			row = getJTableTicketsPeople().convertRowIndexToModel(row);
+			Ticket ticket = getTicketsPeopleTableModel().getDomainObject(row);
+			
+				for (Map.Entry<String, Boolean> entry : mapCleanMonth.entrySet())
+			{
+			    String month = entry.getKey();
+			    Integer valueColumn = null;
+			    switch(month) {
+			    case "Enero":
+			    	valueColumn = 1;
+			    	ticket.setDateJanuary(null);
+					ticket.setPointsJanuary(0);
+			    break;
+			    case "Febrero":
+			    	valueColumn = 3;
+			    	ticket.setDateFebruary(null);
+			    	ticket.setPointsFebruary(0);
+			    	break;
+			    case "Marzo":
+			    	valueColumn = 5;
+			    	ticket.setDateMarch(null);
+			    	ticket.setPointsMarch(0);
+			    	break;
+			    case "Abril":
+			    	valueColumn = 7;
+			    	ticket.setDateApril(null);
+			    	ticket.setPointsApril(0);
+			    	break;
+			    case "Mayo":
+			    	valueColumn = 9;
+			    	ticket.setDateMay(null);
+			    	ticket.setPointsMay(0);
+			    	break;
+			    case "Junio":
+			    	valueColumn = 11;
+			    	ticket.setDateJune(null);
+			    	ticket.setPointsJune(0);
+			    	break;
+			    	
+			    case "Julio":
+			    	valueColumn = 13;
+			    	ticket.setDateJuly(null);
+			    	ticket.setPointsJuly(0);
+			    	break;
+			    case "Agosto":
+			    	valueColumn = 15;
+			    	ticket.setDateAugust(null);
+			    	ticket.setPointsJuly(0);
+			    	break;
+			    case "Septiembre":
+			    	valueColumn = 17;
+			    	ticket.setDateSeptember(null);
+			    	ticket.setPointsSeptember(0);
+			    	break;
+			    case "Octubre":
+			    	valueColumn = 19;
+			    	ticket.setDateOctober(null);
+			    	ticket.setPointsOctober(0);
+			    	break;
+			    case "Noviembre":
+			    	valueColumn = 21;
+			    	ticket.setDateNovember(null);
+			    	ticket.setPointsNovember(0);
+			    	break;
+			    case "Diciembre":
+			    	valueColumn = 23;
+			    	ticket.setDateDecember(null);
+			    	ticket.setPointsDecember(0);
+			    	break;
+			  
+			    }
+			   
+			    if (valueColumn!=null) {
+			    	TableColumn columnToClean = this.getJTableTicketsPeople().getColumnModel().getColumn(valueColumn);
+			    	CaritasDatePickerCellEditor datePickerToClean = new CaritasDatePickerCellEditor();
+			    	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+					TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+					columnToClean.setCellEditor(datePickerToClean);
+					columnToClean.setCellRenderer(dateRenderer);
+			    }
+			   
+			}
+			
+			
 		}
-		 this.getTicketsPeopleTableModel().addRow(ticket);
+		
+		
+		
 	}
 	
 	private void setRendererJXDatePicker() {
@@ -1013,21 +1020,21 @@ public class JManageTicket extends AbstractJInternalFrame {
 		
 			logger.info("Guardando datos ...");
 			try {
-				Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(0);
-				ticketDAO.update(ticket);
+				
+				int numberRows = this.getJTableTicketsPeople().getRowCount();
+				for (int i=0;i<numberRows;i++) {
+					Ticket ticket = this.getTicketsPeopleTableModel().getDomainObject(i);
+					ticketDAO.update(ticket);
+				}
 				onFilterTicket(false);
 				JOptionPane.showMessageDialog(this, "Se han actualizado los datos correctamente");
+				
+				
 			}
 			catch(Exception e) {
 				JOptionPane.showMessageDialog(this, "No hay datos para guardar");
 			}
-			
-			
-			
-			
-			
-		 
-		
+
 
 	}
 	

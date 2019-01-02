@@ -6,7 +6,7 @@ public class FilterAnswer {
 	private String namePeople;
 	private String dniPeople;
 	private String passportPeople;
-	private Integer yearTicket;
+	private Integer year;
 	private String month;
 	
 	
@@ -24,12 +24,7 @@ public class FilterAnswer {
 	public void setDniPeople(String dniPeople) {
 		this.dniPeople = dniPeople;
 	}
-	public Integer getYearTicket() {
-		return yearTicket;
-	}
-	public void setYearTicket(Integer yearTicket) {
-		this.yearTicket = yearTicket;
-	}
+	
 	public Boolean getActive() {
 		return active;
 	}
@@ -54,6 +49,12 @@ public class FilterAnswer {
 	}
 	public void setMonth(String month) {
 		this.month = month;
+	}
+	public Integer getYear() {
+		return year;
+	}
+	public void setYear(Integer year) {
+		this.year = year;
 	}
 	
 	

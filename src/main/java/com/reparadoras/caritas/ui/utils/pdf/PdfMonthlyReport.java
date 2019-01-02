@@ -187,8 +187,8 @@ public class PdfMonthlyReport {
 
 		try {
 
-			PdfPTable table = new PdfPTable(19);
-			table.setTotalWidth(new float[] { 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2 });
+			PdfPTable table = new PdfPTable(6);
+			table.setTotalWidth(new float[] { 2, 4, 4, 3, 1, 1 });
 			table.setTotalWidth(PageSize.A4.getWidth());
 
 			// table.setLockedWidth(true);
@@ -209,57 +209,57 @@ public class PdfMonthlyReport {
 			setCellStyleTableWithBorder(cell);
 			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("F. Nacimiento", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
+//			cell = new PdfPCell(new Phrase("F. Nacimiento", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Sexo", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
+//			cell = new PdfPCell(new Phrase("Sexo", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("Domicilio", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("Nº Personas", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("T. Familia", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("Estado Civil", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("H. <18", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("H. >18", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Domicilio", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
+//			cell = new PdfPCell(new Phrase("Año Llegada", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("Nacionalidad", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
 
-			cell = new PdfPCell(new Phrase("Nº Personas", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("T. Familia", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("Estado Civil", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("H. <18", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("H. >18", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("Año Llegada", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("Nacionalidad", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("T. Autorización", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("S. Laboral", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
-
-			cell = new PdfPCell(new Phrase("Estudios", TITLE_6_FONT_BOLD));
-			setCellStyleTableWithBorder(cell);
-			table.addCell(cell);
+//			cell = new PdfPCell(new Phrase("T. Autorización", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("S. Laboral", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
+//
+//			cell = new PdfPCell(new Phrase("Estudios", TITLE_6_FONT_BOLD));
+//			setCellStyleTableWithBorder(cell);
+//			table.addCell(cell);
 
 			cell = new PdfPCell(new Phrase("Vales", TITLE_6_FONT_BOLD));
 			setCellStyleTableWithBorder(cell);
@@ -292,57 +292,57 @@ public class PdfMonthlyReport {
 					setCellStyleTableWithBorder(cell);
 					table.addCell(cell);
 
-					cell = new PdfPCell(new Phrase(report.getFechaNacimiento(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getSexo(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getDomicilio(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getNumPersonas(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getTipoFamilia(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getEstadoCivil(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getHijosMenor18(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getHijosMayor18(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getAnyoLlegada(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getNacionalidad(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getTipoAutorizacion(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getSituacionLaboral(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
-
-					cell = new PdfPCell(new Phrase(report.getEstudios(), TITLE_6_FONT));
-					setCellStyleTableWithBorder(cell);
-					table.addCell(cell);
+//					cell = new PdfPCell(new Phrase(report.getFechaNacimiento(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getSexo(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getDomicilio(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getNumPersonas(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getTipoFamilia(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getEstadoCivil(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getHijosMenor18(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getHijosMayor18(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getAnyoLlegada(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getNacionalidad(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getTipoAutorizacion(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getSituacionLaboral(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
+//
+//					cell = new PdfPCell(new Phrase(report.getEstudios(), TITLE_6_FONT));
+//					setCellStyleTableWithBorder(cell);
+//					table.addCell(cell);
 
 					String valorTicket = "";
 					if (report.getValorTicket()!=null) {

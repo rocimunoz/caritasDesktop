@@ -139,8 +139,8 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		this.getJTextFieldDni().setText(this.filterAnswer.getDniPeople());
 		this.getJTextFieldName().setText(this.filterAnswer.getNamePeople());
 		this.getJTextFieldPassport().setText(this.filterAnswer.getPassportPeople());
-		if (this.filterAnswer.getYearTicket() != null) {
-			this.getJTextFieldYear().setText(this.filterAnswer.getYearTicket().toString());
+		if (this.filterAnswer.getYear() != null) {
+			this.getJTextFieldYear().setText(this.filterAnswer.getYear().toString());
 		}
 		if (this.filterAnswer.getActive()) {
 			this.getCkActive().setSelected(true);
@@ -742,7 +742,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		filterAnswer.setDniPeople(this.getJTextFieldDni().getText());
 		filterAnswer.setNamePeople(this.getJTextFieldName().getText());
 		if (this.getJTextFieldYear().getText() != null && !this.getJTextFieldYear().getText().equals("")) {
-			filterAnswer.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
+			filterAnswer.setYear(Integer.parseInt(this.getJTextFieldYear().getText()));
 		}
 
 		List<Answer> answers = answerDAO.findAnswer(filterAnswer);

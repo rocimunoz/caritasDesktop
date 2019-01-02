@@ -741,7 +741,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		filterTicket.setActive(filterActive);
 
 		FilterAnswer filterAnswer = new FilterAnswer();
-		filterAnswer.setYearTicket(Integer.parseInt(filterYear));
+		filterAnswer.setYear(Integer.parseInt(filterYear));
 		filterAnswer.setActive(filterActive);
 
 		switch (filterMonth) {

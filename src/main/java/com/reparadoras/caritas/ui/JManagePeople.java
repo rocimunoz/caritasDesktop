@@ -989,7 +989,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				filterAnswer.setDniPeople(people.getDni());
 				filterAnswer.setPassportPeople(people.getPassport());
 				filterAnswer.setNamePeople(people.getName());
-				filterAnswer.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterAnswer.setYear(Calendar.getInstance().get(Calendar.YEAR));
 				filterAnswer.setIdPeople(people.getId());
 				try {
 
