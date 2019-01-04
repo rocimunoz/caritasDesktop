@@ -280,7 +280,7 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				onSaveProgram();
 				dispose();
 			}
@@ -1427,18 +1427,24 @@ public class JManageProgram extends AbstractJInternalFrame {
 		String description = "";
 		logger.info("Guardando tipo de autorizacion ...");
 
-		if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioResidence().getText();
+		if (this.getJPanelAuthorizationType().getJRadioTemporalResidence().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioTemporalResidence().getText();
 
-		} else if (this.getJPanelAuthorizationType().getJRadioResidenceWork().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioResidenceWork().getText();
+		} else if (this.getJPanelAuthorizationType().getJRadioTemporalResidenceWork().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioTemporalResidenceWork().getText();
+
+		} else if (this.getJPanelAuthorizationType().getJRadioPermanentResidence().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioPermanentResidence().getText();
 
 		} else if (this.getJPanelAuthorizationType().getJRadioStudy().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioStudy().getText();
 
-		} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioTourism().getText();
+		} else if (this.getJPanelAuthorizationType().getJRadioWork().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioWork().getText();
+		}
 
+		else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioTourism().getText();
 		}
 
 		else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {

@@ -52,7 +52,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JPanel jPanelActions;
 	private JButton jBtnAccept;
 	private JButton jBtnCancel;
-	private JLabel jLblSurname;
+	private JLabel jLblRelativeState;
 	private JTextField txfSurname;
 	private JLabel jLblDateBorn;
 	private JLabel jLblRelationShip;
@@ -60,7 +60,8 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 
 	private JLabel jLblSituation;
 	private JTextField txfSituation;
-	private RelativeDAO relativeDAO;
+	
+	private JComboBox<String> tfRelativeState;
 
 	private JXDatePicker jxDateBorn;
 
@@ -90,7 +91,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		this.executingMode = executingMode;
 		this.rowIndex = index;
 
-		initComponents();
+		
 		
 		fillData(executingMode);
 
@@ -100,8 +101,12 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 
 		getJPanelContentPane().add(getJPanelPersonalData(), getGridJPanelPersonalData());
 		getJPanelPersonalData().setLayout(getGridLayoutJPanelPersonalData());
-		getJPanelPersonalData().add(getJLabelSurname(), getGridJLabelSurname());
-		getJPanelPersonalData().add(getJTextFieldSurname(), getGridJTextFieldSurname());
+		//getJPanelPersonalData().add(getJLabelSurname(), getGridJLabelSurname());
+		//getJPanelPersonalData().add(getJTextFieldSurname(), getGridJTextFieldSurname());
+		
+		getJPanelPersonalData().add(getJLabelRelativeState(), getGridJLabelRelativeState());
+		getJPanelPersonalData().add(getJComboRelativeState(), getGridJComboRelativeState());
+		
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
 		getJPanelPersonalData().add(getJLblDateBorn(), getGridJLabelDateBorn());
@@ -135,19 +140,31 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 					// Cerrar Transaccion
 					onCloseWindow();
 				}
-				
-				
-				
-
 			}
 		});
 
 		getJPanelActions().add(getJButtonAccept(), getGridBagConstraintsJButtonAccept());
 
 		getJPanelActions().add(getJButtonCancel(), getGridBagConstraintsJButtonCancel());
+		
+		initCombos();
 
 	}
+	
+	public void initCombos() {
+		this.getJComboRelativeState().addItem("Convive");
+		this.getJComboRelativeState().addItem("Trabaja");
+		
+	}
 
+	public JComboBox<String> getJComboRelativeState() {
+		if (tfRelativeState == null) {
+			tfRelativeState = new JComboBox<String>();
+			
+		}
+		return tfRelativeState;
+	}
+	
 	private void onCloseWindow() {
 		try {
 			this.setClosed(true);
@@ -158,22 +175,18 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		}
 	}
 
-	private void initComponents() {
-
-	}
+	
 
 	
 	private boolean checkRequiredFields(){
 		
-		if (!getJTextFieldName().getText().equals("") && !getJTextFieldRelationShip().getText().equals("")  && this.getJXDateBorn().getDate()!=null ){
+		if (!getJTextFieldName().getText().equals("")){
 			return true;
 		}
 		else{
 			JOptionPane.showMessageDialog(this, "Rellene todos los campos correctamente", "Error Dialog", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		
-		
 	}
 
 	private void fillData(int mode) {
@@ -357,20 +370,20 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 
 	}
 
-	private JLabel getJLabelSurname() {
+	private JLabel getJLabelRelativeState() {
 
-		if (jLblSurname == null) {
-			jLblSurname = new JLabel("Apellidos");
-			jLblSurname.setFont(new Font("Verdana", Font.PLAIN, 14));
-			jLblSurname.setMinimumSize(new Dimension(20, 14));
-			jLblSurname.setMaximumSize(new Dimension(20, 14));
+		if (jLblRelativeState == null) {
+			jLblRelativeState = new JLabel("Convive/Trabaja");
+			jLblRelativeState.setFont(new Font("Verdana", Font.PLAIN, 14));
+			jLblRelativeState.setMinimumSize(new Dimension(20, 14));
+			jLblRelativeState.setMaximumSize(new Dimension(20, 14));
 
 		}
 
-		return jLblSurname;
+		return jLblRelativeState;
 	}
 
-	private GridBagConstraints getGridJLabelSurname() {
+	private GridBagConstraints getGridJLabelRelativeState() {
 		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
 		gbc_lblSurname.anchor = GridBagConstraints.WEST;
 		gbc_lblSurname.insets = new Insets(0, 15, 5, 5);
@@ -392,7 +405,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		return txfSurname;
 	}
 
-	private GridBagConstraints getGridJTextFieldSurname() {
+	private GridBagConstraints getGridJComboRelativeState() {
 
 		GridBagConstraints gbc_txfSurname = new GridBagConstraints();
 		gbc_txfSurname.weightx = 1.0;
@@ -501,7 +514,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JLabel getJLabelSituation() {
 
 		if (jLblSituation == null) {
-			jLblSituation = new JLabel("Situacion");
+			jLblSituation = new JLabel("Estudia/Curso");
 			jLblSituation.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblSituation.setMinimumSize(new Dimension(20, 14));
 			jLblSituation.setMaximumSize(new Dimension(20, 14));
