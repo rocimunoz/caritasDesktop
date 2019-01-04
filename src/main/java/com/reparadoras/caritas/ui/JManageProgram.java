@@ -1442,7 +1442,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} else if (this.getJPanelAuthorizationType().getJRadioWork().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioWork().getText();
 		}
-
 		else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioTourism().getText();
 		}
@@ -1453,6 +1452,15 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} else if (this.getJPanelAuthorizationType().getJRadioSAIrregular().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
 
+		}
+		else if (this.getJPanelAuthorizationType().getJRadioSpanish().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioSpanish().getText();
+		}
+		else if (this.getJPanelAuthorizationType().getJRadioNoSpanish().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioNoSpanish().getText();
+		}
+		else if (this.getJPanelAuthorizationType().getJRadioFamilyNoSpanish().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioFamilyNoSpanish().getText();
 		}
 		if (!description.equals("")) {
 			aTypeFilter.setDescription(description);
