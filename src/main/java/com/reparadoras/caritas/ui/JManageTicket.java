@@ -959,10 +959,19 @@ public class JManageTicket extends AbstractJInternalFrame {
 	/* EVENTOS */
 
 
-
+	private  boolean hasTicketForThisYear(List<Ticket> listTickets) {
+		
+		boolean hasTicketForThisYear = false;
+		if (listTickets!=null) {
+			
+			hasTicketForThisYear = listTickets.stream().anyMatch(e->e.getYear() == Calendar.getInstance().get(Calendar.YEAR));
+		}
+		
+		return hasTicketForThisYear;
+	}
+	
 	public void onFilterTicket(boolean create) {
-		
-		
+			
 		if (filterTicket == null){
 			filterTicket = new FilterTicket();
 		} 
@@ -973,11 +982,8 @@ public class JManageTicket extends AbstractJInternalFrame {
 			filterTicket.setYearTicket(Integer.parseInt(this.getJTextFieldYear().getText()));
 		}
 		
-
-		
-		
 		List<Ticket> tickets = ticketDAO.findTicket(filterTicket);
-		if (tickets != null && !tickets.isEmpty()) {
+		if (tickets != null && !tickets.isEmpty() && hasTicketForThisYear(tickets)) {
 			this.getTicketsPeopleTableModel().clearTableModelData();
 			this.getTicketsPeopleTableModel().addRows(tickets);
 
@@ -995,7 +1001,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 
 			if (create) {
 				if (JOptionPane.showConfirmDialog(this,
-						"Este usuario no tiene registros de Vales todavia. ¿Quieres crearlo?",
+						"Este usuario no tiene registros de Vales para el año actual todavia. ¿Quieres crearlo?",
 						"WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				
 					ticketDAO.insert(ticketNewReset);
