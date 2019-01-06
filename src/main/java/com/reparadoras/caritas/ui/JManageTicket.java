@@ -100,6 +100,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JButton btnCleanTicket;
 	private JButton btnFilterTicket;
 	private JButton btnExit = null;
+	
 	private JButton btnCleanPeople = null;
 	private FilterTicket filterTicket = null;
 
@@ -145,7 +146,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		
 		onFilterTicket(true);
 		
-		this.getJButtonSearch().setVisible(false);
+		this.getJButtonSearch().setVisible(true);
 		this.getJButtonClean().setVisible(false);
 		
 	}
@@ -359,6 +360,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (tfDni == null) {
 			tfDni = new JTextField();
 			tfDni.setColumns(10);
+			tfDni.setEditable(false);
 		}
 		return tfDni;
 	}
@@ -397,6 +399,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		if (tfPassport == null) {
 			tfPassport = new JTextField();
 			tfPassport.setColumns(10);
+			tfPassport.setEditable(false);
 		}
 		return tfPassport;
 	}
@@ -455,8 +458,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	private JTextField getJTextFieldName() {
 		if (tfName == null) {
 			tfName = new JTextField();
-
-			
+			tfName.setEditable(false);
 		}
 
 		return tfName;
@@ -959,22 +961,30 @@ public class JManageTicket extends AbstractJInternalFrame {
 	/* EVENTOS */
 
 
-	private  boolean hasTicketForThisYear(List<Ticket> listTickets) {
+	private  boolean hasTicketForThisYear(boolean create, List<Ticket> listTickets) {
 		
 		boolean hasTicketForThisYear = false;
-		if (listTickets!=null) {
-			
-			hasTicketForThisYear = listTickets.stream().anyMatch(e->e.getYear() == Calendar.getInstance().get(Calendar.YEAR));
+		if (create == false) {
+			hasTicketForThisYear = true;
+		}else {
+			if (listTickets!=null) {
+				hasTicketForThisYear = listTickets.stream().anyMatch(e->e.getYear() == Calendar.getInstance().get(Calendar.YEAR));
+			}
 		}
+		
 		
 		return hasTicketForThisYear;
 	}
+	
+
 	
 	public void onFilterTicket(boolean create) {
 			
 		if (filterTicket == null){
 			filterTicket = new FilterTicket();
 		} 
+		
+		filterTicket.setYearTicket(null);
 		
 		filterTicket.setDniPeople(this.getJTextFieldDni().getText());
 		filterTicket.setNamePeople(this.getJTextFieldName().getText());
@@ -983,7 +993,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 		}
 		
 		List<Ticket> tickets = ticketDAO.findTicket(filterTicket);
-		if (tickets != null && !tickets.isEmpty() && hasTicketForThisYear(tickets)) {
+		if (tickets != null && !tickets.isEmpty() && hasTicketForThisYear(create, tickets)) {
 			this.getTicketsPeopleTableModel().clearTableModelData();
 			this.getTicketsPeopleTableModel().addRows(tickets);
 
