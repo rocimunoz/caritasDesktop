@@ -150,7 +150,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 
 		onFilterAnswer(true);
 
-		this.getJButtonSearch().setVisible(false);
+		this.getJButtonSearch().setVisible(true);
 		this.getJButtonClean().setVisible(false);
 
 	}
@@ -331,6 +331,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		if (tfDni == null) {
 			tfDni = new JTextField();
 			tfDni.setColumns(10);
+			tfDni.setEditable(false);
 		}
 		return tfDni;
 	}
@@ -369,6 +370,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 		if (tfPassport == null) {
 			tfPassport = new JTextField();
 			tfPassport.setColumns(10);
+			tfPassport.setEditable(false);
 		}
 		return tfPassport;
 	}
@@ -427,6 +429,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private JTextField getJTextFieldName() {
 		if (tfName == null) {
 			tfName = new JTextField();
+			tfName.setEditable(false);
 
 		}
 
@@ -694,10 +697,11 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.setRowHeight(30);
 			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(75);
-			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(100);
-			tablePeople.getColumnModel().getColumn(3).setPreferredWidth(400);
-			tablePeople.getColumnModel().getColumn(2).setCellEditor(new NumberCellEditor());
+			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(50);
+			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(75);
+			tablePeople.getColumnModel().getColumn(2).setPreferredWidth(100);
+			tablePeople.getColumnModel().getColumn(4).setPreferredWidth(400);
+			tablePeople.getColumnModel().getColumn(3).setCellEditor(new NumberCellEditor());
 
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 			// tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
@@ -710,7 +714,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	private AnswerPeopleTableModel getAnswersPeopleTableModel() {
 
 		if (answersPeopleTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "Mes", "Fecha", "Importe", "Respuesta" };
+			Object[] columnIdentifiers = new Object[] { "Año", "Mes", "Fecha", "Importe", "Respuesta" };
 			answersPeopleTableModel = new AnswerPeopleTableModel(Arrays.asList(columnIdentifiers));
 		}
 
@@ -718,7 +722,7 @@ public class JManageAnswer extends AbstractJInternalFrame {
 	}
 
 	private void setRendererJXDatePicker() {
-		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(1);
+		TableColumn januaryColumn = this.getJTableAnswerPeople().getColumnModel().getColumn(2);
 
 		CaritasDatePickerCellEditor datePickerJanuary = new CaritasDatePickerCellEditor();
 
