@@ -50,6 +50,7 @@ import com.reparadoras.caritas.ui.components.table.ColumnGroup;
 import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.TableRedRenderer;
 import com.reparadoras.caritas.ui.components.table.TicketsPeopleTableModel;
 
 import java.awt.Color;
@@ -697,12 +698,12 @@ public class JManageAnswer extends AbstractJInternalFrame {
 			tablePeople.setRowHeight(30);
 			tablePeople.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(50);
+			tablePeople.getColumnModel().getColumn(0).setPreferredWidth(25);
 			tablePeople.getColumnModel().getColumn(1).setPreferredWidth(75);
 			tablePeople.getColumnModel().getColumn(2).setPreferredWidth(100);
 			tablePeople.getColumnModel().getColumn(4).setPreferredWidth(400);
 			tablePeople.getColumnModel().getColumn(3).setCellEditor(new NumberCellEditor());
-
+			tablePeople.setDefaultRenderer(tablePeople.getColumnClass(0), new TableRedRenderer());
 			tablePeople.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 			// tablePeople.getColumnModel().getColumn(3).setCellRenderer(cr);
 

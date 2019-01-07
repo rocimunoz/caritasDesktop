@@ -45,6 +45,7 @@ import com.reparadoras.caritas.ui.components.table.ColumnGroup;
 import com.reparadoras.caritas.ui.components.table.FormattedCellRenderer;
 import com.reparadoras.caritas.ui.components.table.GroupableTableHeader;
 import com.reparadoras.caritas.ui.components.table.PeopleTableModel;
+import com.reparadoras.caritas.ui.components.table.TableRedRenderer;
 import com.reparadoras.caritas.ui.components.table.TicketsPeopleTableModel;
 
 import java.awt.Color;
@@ -841,6 +842,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	}
 	
 	private void setRendererJXDatePicker() {
+		TableColumn yearColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(0);
 		TableColumn januaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(1);
 		TableColumn februaryColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(3);
 		TableColumn marchColumn = this.getJTableTicketsPeople().getColumnModel().getColumn(5);
@@ -870,6 +872,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 	
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
+		yearColumn.setCellRenderer(new TableRedRenderer());
 		januaryColumn.setCellEditor(datePickerJanuary);
 		januaryColumn.setCellRenderer(dateRenderer);
 		februaryColumn.setCellEditor(datePickerFebruary);

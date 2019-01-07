@@ -92,6 +92,7 @@
         MONEY = #{money}
         WHERE ID_PEOPLE = #{people.id}
         AND MONTH=#{month}
+        AND YEAR=#{year}
     
     </update>
     
