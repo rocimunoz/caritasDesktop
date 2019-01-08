@@ -11,6 +11,7 @@
         <result property="relationShip" column="relation_ship"/>
         <result property="situation" column="situation"/>
         <result property="dateBorn" column="date_born"/>
+        <result property="liveWork" column="live_work"/>
         <association property="family" resultMap="FamilyResult"/> 
     </resultMap>
     
@@ -42,13 +43,14 @@
     
     
  	<insert id="insert" parameterType="Relative" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_RELATIVE (name,surname, situation, relation_ship, date_born, id_family) 
+        INSERT INTO C_RELATIVE (name,surname, situation, relation_ship, date_born, liveWork, id_family) 
         VALUES (
         #{name},
         #{surname},
         #{situation},
         #{relationShip},
         #{dateBorn},
+        #{liveWork},
         #{family.id});
     </insert>
     
@@ -60,6 +62,7 @@
           <if test="situation != null">situation = #{situation},</if>
           <if test="relationShip != null">relation_ship = #{relationShip},</if>
           <if test="dateBorn != null">date_born = #{dateBorn},</if>
+          <if test="liveWork != null">live_work = #{liveWork},</if>
           </set>
         WHERE id = #{id} 
   	</update>

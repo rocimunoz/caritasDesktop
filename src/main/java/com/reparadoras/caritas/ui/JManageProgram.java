@@ -1069,12 +1069,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 				editedRelative.setRelationShip(null);
 			}
 
-			if (relative.getSurname() != null) {
-				if (!editedRelative.getSurname().equals(relative.getSurname())) {
-					editedRelative.setSurname(relative.getSurname());
+			if (relative.getLiveWork() != null) {
+				if (!editedRelative.getLiveWork().equals(relative.getLiveWork())) {
+					editedRelative.setLiveWork(relative.getLiveWork());
 				}
 			} else {
-				editedRelative.setSurname(null);
+				editedRelative.setLiveWork(null);
 			}
 
 			if (relative.getSituation() != null) {

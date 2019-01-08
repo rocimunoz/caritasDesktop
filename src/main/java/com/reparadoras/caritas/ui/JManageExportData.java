@@ -716,7 +716,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 					cell = row.createCell(3);
 					cell.setCellValue("");
 					cell = row.createCell(4);
-					cell.setCellValue(relative.getSurname());
+					cell.setCellValue(relative.getLiveWork());
 					cell = row.createCell(5);
 					cell.setCellValue(relative.getName());
 					cell = row.createCell(6);

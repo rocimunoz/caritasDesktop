@@ -1024,7 +1024,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 				break;
 			case 4:
 				mapRelatives.get(primaryKey).get(mapRelatives.get(primaryKey).size() - 1)
-						.setSurname(cell.getStringCellValue());
+						.setLiveWork(cell.getStringCellValue());
 
 				break;
 			case 5:

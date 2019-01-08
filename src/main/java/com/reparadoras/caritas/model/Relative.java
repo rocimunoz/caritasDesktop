@@ -18,6 +18,7 @@ public class Relative implements Serializable{
 
 	private Long id;
 	private String relationShip;
+	private String liveWork;
 	private String surname;
 	private String name;
 	private Date dateBorn;
@@ -30,12 +31,7 @@ public class Relative implements Serializable{
 	public void setRelationShip(String relationShip) {
 		this.relationShip = relationShip;
 	}
-	public String getSurname() {
-		return surname;
-	}
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+	
 	public String getName() {
 		return name;
 	}
@@ -66,6 +62,21 @@ public class Relative implements Serializable{
 	public void setFamily(Family family) {
 		this.family = family;
 	}
+	public String getLiveWork() {
+		return liveWork;
+	}
+	public void setLiveWork(String liveWork) {
+		this.liveWork = liveWork;
+	}
+	public String getSurname() {
+		return surname;
+	}
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+	
+	
+	
 	
 	
 	

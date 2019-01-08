@@ -61,7 +61,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	private JLabel jLblSituation;
 	private JTextField txfSituation;
 	
-	private JComboBox<String> tfRelativeState;
+	private JComboBox<String> cbLiveWork;
 
 	private JXDatePicker jxDateBorn;
 
@@ -104,8 +104,8 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		//getJPanelPersonalData().add(getJLabelSurname(), getGridJLabelSurname());
 		//getJPanelPersonalData().add(getJTextFieldSurname(), getGridJTextFieldSurname());
 		
-		getJPanelPersonalData().add(getJLabelRelativeState(), getGridJLabelRelativeState());
-		getJPanelPersonalData().add(getJComboRelativeState(), getGridJComboRelativeState());
+		getJPanelPersonalData().add(getJLabelRelativeState(), getGridJLabelLiveWork());
+		getJPanelPersonalData().add(getJComboLiveWork(), getGridJComboLiveWork());
 		
 		getJPanelPersonalData().add(getJLabelName(), getGridJLabelName());
 		getJPanelPersonalData().add(getJTextFieldName(), getGridJTextFieldName());
@@ -152,17 +152,16 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 	}
 	
 	public void initCombos() {
-		this.getJComboRelativeState().addItem("Convive");
-		this.getJComboRelativeState().addItem("Trabaja");
+		this.getJComboLiveWork().addItem("Convive");
+		this.getJComboLiveWork().addItem("Trabaja");
 		
 	}
 
-	public JComboBox<String> getJComboRelativeState() {
-		if (tfRelativeState == null) {
-			tfRelativeState = new JComboBox<String>();
-			
+	public JComboBox<String> getJComboLiveWork() {
+		if (cbLiveWork == null) {
+			cbLiveWork = new JComboBox<String>();
 		}
-		return tfRelativeState;
+		return cbLiveWork;
 	}
 	
 	private void onCloseWindow() {
@@ -193,7 +192,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE) {
 
 			this.getJTextFieldName().setText(this.selectedRelative.getName());
-			this.getJTextFieldSurname().setText(this.selectedRelative.getSurname());
+			this.getJTextFieldSurname().setText(this.selectedRelative.getLiveWork());
 			this.getJTextFieldRelationShip().setText(this.selectedRelative.getRelationShip());
 			this.getJTextFieldSituation().setText(this.selectedRelative.getSituation());
 			this.getJXDateBorn().setDate(this.selectedRelative.getDateBorn());
@@ -209,7 +208,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			this.selectedRelative.setName(this.getJTextFieldName().getText());
 			this.selectedRelative.setRelationShip(this.getJTextFieldRelationShip().getText());
 			this.selectedRelative.setSituation(this.getJTextFieldSituation().getText());
-			this.selectedRelative.setSurname(this.getJTextFieldSurname().getText());
+			this.selectedRelative.setLiveWork((String) this.getJComboLiveWork().getSelectedItem());
 			this.selectedRelative.setDateBorn(this.getJXDateBorn().getDate());
 			this.selectedRelative.setFamily(this.family);
 
@@ -231,7 +230,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			relative.setName(this.getJTextFieldName().getText());
 			relative.setRelationShip(this.getJTextFieldRelationShip().getText());
 			relative.setSituation(this.getJTextFieldSituation().getText());
-			relative.setSurname(this.getJTextFieldSurname().getText());
+			relative.setLiveWork((String) this.getJComboLiveWork().getSelectedItem());
 			relative.setDateBorn(this.getJXDateBorn().getDate());
 			relative.setFamily(this.family);
 
@@ -383,7 +382,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		return jLblRelativeState;
 	}
 
-	private GridBagConstraints getGridJLabelRelativeState() {
+	private GridBagConstraints getGridJLabelLiveWork() {
 		GridBagConstraints gbc_lblSurname = new GridBagConstraints();
 		gbc_lblSurname.anchor = GridBagConstraints.WEST;
 		gbc_lblSurname.insets = new Insets(0, 15, 5, 5);
@@ -405,7 +404,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		return txfSurname;
 	}
 
-	private GridBagConstraints getGridJComboRelativeState() {
+	private GridBagConstraints getGridJComboLiveWork() {
 
 		GridBagConstraints gbc_txfSurname = new GridBagConstraints();
 		gbc_txfSurname.weightx = 1.0;

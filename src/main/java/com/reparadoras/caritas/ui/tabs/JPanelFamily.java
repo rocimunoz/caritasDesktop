@@ -351,7 +351,7 @@ public class JPanelFamily extends JPanel {
 			
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			TableCellRenderer dateRenderer = new FormattedCellRenderer(simpleDateFormat);
-			tableRelatives.getColumnModel().getColumn(3).setCellRenderer(dateRenderer);
+			tableRelatives.getColumnModel().getColumn(1).setCellRenderer(dateRenderer);
 			
 		}
 
@@ -361,8 +361,9 @@ public class JPanelFamily extends JPanel {
 	public RelativesTableModel getRelativesTableModel() {
 
 		if (relativesTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "PARENTESCO", "APELLIDOS", "NOMBRE", "FECHA NACIMIENTO",
-					"SITUACION" };
+			Object[] columnIdentifiers = new Object[] { "NOMBRE", "FECHA NACIMIENTO", "PARENTESCO", "CONVIVE/TRABAJA",
+			"ESTUDIA/CURSO" };
+			
 			relativesTableModel = new RelativesTableModel(Arrays.asList(columnIdentifiers));
 		}
 
