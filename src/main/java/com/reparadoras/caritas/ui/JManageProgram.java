@@ -1475,25 +1475,42 @@ public class JManageProgram extends AbstractJInternalFrame {
 		logger.info("Guardando situación laboral ...");
 		if (this.getJPanelJobSituation().getjRadioUnemployee().isSelected()) {
 			description = getJPanelJobSituation().getjRadioUnemployee().getText();
-
-		} else if (this.getJPanelJobSituation().getjRadioNormalJob().isSelected()) {
+		}
+		else if (this.getJPanelJobSituation().getjRadioNormalJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioNormalJob().getText();
-
-		} else if (this.getJPanelJobSituation().getjRadioMarginalJob().isSelected()) {
+		} 
+		else if (this.getJPanelJobSituation().getjRadioMarginalJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioMarginalJob().getText();
-		} else if (this.getJPanelJobSituation().getjRadioHouseJob().isSelected()) {
+		} 
+		else if (this.getJPanelJobSituation().getjRadioHouseJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioHouseJob().getText();
-		} else if (this.getJPanelJobSituation().getjRadioRetired().isSelected()) {
+		}
+		else if (this.getJPanelJobSituation().getjRadioRetired().isSelected()) {
 			description = getJPanelJobSituation().getjRadioRetired().getText();
-		} else if (this.getJPanelJobSituation().getjRadioOthers().isSelected()) {
+		}
+		else if (this.getJPanelJobSituation().getjRadioOthers().isSelected()) {
 			description = getJPanelJobSituation().getjRadioOthers().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioNoLaboralAge().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNoLaboralAge().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioNoSSSS().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNoSSSS().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioNoWork().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNoWork().getText();
+		}
+		else if (this.getJPanelJobSituation().getjRadioWithSSSS().isSelected()) {
+			description = getJPanelJobSituation().getjRadioWithSSSS().getText();
 		}
 
 		if (!description.equals("")) {
 			jsFilter.setDescription(description);
 			selectedProgram.setJobSituation(jobSituationDAO.findJobSituation(jsFilter));
 		}
-
+		
+		
+		
 	}
 
 	public void onSaveStudies(Program selectedProgram) {
