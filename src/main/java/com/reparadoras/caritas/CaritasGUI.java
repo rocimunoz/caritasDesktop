@@ -7,6 +7,10 @@ package com.reparadoras.caritas;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -19,6 +23,7 @@ import javax.swing.JScrollPane;
 import com.reparadoras.caritas.ui.JMainWindow;
 import com.reparadoras.caritas.ui.JManagePeople;
 import com.reparadoras.caritas.ui.JManageTicket;
+import com.reparadoras.caritas.ui.utils.Constants;
 
 import javax.swing.Icon;
 import java.awt.event.ActionListener;
@@ -39,7 +44,27 @@ public class CaritasGUI  extends JFrame{
 
     	initLookAndFeel();
         initUI();
+        readProperties();
         
+    }
+    
+    private void readProperties() {
+    	
+    	
+    	Properties properties = new Properties();
+    	InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.properties");
+    	if (inputStream!=null) {
+    		try {
+    			properties.load(inputStream);
+    			Constants.MYSQL_DUMP_PATH = (String) properties.get("mysql.dump");
+    			Constants.MYSQL_LOAD_PATH = (String) properties.get("mysql.load");
+    		}catch(Exception e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    		
+    	}
+    	
     }
     
     private void initLookAndFeel() {

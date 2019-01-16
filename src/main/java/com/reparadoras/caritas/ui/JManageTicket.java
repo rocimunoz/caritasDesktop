@@ -798,7 +798,7 @@ public class JManageTicket extends AbstractJInternalFrame {
 			    case "Agosto":
 			    	valueColumn = 15;
 			    	ticket.setDateAugust(null);
-			    	ticket.setPointsJuly(0);
+			    	ticket.setPointsAugust(0);
 			    	break;
 			    case "Septiembre":
 			    	valueColumn = 17;
