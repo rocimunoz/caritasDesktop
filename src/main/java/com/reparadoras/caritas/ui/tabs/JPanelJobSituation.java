@@ -47,6 +47,7 @@ public class JPanelJobSituation extends JPanel {
 	
 	
 	
+	
 	private JRadioButton jRadioOthers;
 
 	public JPanelJobSituation() {

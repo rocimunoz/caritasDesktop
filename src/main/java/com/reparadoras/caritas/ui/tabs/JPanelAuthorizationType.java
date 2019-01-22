@@ -187,6 +187,12 @@ public class JPanelAuthorizationType extends JPanel{
 			jPanelRadioButton.add(getJRadioRefugee());
 			jPanelRadioButton.add(getJRadioUndocumented());
 			jPanelRadioButton.add(getJRadioSAIrregular());
+			jPanelRadioButton.add(getJRadioSpanish());
+			jPanelRadioButton.add(getJRadioNoSpanish());
+			jPanelRadioButton.add(getJRadioFamilyNoSpanish());
+			
+			
+			
 			
 			ButtonGroup groupL2 = new ButtonGroup();
 			groupL2.add(getJRadioTemporalResidence());
@@ -386,10 +392,12 @@ public class JPanelAuthorizationType extends JPanel{
 			case 6:
 				this.getJRadioUndocumented().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
 			case 7:
 				this.getJRadioSAIrregular().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
 			case 8:
 				this.getJRadioPermanentResidence().setSelected(true);
@@ -402,18 +410,33 @@ public class JPanelAuthorizationType extends JPanel{
 			case 10:
 				this.getJRadioSpanish().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
 			case 11:
 				this.getJRadioNoSpanish().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
 			case 12:
 				this.getJRadioFamilyNoSpanish().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
 				
 			}
 		}
+	}
+	
+	private void cleanBlock() {
+		this.getJRadioSARegular().setSelected(false);
+		this.getJRadioTemporalResidence().setSelected(false);
+		this.getJRadioTemporalResidenceWork().setSelected(false);
+		this.getJRadioPermanentResidence().setSelected(false);
+		this.getJRadioWork().setSelected(false);
+		this.getJRadioStudy().setSelected(false);
+		this.getJRadioTourism().setSelected(false);
+		this.getJRadioRefugee().setSelected(false);
+		
 	}
 
 	
