@@ -43,7 +43,7 @@
     
     
  	<insert id="insert" parameterType="Relative" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO C_RELATIVE (name,surname, situation, relation_ship, date_born, liveWork, id_family) 
+        INSERT INTO C_RELATIVE (name,surname, situation, relation_ship, date_born, live_work, id_family) 
         VALUES (
         #{name},
         #{surname},
