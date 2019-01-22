@@ -177,7 +177,7 @@ public class JPanelJobSituation extends JPanel {
 	
 	public JRadioButton getjRadioNoWork() {
 		if (jRadioNoWork == null) {
-			jRadioNoWork = new JRadioButton("Persona que no está trabajando");
+			jRadioNoWork = new JRadioButton("Persona que no está buscando trabajo");
 
 			jRadioNoWork.setMargin(new Insets(20, 20, 2, 20));
 			jRadioNoWork.setFont(new Font("Verdana", Font.PLAIN, 14));

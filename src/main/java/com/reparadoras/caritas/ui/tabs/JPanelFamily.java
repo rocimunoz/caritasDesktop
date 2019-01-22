@@ -66,6 +66,8 @@ public class JPanelFamily extends JPanel {
 	private JRadioButton jRadioMono;
 	private JRadioButton jRadioOther;
 	private JRadioButton jRadioWithChildren;
+	private JRadioButton jRadioHomeless;
+	private JRadioButton jRadioNoRelation;
 
 	// Acciones gastos
 	private JPanel jPanelActionsRelative;
@@ -172,7 +174,7 @@ public class JPanelFamily extends JPanel {
 	private JPanel getJPanelTypeFamily() {
 		if (jPanelTypeFamily == null) {
 			jPanelTypeFamily = new JPanel();
-			jPanelTypeFamily.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Tipo de familia",
+			jPanelTypeFamily.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Tipo de hogar",
 					TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 			
 			((javax.swing.border.TitledBorder) jPanelTypeFamily.getBorder()).
@@ -202,6 +204,8 @@ public class JPanelFamily extends JPanel {
 			group.add(getJRadioWithChildren());
 			group.add(getJRadioNoChildren());
 			group.add(getJRadioMono());
+			group.add(getJRadioHomeless());
+			group.add(getJRadioNoRelation());
 			group.add(getJRadioOther());
 			jPanelRadioButton = new JPanel();
 			jPanelRadioButton.setLayout(new BoxLayout(jPanelRadioButton, BoxLayout.X_AXIS));
@@ -209,6 +213,8 @@ public class JPanelFamily extends JPanel {
 			jPanelRadioButton.add(getJRadioWithChildren());
 			jPanelRadioButton.add(getJRadioNoChildren());
 			jPanelRadioButton.add(getJRadioMono());
+			jPanelRadioButton.add(getJRadioHomeless());
+			jPanelRadioButton.add(getJRadioNoRelation());
 			jPanelRadioButton.add(getJRadioOther());
 
 		}
@@ -256,16 +262,34 @@ public class JPanelFamily extends JPanel {
 
 	public JRadioButton getJRadioOther() {
 		if (jRadioOther == null) {
-			jRadioOther = new JRadioButton("Otra");
+			jRadioOther = new JRadioButton("Otro tipo de parentesco");
 			jRadioOther.setMargin(new Insets(2, 20, 2, 20));
 			jRadioOther.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jRadioOther;
 	}
+	
+	public JRadioButton getJRadioHomeless() {
+		if (jRadioHomeless == null) {
+			jRadioHomeless = new JRadioButton("Sin hogar");
+			jRadioHomeless.setMargin(new Insets(2, 20, 2, 20));
+			jRadioHomeless.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioHomeless;
+	}
+	
+	public JRadioButton getJRadioNoRelation() {
+		if (jRadioNoRelation == null) {
+			jRadioNoRelation = new JRadioButton("Personas sin relación de parentesco");
+			jRadioNoRelation.setMargin(new Insets(2, 20, 2, 20));
+			jRadioNoRelation.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioHomeless;
+	}
 
 	public JRadioButton getJRadioAlone() {
 		if (jRadioAlone == null) {
-			jRadioAlone = new JRadioButton("Sola");
+			jRadioAlone = new JRadioButton("Unipersonal");
 			jRadioAlone.setMargin(new Insets(2, 20, 2, 20));
 			jRadioAlone.setAlignmentX(Component.RIGHT_ALIGNMENT);
 			jRadioAlone.setPreferredSize(new Dimension(150, 23));
@@ -447,6 +471,10 @@ public class JPanelFamily extends JPanel {
 				this.getJRadioMono().setSelected(true);
 			} else if (family.getFamilyType().getId() == 5) {
 				this.getJRadioOther().setSelected(true);
+			}else if (family.getFamilyType().getId() == 6) {
+				this.getJRadioNoRelation().setSelected(true);
+			}else if (family.getFamilyType().getId() == 7) {
+				this.getJRadioHomeless().setSelected(true);
 			}
 		}
 		

@@ -1348,6 +1348,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 				description = getJPanelFamily().getJRadioWithChildren().getText();
 			} else if (getJPanelFamily().getJRadioOther().isSelected()) {
 				description = getJPanelFamily().getJRadioOther().getText();
+			}else if (getJPanelFamily().getJRadioHomeless().isSelected()) {
+				description = getJPanelFamily().getJRadioHomeless().getText();
+			}else if (getJPanelFamily().getJRadioNoRelation().isSelected()) {
+				description = getJPanelFamily().getJRadioNoRelation().getText();
 			}
 			if (!description.equals("")) {
 				FamilyType fType = new FamilyType();
