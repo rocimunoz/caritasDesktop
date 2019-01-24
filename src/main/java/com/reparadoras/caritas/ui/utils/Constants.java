@@ -10,6 +10,8 @@ public class Constants {
 
 	public static String MYSQL_DUMP_PATH = "";
 	public static String MYSQL_LOAD_PATH = "";
+	public static String MYSQL_USER = "";
+	public static String MYSQL_PASS = "";
 	
 	public static String getNemonicFamilyType(FamilyType familyType) {
 		try {
