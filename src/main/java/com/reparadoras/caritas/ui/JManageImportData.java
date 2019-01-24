@@ -532,7 +532,7 @@ public class JManageImportData extends AbstractJInternalFrame {
 
 		if (extension != null && (extension.equals("sql") || extension.equals("SQL"))) {
 			try {
-				String command = Constants.MYSQL_LOAD_PATH + " mysql -u caritas -password caritas" + file.getAbsolutePath();
+				String command = Constants.MYSQL_LOAD_PATH + " mysql -u" + Constants.MYSQL_USER +  "-password"  + Constants.MYSQL_PASS  + file.getAbsolutePath();
 				Runtime.getRuntime().exec(command);	
 				state = true;
 			}catch(Exception e) {

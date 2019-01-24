@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.reparadoras</groupId>
@@ -31,8 +32,8 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-		<version>8.0.11</version>
-		<!-- <version>5.1.27</version>-->
+			<version>8.0.11</version>
+			<!-- <version>5.1.27</version> -->
 		</dependency>
 
 		<dependency>
@@ -109,27 +110,31 @@
 	<build>
 		<plugins>
 			<plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
-          <configuration>
-            <archive>
-                        <!-- Indicamos la clase main y las dependencias -->
-                        <!-- Make jar executable -->
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.reparadoras.caritas.CaritasApp</mainClass>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<includes>
+						<include>**/*.class</include>
+						<include>**/*.xml</include>
+					</includes>
+					<archive>
+						<!-- Indicamos la clase main y las dependencias -->
+						<!-- Make jar executable -->
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>com.reparadoras.caritas.CaritasApp</mainClass>
 
-                        </manifest>
-                        <!-- Añadimos al classpath el directorio donde irán los .properties -->
-                        <manifestEntries>
-                            <Class-Path>src/main/resources</Class-Path>
-                        </manifestEntries>
-                    </archive>
-          </configuration>
-      </plugin>
-      <plugin>
+						</manifest>
+						<!-- Añadimos al classpath el directorio donde irán los .properties -->
+						<manifestEntries>
+							<Class-Path>src/main/resources</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
@@ -138,39 +143,51 @@
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-      </plugins>
-      
-      <resources>
-          
-                       
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource> 
-            <resource>
-                <directory>bin</directory>
-            </resource>                       
-                                
-        </resources>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+		<resources>
+
+
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.ico</include>
+					<include>**/*.png</include>
+					<include>**/*.PNG</include>
+					<include>**/*.TTF</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>bin</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+
+		</resources>
 	</build>
 </project>
