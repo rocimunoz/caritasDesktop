@@ -350,7 +350,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			txfName = new JTextField();
 			txfName.setColumns(10);
 			txfName.setName("name");
-			
+			txfName.setInputVerifier(relativeVerifier);
 		}
 
 		return txfName;
@@ -398,7 +398,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			txfSurname = new JTextField();
 			txfSurname.setColumns(10);
 			txfSurname.setName("surname");
-			
+			txfSurname.setInputVerifier(relativeVerifier);
 		}
 
 		return txfSurname;
@@ -443,7 +443,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 		if (jxDateBorn == null) {
 			jxDateBorn = new JXDatePicker();
 			jxDateBorn.setName("dateBorn");
-			
+			jxDateBorn.setInputVerifier(relativeVerifier);
 		}
 
 		return jxDateBorn;
@@ -491,7 +491,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			txfRelationShip = new JTextField();
 			txfRelationShip.setColumns(10);
 			txfRelationShip.setName("relationShip");
-			
+			txfRelationShip.setInputVerifier(relativeVerifier);
 		}
 
 		return txfRelationShip;
@@ -539,7 +539,7 @@ public class JManageEditRelative extends AbstractJInternalFrame {
 			txfSituation = new JTextField();
 			txfSituation.setColumns(10);
 			txfSituation.setName("situation");
-			
+			txfSituation.setInputVerifier(relativeVerifier);
 		}
 
 		return txfSituation;

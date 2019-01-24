@@ -58,9 +58,6 @@ public class CaritasGUI  extends JFrame{
     			properties.load(inputStream);
     			Constants.MYSQL_DUMP_PATH = (String) properties.get("mysql.dump");
     			Constants.MYSQL_LOAD_PATH = (String) properties.get("mysql.load");
-    			Constants.MYSQL_USER = (String) properties.get("caritas.username");
-    			Constants.MYSQL_PASS = (String) properties.get("caritas.password");
-    			
     		}catch(Exception e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();

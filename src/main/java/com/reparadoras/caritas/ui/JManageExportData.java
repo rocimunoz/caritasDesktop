@@ -198,7 +198,7 @@ public class JManageExportData extends AbstractJInternalFrame {
 		
 		String path = file.getAbsolutePath();
 		
-		String command = Constants.MYSQL_DUMP_PATH + " --user="+ Constants.MYSQL_USER + " --password=" + Constants.MYSQL_PASS + " --host=localhost caritas --result-file=" +path;
+		String command = Constants.MYSQL_DUMP_PATH + " --user=root --password=admin --host=localhost caritas --result-file=" +path;
 		
 		
 		try {
