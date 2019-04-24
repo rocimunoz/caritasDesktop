@@ -289,7 +289,9 @@ public class JPanelAddress extends JPanel {
 		if (tfTelephone == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
 			numberFormat.setGroupingUsed(false);
+			
 			tfTelephone = new JFormattedTextField(numberFormat);
+			
 			tfTelephone.setColumns(10);
 		}
 		return tfTelephone;
