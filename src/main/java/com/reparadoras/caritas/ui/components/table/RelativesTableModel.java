@@ -18,10 +18,11 @@ public class RelativesTableModel extends GenericDomainTableModel<Relative>{
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch(columnIndex) {
+		
         case 0: return String.class;
-        case 1: return String.class;
+        case 1: return Date.class;
         case 2: return String.class;
-        case 3: return Date.class;
+        case 3: return String.class;
         case 4: return String.class;
     }
     throw new ArrayIndexOutOfBoundsException(columnIndex);
@@ -31,10 +32,10 @@ public class RelativesTableModel extends GenericDomainTableModel<Relative>{
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Relative relative = getDomainObject(rowIndex);
         switch(columnIndex) {
-            case 0: return relative.getRelationShip();
-            case 1: return relative.getSurname();
-            case 2: return relative.getName();
-            case 3: return relative.getDateBorn();
+            case 0: return relative.getName();
+            case 1: return relative.getDateBorn();
+            case 2: return relative.getRelationShip();
+            case 3: return relative.getLiveWork();
             case 4: return relative.getSituation();
             
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
@@ -45,10 +46,10 @@ public class RelativesTableModel extends GenericDomainTableModel<Relative>{
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Relative relative = getDomainObject(rowIndex);
         switch(columnIndex) {
-            case 0: relative.setRelationShip((String)aValue); break;
-            case 1: relative.setSurname((String)aValue);break;
-            case 2: relative.setName((String)aValue); break;
-            case 3: relative.setDateBorn((Date)aValue); break;
+            case 0: relative.setName((String)aValue); break;
+            case 1: relative.setDateBorn((Date)aValue);break;
+            case 2: relative.setRelationShip((String)aValue); break;
+            case 3: relative.setLiveWork((String)aValue); break;
             case 4: relative.setSituation((String) aValue); break;
                 default: throw new ArrayIndexOutOfBoundsException(columnIndex);
         }

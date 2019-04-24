@@ -193,7 +193,7 @@ public class JPanelEconomicSituation extends JPanel {
 	public IncomesTableModel getIncomesTableModel() {
 
 		if (incomesTableModel == null) {
-			Object[] columnIdentifiers = new Object[] { "PERSONA", "CONCEPTO", "CANTIDAD", "FECHA FIN" };
+			Object[] columnIdentifiers = new Object[] { "PERSONA", "CONCEPTO", "MES", "FECHA FIN" };
 			incomesTableModel = new IncomesTableModel(Arrays.asList(columnIdentifiers));
 		}
 

@@ -38,12 +38,20 @@ public class JPanelAuthorizationType extends JPanel{
 	private JPanel jPanelRadioButton;
 	private JRadioButton jRadioSARegular;
 	private JRadioButton jRadioSAIrregular;
-	private JRadioButton jRadioResidenceWork;
-	private JRadioButton jRadioResidence;
+	private JRadioButton jRadioTemporalResidenceWork;
+	private JRadioButton jRadioTemporalResidence;
+	private JRadioButton jRadioPermanentResidence;
+	private JRadioButton jRadioWork;
 	private JRadioButton jRadioStudy;
 	private JRadioButton jRadioTourism;
 	private JRadioButton jRadioRefugee;
 	private JRadioButton jRadioUndocumented;
+	private JRadioButton jRadioSpanish;
+	private JRadioButton jRadioNoSpanish;
+	private JRadioButton jRadioFamilyNoSpanish;
+	
+	
+	
 	
 	
 	public JPanelAuthorizationType() {
@@ -55,40 +63,81 @@ public class JPanelAuthorizationType extends JPanel{
 	
 	}
 	
+	private void activeFirstBlock() {
+		getJRadioTemporalResidence().setEnabled(true);
+		getJRadioTemporalResidenceWork().setEnabled(true);
+		getJRadioPermanentResidence().setEnabled(true);
+		getJRadioTourism().setEnabled(true);
+		getJRadioStudy().setEnabled(true);
+		getJRadioRefugee().setEnabled(true);
+		getJRadioWork().setEnabled(true);
+	}
+	
+	private void activeSecondBlock() {
+		getJRadioTemporalResidence().setEnabled(false);
+		getJRadioTemporalResidence().setSelected(false);
+		getJRadioTemporalResidenceWork().setEnabled(false);
+		getJRadioTemporalResidenceWork().setSelected(false);
+		getJRadioPermanentResidence().setEnabled(false);
+		getJRadioPermanentResidence().setSelected(false);
+
+		getJRadioTourism().setEnabled(false);
+		getJRadioTourism().setSelected(false);
+		getJRadioStudy().setEnabled(false);
+		getJRadioStudy().setSelected(false);
+		getJRadioWork().setEnabled(false);
+		getJRadioWork().setSelected(false);
+		
+		getJRadioRefugee().setEnabled(false);
+		getJRadioRefugee().setSelected(false);
+	}
+	
 	private void addListeners(){
 		
 		getJRadioSARegular().addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JRadioButton radio = (JRadioButton) e.getSource();
 				if (radio.isSelected()){
-					getJRadioResidence().setEnabled(true);
-					getJRadioResidenceWork().setEnabled(true);
-					getJRadioTourism().setEnabled(true);
-					getJRadioStudy().setEnabled(true);
-					getJRadioRefugee().setEnabled(true);
+					activeFirstBlock();
 				}
 				
 			}
 		});
 		
+		 getJRadioSpanish().addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JRadioButton radio = (JRadioButton) e.getSource();
+					if (radio.isSelected()){
+						activeSecondBlock();
+					}
+					
+				}
+			});
+		 
+		 getJRadioNoSpanish().addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JRadioButton radio = (JRadioButton) e.getSource();
+					if (radio.isSelected()){
+						activeSecondBlock();
+					}
+				}
+			});
+		 
+		 getJRadioFamilyNoSpanish().addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JRadioButton radio = (JRadioButton) e.getSource();
+					if (radio.isSelected()){
+						activeSecondBlock();
+					}
+				}
+			});
+		
 		 getJRadioUndocumented().addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JRadioButton radio = (JRadioButton) e.getSource();
 				if (radio.isSelected()){
-					getJRadioResidence().setEnabled(false);
-					getJRadioResidence().setSelected(false);
-					getJRadioResidenceWork().setEnabled(false);
-					getJRadioResidenceWork().setSelected(false);
-
-					getJRadioTourism().setEnabled(false);
-					getJRadioTourism().setSelected(false);
-					getJRadioStudy().setEnabled(false);
-					getJRadioStudy().setSelected(false);
-					
-					getJRadioRefugee().setEnabled(false);
-					getJRadioRefugee().setSelected(false);
+					activeSecondBlock();
 				}
-				
 			}
 		});
 		
@@ -96,26 +145,10 @@ public class JPanelAuthorizationType extends JPanel{
 				public void stateChanged(ChangeEvent e) {
 					JRadioButton radio = (JRadioButton) e.getSource();
 					if (radio.isSelected()){
-						getJRadioResidence().setEnabled(false);
-						getJRadioResidence().setSelected(false);
-						getJRadioResidenceWork().setEnabled(false);
-						getJRadioResidenceWork().setSelected(false);
-
-						getJRadioTourism().setEnabled(false);
-						getJRadioTourism().setSelected(false);
-						getJRadioStudy().setEnabled(false);
-						getJRadioStudy().setSelected(false);
-						
-						getJRadioRefugee().setEnabled(false);
-						getJRadioRefugee().setSelected(false);
+						activeSecondBlock();
 					}
-					
 				}
 			});
-			
-		
-		
-		
 	}
 	
 	private void createGUIPanel(){
@@ -144,29 +177,39 @@ public class JPanelAuthorizationType extends JPanel{
 			jPanelRadioButton = new JPanel();
 			jPanelRadioButton.setLayout(new GridLayout(0, 1, 0, 0));
 			jPanelRadioButton.add(getJRadioSARegular());
-			jPanelRadioButton.add(getJRadioResidence());
-			jPanelRadioButton.add(getJRadioResidenceWork());
+			jPanelRadioButton.add(getJRadioTemporalResidence());
+			jPanelRadioButton.add(getJRadioTemporalResidenceWork());
+			jPanelRadioButton.add(getJRadioPermanentResidence());
+			
 			jPanelRadioButton.add(getJRadioStudy());
 			jPanelRadioButton.add(getJRadioTourism());
+			jPanelRadioButton.add(getJRadioWork());
 			jPanelRadioButton.add(getJRadioRefugee());
 			jPanelRadioButton.add(getJRadioUndocumented());
 			jPanelRadioButton.add(getJRadioSAIrregular());
+			jPanelRadioButton.add(getJRadioSpanish());
+			jPanelRadioButton.add(getJRadioNoSpanish());
+			jPanelRadioButton.add(getJRadioFamilyNoSpanish());
+			
+			
+			
 			
 			ButtonGroup groupL2 = new ButtonGroup();
-			groupL2.add(getJRadioResidence());
-			groupL2.add(getJRadioResidenceWork());
+			groupL2.add(getJRadioTemporalResidence());
+			groupL2.add(getJRadioTemporalResidenceWork());
+			groupL2.add(getJRadioPermanentResidence());
 			groupL2.add(getJRadioStudy());
+			groupL2.add(getJRadioWork());
 			groupL2.add(getJRadioTourism());
 			groupL2.add(getJRadioRefugee());
 			
 			ButtonGroup groupL1 = new ButtonGroup();
 			groupL1.add(getJRadioSARegular());
+			groupL1.add(getJRadioSpanish());
+			groupL1.add(getJRadioNoSpanish());
+			groupL1.add(getJRadioFamilyNoSpanish());
 			groupL1.add(getJRadioUndocumented());
 			groupL1.add(getJRadioSAIrregular());
-			
-			
-			
-			
 			
 		}
 		return jPanelRadioButton;
@@ -186,7 +229,7 @@ public class JPanelAuthorizationType extends JPanel{
 	
 	public JRadioButton getJRadioSARegular() {
 		if (jRadioSARegular == null) {
-			jRadioSARegular = new JRadioButton("Situación Administrativa Regular");
+			jRadioSARegular = new JRadioButton("Extracomunitario (No UE)");
 			
 			jRadioSARegular.setMargin(new Insets(20, 20, 2, 20));
 			jRadioSARegular.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -196,38 +239,74 @@ public class JPanelAuthorizationType extends JPanel{
 	
 	public JRadioButton getJRadioSAIrregular() {
 		if (jRadioSAIrregular == null) {
-			jRadioSAIrregular = new JRadioButton("Situación Administrativa Irregular");
+			jRadioSAIrregular = new JRadioButton("P.Situación administrativa irregular");
 			jRadioSAIrregular.setMargin(new Insets(20, 20, 2, 20));
 			jRadioSAIrregular.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jRadioSAIrregular;
 	}
 	
+	public JRadioButton getJRadioSpanish() {
+		if (jRadioSpanish == null) {
+			jRadioSpanish = new JRadioButton("Español");
+			jRadioSpanish.setMargin(new Insets(20, 20, 2, 20));
+			jRadioSpanish.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioSpanish;
+	}
+	
+	public JRadioButton getJRadioNoSpanish() {
+		if (jRadioNoSpanish == null) {
+			jRadioNoSpanish = new JRadioButton("Comunitario (UE) NO español");
+			jRadioNoSpanish.setMargin(new Insets(20, 20, 2, 20));
+			jRadioNoSpanish.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioNoSpanish;
+	}
+	
+	public JRadioButton getJRadioFamilyNoSpanish() {
+		if (jRadioFamilyNoSpanish == null) {
+			jRadioFamilyNoSpanish = new JRadioButton("Familiares de comunitarios");
+			jRadioFamilyNoSpanish.setMargin(new Insets(20, 20, 2, 20));
+			jRadioFamilyNoSpanish.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioFamilyNoSpanish;
+	}
+	
 	public JRadioButton getJRadioUndocumented() {
 		if (jRadioUndocumented == null) {
-			jRadioUndocumented = new JRadioButton("Indocumentado");
+			jRadioUndocumented = new JRadioButton("Sin documentar");
 			jRadioUndocumented.setMargin(new Insets(20, 20, 2, 20));
 			jRadioUndocumented.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jRadioUndocumented;
 	}
 	
-	public JRadioButton getJRadioResidence() {
-		if (jRadioResidence == null) {
-			jRadioResidence = new JRadioButton("Autorización Residencia");
-			jRadioResidence.setMargin(new Insets(2, 50, 2, 20));
-			jRadioResidence.setFont(new Font("Verdana", Font.PLAIN, 14));
+	public JRadioButton getJRadioTemporalResidence() {
+		if (jRadioTemporalResidence == null) {
+			jRadioTemporalResidence = new JRadioButton("Residencia Temporal");
+			jRadioTemporalResidence.setMargin(new Insets(2, 50, 2, 20));
+			jRadioTemporalResidence.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
-		return jRadioResidence;
+		return jRadioTemporalResidence;
 	}
 	
-	public JRadioButton getJRadioResidenceWork() {
-		if (jRadioResidenceWork == null) {
-			jRadioResidenceWork = new JRadioButton("Autorización Residencia y Trabajo");
-			jRadioResidenceWork.setMargin(new Insets(2, 50, 2, 20));
-			jRadioResidenceWork.setFont(new Font("Verdana", Font.PLAIN, 14));
+	public JRadioButton getJRadioTemporalResidenceWork() {
+		if (jRadioTemporalResidenceWork == null) {
+			jRadioTemporalResidenceWork = new JRadioButton("Residencia y trabajo temporal");
+			jRadioTemporalResidenceWork.setMargin(new Insets(2, 50, 2, 20));
+			jRadioTemporalResidenceWork.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
-		return jRadioResidenceWork;
+		return jRadioTemporalResidenceWork;
+	}
+	
+	public JRadioButton getJRadioPermanentResidence() {
+		if (jRadioPermanentResidence == null) {
+			jRadioPermanentResidence = new JRadioButton("Residencia permanente");
+			jRadioPermanentResidence.setMargin(new Insets(2, 50, 2, 20));
+			jRadioPermanentResidence.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioPermanentResidence;
 	}
 	
 	public JRadioButton getJRadioStudy() {
@@ -241,11 +320,20 @@ public class JPanelAuthorizationType extends JPanel{
 	
 	public JRadioButton getJRadioTourism() {
 		if (jRadioTourism == null) {
-			jRadioTourism = new JRadioButton("Turismo");
+			jRadioTourism = new JRadioButton("Turista");
 			jRadioTourism.setMargin(new Insets(2, 50, 2, 20));
 			jRadioTourism.setFont(new Font("Verdana", Font.PLAIN, 14));
 		}
 		return jRadioTourism;
+	}
+	
+	public JRadioButton getJRadioWork() {
+		if (jRadioWork == null) {
+			jRadioWork = new JRadioButton("Trabajo");
+			jRadioWork.setMargin(new Insets(2, 50, 2, 20));
+			jRadioWork.setFont(new Font("Verdana", Font.PLAIN, 14));
+		}
+		return jRadioWork;
 	}
 	
 	public JRadioButton getJRadioRefugee() {
@@ -260,14 +348,19 @@ public class JPanelAuthorizationType extends JPanel{
 	
 	public void cleanAuthorization(){
 		
-		this.getJRadioResidence().setSelected(false);
+		this.getJRadioTemporalResidence().setSelected(false);
 		this.getJRadioSARegular().setSelected(false);
-		this.getJRadioResidenceWork().setSelected(false);
+		this.getJRadioTemporalResidenceWork().setSelected(false);
+		this.getJRadioPermanentResidence().setSelected(false);
 		this.getJRadioStudy().setSelected(false);
 		this.getJRadioTourism().setSelected(false);
+		this.getJRadioWork().setSelected(false);
 		this.getJRadioRefugee().setSelected(false);
 		this.getJRadioUndocumented().setSelected(false);
 		this.getJRadioSAIrregular().setSelected(false);
+		this.getJRadioFamilyNoSpanish().setSelected(false);
+		this.getJRadioNoSpanish().setSelected(false);
+		this.getJRadioSpanish().setSelected(false);
 		
 		
 	}
@@ -277,11 +370,11 @@ public class JPanelAuthorizationType extends JPanel{
 		if (aType != null) {
 			switch (aType.getId()) {
 			case 1:
-				this.getJRadioResidence().setSelected(true);
+				this.getJRadioTemporalResidence().setSelected(true);
 				this.getJRadioSARegular().setSelected(true);
 				break;
 			case 2:
-				this.getJRadioResidenceWork().setSelected(true);
+				this.getJRadioTemporalResidenceWork().setSelected(true);
 				this.getJRadioSARegular().setSelected(true);
 				break;
 			case 3:
@@ -299,13 +392,51 @@ public class JPanelAuthorizationType extends JPanel{
 			case 6:
 				this.getJRadioUndocumented().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
 			case 7:
 				this.getJRadioSAIrregular().setSelected(true);
 				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
 				break;
+			case 8:
+				this.getJRadioPermanentResidence().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 9:
+				this.getJRadioWork().setSelected(true);
+				this.getJRadioSARegular().setSelected(true);
+				break;
+			case 10:
+				this.getJRadioSpanish().setSelected(true);
+				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
+				break;
+			case 11:
+				this.getJRadioNoSpanish().setSelected(true);
+				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
+				break;
+			case 12:
+				this.getJRadioFamilyNoSpanish().setSelected(true);
+				this.getJRadioSARegular().setSelected(false);
+				cleanBlock();
+				break;
+				
 			}
 		}
+	}
+	
+	private void cleanBlock() {
+		this.getJRadioSARegular().setSelected(false);
+		this.getJRadioTemporalResidence().setSelected(false);
+		this.getJRadioTemporalResidenceWork().setSelected(false);
+		this.getJRadioPermanentResidence().setSelected(false);
+		this.getJRadioWork().setSelected(false);
+		this.getJRadioStudy().setSelected(false);
+		this.getJRadioTourism().setSelected(false);
+		this.getJRadioRefugee().setSelected(false);
+		
 	}
 
 	

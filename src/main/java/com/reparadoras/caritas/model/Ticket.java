@@ -17,7 +17,7 @@ public class Ticket implements Serializable
 {
 
    
-    private int id;
+    private Long id;
 
     private People people;
     private int pointsJanuary;
@@ -47,11 +47,13 @@ public class Ticket implements Serializable
     
     private int year;
 
-	public int getId() {
+	
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

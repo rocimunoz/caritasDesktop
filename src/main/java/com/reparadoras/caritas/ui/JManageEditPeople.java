@@ -355,7 +355,7 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 			people.setCreateDate(this.getJXCreateDate().getDate());
 			people.setReactivateDate(this.getJXReactivateDate().getDate());
 			people.setActive(this.getJckActive().isSelected());
-			people.setDateBorn(this.getJXCreateDate().getDate());
+			people.setDateBorn(this.getJXDateBorn().getDate());
 
 			// save people
 			peopleDAO.insert(people);

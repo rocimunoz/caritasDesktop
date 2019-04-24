@@ -87,7 +87,7 @@ public  List<Ticket> findTicket(FilterTicket filter){
     } finally {
         session.close();
     }
-    System.out.println("findTicket() --> "+list);
+    System.out.println("findTicket() --> "+list.size());
     return list;
 
 }

@@ -18,7 +18,10 @@
      <resultMap id="PeopleResult" type="People">
      <id property="id" column="id"/>
         <result property="name" column="name"/>
-        <result property="firstSurname" column="first_surname"/>  
+        <result property="firstSurname" column="first_surname"/> 
+        <result property="dni" column="dni"/>
+        <result property="passport" column="passport"/>
+          
        
     </resultMap>
  
@@ -26,6 +29,9 @@
         SELECT PE.ID, 
                PE.NAME,
                PE.FIRST_SURNAME,
+               PE.DNI,
+               PE.PASSPORT,
+               A.YEAR,
                A.MONTH,
                A.ANSWER,
                A.DATE,
@@ -53,6 +59,9 @@
     		AND A.MONTH = #{month}
     		AND A.MONEY is not NULL
   		</if>
+  		<if test="year != null and !year.equals('')">
+    		AND A.YEAR = #{year}
+  		</if>
   		
     </select>
     
@@ -60,6 +69,7 @@
         SELECT PE.ID, 
                PE.NAME,
                 PE.FIRST_SURNAME,
+               A.YEAR,
                A.MONTH,
                A.ANSWER,
                A.DATE,
@@ -87,6 +97,7 @@
         MONEY = #{money}
         WHERE ID_PEOPLE = #{people.id}
         AND MONTH=#{month}
+        AND YEAR=#{year}
     
     </update>
     

@@ -949,7 +949,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				filterTicket.setDniPeople(people.getDni());
 				filterTicket.setPassportPeople(people.getPassport());
 				filterTicket.setNamePeople(people.getName());
-				filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				//filterTicket.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
 				filterTicket.setIdPeople(people.getId());
 				try {
 
@@ -989,7 +989,7 @@ public class JManagePeople extends AbstractJInternalFrame {
 				filterAnswer.setDniPeople(people.getDni());
 				filterAnswer.setPassportPeople(people.getPassport());
 				filterAnswer.setNamePeople(people.getName());
-				filterAnswer.setYearTicket(Calendar.getInstance().get(Calendar.YEAR));
+				filterAnswer.setYear(Calendar.getInstance().get(Calendar.YEAR));
 				filterAnswer.setIdPeople(people.getId());
 				try {
 

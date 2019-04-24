@@ -49,8 +49,6 @@ public class JPanelAddress extends JPanel {
 	private JFormattedTextField tfTelephoneContact;
 	private JLabel lblDateCensus;
 	private JXDatePicker datePickerCensus;
-	private JLabel lblPlace;
-	private JTextField tfPlace;
 	private JLabel lblPostalCode;
 	private JFormattedTextField tfPostalCode;
 
@@ -82,8 +80,7 @@ public class JPanelAddress extends JPanel {
 		getJPanelAddress().add(getJTextFieldTelephoneContact(), getGridJTextFieldTelephoneContact());
 		getJPanelAddress().add(getJLabelDatePickerCensus(), this.getGridLblDatePickerCensus());
 		getJPanelAddress().add(this.getJXDatePickerCensus(), this.getGridJXDatePickerCensus());
-		getJPanelAddress().add(this.getJLabelPlace(), this.getGridJLabelPlace());
-		getJPanelAddress().add(this.getJTextFieldPlace(), this.getGridJTextFieldPlace());
+		
 		getJPanelAddress().add(this.getJLabelPostalCode(), this.getGridJLabelPostalCode());
 		getJPanelAddress().add(this.getJTextFieldPostalCode(), this.getGridJTextFieldPostalCode());
 
@@ -291,7 +288,10 @@ public class JPanelAddress extends JPanel {
 	public JFormattedTextField getJTextFieldTelephone() {
 		if (tfTelephone == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			numberFormat.setGroupingUsed(false);
+			
 			tfTelephone = new JFormattedTextField(numberFormat);
+			
 			tfTelephone.setColumns(10);
 		}
 		return tfTelephone;
@@ -332,6 +332,7 @@ public class JPanelAddress extends JPanel {
 	public JFormattedTextField getJTextFieldTelephoneContact() {
 		if (tfTelephoneContact == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			numberFormat.setGroupingUsed(false);
 			tfTelephoneContact = new JFormattedTextField(numberFormat);
 			tfTelephoneContact.setColumns(10);
 		}
@@ -391,45 +392,6 @@ public class JPanelAddress extends JPanel {
 		return gbc_datePickerCensus;
 	}
 
-	public JLabel getJLabelPlace() {
-
-		if (lblPlace == null) {
-			lblPlace = new JLabel("Lugar:  ");
-			lblPlace.setFont(new Font("Verdana", Font.PLAIN, 14));
-		}
-		return lblPlace;
-	}
-
-	public GridBagConstraints getGridJLabelPlace() {
-		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
-		gbc_lblPlace.anchor = GridBagConstraints.WEST;
-		gbc_lblPlace.insets = new Insets(10, 5, 0, 5);
-		gbc_lblPlace.gridx = 2;
-		gbc_lblPlace.gridy = 3;
-
-		return gbc_lblPlace;
-	}
-
-	public JTextField getJTextFieldPlace() {
-		if (tfPlace == null) {
-			tfPlace = new JTextField();
-			tfPlace.setColumns(10);
-		}
-		return tfPlace;
-	}
-
-	public GridBagConstraints getGridJTextFieldPlace() {
-
-		GridBagConstraints gbc_tfPlace = new GridBagConstraints();
-		gbc_tfPlace.weightx = 1.0;
-		gbc_tfPlace.anchor = GridBagConstraints.NORTH;
-		gbc_tfPlace.insets = new Insets(10, 0, 5, 20);
-		gbc_tfPlace.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfPlace.gridx = 3;
-		gbc_tfPlace.gridy = 3;
-
-		return gbc_tfPlace;
-	}
 	
 	public JLabel getJLabelPostalCode() {
 
@@ -444,8 +406,8 @@ public class JPanelAddress extends JPanel {
 		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
 		gbc_lblPlace.anchor = GridBagConstraints.WEST;
 		gbc_lblPlace.insets = new Insets(10, 5, 0, 5);
-		gbc_lblPlace.gridx = 0;
-		gbc_lblPlace.gridy = 4;
+		gbc_lblPlace.gridx = 2;
+		gbc_lblPlace.gridy = 3;
 
 		return gbc_lblPlace;
 	}
@@ -454,7 +416,8 @@ public class JPanelAddress extends JPanel {
 		if (tfPostalCode == null) {
 			NumberFormat numberFormat = NumberFormat.getNumberInstance();
 			numberFormat.setMinimumIntegerDigits(0);
-			
+			numberFormat.setGroupingUsed(false);
+
 			tfPostalCode = new JFormattedTextField(numberFormat);
 			tfPostalCode.setColumns(10);
 		}
@@ -468,8 +431,8 @@ public class JPanelAddress extends JPanel {
 		gbc_tfPlace.anchor = GridBagConstraints.NORTH;
 		gbc_tfPlace.insets = new Insets(10, 0, 5, 20);
 		gbc_tfPlace.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfPlace.gridx = 1;
-		gbc_tfPlace.gridy = 4;
+		gbc_tfPlace.gridx = 3;
+		gbc_tfPlace.gridy = 3;
 
 		return gbc_tfPlace;
 	}
@@ -494,7 +457,7 @@ public class JPanelAddress extends JPanel {
 		// address
 		this.getJTextFieldFloor().setText("");
 		this.getJTextFieldGate().setText("");
-		this.getJTextFieldPlace().setText("");
+		
 		this.getJTextFieldStreet().setText("");
 		this.getJTextFieldTelephone().setText("");
 		this.getJTextFieldTelephoneContact().setText("");
@@ -514,7 +477,7 @@ public class JPanelAddress extends JPanel {
 		this.getJTextFieldTelephoneContact().setText(address.getTelephoneContact());
 		this.getJTextFieldTown().setText(address.getTown());
 		this.getJTextFieldPostalCode().setText(address.getPostalCode());
-		this.getJTextFieldPlace().setText(address.getPlace());
+		
 		this.getJXDatePickerCensus().setDate(address.getCensus());
 
 	}

@@ -50,7 +50,7 @@ import java.awt.Color;
 public class JManageEditIncome extends AbstractJInternalFrame {
 
 	static final Logger logger = Logger.getLogger(JManageEditIncome.class);
-	
+
 	private JPanel jPanelContentPane;
 	private JTextField txfPeople;
 
@@ -65,8 +65,8 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JLabel jLblDateEnd;
 
 	private JLabel jLblConcept;
-	private JTextField txfConcept;
-	
+	private JComboBox<String> cbConcept;
+
 	private JXDatePicker jxDateBorn;
 
 	private int executingMode;
@@ -112,7 +112,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJLblDateEnd(), getGridJLabelDateEnd());
 		getJPanelPersonalData().add(getJXDateEnd(), getGridJXDateEnd());
 		getJPanelPersonalData().add(getJLabelSituation(), getGridJLabelSituation());
-		getJPanelPersonalData().add(getJTextFieldConcept(), getGridJTextFieldSituation());
+		getJPanelPersonalData().add(getJComboBoxConcept(), getGridJTextFieldSituation());
 		getJPanelContentPane().add(getJPanelActions(), getGridBagConstraintsJPanelActions());
 		getJPanelActions().setLayout(getGridLayoutJPanelActions());
 
@@ -157,13 +157,21 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	}
 
 	private void initComponents() {
+		this.getJComboBoxConcept().addItem("Del trabajo");
+		this.getJComboBoxConcept().addItem("Seguridad Social Contributivas (PENSIÓN)");
+		this.getJComboBoxConcept().addItem("Seguridas Social No Contributivas (PNC)");
+		this.getJComboBoxConcept().addItem("Servicios Sociales (RSB)");
+		this.getJComboBoxConcept().addItem("Otras instituciones/organismos");
+		this.getJComboBoxConcept().addItem("Rentas de propiedades");
+		this.getJComboBoxConcept().addItem("Pensiones de otros hogares");
+		this.getJComboBoxConcept().addItem("Otros ingresos (apoyo, familia, vecinos ...)");
+		this.getJComboBoxConcept().addItem("Sin ingresos");
 
 	}
 
 	private boolean checkRequiredFields() {
 
-		if (!getJTextFieldPeople().getText().equals("") && !getJTextFieldConcept().getText().equals("")
-				&& this.getJXDateEnd().getDate() != null) {
+		if (!getJTextFieldPeople().getText().equals("") && getJComboBoxConcept().getSelectedItem() != null) {
 			return true;
 		} else {
 			JOptionPane.showMessageDialog(this, "Rellene todos los campos correctamente", "Error Dialog",
@@ -176,7 +184,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		if (mode == JWindowParams.IMODE_SELECT || mode == JWindowParams.IMODE_UPDATE) {
 
 			this.getJTextFieldAmount().setText(this.selectedIncome.getAmount() + "");
-			this.getJTextFieldConcept().setText(this.selectedIncome.getConcept());
+			this.getJComboBoxConcept().setSelectedItem(this.selectedIncome.getConcept());
 			this.getJXDateEnd().setDate(this.selectedIncome.getEndDate());
 			this.getJTextFieldPeople().setText(this.selectedIncome.getPeople());
 
@@ -188,17 +196,19 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		try {
 
 			DecimalFormat formatter = new DecimalFormat("###,###.###");
-			
+
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-				
+
 				String amountString = this.getJTextFieldAmount().getText();
 				double amountDouble = formatter.parse(amountString).doubleValue();
-				
-				//this.selectedIncome.setAmount(new Double(formatter.format(this.getJTextFieldAmount().getText()).replace(',', '.')));
+
+				// this.selectedIncome.setAmount(new
+				// Double(formatter.format(this.getJTextFieldAmount().getText()).replace(',',
+				// '.')));
 				this.selectedIncome.setAmount(amountDouble);
 			}
 
-			this.selectedIncome.setConcept(this.getJTextFieldConcept().getText());
+			this.selectedIncome.setConcept((String) this.getJComboBoxConcept().getSelectedItem());
 			this.selectedIncome.setEndDate(this.getJXDateEnd().getDate());
 			this.selectedIncome.setPeople(this.getJTextFieldPeople().getText());
 
@@ -217,16 +227,15 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 			Income income = new Income();
 			if (this.getJTextFieldAmount().getText() != null && !this.getJTextFieldAmount().getText().equals("")) {
-			
-				
+
 				DecimalFormat formatter = new DecimalFormat("#0,000.000");
 				String amountString = this.getJTextFieldAmount().getText();
 				double amountDouble = formatter.parse(amountString).doubleValue();
 				income.setAmount(amountDouble);
-				
+
 			}
 
-			income.setConcept(this.getJTextFieldConcept().getText());
+			income.setConcept((String) this.getJComboBoxConcept().getSelectedItem());
 			income.setEndDate(this.getJXDateEnd().getDate());
 			income.setPeople(this.getJTextFieldPeople().getText());
 
@@ -368,7 +377,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JLabel getJLabelAmount() {
 
 		if (jLblAmount == null) {
-			jLblAmount = new JLabel("Cantidad");
+			jLblAmount = new JLabel("Mes");
 			jLblAmount.setFont(new Font("Verdana", Font.PLAIN, 14));
 			jLblAmount.setMinimumSize(new Dimension(20, 14));
 			jLblAmount.setMaximumSize(new Dimension(20, 14));
@@ -391,13 +400,14 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JFormattedTextField getJTextFieldAmount() {
 
 		if (txfAmount == null) {
-			
-			DecimalFormat formatter = new DecimalFormat("#0,000.000");
-			txfAmount = new JFormattedTextField(formatter);
-			
+
+			NumberFormat numberFormat = NumberFormat.getNumberInstance();
+			numberFormat.setGroupingUsed(false);
+			txfAmount = new JFormattedTextField(numberFormat);
 			txfAmount.setColumns(10);
 			txfAmount.setName("amount");
 			txfAmount.setInputVerifier(jobSituationVerifier);
+
 		}
 
 		return txfAmount;
@@ -484,16 +494,13 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 		return gbc_jLblConcept;
 	}
 
-	private JTextField getJTextFieldConcept() {
+	public JComboBox<String> getJComboBoxConcept() {
 
-		if (txfConcept == null) {
-			txfConcept = new JTextField();
-			txfConcept.setColumns(10);
-			txfConcept.setName("concept");
-			txfConcept.setInputVerifier(jobSituationVerifier);
+		if (cbConcept == null) {
+			cbConcept = new JComboBox<String>();
+
 		}
-
-		return txfConcept;
+		return cbConcept;
 	}
 
 	private GridBagConstraints getGridJTextFieldSituation() {
@@ -542,8 +549,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JButton getJButtonAccept() {
 		if (jBtnAccept == null) {
 			jBtnAccept = new JButton("Aceptar");
-			jBtnAccept.setIcon(
-					new ImageIcon(JManageEditIncome.class.getResource("/img/icon-check.png")));
+			jBtnAccept.setIcon(new ImageIcon(JManageEditIncome.class.getResource("/img/icon-check.png")));
 		}
 
 		return jBtnAccept;
@@ -562,8 +568,7 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 	private JButton getJButtonCancel() {
 		if (jBtnCancel == null) {
 			jBtnCancel = new JButton("Cancelar");
-			jBtnCancel.setIcon(
-					new ImageIcon(JManageEditIncome.class.getResource("/img/icon-cancel.png")));
+			jBtnCancel.setIcon(new ImageIcon(JManageEditIncome.class.getResource("/img/icon-cancel.png")));
 		}
 
 		return jBtnCancel;

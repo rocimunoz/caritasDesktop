@@ -280,12 +280,9 @@ public class JManageProgram extends AbstractJInternalFrame {
 
 		getJButtonExit().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				onSaveProgram();
 				dispose();
-				
-				
-				
 			}
 		});
 
@@ -1072,12 +1069,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 				editedRelative.setRelationShip(null);
 			}
 
-			if (relative.getSurname() != null) {
-				if (!editedRelative.getSurname().equals(relative.getSurname())) {
-					editedRelative.setSurname(relative.getSurname());
+			if (relative.getLiveWork() != null) {
+				if (!editedRelative.getLiveWork().equals(relative.getLiveWork())) {
+					editedRelative.setLiveWork(relative.getLiveWork());
 				}
 			} else {
-				editedRelative.setSurname(null);
+				editedRelative.setLiveWork(null);
 			}
 
 			if (relative.getSituation() != null) {
@@ -1351,6 +1348,10 @@ public class JManageProgram extends AbstractJInternalFrame {
 				description = getJPanelFamily().getJRadioWithChildren().getText();
 			} else if (getJPanelFamily().getJRadioOther().isSelected()) {
 				description = getJPanelFamily().getJRadioOther().getText();
+			} else if (getJPanelFamily().getJRadioHomeless().isSelected()) {
+				description = getJPanelFamily().getJRadioHomeless().getText();
+			} else if (getJPanelFamily().getJRadioNoRelation().isSelected()) {
+				description = getJPanelFamily().getJRadioNoRelation().getText();
 			}
 			if (!description.equals("")) {
 				FamilyType fType = new FamilyType();
@@ -1399,7 +1400,6 @@ public class JManageProgram extends AbstractJInternalFrame {
 			address.setTelephoneContact(getJPanelAddress().getJTextFieldTelephoneContact().getText());
 			address.setTown(getJPanelAddress().getJTextFieldTown().getText());
 			address.setCensus(getJPanelAddress().getJXDatePickerCensus().getDate());
-			address.setPlace(getJPanelAddress().getJTextFieldPlace().getText());
 			addressDAO.update(address);
 		} catch (Exception e) {
 			logger.error(e);
@@ -1431,18 +1431,24 @@ public class JManageProgram extends AbstractJInternalFrame {
 		String description = "";
 		logger.info("Guardando tipo de autorizacion ...");
 
-		if (this.getJPanelAuthorizationType().getJRadioResidence().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioResidence().getText();
+		if (this.getJPanelAuthorizationType().getJRadioSARegular().isSelected()) {
+			if (this.getJPanelAuthorizationType().getJRadioTemporalResidence().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioTemporalResidence().getText();
 
-		} else if (this.getJPanelAuthorizationType().getJRadioResidenceWork().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioResidenceWork().getText();
+			} else if (this.getJPanelAuthorizationType().getJRadioTemporalResidenceWork().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioTemporalResidenceWork().getText();
 
-		} else if (this.getJPanelAuthorizationType().getJRadioStudy().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioStudy().getText();
+			} else if (this.getJPanelAuthorizationType().getJRadioPermanentResidence().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioPermanentResidence().getText();
 
-		} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
-			description = getJPanelAuthorizationType().getJRadioTourism().getText();
+			} else if (this.getJPanelAuthorizationType().getJRadioStudy().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioStudy().getText();
 
+			} else if (this.getJPanelAuthorizationType().getJRadioWork().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioWork().getText();
+			} else if (this.getJPanelAuthorizationType().getJRadioTourism().isSelected()) {
+				description = getJPanelAuthorizationType().getJRadioTourism().getText();
+			}
 		}
 
 		else if (this.getJPanelAuthorizationType().getJRadioUndocumented().isSelected()) {
@@ -1451,6 +1457,12 @@ public class JManageProgram extends AbstractJInternalFrame {
 		} else if (this.getJPanelAuthorizationType().getJRadioSAIrregular().isSelected()) {
 			description = getJPanelAuthorizationType().getJRadioSAIrregular().getText();
 
+		} else if (this.getJPanelAuthorizationType().getJRadioSpanish().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioSpanish().getText();
+		} else if (this.getJPanelAuthorizationType().getJRadioNoSpanish().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioNoSpanish().getText();
+		} else if (this.getJPanelAuthorizationType().getJRadioFamilyNoSpanish().isSelected()) {
+			description = getJPanelAuthorizationType().getJRadioFamilyNoSpanish().getText();
 		}
 		if (!description.equals("")) {
 			aTypeFilter.setDescription(description);
@@ -1465,10 +1477,8 @@ public class JManageProgram extends AbstractJInternalFrame {
 		logger.info("Guardando situación laboral ...");
 		if (this.getJPanelJobSituation().getjRadioUnemployee().isSelected()) {
 			description = getJPanelJobSituation().getjRadioUnemployee().getText();
-
 		} else if (this.getJPanelJobSituation().getjRadioNormalJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioNormalJob().getText();
-
 		} else if (this.getJPanelJobSituation().getjRadioMarginalJob().isSelected()) {
 			description = getJPanelJobSituation().getjRadioMarginalJob().getText();
 		} else if (this.getJPanelJobSituation().getjRadioHouseJob().isSelected()) {
@@ -1477,6 +1487,14 @@ public class JManageProgram extends AbstractJInternalFrame {
 			description = getJPanelJobSituation().getjRadioRetired().getText();
 		} else if (this.getJPanelJobSituation().getjRadioOthers().isSelected()) {
 			description = getJPanelJobSituation().getjRadioOthers().getText();
+		} else if (this.getJPanelJobSituation().getjRadioNoLaboralAge().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNoLaboralAge().getText();
+		} else if (this.getJPanelJobSituation().getjRadioNoSSSS().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNoSSSS().getText();
+		} else if (this.getJPanelJobSituation().getjRadioNoWork().isSelected()) {
+			description = getJPanelJobSituation().getjRadioNoWork().getText();
+		} else if (this.getJPanelJobSituation().getjRadioWithSSSS().isSelected()) {
+			description = getJPanelJobSituation().getjRadioWithSSSS().getText();
 		}
 
 		if (!description.equals("")) {

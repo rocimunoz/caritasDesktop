@@ -741,7 +741,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		filterTicket.setActive(filterActive);
 
 		FilterAnswer filterAnswer = new FilterAnswer();
-		filterAnswer.setYearTicket(Integer.parseInt(filterYear));
+		filterAnswer.setYear(Integer.parseInt(filterYear));
 		filterAnswer.setActive(filterActive);
 
 		switch (filterMonth) {
@@ -798,6 +798,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		List<Ticket> listTicket = ticketDAO.findTicket(filterTicket);
 		List<Answer> listAnswer = answerDAO.findAnswer(filterAnswer);
 
+		
 		createMonthlyReportWithTicket(listTicket, filterMonth, mapMonthlyReport);
 		createMonthlyReportWithAnswer(listAnswer, filterMonth, mapMonthlyReport);
 

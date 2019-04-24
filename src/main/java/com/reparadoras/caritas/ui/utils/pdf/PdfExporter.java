@@ -273,7 +273,7 @@ public class PdfExporter {
 		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 		// second row
-		cell = new PdfPCell(new Phrase("APELLIDOS", TITLE_10_FONT_BOLD));
+		cell = new PdfPCell(new Phrase("CONVIVE/TRABAJAR", TITLE_10_FONT_BOLD));
 		setCellStyleTableWithBorder(cell);
 		table.addCell(cell);
 
@@ -298,7 +298,7 @@ public class PdfExporter {
 				cell = new PdfPCell(new Phrase(relative.getRelationShip(), TITLE_10_FONT));
 				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
-				cell = new PdfPCell(new Phrase(relative.getSurname(), TITLE_10_FONT));
+				cell = new PdfPCell(new Phrase(relative.getLiveWork(), TITLE_10_FONT));
 				setCellStyleTableWithBorder(cell);
 				table.addCell(cell);
 				cell = new PdfPCell(new Phrase(relative.getName(), TITLE_10_FONT));
