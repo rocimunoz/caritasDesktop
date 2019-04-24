@@ -798,6 +798,7 @@ public class JManageMonthlyReport extends AbstractJInternalFrame {
 		List<Ticket> listTicket = ticketDAO.findTicket(filterTicket);
 		List<Answer> listAnswer = answerDAO.findAnswer(filterAnswer);
 
+		
 		createMonthlyReportWithTicket(listTicket, filterMonth, mapMonthlyReport);
 		createMonthlyReportWithAnswer(listAnswer, filterMonth, mapMonthlyReport);
 

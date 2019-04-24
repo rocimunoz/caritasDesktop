@@ -38,7 +38,10 @@
      <resultMap id="PeopleResult" type="People">
      <id property="id" column="ID_PEOPLE"/>
         <result property="name" column="name"/>  
-         <result property="firstSurname" column="first_surname"/>  
+         <result property="firstSurname" column="first_surname"/>
+         <result property="dni" column="dni"/>
+         <result property="passport" column="passport"/> 
+          
        
     </resultMap>
  
@@ -46,6 +49,8 @@
         SELECT PE.ID ID_PEOPLE, 
                PE.NAME, 
                PE.FIRST_SURNAME,
+               PE.DNI,
+               PE.PASSPORT,
                T.ID ID_TICKET,
                T.POINTS_JANUARY,
                T.POINTS_FEBRUARY,
