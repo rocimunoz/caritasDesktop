@@ -332,10 +332,16 @@ public class JPanelAddress extends JPanel {
 
 	public JFormattedTextField getJTextFieldTelephoneContact() {
 		if (tfTelephoneContact == null) {
-			NumberFormat numberFormat = NumberFormat.getNumberInstance();
-			numberFormat.setGroupingUsed(false);
-			tfTelephoneContact = new JFormattedTextField(numberFormat);
+			NumberFormat intFormat = NumberFormat.getIntegerInstance();
+			intFormat.setGroupingUsed(false);
+			NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+			numberFormatter.setValueClass(Integer.class); 
+			numberFormatter.setAllowsInvalid(true);
+			numberFormatter.setMaximum(99999999);
+			
+			tfTelephoneContact = new JFormattedTextField(numberFormatter);
 			tfTelephoneContact.setColumns(10);
+			
 		}
 		return tfTelephoneContact;
 	}
