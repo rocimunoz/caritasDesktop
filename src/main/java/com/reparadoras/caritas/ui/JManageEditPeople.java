@@ -28,7 +28,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.event.ActionEvent;
@@ -134,8 +133,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		getJPanelPersonalData().add(getJTextFieldCountry(), getGridJTextFieldCountry());
 		getJPanelPersonalData().add(getJLabelNationality(), getGridJLabelNationality());
 		getJPanelPersonalData().add(getJTextFieldNationality(), getGridJTextFieldNationality());
-		getJPanelPersonalData().add(getJLabelYearToSpain(), getGridJLabelYearToSpain());
-		getJPanelPersonalData().add(getJTextFieldYearToSpain(), getGridJTextFieldYearToSpain());
+		//getJPanelPersonalData().add(getJLabelYearToSpain(), getGridJLabelYearToSpain());
+		//getJPanelPersonalData().add(getJTextFieldYearToSpain(), getGridJTextFieldYearToSpain());
 		getJPanelPersonalData().add(getJLabelCreateDate(), getGridJLabelCreateDate());
 		getJPanelPersonalData().add(getJXCreateDate(), getGridJXCreateDate());
 		getJPanelPersonalData().add(getJLabelReactivateDate(), getGridJLabelReactivateDate());
@@ -1013,8 +1012,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		GridBagConstraints gbc_lblCreateDate = new GridBagConstraints();
 		gbc_lblCreateDate.anchor = GridBagConstraints.WEST;
 		gbc_lblCreateDate.insets = new Insets(0, 20, 0, 5);
-		gbc_lblCreateDate.gridx = 0;
-		gbc_lblCreateDate.gridy = 4;
+		gbc_lblCreateDate.gridx = 4;
+		gbc_lblCreateDate.gridy = 2;
 
 		return gbc_lblCreateDate;
 	}
@@ -1036,8 +1035,8 @@ public class JManageEditPeople extends AbstractJInternalFrame {
 		gbc_txfCreateDate.weightx = 1.0;
 		gbc_txfCreateDate.insets = new Insets(0, 0, 0, 5);
 		gbc_txfCreateDate.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txfCreateDate.gridx = 1;
-		gbc_txfCreateDate.gridy = 4;
+		gbc_txfCreateDate.gridx = 5;
+		gbc_txfCreateDate.gridy = 2;
 
 		return gbc_txfCreateDate;
 

@@ -23,6 +23,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+import javax.swing.text.NumberFormatter;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -331,10 +332,16 @@ public class JPanelAddress extends JPanel {
 
 	public JFormattedTextField getJTextFieldTelephoneContact() {
 		if (tfTelephoneContact == null) {
-			NumberFormat numberFormat = NumberFormat.getNumberInstance();
-			numberFormat.setGroupingUsed(false);
-			tfTelephoneContact = new JFormattedTextField(numberFormat);
+			NumberFormat intFormat = NumberFormat.getIntegerInstance();
+			intFormat.setGroupingUsed(false);
+			NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+			numberFormatter.setValueClass(Integer.class); 
+			numberFormatter.setAllowsInvalid(true);
+			numberFormatter.setMaximum(99999999);
+			
+			tfTelephoneContact = new JFormattedTextField(numberFormatter);
 			tfTelephoneContact.setColumns(10);
+			
 		}
 		return tfTelephoneContact;
 	}
@@ -414,12 +421,18 @@ public class JPanelAddress extends JPanel {
 
 	public JFormattedTextField getJTextFieldPostalCode() {
 		if (tfPostalCode == null) {
-			NumberFormat numberFormat = NumberFormat.getNumberInstance();
-			numberFormat.setMinimumIntegerDigits(0);
-			numberFormat.setGroupingUsed(false);
+			NumberFormat intFormat = NumberFormat.getIntegerInstance();
+			intFormat.setGroupingUsed(false);
+			NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+			numberFormatter.setValueClass(Integer.class); 
+			numberFormatter.setAllowsInvalid(true);
+			//numberFormatter.setMinimum(0);
+			numberFormatter.setMaximum(99999999);
+			
+			
 
-			tfPostalCode = new JFormattedTextField(numberFormat);
-			tfPostalCode.setColumns(10);
+			tfPostalCode = new JFormattedTextField(numberFormatter);
+			//tfPostalCode.setColumns(10);
 		}
 		return tfPostalCode;
 	}

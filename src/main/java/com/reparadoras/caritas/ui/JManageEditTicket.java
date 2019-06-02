@@ -18,32 +18,22 @@ import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXBusyLabel;
-import org.jdesktop.swingx.JXDatePicker;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+
+
 import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.awt.event.ActionEvent;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.SwingConstants;
+
 import javax.swing.JCheckBox;
 import java.awt.Font;
 import javax.swing.ImageIcon;
-import javax.swing.InputVerifier;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
+
 
 @SuppressWarnings("serial")
 

@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
@@ -401,9 +402,14 @@ public class JManageEditIncome extends AbstractJInternalFrame {
 
 		if (txfAmount == null) {
 
-			NumberFormat numberFormat = NumberFormat.getNumberInstance();
-			numberFormat.setGroupingUsed(false);
-			txfAmount = new JFormattedTextField(numberFormat);
+			NumberFormat intFormat = NumberFormat.getIntegerInstance();
+			intFormat.setGroupingUsed(false);
+			NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+			numberFormatter.setValueClass(Integer.class); 
+			numberFormatter.setAllowsInvalid(true);
+			numberFormatter.setMaximum(99999999);
+			
+			txfAmount = new JFormattedTextField(numberFormatter);
 			txfAmount.setColumns(10);
 			txfAmount.setName("amount");
 			txfAmount.setInputVerifier(jobSituationVerifier);
